@@ -11,6 +11,7 @@ export default {
         panel: "var(--color-surface)",
         "surface-alt": "var(--color-surface-alt)",
         foreground: "var(--color-foreground)",
+        heading: "var(--color-heading)",
         muted: "var(--color-muted)",
         "muted-foreground": "var(--color-muted-foreground)",
         border: "var(--color-border)",
@@ -78,6 +79,13 @@ export default {
         "lg": "16px",
         "xl": "24px",
         "2xl": "32px",
+        "3xl": "32px",
+      },
+      transitionDuration: {
+        DEFAULT: "500ms",
+      },
+      transitionTimingFunction: {
+        DEFAULT: "ease-out",
       },
       spacing: {
         // Component spacing

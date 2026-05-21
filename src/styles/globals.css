@@ -13,13 +13,14 @@
 /* Evolution Stables brand colors — v2.0 */
 :root {
   /* Core palette */
-  --color-background: #09090b;
+  --color-background: #030303;
   --color-surface: #0a0a0a;
   --color-surface-alt: #111111;
-  --color-foreground: #f5f5f5;
+  --color-foreground: rgba(255, 255, 255, 0.5);
+  --color-heading: #f8fafc;
   --color-muted: #a1a1aa;
   --color-muted-foreground: #737373;
-  --color-border: rgba(255,255,255,0.06);
+  --color-border: rgba(255, 255, 255, 0.1);
   
   /* Brand */
   --brand-gold: #d4a964;
@@ -72,12 +73,17 @@
 
 /* Base styles */
 body {
-  background-color: #000000;
+  background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-heading);
+  letter-spacing: -0.02em;
 }
 
 /* Scrollbar */
@@ -165,7 +171,7 @@ body {
     --chart-3: oklch(0.439 0 0);
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
+    --radius: 2rem;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);

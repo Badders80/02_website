@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import faqData from "@/dna/content/faq.json";
 
 interface FAQItem {
@@ -35,43 +36,59 @@ export function FAQSection() {
 
         {/* FAQ Items */}
         <div className="max-w-3xl mx-auto space-y-4">
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className="border border-white/[0.08] rounded-lg overflow-hidden"
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between px-6 py-5 text-left bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+          {items.map((item, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <motion.div
+                key={index}
+                animate={{
+                  backgroundColor: isOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)",
+                  boxShadow: isOpen ? "0 0 20px rgba(255,255,255,0.05)" : "none",
+                }}
+                className="border border-white/10 rounded-3xl overflow-hidden backdrop-blur transition-all duration-300"
               >
-                <span className="text-[15px] font-light text-white">
-                  {item.question}
-                </span>
-                <svg
-                  className={`w-5 h-5 text-white/60 transition-transform duration-300 ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="w-full flex items-center justify-between px-8 py-6 text-left transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              {openIndex === index && (
-                <div className="px-6 py-5 bg-white/[0.01] border-t border-white/[0.08]">
-                  <p className="text-[15px] leading-[1.7] font-light text-white/70">
-                    {item.answer}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
+                  <span className="text-[16px] font-light text-white">
+                    {item.question}
+                  </span>
+                  <svg
+                    className={`w-5 h-5 text-white/60 transition-transform duration-300 ${
+                      isOpen ? "rotate-180 text-white" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                    >
+                      <div className="px-8 pb-6 border-t border-white/10 pt-4">
+                        <p className="text-[15px] leading-[1.8] font-light text-white/60">
+                          {item.answer}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

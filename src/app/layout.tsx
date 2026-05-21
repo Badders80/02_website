@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
@@ -88,7 +89,9 @@ export default function RootLayout({
   return (
     <html lang="en-NZ" className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen bg-black text-foreground antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <SmoothScrollProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </SmoothScrollProvider>
       </body>
     </html>
   );

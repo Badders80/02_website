@@ -1,24 +1,24 @@
-import Image from "next/image";
+import { Unlock, Eye, Globe } from "lucide-react";
 
 interface BenefitItem {
-  icon: string;
+  icon: React.ElementType;
   title: string;
   description: string;
 }
 
 const benefits: BenefitItem[] = [
   {
-    icon: "/images/Increased Access.svg",
+    icon: Unlock,
     title: "Increased Access",
     description: "A digital platform that lowers barriers and opens ownership to everyone.",
   },
   {
-    icon: "/images/greater-than-equal-icon-original.svg",
+    icon: Eye,
     title: "Greater Transparency",
     description: "Real-time performance, clear costs, and open communication.",
   },
   {
-    icon: "/images/Untitled design (36).svg",
+    icon: Globe,
     title: "Borderless Flexibility",
     description: "Fractional shares and short-term commitments for modern investors.",
   },
@@ -54,37 +54,33 @@ export function DigitalSyndicationSection() {
           </div>
 
           {/* Right Column - Features */}
-          <div className="space-y-8">
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className="group py-2 transition-transform duration-500 hover:scale-[1.02]"
-              >
-                <div className="flex items-center gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">
-                    <Image
-                      src={benefit.icon}
-                      alt={benefit.title}
-                      width={48}
-                      height={48}
-                      className="w-10 h-10 transition-all duration-500"
-                      style={{ filter: "brightness(0) saturate(100%) invert(80%)" }}
-                    />
-                  </div>
-                  <div>
-                    <h4 className="text-[14px] font-[300] tracking-[0.05em] uppercase text-white mb-3 relative overflow-hidden">
-                      <span className="relative inline-block">
-                        {benefit.title}
-                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
-                      </span>
-                    </h4>
-                    <p className="text-[15px] leading-[1.6] font-light text-white/50 group-hover:text-white/70 transition-colors duration-500">
-                      {benefit.description}
-                    </p>
+          <div className="space-y-6">
+            {benefits.map((benefit, index) => {
+              const Icon = benefit.icon;
+              return (
+                <div
+                  key={index}
+                  className="group relative overflow-hidden rounded-3xl p-8 bg-white/5 backdrop-blur border border-white/10 transition-all duration-500 ease-out hover:border-gold/40 hover:bg-white/[0.07] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]"
+                >
+                  <div className="flex flex-col gap-6">
+                    <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">
+                      <Icon className="w-8 h-8 text-white/80 group-hover:text-gold transition-colors duration-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(212,169,100,0.6)]" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <h4 className="text-[18px] font-light text-white mb-3 leading-tight relative overflow-hidden">
+                        <span className="relative inline-block">
+                          {benefit.title}
+                          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
+                        </span>
+                      </h4>
+                      <p className="text-[15px] leading-[1.6] font-light text-white/50 group-hover:text-white/70 transition-colors duration-500">
+                        {benefit.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface HeroSectionProps {
   backgroundImage?: string;
@@ -36,6 +37,9 @@ export function HeroSection({
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const { scrollY } = useScroll();
+  const scale = useTransform(scrollY, [0, 1000], [1, 1.15]);
 
   return (
     <section
@@ -75,8 +79,9 @@ export function HeroSection({
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-start gap-4 px-8 pb-16 md:px-12">
         {/* Logo */}
-        <div
-          className="w-full max-w-[720px] animate-hero-logo"
+        <motion.div
+          style={{ scale }}
+          className="relative w-full max-w-[720px] animate-hero-logo"
         >
           <Image
             src="/images/Evolution-Stables-Logo.png"
@@ -84,9 +89,24 @@ export function HeroSection({
             width={1200}
             height={400}
             priority
-            className="h-auto w-full"
+            className="relative z-20 h-auto w-full"
           />
-        </div>
+          {/* Shimmer Overlay using Mask */}
+          <div 
+            className="absolute inset-0 z-30 pointer-events-none mix-blend-multiply"
+            style={{
+              WebkitMaskImage: 'url(/images/Evolution-Stables-Logo.png)',
+              WebkitMaskSize: '100% auto',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+            }}
+          >
+            <div 
+              className="absolute inset-0 bg-[length:200%_100%] bg-gradient-to-r from-transparent via-[#4a3b1a]/80 to-transparent animate-shimmer" 
+              style={{ animationDuration: '7s' }}
+            />
+          </div>
+        </motion.div>
 
         {/* Tagline */}
         <p className="mt-8 max-w-[720px] font-medium leading-relaxed animate-hero-tagline uppercase" style={{ fontSize: 12, letterSpacing: '3px', color: '#a1a1aa' }}>
