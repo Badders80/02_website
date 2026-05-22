@@ -29,7 +29,7 @@ export function DigitalSyndicationSection() {
     <section id="digital-syndication" className="py-56 bg-black">
       <div className="max-w-5xl mx-auto px-6">
         {/* Label */}
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+        <p className="text-[10px] font-mono tracking-[0.2em] uppercase mb-12 text-white/30">
           OUR MODEL
         </p>
 
@@ -60,7 +60,7 @@ export function DigitalSyndicationSection() {
               return (
                 <div
                   key={index}
-                  className="group relative overflow-hidden rounded-3xl p-8 bg-white/5 backdrop-blur border border-white/10 transition-all duration-500 ease-out hover:border-gold/40 hover:bg-white/[0.07] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]"
+                  className="glass-streak masked-border group relative overflow-hidden rounded-3xl p-8 bg-white/[0.02] backdrop-blur transition-all duration-500 ease-out hover:bg-white/[0.04] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]"
                 >
                   <div className="flex flex-col gap-6">
                     <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">

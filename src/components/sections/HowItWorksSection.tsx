@@ -35,7 +35,7 @@ export function HowItWorksSection() {
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
         {/* Heading */}
         <div className="space-y-12 mb-16">
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30">
+          <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-white/30">
             OUR MISSION
           </p>
           <h2 className="text-[36px] md:text-[56px] leading-[1.1] text-white font-light tracking-tight">
@@ -73,8 +73,8 @@ function Card({ card, index }: { card: StakeholderCard; index: number }) {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className={`group relative bg-white/[0.02] border border-white/[0.1] rounded-3xl p-10 transition-all duration-500 ease-out hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer overflow-hidden ${
-        isFirst ? "md:col-span-2" : "md:col-span-1"
+      className={`glass-streak masked-border group relative bg-white/[0.02] backdrop-blur p-10 transition-all duration-500 ease-out hover:bg-white/[0.04] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer overflow-hidden flex flex-col justify-end min-h-[320px] ${
+        isFirst ? "md:col-span-2 md:row-span-2 min-h-[480px]" : "md:col-span-1"
       }`}
     >
       {/* Spotlight Effect */}
@@ -92,7 +92,7 @@ function Card({ card, index }: { card: StakeholderCard; index: number }) {
       />
       
       <div className="relative z-10 space-y-4">
-        <p className="text-sm font-light uppercase tracking-[0.32em] text-white/40">
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
           {card.title.split(" & ")[0]}
           <br />
           {card.title.split(" & ")[1] || ""}

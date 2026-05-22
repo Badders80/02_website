@@ -22,7 +22,7 @@ export function NewsAndUpdatesSection() {
   return (
     <section id="news" className="py-24 bg-black">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+        <p className="text-[10px] font-mono tracking-[0.2em] uppercase mb-12 text-white/30">
           NEWS AND UPDATES
         </p>
 

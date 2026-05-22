@@ -112,7 +112,7 @@ export const AboutSection = () => {
       data-cta-overlay="off"
     >
       <div className="mx-auto max-w-6xl px-12 md:px-16 lg:px-20">
-        <p className="mb-16 text-[11px] font-light uppercase tracking-[0.2em] text-white/30">
+        <p className="mb-16 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
           ABOUT
         </p>
 

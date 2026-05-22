@@ -15,31 +15,12 @@ export function HeroSection({
   overlay = true,
   className = '',
 }: HeroSectionProps) {
-  const [shouldFixBackground, setShouldFixBackground] = React.useState(false);
-  const [bgY, setBgY] = React.useState(0);
-  const rafRef = React.useRef<number>(0);
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const isFixed = scrollPosition > windowHeight * 0.3;
-      setShouldFixBackground(isFixed);
-
-      // Parallax: background moves slower than scroll (0 to -300 over 0-1000px scroll)
-      if (!isFixed) {
-        const parallaxY = -(scrollPosition * 0.3);
-        setBgY(parallaxY);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const { scrollY } = useScroll();
-  const scale = useTransform(scrollY, [0, 1000], [1, 1.15]);
+  
+  // Parallax Layering
+  const bgY = useTransform(scrollY, [0, 1000], [0, 400]); // Moves slower (0.4)
+  const textY = useTransform(scrollY, [0, 1000], [0, -200]); // Moves faster upwards
+  const textScale = useTransform(scrollY, [0, 1000], [1, 1.1]); // Scales to 1.1
 
   return (
     <section
@@ -47,14 +28,9 @@ export function HeroSection({
       className={`relative flex min-h-screen items-center justify-center overflow-hidden pt-24 pb-48 ${className}`}
     >
       {/* Background Layer */}
-      <div
+      <motion.div
         className="absolute inset-0"
-        style={{
-          position: shouldFixBackground ? 'fixed' : 'absolute',
-          top: shouldFixBackground ? 0 : undefined,
-          zIndex: shouldFixBackground ? -1 : undefined,
-          transform: shouldFixBackground ? 'none' : `translateY(${bgY}px)`,
-        }}
+        style={{ y: bgY }}
       >
         <Image
           src={backgroundImage}
@@ -75,12 +51,12 @@ export function HeroSection({
             }}
           />
         )}
-      </div>
+      </motion.div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-start gap-4 px-8 pb-16 md:px-12">
         {/* Logo */}
         <motion.div
-          style={{ scale }}
+          style={{ scale: textScale, y: textY }}
           className="relative w-full max-w-[720px] animate-hero-logo"
         >
           <Image
@@ -109,13 +85,16 @@ export function HeroSection({
         </motion.div>
 
         {/* Tagline */}
-        <p className="mt-8 max-w-[720px] font-medium leading-relaxed animate-hero-tagline uppercase" style={{ fontSize: 12, letterSpacing: '3px', color: '#a1a1aa' }}>
+        <motion.p 
+          style={{ y: textY }}
+          className="mt-8 max-w-[720px] leading-relaxed animate-hero-tagline uppercase font-mono text-[10px] tracking-[0.2em] text-white/50"
+        >
           <span className="whitespace-nowrap">Grounded in tradition.</span>
           <br />
           <span className="whitespace-nowrap">Evolved through innovation.</span>
           <br />
           Ownership transformed.
-        </p>
+        </motion.p>
       </div>
     </section>
   );

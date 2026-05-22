@@ -1,0 +1,3 @@
+{
+  "/api/kyc/create-session/route": "app/api/kyc/create-session/route.js"
+}

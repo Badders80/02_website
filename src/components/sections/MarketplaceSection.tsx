@@ -5,7 +5,7 @@ export function MarketplaceSection() {
     <section id="marketplace" className="py-56 bg-black">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
         {/* Label */}
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+        <p className="text-[10px] font-mono tracking-[0.2em] uppercase mb-12 text-white/30">
           REGULATED MARKETPLACE
         </p>
 
@@ -34,7 +34,7 @@ export function MarketplaceSection() {
         <div className="mt-32 w-full">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1 - Discover Opportunities */}
-            <div className="group relative overflow-hidden rounded-3xl p-8 bg-white/5 backdrop-blur border border-white/10 transition-all duration-500 ease-out hover:border-gold/40 hover:bg-white/[0.07] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]">
+            <div className="glass-streak masked-border group relative overflow-hidden rounded-3xl p-8 bg-white/[0.02] backdrop-blur transition-all duration-500 ease-out hover:bg-white/[0.04] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]">
               <div className="flex flex-col gap-6">
                 <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">
                   <Compass className="w-8 h-8 text-white/80 group-hover:text-gold transition-colors duration-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(212,169,100,0.6)]" strokeWidth={1.5} />
@@ -56,7 +56,7 @@ export function MarketplaceSection() {
             </div>
 
             {/* Card 2 - Trade with Confidence */}
-            <div className="group relative overflow-hidden rounded-3xl p-8 bg-white/5 backdrop-blur border border-white/10 transition-all duration-500 ease-out hover:border-gold/40 hover:bg-white/[0.07] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]">
+            <div className="glass-streak masked-border group relative overflow-hidden rounded-3xl p-8 bg-white/[0.02] backdrop-blur transition-all duration-500 ease-out hover:bg-white/[0.04] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]">
               <div className="flex flex-col gap-6">
                 <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">
                   <ShieldCheck className="w-8 h-8 text-white/80 group-hover:text-gold transition-colors duration-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(212,169,100,0.6)]" strokeWidth={1.5} />
@@ -78,7 +78,7 @@ export function MarketplaceSection() {
             </div>
 
             {/* Card 3 - Real-Time Insight */}
-            <div className="group relative overflow-hidden rounded-3xl p-8 bg-white/5 backdrop-blur border border-white/10 transition-all duration-500 ease-out hover:border-gold/40 hover:bg-white/[0.07] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]">
+            <div className="glass-streak masked-border group relative overflow-hidden rounded-3xl p-8 bg-white/[0.02] backdrop-blur transition-all duration-500 ease-out hover:bg-white/[0.04] hover:shadow-[0_8px_30px_rgba(212,169,100,0.15)] hover:scale-[1.02]">
               <div className="flex flex-col gap-6">
                 <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">
                   <LineChart className="w-8 h-8 text-white/80 group-hover:text-gold transition-colors duration-500 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(212,169,100,0.6)]" strokeWidth={1.5} />
@@ -106,7 +106,7 @@ export function MarketplaceSection() {
               href="https://tokinvest.capital/report"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-8 py-3.5 text-[11px] font-light tracking-wider uppercase text-white/70 transition-all duration-300 hover:text-white hover:scale-105 focus:outline-none bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] overflow-hidden"
+              className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-8 py-3.5 text-[10px] font-mono tracking-[0.2em] uppercase text-white/70 transition-all duration-300 hover:text-white hover:scale-105 focus:outline-none bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent animate-shimmer opacity-50" />
               <span className="relative z-10 inline-block transition-all duration-300 group-hover:scale-110">

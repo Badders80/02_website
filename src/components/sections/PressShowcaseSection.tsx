@@ -152,7 +152,7 @@ export function PressShowcaseSection() {
     <section className="relative bg-black text-white overflow-hidden bloomberg-showcase">
       {/* News and Updates Section - Above */}
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 pt-24">
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+        <p className="text-[10px] font-mono tracking-[0.2em] uppercase mb-12 text-white/30">
           NEWS AND UPDATES
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[6fr,4fr]">

@@ -86,10 +86,10 @@ export function NavBar() {
           : 'bg-black/40 text-white'
       } ${visible ? 'opacity-100 translate-y-0' : '-translate-y-4 opacity-0'}`}
       style={{
-        backdropFilter: 'blur(24px) saturate(120%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(120%)',
-        maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)'
+        backdropFilter: 'blur(32px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(160%)',
+        maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'
       }}
     >
       <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center px-6 sm:px-10 lg:px-12">
