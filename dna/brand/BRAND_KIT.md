@@ -111,13 +111,13 @@ To write in the Private Banker Standard, translate standard marketing or tech ja
 
 | Approved Term | Banned / Discouraged Alternative |
 |---|---|
-| **Thoroughbreds / Racehorses** | Horses, animals, Equine Assets |
+| **Thoroughbreds / Racehorses** | Horses, animals, Equine Assets (strictly banned; too clinical) |
 | **Digital-syndication** | Tokenised shares, blockchain, crypto |
-| **Payment** | Money transfer, transaction, top-up |
+| **Payment** *(Funds inflow / money coming in)* | Money transfer, transaction, top-up, settlement (for inflows) |
 | **Fractional Ownership** | Pieces, parts, "bits of horse" |
 | **Regulated** | Cutting-edge, disruptive, game-changing, contemporary |
 | **Tradition & Heritage** | Stewardship, philosophical ownership |
-| **Settlement** | Payout, earnings, reward |
+| **Settlement** *(Funds outflow / money moving out)* | Payout, earnings, reward, payment (for outflows; sounds more professional/legal) |
 
 ### 3.5 The Authority Mandate: "The Silent Gavel"
 
