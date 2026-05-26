@@ -1,8 +1,10 @@
 # Evolution Stables — Brand Kit
 
-**Version:** 2.0  
-**Status:** Canonical  
-**Scope:** Brand identity, Visual system, Voice & Tone, Logo rules, and CTA logic.
+**Version:** 2.0 (Spoke Copy)  
+**Status:** Managed Spoke  
+**Base SSOT:** [01_evolution](../../01_evolution/dna/brand/BRAND_KIT.md)  
+**Local Overrides:** None  
+**Scope:** Website-specific visual system and front-end CTA logic.
 
 ---
 
