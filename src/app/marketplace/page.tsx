@@ -1,132 +1,183 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { getHlts } from "@/lib/api";
 import Image from "next/image";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Marketplace | Evolution Stables",
   description:
-    "Discover and explore digital-syndication opportunities within the Evolution ecosystem. Browse upcoming offerings, ownership positions, and live data.",
+    "Discover and explore native digital-syndication opportunities within the Evolution ecosystem. Browse active offerings, ownership positions, and live data.",
 };
 
-const modules = [
-  {
-    title: "Digital Syndication",
-    description:
-      "Experience tokenised racehorse ownership. Lease or trade verified stakes directly within the Evolution platform.",
-    link: { text: "View Marketplace", href: "#" },
-    icon: (
-      <svg className="h-8 w-8 text-white/60" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Integration & Compliance",
-    description:
-      "Built in alignment with NZTR and VARA frameworks, ensuring every trade and syndication is fully compliant.",
-    link: { text: "Learn More", href: "https://tokinvest.capital/report" },
-    icon: (
-      <svg className="h-8 w-8 text-white/60" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Analytics & Insights",
-    description:
-      "Access data-driven insights into race trends, horse performance, and portfolio value growth.",
-    link: { text: "View Insights", href: "#" },
-    icon: (
-      <svg className="h-8 w-8 text-white/60" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Ownership Dashboard",
-    description:
-      "Track your stable's performance, prize returns, and active leases through a unified dashboard.",
-    link: { text: "Open MyStable", href: "/mystable" },
-    icon: (
-      <svg className="h-8 w-8 text-white/60" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-      </svg>
-    ),
-  },
-];
+interface Campaign {
+  id: string;
+  status: string;
+  shares_total: number;
+  shares_sold: number;
+  share_price_cents: number;
+  fractional_interest_per_share?: number;
+  horse_microchip: string;
+  horse?: {
+    name: string;
+    age?: number;
+    sex: string;
+    colour?: string;
+    sire_name?: string;
+    dam_name?: string;
+    image_url?: string;
+  };
+  trainer?: {
+    name: string;
+    stable_name: string;
+    location: string;
+  };
+}
 
-export default function MarketplacePage() {
+export default async function MarketplacePage() {
+  let campaigns: Campaign[] = [];
+  let errorMsg = "";
+
+  try {
+    // Fetch published or publish-ready HLTs, resolving references (horse, trainer, owner)
+    const data = await getHlts({ resolve: true });
+    campaigns = (data || []).filter(
+      (c: any) => c.status === "published" || c.status === "publish_ready"
+    );
+  } catch (err: any) {
+    console.error("Failed to fetch campaigns for marketplace:", err.message);
+    errorMsg = "Unable to load active campaigns at the moment. Please try again shortly.";
+  }
+
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground">
+      <main className="min-h-screen bg-black text-foreground font-sans">
         {/* Hero / Header */}
-        <section className="pt-32 pb-20 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
-          <p className="text-[11px] font-medium tracking-[0.28em] uppercase text-[#a1a1aa] mb-12">
+        <section className="pt-32 pb-16 px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto">
+          <p className="text-[11px] font-medium tracking-[0.28em] uppercase text-white/30 mb-8">
             Evolution Stables
           </p>
-          <h1 className="text-[36px] md:text-[48px] font-medium tracking-tight text-[#f5f5f5] mb-6">
-            Marketplace
+          <h1 className="text-[36px] md:text-[56px] font-light tracking-tight text-white mb-6 leading-tight">
+            Active Campaigns
           </h1>
-          <p className="text-[16px] leading-relaxed font-normal text-[#a1a1aa] max-w-2xl">
-            Discover and explore digital-syndication opportunities within the Evolution ecosystem.
-            Browse upcoming offerings, ownership positions, and live data, all designed to make
-            racehorse ownership more accessible and connected.
+          <p className="text-[16px] leading-[1.85] font-light text-white/50 max-w-2xl">
+            Explore native digital syndications currently open for ownership. 
+            Acquire a fraction of elite bloodstock, backed by legally binding leases, and track your stable's performance directly on-site.
           </p>
         </section>
 
-        {/* Mockup Image */}
-        <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-20">
-          <div className="relative rounded-2xl overflow-hidden border border-white/[0.06]">
-            <Image
-              src="/images/Mockup-trading-window.png"
-              alt="Evolution Stables Marketplace Trading Interface Mockup"
-              width={1200}
-              height={700}
-              className="w-full h-auto"
-              priority
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-              <p className="text-[24px] font-light tracking-wide text-white/90">Coming Soon</p>
+        {/* Listings Grid */}
+        <section className="px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto pb-32">
+          {errorMsg ? (
+            <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-6 text-center">
+              <p className="text-sm font-light text-red-400">{errorMsg}</p>
             </div>
-          </div>
-        </section>
+          ) : campaigns.length === 0 ? (
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-12 text-center">
+              <p className="text-lg font-light text-white/60 mb-2">No active campaigns</p>
+              <p className="text-sm font-light text-white/30 max-w-md mx-auto">
+                All campaigns are currently fully syndicated or in pre-training. Sign up to receive notifications when new campaigns launch.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {campaigns.map((camp) => {
+                const horse = camp.horse;
+                const trainer = camp.trainer;
+                const sharesAvailable = camp.shares_total - camp.shares_sold;
+                const percentPerShare = camp.fractional_interest_per_share || (100.0 / camp.shares_total);
+                const sharePriceNzd = camp.share_price_cents / 100;
+                
+                return (
+                  <article
+                    key={camp.id}
+                    className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04]"
+                  >
+                    {/* Image Header */}
+                    <div className="relative aspect-[16/10] bg-zinc-900 overflow-hidden border-b border-white/[0.06]">
+                      {horse?.image_url ? (
+                        <Image
+                          src={horse.image_url}
+                          alt={horse.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-white/20 text-xs font-light">
+                          Photo incoming
+                        </div>
+                      )}
+                      
+                      {/* Status Badges */}
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        {sharesAvailable > 0 ? (
+                          <span className="rounded-full bg-emerald-500/15 border border-emerald-500/25 px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-emerald-400">
+                            Accepting Owners
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-white/10 border border-white/5 px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-white/50">
+                            Sold Out
+                          </span>
+                        )}
+                        <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-0.5 text-[9px] font-light uppercase tracking-wider text-white/70">
+                          {percentPerShare}% Stake units
+                        </span>
+                      </div>
+                    </div>
 
-        {/* Modules */}
-        <section className="py-32 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
-            Evolution Stables
-          </p>
-          <h2 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6">
-            Modules
-          </h2>
-          <p className="text-[16px] leading-[1.7] font-light text-white/65 max-w-2xl mb-20">
-            Explore the core components powering the Evolution ecosystem from ownership analytics to race insights.
-          </p>
+                    {/* Content Details */}
+                    <div className="p-8 space-y-6">
+                      <div>
+                        <h3 className="text-[21px] font-medium tracking-tight text-white mb-2">
+                          {horse?.name || "Unknown Horse"}
+                        </h3>
+                        <p className="text-[13px] font-light text-white/40">
+                          {horse?.age ? `${horse.age}-Year-Old` : "Age unknown"} · {horse?.sex || "Unknown sex"} · {horse?.sire_name || "Unknown sire"} / {horse?.dam_name || "Unknown dam"}
+                        </p>
+                      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {modules.map((mod) => (
-              <div
-                key={mod.title}
-                className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 md:p-10 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04]"
-              >
-                <div className="mb-8">{mod.icon}</div>
-                <h3 className="text-[18px] font-light text-white mb-3">{mod.title}</h3>
-                <p className="text-[15px] leading-[1.7] font-light text-white/50 mb-8">
-                  {mod.description}
-                </p>
-                <a
-                  href={mod.link.href}
-                  className="inline-flex items-center gap-2 text-[11px] font-light tracking-[0.15em] uppercase text-white/60 transition-all duration-300 hover:text-white group-hover:text-white"
-                >
-                  {mod.link.text}
-                  <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </a>
-              </div>
-            ))}
-          </div>
+                      {/* Stats Grid */}
+                      <div className="grid grid-cols-3 gap-4 border-y border-white/[0.06] py-4">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wider text-white/30 mb-1">Unit Price</p>
+                          <p className="text-[15px] font-medium text-[#d4a964]">${sharePriceNzd.toLocaleString()} NZD</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wider text-white/30 mb-1">Available</p>
+                          <p className="text-[15px] font-medium text-white">{sharesAvailable} / {camp.shares_total}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wider text-white/30 mb-1">Trainer</p>
+                          <p className="text-[15px] font-medium text-white truncate max-w-[120px]" title={trainer?.name}>
+                            {trainer?.name || "Unassigned"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* CTA */}
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-[11px] font-light text-white/40">
+                          {trainer?.stable_name || trainer?.location || "Matamata, NZ"}
+                        </span>
+                        <Link
+                          href={`/marketplace/${camp.id}`}
+                          className="inline-flex items-center gap-1 text-[11px] font-light tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors"
+                        >
+                          View Campaign
+                          <svg className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
       </main>
       <Footer />

@@ -25,7 +25,7 @@ export default function LoginPage() {
       } else {
         await signUp(email, password);
       }
-      router.push("/admin");
+      router.push("/mystable");
     } catch (err: any) {
       setError(err.message || "Authentication failed");
     } finally {

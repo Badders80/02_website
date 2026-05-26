@@ -29,6 +29,14 @@
         "nxtPmicrochip": "nxtPmicrochip"
       },
       "namedRegex": "^/admin/horses/(?<nxtPmicrochip>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/marketplace/[id]",
+      "regex": "^/marketplace/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/marketplace/(?<nxtPid>[^/]+?)(?:/)?$"
     }
   ],
   "staticRoutes": [
@@ -111,6 +119,18 @@
       "namedRegex": "^/admin/website/press(?:/)?$"
     },
     {
+      "page": "/api/checkout/create-session",
+      "regex": "^/api/checkout/create\\-session(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/checkout/create\\-session(?:/)?$"
+    },
+    {
+      "page": "/api/checkout/webhook",
+      "regex": "^/api/checkout/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/checkout/webhook(?:/)?$"
+    },
+    {
       "page": "/api/kyc/create-session",
       "regex": "^/api/kyc/create\\-session(?:/)?$",
       "routeKeys": {},
@@ -163,6 +183,12 @@
       "regex": "^/sitemap\\.xml(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    },
+    {
+      "page": "/stables",
+      "regex": "^/stables(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/stables(?:/)?$"
     },
     {
       "page": "/terms",

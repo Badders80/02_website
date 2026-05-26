@@ -12,9 +12,12 @@
   "/admin/trainers/page": "app/admin/trainers/page.js",
   "/admin/website/faq/page": "app/admin/website/faq/page.js",
   "/admin/website/press/page": "app/admin/website/press/page.js",
+  "/api/checkout/create-session/route": "app/api/checkout/create-session/route.js",
+  "/api/checkout/webhook/route": "app/api/checkout/webhook/route.js",
   "/api/kyc/create-session/route": "app/api/kyc/create-session/route.js",
   "/auth/login/page": "app/auth/login/page.js",
   "/auth/verify/page": "app/auth/verify/page.js",
+  "/marketplace/[id]/page": "app/marketplace/[id]/page.js",
   "/marketplace/page": "app/marketplace/page.js",
   "/mystable/page": "app/mystable/page.js",
   "/page": "app/page.js",
@@ -22,5 +25,6 @@
   "/privacy/page": "app/privacy/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/stables/page": "app/stables/page.js",
   "/terms/page": "app/terms/page.js"
 }

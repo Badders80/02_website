@@ -72,8 +72,18 @@ export async function createTrainer(data: any) {
   });
 }
 
-export async function getHlts() {
-  return apiCall("/ssot/hlts");
+export async function getHlts(params?: { status?: string; horse_microchip?: string; resolve?: boolean }) {
+  const query = new URLSearchParams();
+  if (params?.status) query.set("status", params.status);
+  if (params?.horse_microchip) query.set("horse_microchip", params.horse_microchip);
+  if (params?.resolve) query.set("resolve", "true");
+  
+  const queryString = query.toString();
+  return apiCall(`/ssot/hlts${queryString ? `?${queryString}` : ""}`);
+}
+
+export async function getHltById(id: string, resolve = false) {
+  return apiCall(`/ssot/hlts/${id}${resolve ? "?resolve=true" : ""}`);
 }
 
 export async function createHlt(data: any) {
@@ -82,6 +92,21 @@ export async function createHlt(data: any) {
     body: JSON.stringify(data),
   });
 }
+
+export async function getHoldings(userId: string) {
+  return apiCall(`/ssot/holdings?user_id=${userId}`);
+}
+
+export async function getContent(params?: { horse_microchip?: string; content_type?: string; status?: string }) {
+  const query = new URLSearchParams();
+  if (params?.horse_microchip) query.set("horse_microchip", params.horse_microchip);
+  if (params?.content_type) query.set("content_type", params.content_type);
+  if (params?.status) query.set("status", params.status);
+  
+  const queryString = query.toString();
+  return apiCall(`/ssot/content${queryString ? `?${queryString}` : ""}`);
+}
+
 
 // ─── Assets API ────────────────────────────────────────────────────────────────
 

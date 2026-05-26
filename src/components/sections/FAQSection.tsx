@@ -42,7 +42,7 @@ export function FAQSection() {
               <motion.div
                 key={index}
                 animate={{
-                  backgroundColor: isOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)",
+                  backgroundColor: isOpen ? "rgba(15,15,15,0.95)" : "rgba(8,8,8,0.9)",
                   boxShadow: isOpen ? "0 0 20px rgba(255,255,255,0.05)" : "none",
                 }}
                 className="border border-white/10 rounded-3xl overflow-hidden backdrop-blur transition-all duration-300"

@@ -12,9 +12,12 @@
   "/admin/trainers/page": "/admin/trainers",
   "/admin/website/faq/page": "/admin/website/faq",
   "/admin/website/press/page": "/admin/website/press",
+  "/api/checkout/create-session/route": "/api/checkout/create-session",
+  "/api/checkout/webhook/route": "/api/checkout/webhook",
   "/api/kyc/create-session/route": "/api/kyc/create-session",
   "/auth/login/page": "/auth/login",
   "/auth/verify/page": "/auth/verify",
+  "/marketplace/[id]/page": "/marketplace/[id]",
   "/marketplace/page": "/marketplace",
   "/mystable/page": "/mystable",
   "/page": "/",
@@ -22,5 +25,6 @@
   "/privacy/page": "/privacy",
   "/robots.txt/route": "/robots.txt",
   "/sitemap.xml/route": "/sitemap.xml",
+  "/stables/page": "/stables",
   "/terms/page": "/terms"
 }

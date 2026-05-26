@@ -8,8 +8,8 @@
 
 | Font | Usage | Format |
 |------|-------|--------|
-| **Playfair Display** | Headings, display text | Variable WOFF2 |
-| **Inter** | Body text, UI | Variable WOFF2 |
+| **Geist Sans** | All text, headings, body, UI | Variable WOFF2 |
+| **Geist Mono** | Data, code, odds, metrics | Variable WOFF2 |
 
 ## Why Self-Host?
 

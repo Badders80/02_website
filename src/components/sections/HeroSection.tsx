@@ -67,27 +67,12 @@ export function HeroSection({
             priority
             className="relative z-20 h-auto w-full"
           />
-          {/* Shimmer Overlay using Mask */}
-          <div 
-            className="absolute inset-0 z-30 pointer-events-none mix-blend-multiply"
-            style={{
-              WebkitMaskImage: 'url(/images/Evolution-Stables-Logo.png)',
-              WebkitMaskSize: '100% auto',
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-            }}
-          >
-            <div 
-              className="absolute inset-0 bg-[length:200%_100%] bg-gradient-to-r from-transparent via-[#4a3b1a]/80 to-transparent animate-shimmer" 
-              style={{ animationDuration: '7s' }}
-            />
-          </div>
         </motion.div>
 
         {/* Tagline */}
-        <motion.p 
-          style={{ y: textY }}
-          className="mt-8 max-w-[720px] leading-relaxed animate-hero-tagline uppercase font-mono text-[10px] tracking-[0.2em] text-white/50"
+        <motion.p
+          style={{ y: textY, fontSize: 12, letterSpacing: '3px', color: '#a1a1aa' }}
+          className="mt-8 max-w-[720px] font-medium leading-relaxed animate-hero-tagline uppercase"
         >
           <span className="whitespace-nowrap">Grounded in tradition.</span>
           <br />

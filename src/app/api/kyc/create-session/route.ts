@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { execSync } from 'child_process';
 
 const KYC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082';
 
@@ -11,9 +12,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
     }
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // If calling the deployed Cloud Function, obtain a local gcloud identity token
+    if (KYC_API_BASE.includes('cloudfunctions.net')) {
+      try {
+        const token = execSync('gcloud auth print-identity-token', { encoding: 'utf-8' }).trim();
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+      } catch (err: any) {
+        console.warn('Failed to obtain gcloud identity token:', err.message);
+      }
+    }
+
     const response = await fetch(`${KYC_API_BASE}/create-session`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ 
         user_id, 
         email, 

@@ -11,25 +11,20 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 export const metadata: Metadata = {
   metadataBase: new URL("https://evolutionstables.nz"),
   title: {
-    default: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
+    default: "Evolution Stables - Digital Racehorse Ownership",
     template: "%s | Evolution Stables",
   },
   description:
-    "Own racehorses through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset (RWA) investing powered by Tokinvest and blockchain technology.",
+    "Own racehorses through digital-syndication. Evolution Stables makes elite thoroughbred racehorse ownership accessible, transparent, and connected for local fans.",
   keywords: [
     "racehorse ownership",
     "digital syndication",
-    "tokenized assets",
-    "real world assets",
-    "RWA",
-    "blockchain racing",
     "fractional ownership",
     "New Zealand racing",
     "NZTR",
-    "Tokinvest",
-    "Singularry",
     "regulated investment",
     "horse racing investment",
+    "syndicate horses",
   ],
   authors: [{ name: "Evolution Stables" }],
   creator: "Evolution Stables",

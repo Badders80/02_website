@@ -11,6 +11,7 @@ import { GlowPillButton } from '@/components/ui/GlowPillButton';
  */
 const navLinks = [
   { label: 'About', href: '/#about' },
+  { label: 'Stables', href: '/stables' },
   { label: 'Mission', href: '/#mission' },
   { label: 'Model', href: '/#digital-syndication' },
   { label: 'Marketplace', href: '/marketplace' },

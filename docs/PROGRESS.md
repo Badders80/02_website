@@ -9,11 +9,11 @@
 ## Local Status
 
 **Current Phase:** 🟢 Phase 2 — Fresh Build  
-**Last Updated:** 2026-05-20  
+**Last Updated:** 2026-05-22  
 
 **Phase 0:** ✅ Complete — Asset extraction (~40 images in public/images/)  
 **Phase 1:** ✅ Complete — Content extraction (faq.json, press.json, footer.json)  
-**Phase 2:** � Complete — Press section (PressShowcaseSection + press page)  
+**Phase 2:** ✅ Complete — Press & Marketplace sections & pages  
 **Phase 3:** ⬜ Not started — SEO + deployment
 
 **Total Files:** ~35 source files  
@@ -27,6 +27,7 @@
 |------|-------|--------|-----|
 | 2026-05-19 | Repo setup + planning | ✅ Complete | [../../01_evolution/docs/logs/02-website-2026-05-19.md](../../01_evolution/docs/logs/02-website-2026-05-19.md) |
 | 2026-05-20 | Press section + press page | ✅ Complete | [logs/2026-05-20.md](logs/2026-05-20.md) |
+| 2026-05-22 | Marketplace Section & Prototype | ✅ Complete | [logs/2026-05-22.md](logs/2026-05-22.md) |
 
 ---
 

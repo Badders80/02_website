@@ -1,0 +1,85 @@
+{
+  "hero": {
+    "preHeadline": "",
+    "headline": "You don't buy into a horse. You join a stable.",
+    "subheadline": "Racehorse ownership has never been about spreadsheets. It's about walking the yard at dawn, watching a 2-year-old come alive on the bridle, and standing somewhere near the rails while a horse you own runs past. Evolution Stables scales that experience — without losing the parts that matter.",
+    "ctaPrimary": {
+      "label": "See our stables",
+      "href": "/stables"
+    },
+    "ctaSecondary": {
+      "label": "How it works",
+      "href": "#how-it-works"
+    }
+  },
+  "about": {
+    "kicker": "ABOUT",
+    "headline": "Own the Experience",
+    "body": "Ownership is the lifeblood of racing — and strengthening it benefits every part of the industry. But for 200 years, it meant knowing the trainer, walking the yard, feeling the pulse of a syndicate. Evolution Stables doesn't replace that. We scale it. Every member gets the access, the updates, and the trackside moments that used to belong to a handful of insiders.",
+    "cta": {
+      "label": "Meet our trainers",
+      "href": "/stables"
+    },
+    "email": {
+      "headline": "Join the stable",
+      "placeholder": "Enter your email",
+      "button": "Get early access",
+      "success": "Welcome to the Evolution"
+    }
+  },
+  "howItWorks": {
+    "kicker": "OUR MISSION",
+    "headline": "How It Works",
+    "intro": "At Evolution Stables, we understand that ownership is the lifeblood of racing — and strengthening it benefits every part of the industry.",
+    "steps": [
+      {
+        "title": "Choose your stable",
+        "description": "Each horse lives with a trainer. Each trainer has a record, a philosophy, and a yard. You pick the stable that matches how you want to race."
+      },
+      {
+        "title": "Follow the campaign",
+        "description": "Trackwork updates, race plans, veterinary reports. No black boxes. No surprises. Just the life of a horse in training, reported straight."
+      },
+      {
+        "title": "Race day, together",
+        "description": "The group chat. The silks. The moment. Whether you're trackside or timezone-crossing, you own the experience — not just a percentage."
+      }
+    ]
+  },
+  "stables": {
+    "kicker": "OUR STABLES",
+    "headline": "The Horses, The Trainers, The Track",
+    "intro": "Every horse in the Evolution network is in a trainer's yard. That means real people, real routines, real mornings. These are the campaigns currently open or recently completed.",
+    "cta": {
+      "label": "View all stables",
+      "href": "/stables"
+    }
+  },
+  "marketplace": {
+    "kicker": "REGULATED MARKETPLACE",
+    "headline": "Transformation Powered by Tokinvest",
+    "intro": "Behind our integrated marketplace, Tokinvest delivers the infrastructure that powers digital-syndication — built on regulated, financial-grade rails, tailored from institutional finance and adapted to meet the demands of modern owners.",
+    "features": [
+      {
+        "title": "Discover Opportunities",
+        "description": "Explore available syndications and short-term leases — all clearly structured, fully transparent, and ready to invest in with confidence."
+      },
+      {
+        "title": "Trade with Confidence",
+        "description": "Tokinvest's regulated platform ensures secure transactions, immutable ownership records, and integrated settlements — so every trade is safe, clear, and straightforward."
+      },
+      {
+        "title": "Real-Time Insight",
+        "description": "Follow your horses, track performance, and manage your positions in real time — with ownership data, updates, and key information always at your fingertips."
+      }
+    ]
+  },
+  "footer": {
+    "kicker": "",
+    "headline": "The first rule of Evolution Stables: you tell everyone.",
+    "cta": {
+      "label": "Get early access",
+      "href": "#get-started"
+    }
+  }
+}
