@@ -43,24 +43,24 @@ export default function AdminLayout({
   const { user, loading, role, kycStatus, isAdmin } = useAuth();
   const router = useRouter();
 
-  // AUTH BYPASSED FOR DEV — re-enable before production
-  // useEffect(() => {
-  //   if (!loading && !user) {
-  //     router.push("/auth/login");
-  //   }
-  // }, [user, loading, router]);
+  // Auth guard enabled for production/staging/live auth
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth/login");
+    }
+  }, [user, loading, router]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex min-h-screen items-center justify-center bg-black">
-  //       <div className="text-muted">Loading...</div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="text-muted">Loading...</div>
+      </div>
+    );
+  }
 
-  // if (!user) {
-  //   return null;
-  // }
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen">
