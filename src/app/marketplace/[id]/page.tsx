@@ -16,16 +16,54 @@ export default async function CampaignDetailPage({ params }: Props) {
   const { id } = await params;
   let hlt: any = null;
 
-  try {
-    // Fetch dynamic HLT by ID, resolving horse, trainer, owner references
-    hlt = await getHltById(id, true);
-  } catch (err: any) {
-    console.error(`Failed to fetch HLT ${id}:`, err.message);
-    notFound();
-  }
+  const MOCK_HLT = {
+    id: id || "mock-hlt-id",
+    status: "published",
+    shares_total: 100,
+    shares_sold: 23,
+    share_price_cents: 150000,
+    fractional_interest_per_share: 1.0,
+    leasehold_stake_percentage: 100,
+    lease_period_months: 36,
+    lease_start_date: "2026-07-01",
+    investor_return_percentage: 80,
+    horse_microchip: "982000123456789",
+    horse: {
+      name: "Prudentia",
+      age: 3,
+      sex: "Mare",
+      colour: "Bay",
+      sire_name: "Proisir (AUS)",
+      dam_name: "Prudent (NZ)",
+      image_url: "/updates/prudentia_te_rapa_may30.jpg",
+      story: "Prudentia is a high-potential 3-year-old filly with exceptional speed and a strong pedigree. Currently training under top preparation routines at Matamata, she has targets set for spring stakes."
+    },
+    trainer: {
+      name: "Mark Walker",
+      stable_name: "Te Akau Racing",
+      location: "Matamata, NZ",
+      nztr_license_number: "LIC-12345"
+    },
+    owner: {
+      name: "Evolution Stables"
+    }
+  };
 
-  if (!hlt) {
-    notFound();
+  const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+
+  if (isBypass) {
+    hlt = MOCK_HLT;
+  } else {
+    try {
+      // Fetch dynamic HLT by ID, resolving horse, trainer, owner references
+      hlt = await getHltById(id, true);
+    } catch (err: any) {
+      console.error(`Failed to fetch HLT ${id}:`, err.message);
+      notFound();
+    }
+    if (!hlt) {
+      notFound();
+    }
   }
 
   const horse = hlt.horse;

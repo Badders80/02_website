@@ -95,11 +95,17 @@ export default {
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",
+        "bolt-shimmer": "boltShimmer 4s ease-in-out infinite",
         "fade-in": "fadeIn 0.8s ease-out",
       },
       keyframes: {
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        boltShimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "20%": { backgroundPosition: "200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
         fadeIn: {

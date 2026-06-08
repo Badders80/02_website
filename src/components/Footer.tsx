@@ -4,12 +4,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import footerData from "@/dna/content/footer.json";
 
-export function Footer() {
+interface FooterProps {
+  minimal?: boolean;
+}
+
+export function Footer({ minimal = false }: FooterProps) {
   const [displayText, setDisplayText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
 
   // TypeWriter effect for "Has Arrived"
   useEffect(() => {
+    if (minimal) return;
     const text = footerData.tagline.typewriter;
     let index = 0;
     const typingDelay = setTimeout(() => {
@@ -25,40 +30,45 @@ export function Footer() {
     }, 500);
 
     return () => clearTimeout(typingDelay);
-  }, []);
+  }, [minimal]);
 
   // Cursor blink
   useEffect(() => {
+    if (minimal) return;
     const cursorInterval = setInterval(() => {
       setShowCursor((prev) => !prev);
     }, 530);
     return () => clearInterval(cursorInterval);
-  }, []);
+  }, [minimal]);
 
   return (
     <footer className="relative bg-black overflow-hidden">
       <div className="mx-auto flex max-w-6xl flex-col px-8 pt-16 pb-12 md:px-16 md:pt-24 md:pb-16">
         {/* Hero Tagline - Centerpiece */}
-        <div className="flex flex-col items-center justify-center text-center py-16 md:py-24 animate-fade-in">
-          <div className="max-w-4xl space-y-8">
-            <div className="flex flex-col items-center gap-2">
-              <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-white tracking-tight">
-                The Future of{" "}
-                <span className="text-gold">Ownership</span>
-              </h2>
-              <div className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-white">
-                {displayText}
-                <span className={`${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`}>|</span>
+        {!minimal && (
+          <div className="flex flex-col items-center justify-center text-center py-16 md:py-24 animate-fade-in">
+            <div className="max-w-4xl space-y-8">
+              <div className="flex flex-col items-center gap-2">
+                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-white tracking-tight">
+                  The Future of{" "}
+                  <span className="text-gold">Ownership</span>
+                </h2>
+                <div className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-white">
+                  {displayText}
+                  <span className={`${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`}>|</span>
+                </div>
               </div>
+              <p className="text-sm md:text-base font-light text-gray-400">
+                {footerData.tagline.subtitle}
+              </p>
             </div>
-            <p className="text-sm md:text-base font-light text-gray-400">
-              {footerData.tagline.subtitle}
-            </p>
           </div>
-        </div>
+        )}
 
         {/* Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
+        {!minimal && (
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
+        )}
 
         {/* Bottom Section - Footer Bar */}
         <div className="flex flex-col gap-6 text-xs text-muted md:flex-row md:justify-between md:items-center">

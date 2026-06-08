@@ -83,8 +83,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-NZ" className={cn("font-sans", geist.variable, geistMono.variable)}>
-      <body className="min-h-screen bg-black text-foreground antialiased relative">
+    <html lang="en-NZ" className={cn("font-sans", geist.variable, geistMono.variable)} suppressHydrationWarning>
+      <body className="min-h-screen bg-black text-foreground antialiased relative" suppressHydrationWarning>
         <SmoothScrollProvider>
           <AuthProvider>{children}</AuthProvider>
         </SmoothScrollProvider>

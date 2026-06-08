@@ -33,6 +33,15 @@
           },
           "races": [
             {
+              "date": "2026-05-30",
+              "venue": "Te Rapa",
+              "race": "Roy & Pam Browne Sprint (BM75, 1200m)",
+              "trackCondition": "Soft",
+              "jockey": "Masa Hashizume",
+              "result": "5th",
+              "margin": "1.8L"
+            },
+            {
               "date": "2026-04-17",
               "venue": "Te Rapa",
               "race": "Race 7 (BM65, 1300m)",

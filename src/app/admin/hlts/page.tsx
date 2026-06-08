@@ -45,6 +45,7 @@ export default function HLTsListPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     horse_microchip: "",
@@ -60,6 +61,60 @@ export default function HLTsListPage() {
     share_price_cents: 10000,
     currency: "NZD" as "NZD",
   });
+
+  const handleTransition = async (hltId: string, newStatus: string) => {
+    setProcessingId(hltId);
+    setError(null);
+    try {
+      const res = await fetch(`/api/ssot/hlts/${hltId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to update status");
+      }
+
+      // Refresh list
+      const updatedres = await fetch("/api/ssot/hlts");
+      const updated = await updatedres.json();
+      setHlts(updated.hlts || []);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleGenerateDocs = async (hltId: string) => {
+    setProcessingId(hltId);
+    setError(null);
+    try {
+      const docTypes = ["term-sheet", "pds", "sa"];
+      for (const docType of docTypes) {
+        const res = await fetch(`/api/ssot/docs/${docType}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hlt_id: hltId }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({ error: `Failed to generate ${docType}` }));
+          throw new Error(data.error || `Failed to generate ${docType}`);
+        }
+      }
+
+      // Refresh list
+      const updatedres = await fetch("/api/ssot/hlts");
+      const updated = await updatedres.json();
+      setHlts(updated.hlts || []);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
 
   useEffect(() => {
     Promise.all([
@@ -124,6 +179,67 @@ export default function HLTsListPage() {
       key: "lease",
       header: "Lease",
       render: (hlt: HLT) => `${hlt.lease_period_months} months`,
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      render: (hlt: HLT) => {
+        const isProcessing = processingId === hlt.id;
+        const docsGenerated = hlt.documents?.term_sheet?.gcs_url && hlt.documents?.pds?.gcs_url && hlt.documents?.sa?.gcs_url;
+
+        return (
+          <div className="flex items-center gap-3">
+            {hlt.status === "draft" && (
+              <AdminButton
+                size="sm"
+                onClick={() => handleTransition(hlt.id, "reviewed")}
+                isLoading={isProcessing}
+              >
+                Mark Reviewed
+              </AdminButton>
+            )}
+            {hlt.status === "reviewed" && (
+              <>
+                {!docsGenerated ? (
+                  <AdminButton
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => handleGenerateDocs(hlt.id)}
+                    isLoading={isProcessing}
+                  >
+                    Generate Legal Docs
+                  </AdminButton>
+                ) : (
+                  <AdminButton
+                    size="sm"
+                    onClick={() => handleTransition(hlt.id, "publish_ready")}
+                    isLoading={isProcessing}
+                  >
+                    Mark Publish Ready
+                  </AdminButton>
+                )}
+              </>
+            )}
+            {hlt.status === "publish_ready" && (
+              <AdminButton
+                size="sm"
+                onClick={() => handleTransition(hlt.id, "published")}
+                isLoading={isProcessing}
+              >
+                Publish to Marketplace
+              </AdminButton>
+            )}
+            {hlt.status === "published" && (
+              <span className="text-xs text-muted">Published & Active</span>
+            )}
+            {docsGenerated && (
+              <span className="text-xs text-success-text font-medium" title="Term Sheet, PDS, SA available">
+                ✓ Docs OK
+              </span>
+            )}
+          </div>
+        );
+      },
     },
   ];
 

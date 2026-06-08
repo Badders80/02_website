@@ -62,6 +62,49 @@ export default function MyStablePage() {
   const [loadingData, setLoadingData] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const MOCK_HOLDING: HoldingRecord = {
+    id: "mock-holding-1",
+    hlt_id: "mock-hlt-id",
+    horse_microchip: "982000123456789",
+    shares_owned: 1,
+    percentage_owned: 1.0,
+    purchase_price_cents: 150000,
+    status: "paid",
+    created_at: new Date().toISOString(),
+  };
+
+  const MOCK_CAMPAIGN: Campaign = {
+    id: "mock-hlt-id",
+    shares_total: 100,
+    share_price_cents: 150000,
+    horse_microchip: "982000123456789",
+    horse: {
+      name: "Prudentia",
+      age: 3,
+      sex: "Mare",
+      colour: "Bay",
+      sire_name: "Proisir (AUS)",
+      dam_name: "Prudent (NZ)",
+      image_url: "/updates/prudentia_te_rapa_may30.jpg"
+    },
+    trainer: {
+      name: "Mark Walker",
+      stable_name: "Te Akau Racing",
+      location: "Matamata, NZ"
+    }
+  };
+
+  const MOCK_UPDATE: ContentUpdate = {
+    id: "mock-update-1",
+    content_type: "text",
+    horse_microchip: "982000123456789",
+    title: "Morning gallop on the sand",
+    content_date: "2026-06-08",
+    full_text: "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Mark Walker reported she was relaxed and hit the line with plenty in reserve.",
+    status: "published",
+    horse_name: "Prudentia"
+  };
+
   useEffect(() => {
     if (authLoading || !user) return;
 
@@ -69,49 +112,70 @@ export default function MyStablePage() {
       setLoadingData(true);
       setErrorMsg("");
       try {
-        // 1. Fetch user's holdings
-        const holdingsData = await getHoldings(user.uid);
-        const activeHoldings = (holdingsData || []).filter((h: any) => h.status === "paid");
-        setHoldings(activeHoldings);
+        let activeHoldings: HoldingRecord[] = [];
+        const hltMap: Record<string, Campaign> = {};
+        const allUpdates: ContentUpdate[] = [];
 
-        if (activeHoldings.length > 0) {
-          // 2. Fetch all resolved HLTs to map details
-          const hltList = await getHlts({ resolve: true });
-          const hltMap: Record<string, Campaign> = {};
-          hltList.forEach((hlt: Campaign) => {
-            hltMap[hlt.id] = hlt;
-          });
-          setCampaigns(hltMap);
+        const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
 
-          // 3. Fetch campaign updates for owned horses
-          const allUpdates: ContentUpdate[] = [];
-          for (const holding of activeHoldings) {
-            const horseHlt = hltMap[holding.hlt_id];
-            const horseName = horseHlt?.horse?.name || "Racehorse";
-            
-            try {
-              const horseUpdates = await getContent({
-                horse_microchip: holding.horse_microchip,
-                status: "published",
-              });
-              
-              if (horseUpdates && horseUpdates.length > 0) {
-                horseUpdates.forEach((up: any) => {
-                  allUpdates.push({
-                    ...up,
-                    horse_name: horseName,
-                  });
-                });
-              }
-            } catch (err) {
-              console.warn(`Failed to fetch updates for horse ${holding.horse_microchip}:`, err);
-            }
+        if (isBypass) {
+          activeHoldings = [MOCK_HOLDING];
+          hltMap["mock-hlt-id"] = MOCK_CAMPAIGN;
+          allUpdates.push(MOCK_UPDATE);
+        } else {
+          try {
+            // 1. Fetch user's holdings
+            const holdingsData = await getHoldings(user.uid);
+            activeHoldings = (holdingsData || []).filter((h: any) => h.status === "paid");
+          } catch (err) {
+            console.error("Failed to fetch live holdings:", err);
+            throw err;
           }
 
-          // Sort updates by date descending
-          allUpdates.sort((a, b) => new Date(b.content_date).getTime() - new Date(a.content_date).getTime());
-          setUpdates(allUpdates);
+          if (activeHoldings.length > 0) {
+            try {
+              // 2. Fetch all resolved HLTs to map details
+              const hltList = await getHlts({ resolve: true });
+              hltList.forEach((hlt: Campaign) => {
+                hltMap[hlt.id] = hlt;
+              });
+            } catch (err) {
+              console.error("Failed to fetch live HLTs:", err);
+              throw err;
+            }
+
+            // 3. Fetch campaign updates for owned horses
+            for (const holding of activeHoldings) {
+              const horseHlt = hltMap[holding.hlt_id];
+              const horseName = horseHlt?.horse?.name || "Racehorse";
+              
+              try {
+                const horseUpdates = await getContent({
+                  horse_microchip: holding.horse_microchip,
+                  status: "published",
+                });
+                
+                if (horseUpdates && horseUpdates.length > 0) {
+                  horseUpdates.forEach((up: any) => {
+                    allUpdates.push({
+                      ...up,
+                      horse_name: horseName,
+                    });
+                  });
+                }
+              } catch (err) {
+                console.warn(`Failed to fetch updates for horse ${holding.horse_microchip}:`, err);
+              }
+            }
+          }
         }
+
+        setHoldings(activeHoldings);
+        setCampaigns(hltMap);
+        
+        // Sort updates by date descending
+        allUpdates.sort((a, b) => new Date(b.content_date).getTime() - new Date(a.content_date).getTime());
+        setUpdates(allUpdates);
       } catch (err: any) {
         console.error("Dashboard loading error:", err);
         setErrorMsg("Failed to load dashboard statistics. Please refresh the page.");
@@ -324,14 +388,14 @@ export default function MyStablePage() {
                 {/* Total Value */}
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-1">
                   <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Total Valuation</p>
-                  <p className="text-[28px] font-light text-white">${totalValueNzd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} NZD</p>
+                  <p className="text-[28px] font-light text-white">${totalValueNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
                   <p className="text-xs text-[#21B981] font-light">+8.2% ROI (indicative)</p>
                 </div>
-
+ 
                 {/* Total Returns */}
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-1">
                   <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Stakes Earnings</p>
-                  <p className="text-[28px] font-light text-[#21B981]">${indicativeReturnsNzd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} NZD</p>
+                  <p className="text-[28px] font-light text-[#21B981]">${indicativeReturnsNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
                   <p className="text-xs text-white/30 font-light">Accumulating prize dividends</p>
                 </div>
 

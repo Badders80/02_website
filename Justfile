@@ -25,3 +25,8 @@ task-done id:
 # Create a sprint markdown file from task IDs
 sprint-start name *tasks:
     @python3 ../_taskmaster/sprint_start.py "--tasks={{tasks}}" "{{name}}"
+
+# Launch the interactive Dev Portal and Control Tower
+task-web:
+    @python3 ../_taskmaster/server.py
+

@@ -40,15 +40,45 @@ export default async function MarketplacePage() {
   let campaigns: Campaign[] = [];
   let errorMsg = "";
 
-  try {
-    // Fetch published or publish-ready HLTs, resolving references (horse, trainer, owner)
-    const data = await getHlts({ resolve: true });
-    campaigns = (data || []).filter(
-      (c: any) => c.status === "published" || c.status === "publish_ready"
-    );
-  } catch (err: any) {
-    console.error("Failed to fetch campaigns for marketplace:", err.message);
-    errorMsg = "Unable to load active campaigns at the moment. Please try again shortly.";
+  const MOCK_HLT: Campaign = {
+    id: "mock-hlt-id",
+    status: "published",
+    shares_total: 100,
+    shares_sold: 23,
+    share_price_cents: 150000,
+    fractional_interest_per_share: 1.0,
+    horse_microchip: "982000123456789",
+    horse: {
+      name: "Prudentia",
+      age: 3,
+      sex: "Mare",
+      colour: "Bay",
+      sire_name: "Proisir (AUS)",
+      dam_name: "Prudent (NZ)",
+      image_url: "/updates/prudentia_te_rapa_may30.jpg"
+    },
+    trainer: {
+      name: "Mark Walker",
+      stable_name: "Te Akau Racing",
+      location: "Matamata, NZ"
+    }
+  };
+
+  const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+
+  if (isBypass) {
+    campaigns = [MOCK_HLT];
+  } else {
+    try {
+      // Fetch published or publish-ready HLTs, resolving references (horse, trainer, owner)
+      const data = await getHlts({ resolve: true });
+      campaigns = (data || []).filter(
+        (c: any) => c.status === "published" || c.status === "publish_ready"
+      );
+    } catch (err: any) {
+      console.error("Failed to fetch campaigns for marketplace:", err.message);
+      errorMsg = "Unable to load active campaigns at the moment. Please try again shortly.";
+    }
   }
 
   return (

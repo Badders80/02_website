@@ -44,7 +44,7 @@ export async function createHorse(data: HorseCreatePayload) {
 }
 
 export async function extractFromLoveracing(url: string) {
-  return apiCall("/extract", {
+  return apiCall("/ssot/extract", {
     method: "POST",
     body: JSON.stringify({ url }),
   });

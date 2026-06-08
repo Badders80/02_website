@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import { usePurchaseFlow } from "@/lib/usePurchaseFlow";
 
 interface HltData {
   id: string;
@@ -24,15 +24,12 @@ interface PurchaseFormProps {
 
 export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
   const { user, kycStatus, loading } = useAuth();
-  const router = useRouter();
+  const { purchase, isRedirecting, errorMsg } = usePurchaseFlow();
 
   const [sharesToBuy, setSharesToBuy] = useState(1);
   const [checkedPds, setCheckedPds] = useState(false);
   const [checkedSa, setCheckedSa] = useState(false);
   const [checkedTermSheet, setCheckedTermSheet] = useState(false);
-  
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
   const sharesAvailable = hlt.shares_total - hlt.shares_sold;
   const pricePerShareNzd = hlt.share_price_cents / 100;
@@ -46,64 +43,13 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
     return hlt.documents?.[docType]?.gcs_url || "#";
   };
 
-  const handleAction = async () => {
-    if (loading) return;
-
-    if (!user) {
-      // Gate 1: Login required
-      router.push(`/auth/login?redirect=/marketplace/${hlt.id}`);
-      return;
-    }
-
-    if (kycStatus !== "verified") {
-      // Gate 2: KYC required
-      router.push("/auth/verify");
-      return;
-    }
-
-    if (!allDocumentsChecked) {
-      setErrorMsg("Please read and accept all three legal documents before purchasing.");
-      return;
-    }
-
-    if (sharesToBuy <= 0 || sharesToBuy > sharesAvailable) {
-      setErrorMsg(`Please select a quantity between 1 and ${sharesAvailable}.`);
-      return;
-    }
-
-    setIsRedirecting(true);
-    setErrorMsg("");
-
-    try {
-      // Call local Next.js proxy route to create Stripe checkout session
-      const res = await fetch("/api/checkout/create-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user.uid,
-          hlt_id: hlt.id,
-          shares_to_buy: sharesToBuy,
-          bypass_kyc: true, // Allow test mode bypass for dev purposes
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: `Checkout error: ${res.status}` }));
-        throw new Error(errorData.error || `Checkout failed: ${res.status}`);
-      }
-
-      const data = await res.json();
-      if (data.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
-      } else {
-        throw new Error("Stripe checkout URL not returned");
-      }
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || "Failed to start checkout. Please try again.");
-      setIsRedirecting(false);
-    }
+  const handleAction = () => {
+    purchase({
+      hltId: hlt.id,
+      sharesToBuy,
+      allDocumentsChecked,
+      sharesAvailable,
+    });
   };
 
   const getButtonText = () => {
