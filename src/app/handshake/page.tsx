@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getAuthToken } from "@/lib/auth-token";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE ||
@@ -33,9 +34,13 @@ async function pingEndpoint(
 ): Promise<{ ms: number; data: unknown; error: string | null }> {
   const start = performance.now();
   try {
+    const token = await getAuthToken();
     const res = await fetch(`${API_BASE}${path}`, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
     const ms = Math.round(performance.now() - start);
