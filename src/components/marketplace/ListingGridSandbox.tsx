@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 interface Campaign {
   id: string;
@@ -327,6 +328,48 @@ function InteractiveCard({
     }
   }, [mousePos, isInside, hoverEffect]);
 
+  // KYC Apply to Own handler
+  const handleApplyToOwn = async (hltId: string, horseName: string) => {
+    try {
+      const auth = getAuth();
+      let user = auth.currentUser;
+      if (!user) {
+        const cred = await signInAnonymously(auth);
+        user = cred.user;
+      }
+      const token = await user.getIdToken();
+
+      const res = await fetch("/api/kyc/create-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_id: user.uid,
+          email: user.email || "",
+          hlt_id: hltId,
+          horse_name: horseName,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "KYC failed" }));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+
+      const { url } = await res.json();
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error("No verification URL returned");
+      }
+    } catch (err: any) {
+      console.error("KYC Apply failed:", err);
+      alert(`Failed to start KYC: ${err.message}`);
+    }
+  };
+
   // Dynamic Styles
   const cardStyles = {
     transform: hoverEffect === "parallax" && isInside 
@@ -473,7 +516,7 @@ function InteractiveCard({
             </div>
           </div>
 
-          <div className="pt-6">
+          <div className="pt-6 flex items-center gap-4">
             <Link
               href={getDetailPath(camp.id)}
               className={`inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase ${activeAccent.text} hover:text-white transition-colors duration-300`}
@@ -481,6 +524,15 @@ function InteractiveCard({
               <span>Explore Offering</span>
               <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
+            {camp.is_active && (
+              <button
+                type="button"
+                onClick={() => handleApplyToOwn(camp.id, camp.horse.name)}
+                className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-full transition-all duration-300"
+              >
+                Apply to Own
+              </button>
+            )}
           </div>
         </div>
       </div>

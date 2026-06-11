@@ -44,6 +44,10 @@ const nextConfig: NextConfig = {
         source: "/api/assets/:path*",
         destination: `${assetsTarget}/:path*`,
       },
+      {
+        source: "/api/kyc/:path*",
+        destination: `${apiBase}/kyc/:path*`,
+      },
     ];
   },
 };
