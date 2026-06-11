@@ -49,7 +49,7 @@ export function HowItWorksSection() {
           {cards.map((card, index) => (
             <div
               key={index}
-              className="group relative bg-white/[0.02] border border-white/[0.08] rounded-lg p-10 transition-all duration-700 ease-out hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer overflow-hidden"
+              className="group relative bg-white/[0.02] border border-white/[0.08] masked-border glass-streak rounded-lg p-10 transition-all duration-700 ease-out hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer overflow-hidden"
             >
               {/* Soft linear gradient sweep on hover */}
               <div

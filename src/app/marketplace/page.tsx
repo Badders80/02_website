@@ -1,8 +1,7 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { getHlts } from "@/lib/api";
-import Image from "next/image";
-import Link from "next/link";
+import { ListingGrid } from "@/components/marketplace/ListingGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -14,203 +13,165 @@ export const metadata = {
 
 interface Campaign {
   id: string;
-  status: string;
-  shares_total: number;
-  shares_sold: number;
-  share_price_cents: number;
-  fractional_interest_per_share?: number;
-  horse_microchip: string;
-  horse?: {
+  location: string;
+  pedigree: string;
+  price: string;
+  availability: string;
+  is_active: boolean;
+  horse: {
     name: string;
-    age?: number;
-    sex: string;
-    colour?: string;
-    sire_name?: string;
-    dam_name?: string;
-    image_url?: string;
+    image_url: string;
+    story: string;
   };
-  trainer?: {
-    name: string;
-    stable_name: string;
-    location: string;
+  stats: {
+    wins: string;
+    placed: string;
+    nextUp: string;
   };
 }
 
 export default async function MarketplacePage() {
-  let campaigns: Campaign[] = [];
-  let errorMsg = "";
-
-  const MOCK_HLT: Campaign = {
-    id: "mock-hlt-id",
-    status: "published",
-    shares_total: 100,
-    shares_sold: 23,
-    share_price_cents: 150000,
-    fractional_interest_per_share: 1.0,
-    horse_microchip: "982000123456789",
-    horse: {
-      name: "Prudentia",
-      age: 3,
-      sex: "Mare",
-      colour: "Bay",
-      sire_name: "Proisir (AUS)",
-      dam_name: "Prudent (NZ)",
-      image_url: "/updates/prudentia_te_rapa_may30.jpg"
+  // Define 4 premium campaigns using the Asymmetric Row specifications
+  const MOCK_CAMPAIGNS: Campaign[] = [
+    {
+      id: "prudentia",
+      location: "MATAMATA · WEXFORD STABLES",
+      pedigree: "Mare / Bay / Proisir (AUS) x Little Bit Irish (NZ)",
+      price: "$1,500 NZD",
+      availability: "77 / 100 Left",
+      is_active: true,
+      horse: {
+        name: "Prudentia",
+        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/2a02e2f0-ead0-4abf-abca-0b2c84eb1107.JPG",
+        story: "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
+      },
+      stats: {
+        wins: "2",
+        placed: "4",
+        nextUp: "23 June",
+      },
     },
-    trainer: {
-      name: "Mark Walker",
-      stable_name: "Te Akau Racing",
-      location: "Matamata, NZ"
-    }
-  };
+    {
+      id: "hottathanafantasy",
+      location: "MATAMATA · WEXFORD STABLES",
+      pedigree: "Filly / Bay / Contributer x Whiffle",
+      price: "$1,500 NZD",
+      availability: "100 / 100 Left",
+      is_active: false,
+      horse: {
+        name: "Hottathanafantasy",
+        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/ecff499a-445a-4cf0-a746-29e763e5ec4c/5caf253b-5ed3-485a-a8ba-4e14cf8ecb73.JPG?format=750w",
+        story: "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
+      },
+      stats: {
+        wins: "0",
+        placed: "0",
+        nextUp: "TBD",
+      },
+    },
+    {
+      id: "first-gear",
+      location: "PALMERSTON NORTH · COPPER BELT LODGE",
+      pedigree: "Gelding / Bay / Derryn x A'Guin Ace",
+      price: "$1,500 NZD",
+      availability: "100 / 100 Left",
+      is_active: false,
+      horse: {
+        name: "First Gear",
+        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/0f8455e5-6ae4-4524-9ced-43115c3d966b.png",
+        story: "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
+      },
+      stats: {
+        wins: "0",
+        placed: "0",
+        nextUp: "TBD",
+      },
+    },
+    {
+      id: "i-stole-a-manolo",
+      location: "MATAMATA · WEXFORD STABLES",
+      pedigree: "Filly / Bay / Satono Aladdin x Canuhandleajandal",
+      price: "$1,500 NZD",
+      availability: "100 / 100 Left",
+      is_active: false,
+      horse: {
+        name: "I Stole A Manolo",
+        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/24dba76b-c802-4d2a-9257-9b73eb5c28f7/IMG_7126.jpg?format=750w",
+        story: "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
+      },
+      stats: {
+        wins: "0",
+        placed: "0",
+        nextUp: "Trial (Sep)",
+      },
+    },
+  ];
 
+  let campaigns: Campaign[] = [];
   const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
 
   if (isBypass) {
-    campaigns = [MOCK_HLT];
+    campaigns = MOCK_CAMPAIGNS;
   } else {
     try {
-      // Fetch published or publish-ready HLTs, resolving references (horse, trainer, owner)
       const data = await getHlts({ resolve: true });
-      campaigns = (data || []).filter(
-        (c: any) => c.status === "published" || c.status === "publish_ready"
+      const active = (data || []).filter(
+        (c: any) => c.status === "published" || c.status === "publish_ready" || c.status === "reviewed"
       );
+      if (active && active.length > 0) {
+        // Map dynamic records to Asymmetric Row format
+        campaigns = active.map((c: any) => {
+          const mockMatch = MOCK_CAMPAIGNS.find((m) => m.id === c.id);
+          return {
+            id: c.id,
+            location: mockMatch?.location || (c.trainer ? `${c.trainer.location.toUpperCase()} · ${c.trainer.stable_name.toUpperCase()}` : "MATAMATA · WEXFORD STABLES"),
+            pedigree: mockMatch?.pedigree || `${c.horse?.sex || "Horse"} / ${c.horse?.colour || "Bay"} / ${c.horse?.sire_name || "Sire"} x ${c.horse?.dam_name || "Dam"}`,
+            price: mockMatch?.price || `$${((c.share_price_cents || 150000) / 100).toLocaleString()} NZD`,
+            availability: mockMatch?.availability || `${c.shares_total - c.shares_sold} / ${c.shares_total} Left`,
+            is_active: c.status === "published" || c.status === "publish_ready",
+            horse: {
+              name: c.horse?.name || "Thoroughbred",
+              image_url: c.horse?.image_url || mockMatch?.horse.image_url || "https://storage.googleapis.com/tokinvest-ds-bucket/offering/2a02e2f0-ead0-4abf-abca-0b2c84eb1107.JPG",
+              story: c.horse?.story || mockMatch?.horse.story || "",
+            },
+            stats: {
+              wins: mockMatch?.stats?.wins || "0",
+              placed: mockMatch?.stats?.placed || "0",
+              nextUp: mockMatch?.stats?.nextUp || "TBD"
+            }
+          };
+        });
+      } else {
+        campaigns = MOCK_CAMPAIGNS;
+      }
     } catch (err: any) {
       console.error("Failed to fetch campaigns for marketplace:", err.message);
-      errorMsg = "Unable to load active campaigns at the moment. Please try again shortly.";
+      campaigns = MOCK_CAMPAIGNS;
     }
   }
 
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground font-sans">
-        {/* Hero / Header */}
-        <section className="pt-32 pb-16 px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto">
-          <p className="text-[11px] font-medium tracking-[0.28em] uppercase text-white/30 mb-8">
+      <main className="min-h-screen bg-black text-foreground font-sans selection:bg-white/10 selection:text-white">
+        {/* Hero Header Section */}
+        <section className="pt-40 pb-16 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-6">
             Evolution Stables
           </p>
-          <h1 className="text-[36px] md:text-[56px] font-light tracking-tight text-white mb-6 leading-tight">
-            Active Campaigns
+          <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6 leading-[1.1]">
+            Marketplace
           </h1>
-          <p className="text-[16px] leading-[1.85] font-light text-white/50 max-w-2xl">
+          <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
             Explore native digital syndications currently open for ownership. 
             Acquire a fraction of elite bloodstock, backed by legally binding leases, and track your stable's performance directly on-site.
           </p>
         </section>
 
-        {/* Listings Grid */}
-        <section className="px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto pb-32">
-          {errorMsg ? (
-            <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-6 text-center">
-              <p className="text-sm font-light text-red-400">{errorMsg}</p>
-            </div>
-          ) : campaigns.length === 0 ? (
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-12 text-center">
-              <p className="text-lg font-light text-white/60 mb-2">No active campaigns</p>
-              <p className="text-sm font-light text-white/30 max-w-md mx-auto">
-                All campaigns are currently fully syndicated or in pre-training. Sign up to receive notifications when new campaigns launch.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {campaigns.map((camp) => {
-                const horse = camp.horse;
-                const trainer = camp.trainer;
-                const sharesAvailable = camp.shares_total - camp.shares_sold;
-                const percentPerShare = camp.fractional_interest_per_share || (100.0 / camp.shares_total);
-                const sharePriceNzd = camp.share_price_cents / 100;
-                
-                return (
-                  <article
-                    key={camp.id}
-                    className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04]"
-                  >
-                    {/* Image Header */}
-                    <div className="relative aspect-[16/10] bg-zinc-900 overflow-hidden border-b border-white/[0.06]">
-                      {horse?.image_url ? (
-                        <Image
-                          src={horse.image_url}
-                          alt={horse.name}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center text-white/20 text-xs font-light">
-                          Photo incoming
-                        </div>
-                      )}
-                      
-                      {/* Status Badges */}
-                      <div className="absolute top-4 left-4 flex gap-2">
-                        {sharesAvailable > 0 ? (
-                          <span className="rounded-full bg-emerald-500/15 border border-emerald-500/25 px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-emerald-400">
-                            Accepting Owners
-                          </span>
-                        ) : (
-                          <span className="rounded-full bg-white/10 border border-white/5 px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-white/50">
-                            Sold Out
-                          </span>
-                        )}
-                        <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-0.5 text-[9px] font-light uppercase tracking-wider text-white/70">
-                          {percentPerShare}% Stake units
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Content Details */}
-                    <div className="p-8 space-y-6">
-                      <div>
-                        <h3 className="text-[21px] font-medium tracking-tight text-white mb-2">
-                          {horse?.name || "Unknown Horse"}
-                        </h3>
-                        <p className="text-[13px] font-light text-white/40">
-                          {horse?.age ? `${horse.age}-Year-Old` : "Age unknown"} · {horse?.sex || "Unknown sex"} · {horse?.sire_name || "Unknown sire"} / {horse?.dam_name || "Unknown dam"}
-                        </p>
-                      </div>
-
-                      {/* Stats Grid */}
-                      <div className="grid grid-cols-3 gap-4 border-y border-white/[0.06] py-4">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-wider text-white/30 mb-1">Unit Price</p>
-                          <p className="text-[15px] font-medium text-[#d4a964]">${sharePriceNzd.toLocaleString()} NZD</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] uppercase tracking-wider text-white/30 mb-1">Available</p>
-                          <p className="text-[15px] font-medium text-white">{sharesAvailable} / {camp.shares_total}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] uppercase tracking-wider text-white/30 mb-1">Trainer</p>
-                          <p className="text-[15px] font-medium text-white truncate max-w-[120px]" title={trainer?.name}>
-                            {trainer?.name || "Unassigned"}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="text-[11px] font-light text-white/40">
-                          {trainer?.stable_name || trainer?.location || "Matamata, NZ"}
-                        </span>
-                        <Link
-                          href={`/marketplace/${camp.id}`}
-                          className="inline-flex items-center gap-1 text-[11px] font-light tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors"
-                        >
-                          View Campaign
-                          <svg className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                          </svg>
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </section>
+        {/* Dynamic Listing Grid Component */}
+        <ListingGrid initialCampaigns={campaigns} isSandbox={false} />
       </main>
-      <Footer />
+      <Footer minimal={true} />
     </>
   );
 }

@@ -21,7 +21,7 @@ export function PressShowcaseSection() {
     articles.find(
       (article) =>
         article.url ===
-        '/updates/prudentia_update_02june2026_email.html'
+        '/updates/prudentia_update_10june2026_email.html'
     ) ?? articles[0];
 
   const remainingArticles =

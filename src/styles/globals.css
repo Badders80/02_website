@@ -116,12 +116,32 @@ h1, h2, h3, h4, h5, h6 {
   100% { opacity: 1; }
 }
 
+@keyframes borderShimmer {
+  0% { translate: -150% 0; }
+  100% { translate: 250% 0; }
+}
+
+@keyframes textWave {
+  0% { translate: -100% 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { translate: 100% 0; opacity: 0; }
+}
+
 .animate-shimmer {
   animation: shimmer 2s linear infinite;
 }
 
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out;
+}
+
+.animate-border-shimmer {
+  animation: borderShimmer 6s infinite linear;
+}
+
+.animate-text-wave {
+  animation: textWave 3s infinite ease-in-out;
 }
 
 /* Hero entrance animations (replacing framer-motion) */

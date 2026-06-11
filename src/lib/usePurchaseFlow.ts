@@ -32,10 +32,7 @@ export function usePurchaseFlow() {
       return;
     }
 
-    if (!allDocumentsChecked) {
-      setErrorMsg("Please read and accept all three legal documents before purchasing.");
-      return;
-    }
+
 
     if (sharesToBuy <= 0 || sharesToBuy > sharesAvailable) {
       setErrorMsg(`Please select a quantity between 1 and ${sharesAvailable}.`);

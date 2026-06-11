@@ -38,7 +38,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Proisir (AUS)",
         dam_name: "Little Bit Irish (NZ)",
-        image_url: "/updates/prudentia_te_rapa_may30.jpg",
+        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/2a02e2f0-ead0-4abf-abca-0b2c84eb1107.JPG",
         story: `Prudentia is a New Zealand-bred four-year-old mare by Proisir. Trained from Matamata by Lance O'Sullivan and Andrew Scott at Wexford Stables, she has already recorded a maiden victory and performed across a range of distances and track conditions.
 
         Her win came over 1400 metres at Tauranga, where she handled testing Heavy conditions to score decisively. Since breaking her maiden, she has stepped into Rating 65 Benchmark company, continuing her preparation against stronger opposition.
@@ -90,7 +90,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Contributer",
         dam_name: "Whiffle",
-        image_url: "/images/marketplace/hottathanafantasy.jpg",
+        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/ecff499a-445a-4cf0-a746-29e763e5ec4c/5caf253b-5ed3-485a-a8ba-4e14cf8ecb73.JPG?format=750w",
         story: `A promising two-year-old with an elite international pedigree. Currently in her first racing preparation at Wexford Stables under Lance O'Sullivan.
         
         She shows the physical traits of a high-performance athlete ready to make her mark on the New Zealand turf. Pedigree analysis points to middle-distance strength in future campaigns.`,
@@ -134,7 +134,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Derryn",
         dam_name: "A'Guin Ace",
-        image_url: "/images/marketplace/first-gear.png",
+        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/0f8455e5-6ae4-4524-9ced-43115c3d966b.png",
         story: `Early race success with $20K+ in prizemoney and international buyer interest. Trained by Group 1-winning horseman Stephen Gray at Copper Belt Lodge.
         
         In just five starts he has recorded a win, two placings, and over $20,000 in prizemoney — including turning down a recent six-figure offer from Australian interests.`,
@@ -181,7 +181,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Satono Aladdin",
         dam_name: "Canuhandleajandal",
-        image_url: "/images/marketplace/i-stole-a-manolo.jpg",
+        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/24dba76b-c802-4d2a-9257-9b73eb5c28f7/IMG_7126.jpg?format=750w",
         story: `Daughter of Group 1 winner Satono Aladdin with real presence and correct action. In early racing education at Wexford Stables with Lance O'Sullivan & Andrew Scott.
         
         She is being carefully prepared to follow in the footsteps of the stable's many Group 1 champions on the turf.`,

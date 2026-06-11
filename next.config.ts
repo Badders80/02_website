@@ -2,7 +2,24 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.evolutionstables.nz",
+      },
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.squarespace-cdn.com",
+      },
+    ],
   },
   async rewrites() {
     const apiBase = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";

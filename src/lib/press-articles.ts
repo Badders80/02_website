@@ -9,6 +9,14 @@ export interface PressArticle {
 
 export const pressArticles: PressArticle[] = [
   {
+    title: 'Tauranga Target: Prudentia Pivots Campaign',
+    url: '/updates/prudentia_update_10june2026_email.html',
+    publisher: 'Evolution Stables',
+    date: '2026-06-10',
+    excerpt: "A minor foot issue has prompted the stable to withdraw Prudentia from this Saturday's engagement. She will continue low-impact swimming work to protect her feet before targeting a Benchmark 75 event at Tauranga on 27 June.",
+    imageUrl: '/updates/prudentia_te_rapa_may30.jpg',
+  },
+  {
     title: 'Te Rapa Review: Prudentia Finishes Tenaciously',
     url: '/updates/prudentia_update_02june2026_email.html',
     publisher: 'Evolution Stables',
