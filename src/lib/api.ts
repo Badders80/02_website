@@ -9,20 +9,30 @@
  * All API calls include a Firebase ID token in the Authorization header.
  * The token is obtained from anonymous sign-in (public browsing) or the
  * current authenticated user.
+ * 
+ * When targeting Cloud Functions (production), calls are routed through
+ * the Next.js API proxy (/api/proxy/...) which adds GCP identity tokens
+ * via Workload Identity Federation.
  */
 
 import { getAuthToken } from "./auth-token";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";
+const IS_CLOUD_FUNCTION = API_BASE.includes("cloudfunctions.net");
 
 async function apiCall(endpoint: string, options?: RequestInit) {
   // Get auth token (anonymous sign-in if no user)
   const token = await getAuthToken();
 
-  const res = await fetch(`${API_BASE}${endpoint}`, {
+  // Route through Next.js proxy for Cloud Functions (adds GCP identity token)
+  const url = IS_CLOUD_FUNCTION
+    ? `/api/proxy${endpoint}`
+    : `${API_BASE}${endpoint}`;
+
+  const res = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(token ? { "x-firebase-token": token } : {}),
       ...options?.headers,
     },
     ...options,

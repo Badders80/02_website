@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { execSync } from 'child_process';
+import { getGcpIdentityToken } from '@/lib/gcp-auth';
 
 const KYC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082';
 
@@ -16,16 +16,10 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'application/json',
     };
 
-    // If calling the deployed Cloud Function, obtain a local gcloud identity token
-    if (KYC_API_BASE.includes('cloudfunctions.net')) {
-      try {
-        const token = execSync('gcloud auth print-identity-token', { encoding: 'utf-8' }).trim();
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-      } catch (err: any) {
-        console.warn('Failed to obtain gcloud identity token:', err.message);
-      }
+    // Get GCP identity token (WIF on Vercel, gcloud on local dev)
+    const token = await getGcpIdentityToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     const response = await fetch(`${KYC_API_BASE}/create-session`, {
