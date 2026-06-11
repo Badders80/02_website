@@ -17,9 +17,15 @@ export async function POST(request: NextRequest) {
     };
 
     // Get GCP identity token (WIF on Vercel, gcloud on local dev)
-    const token = await getGcpIdentityToken();
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    const gcpToken = await getGcpIdentityToken();
+    if (gcpToken) {
+      headers['Authorization'] = `Bearer ${gcpToken}`;
+    }
+
+    // Forward Firebase user token from the browser request
+    const firebaseToken = request.headers.get('x-firebase-token');
+    if (firebaseToken) {
+      headers['X-Firebase-Token'] = firebaseToken;
     }
 
     const response = await fetch(`${KYC_API_BASE}/create-session`, {
