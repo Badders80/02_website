@@ -5,14 +5,24 @@
  * - SSOT API: https://australia-southeast1-evolution-engine.cloudfunctions.net/ssot
  * - Assets API: https://australia-southeast1-evolution-engine.cloudfunctions.net/assets
  * - KYC API: https://australia-southeast1-evolution-engine.cloudfunctions.net/kyc
+ * 
+ * All API calls include a Firebase ID token in the Authorization header.
+ * The token is obtained from anonymous sign-in (public browsing) or the
+ * current authenticated user.
  */
+
+import { getAuthToken } from "./auth-token";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";
 
 async function apiCall(endpoint: string, options?: RequestInit) {
+  // Get auth token (anonymous sign-in if no user)
+  const token = await getAuthToken();
+
   const res = await fetch(`${API_BASE}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
     },
     ...options,
@@ -111,8 +121,12 @@ export async function getContent(params?: { horse_microchip?: string; content_ty
 // ─── Assets API ────────────────────────────────────────────────────────────────
 
 export async function uploadAsset(formData: FormData) {
+  const token = await getAuthToken();
   const res = await fetch(`${API_BASE}/assets/upload`, {
     method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: formData,
   });
 
@@ -134,9 +148,13 @@ export async function retrieveAssets(entityType?: string, entityId?: string) {
 // ─── KYC API ──────────────────────────────────────────────────────────────────
 
 export async function createKYCSession(userId: string, email?: string) {
+  const token = await getAuthToken();
   const res = await fetch("/api/kyc/create-session", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ user_id: userId, email }),
   });
 
