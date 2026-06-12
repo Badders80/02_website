@@ -5,7 +5,7 @@ import { getAuthToken } from "@/lib/auth-token";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE ||
-  "https://australia-southeast1-evolution-engine.cloudfunctions.net";
+  "https://evolution-api-proxy-851430309148.australia-southeast1.run.app";
 
 interface EndpointResult {
   label: string;
