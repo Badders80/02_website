@@ -141,3 +141,4 @@ NEXT_PUBLIC_FIREBASE_CONFIG={"apiKey":"...","authDomain":"...","projectId":"evol
 **Secrets live in backend:**
 - `STRIPE_SECRET_KEY` → `01_evolution/api/.env.api.yaml`
 - `STRIPE_WEBHOOK_SECRET` → `01_evolution/api/.env.api.yaml`
+ 
