@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { getHltById } from "@/lib/api";
 import { PurchaseFormSandbox } from "@/components/marketplace/PurchaseFormSandbox";
 import { DetailTabsSandbox } from "@/components/marketplace/DetailTabsSandbox";
+import { ApplyForm } from "@/components/marketplace/ApplyForm";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -362,6 +363,9 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
 
               {/* Client Purchase Card (Sandbox Isolated Component) */}
               <PurchaseFormSandbox hlt={hlt} horseName={horse?.name || "Racehorse"} />
+
+              {/* Apply for Ownership (Simple Application) */}
+              <ApplyForm hltId={hlt.id} horseName={horse?.name || "Racehorse"} />
             </div>
           </div>
         </div>

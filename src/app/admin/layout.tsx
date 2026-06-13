@@ -109,6 +109,12 @@ export default function AdminLayout({
           >
             📄 HLTs
           </Link>
+          <Link
+            href="/admin/applications"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-white/[0.04] hover:text-foreground"
+          >
+            📝 Applications
+          </Link>
 
           <div className="mb-2 mt-6 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted">
             Content

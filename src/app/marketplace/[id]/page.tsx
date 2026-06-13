@@ -2,6 +2,7 @@ import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { getHltById } from "@/lib/api";
 import { PurchaseForm } from "@/components/marketplace/PurchaseForm";
+import { ApplyForm } from "@/components/marketplace/ApplyForm";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -375,6 +376,9 @@ export default async function CampaignDetailPage({ params }: Props) {
 
               {/* Section G: The Purchase Widget */}
               <PurchaseForm hlt={hlt} horseName={horse?.name || "Racehorse"} />
+
+              {/* Section H: Apply for Ownership (Simple Application) */}
+              <ApplyForm hltId={hlt.id} horseName={horse?.name || "Racehorse"} />
             </div>
 
           </div>
