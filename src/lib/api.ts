@@ -5,14 +5,16 @@
  * - SSOT API: https://australia-southeast1-evolution-engine.cloudfunctions.net/ssot
  * - Assets API: https://australia-southeast1-evolution-engine.cloudfunctions.net/assets
  * - KYC API: https://australia-southeast1-evolution-engine.cloudfunctions.net/kyc
+ * - Applications API: https://australia-southeast1-evolution-engine.cloudfunctions.net/applications
  * 
  * All API calls include a Firebase ID token in the Authorization header.
  * The token is obtained from anonymous sign-in (public browsing) or the
  * current authenticated user.
  * 
  * When targeting Cloud Functions (production), calls are routed through
- * the Next.js API proxy (/api/proxy/...) which adds GCP identity tokens
- * via Workload Identity Federation.
+ * the Next.js API proxy (/api/proxy/...) which forwards to the Cloud Run proxy,
+ * since Cloud Functions have org-policy restrictions on direct public access.
+ * The Cloud Run proxy authenticates as the website-api@ service account.
  */
 
 import { getAuthToken } from "./auth-token";
@@ -24,7 +26,7 @@ async function apiCall(endpoint: string, options?: RequestInit) {
   // Get auth token (anonymous sign-in if no user)
   const token = await getAuthToken();
 
-  // Route through Next.js proxy for Cloud Functions (adds GCP identity token)
+  // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
   const url = IS_CLOUD_FUNCTION
     ? `/api/proxy${endpoint}`
     : `${API_BASE}${endpoint}`;
