@@ -40,12 +40,17 @@ export default function LoginPage() {
     setGoogleLoading(true);
     setError(null);
     try {
+      // Check if Firebase auth is initialized
+      if (!auth || !(auth as any)._getRecaptchaConfig) {
+        throw new Error("Firebase authentication is not configured. Please contact support.");
+      }
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       // User is signed in - Firebase will handle the redirect via auth context
       router.push("/mystable");
     } catch (err: any) {
-      setError(err.message || "Google sign-in failed");
+      console.error("[Google Sign-In] Error:", err);
+      setError(err.message || "Google sign-in failed. Please try email sign-in.");
     } finally {
       setGoogleLoading(false);
     }
