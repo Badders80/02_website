@@ -1,7 +1,6 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { LOGOS } from '@/lib/assets';
 import { GlowPillButton } from '@/components/ui/GlowPillButton';
@@ -28,6 +27,7 @@ const navLinks = [
  * - Responsive mobile menu
  */
 export function NavBar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -139,8 +139,7 @@ export function NavBar() {
         <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:flex-1 lg:justify-end lg:gap-4">
           <GlowPillButton
             onClick={() => {
-              const el = document.getElementById('about');
-              el?.scrollIntoView({ behavior: 'smooth' });
+              router.push('/auth/login');
             }}
             wrapperClassName="hidden lg:block"
           >
@@ -189,8 +188,7 @@ export function NavBar() {
             <div className="space-y-3 pt-6 border-t border-white/[0.05] mt-4">
               <button
                 onClick={() => {
-                  const el = document.getElementById('about');
-                  el?.scrollIntoView({ behavior: 'smooth' });
+                  router.push('/auth/login');
                   setIsMenuOpen(false);
                 }}
                 className="w-full block rounded-full bg-gradient-to-b from-primary via-primary to-primary/90 px-4 py-3 text-center text-label uppercase text-black font-medium transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,169,100,0.3)] hover:brightness-110 active:scale-[0.98]"
