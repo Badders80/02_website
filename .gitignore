@@ -22,3 +22,5 @@ tsconfig.tsbuildinfo
 .DS_Store
 .vscode/
 Thumbs.db
+.vercel
+.env*.local
