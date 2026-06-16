@@ -41,16 +41,6 @@ export function HeroSection({
           className="object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: 0.35 }} />
-        {overlay && (
-          <div
-            className="fixed inset-0"
-            style={{
-              height: '100vh',
-              background: 'linear-gradient(to bottom, rgba(9,9,11,0.7) 0%, rgba(9,9,11,0.7) 20%, rgba(9,9,11,0.3) 40%, transparent 50%)',
-              pointerEvents: 'none',
-            }}
-          />
-        )}
       </motion.div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-start gap-4 px-8 pb-16 md:px-12">

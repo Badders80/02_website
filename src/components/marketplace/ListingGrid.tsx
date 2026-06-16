@@ -38,7 +38,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
   });
 
   const getDetailPath = (id: string) => {
-    return isSandbox ? `/marketplace-sandbox/${id}` : `/marketplace/${id}`;
+    return isSandbox ? `/sandbox/marketplace/${id}` : `/marketplace/${id}`;
   };
 
   const showFeatured = filter !== "subscribed" && filteredCampaigns.some((c) => c.is_active);

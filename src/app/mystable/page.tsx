@@ -233,27 +233,27 @@ export default function MyStablePage() {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground font-sans pt-32 pb-24">
+      <main className="min-h-screen bg-black text-foreground font-sans selection:bg-white/10 selection:text-white">
         {/* Header */}
-        <section className="px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto mb-12">
-          <p className="text-[11px] font-medium tracking-[0.28em] uppercase text-white/30 mb-8">
+        <section className="pt-40 pb-16 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-6">
             Evolution Stables
           </p>
-          <h1 className="text-[36px] md:text-[56px] font-light tracking-tight text-white mb-6 leading-tight">
+          <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6 leading-[1.1]">
             MyStable
           </h1>
-          <p className="text-[16px] leading-[1.85] font-light text-white/50 max-w-2xl">
+          <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
             Welcome, <span className="text-white font-normal">{user.email}</span>. This is your personal dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking morning preparations.
           </p>
         </section>
 
         {/* KYC Verification Banner */}
-        <div className="px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto mb-8">
+        <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
           <KycBanner />
         </div>
 
         {/* Dashboard Grid */}
-        <section className="px-6 sm:px-10 lg:px-12 max-w-6xl mx-auto">
+        <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
           {errorMsg && (
             <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-6 mb-8 text-center text-sm font-light text-red-400">
               {errorMsg}

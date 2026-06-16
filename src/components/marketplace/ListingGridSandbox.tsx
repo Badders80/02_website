@@ -45,7 +45,7 @@ export function ListingGridSandbox({ initialCampaigns }: ListingGridSandboxProps
   });
 
   const getDetailPath = (id: string) => {
-    return `/marketplace-sandbox/${id}`;
+    return `/sandbox/marketplace/${id}`;
   };
 
   const accentColors = {

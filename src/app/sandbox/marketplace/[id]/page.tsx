@@ -262,7 +262,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
         <div className="mx-auto max-w-6xl px-12 md:px-16 lg:px-20">
           {/* Breadcrumb (Luxury layout spacing) */}
           <div className="mb-10 flex items-center gap-2 text-[10px] uppercase tracking-wider text-white/30">
-            <Link href="/marketplace-sandbox" className="hover:text-white/60 transition duration-300">
+            <Link href="/sandbox/marketplace" className="hover:text-white/60 transition duration-300">
               Marketplace
             </Link>
             <span>/</span>

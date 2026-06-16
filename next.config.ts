@@ -50,6 +50,25 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/marketplace-sandbox",
+        destination: "/sandbox/marketplace",
+        permanent: true,
+      },
+      {
+        source: "/marketplace-sandbox/:id",
+        destination: "/sandbox/marketplace/:id",
+        permanent: true,
+      },
+      {
+        source: "/mystable-sandbox",
+        destination: "/sandbox/mystable",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -246,7 +246,7 @@ function MyStableDashboardContent() {
               </p>
             </div>
             <Link
-              href="/auth/login?redirect=/mystable-sandbox"
+              href="/auth/login?redirect=/sandbox/mystable"
               className="block w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-widest bg-white text-black hover:bg-white/90 transition-all duration-300"
             >
               Sign In to Your Stable
@@ -317,7 +317,7 @@ function MyStableDashboardContent() {
                 You haven't acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey.
               </p>
               <Link
-                href="/marketplace-sandbox"
+                href="/sandbox/marketplace"
                 className="inline-block rounded-full bg-white text-black px-8 py-3 text-[10px] font-medium uppercase tracking-widest hover:bg-white/90 transition-colors"
               >
                 Go to Marketplace
@@ -452,7 +452,7 @@ function MyStableDashboardContent() {
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
                   <p className="text-[10px] font-light tracking-wider uppercase text-white/30">Registry Actions</p>
                   <div className="space-y-3 text-xs font-light text-white/50">
-                    <Link href="/marketplace-sandbox" className="block hover:text-white transition duration-300">
+                    <Link href="/sandbox/marketplace" className="block hover:text-white transition duration-300">
                       Browse Open Campaigns →
                     </Link>
                     <a href="/docs/sa" className="block hover:text-white transition duration-300">

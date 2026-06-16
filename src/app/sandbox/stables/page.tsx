@@ -16,7 +16,7 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-export default function StablesPage() {
+export default function SandboxStablesPage() {
   return (
     <>
       <NavBar />
@@ -112,7 +112,7 @@ export default function StablesPage() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       {stable.horse.campaign.status === "open" && (
                         <Link
-                          href={`/marketplace/${stable.id}`}
+                          href={`/sandbox/marketplace/${stable.id}`}
                           className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-[11px] font-medium uppercase tracking-wider bg-white text-black hover:bg-white/90 transition-colors"
                         >
                           Buy stake natively
