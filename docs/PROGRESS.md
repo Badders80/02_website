@@ -9,17 +9,17 @@
 ## Local Status
 
 **Current Phase:** 🟢 Phase 5 — Ownership Application System (Complete)  
-**Last Updated:** 2026-06-12  
+**Last Updated:** 2026-06-17  
 
 **Phase 0:** ✅ Complete — Asset extraction (~40 images in public/images/)  
 **Phase 1:** ✅ Complete — Content extraction (faq.json, press.json, footer.json)  
 **Phase 2:** ✅ Complete — Press & Marketplace sections & pages  
-**Phase 3:** ✅ Complete — SEO + deployment (Vercel live at evolution.2.0)  
+**Phase 3:** ✅ Complete — SEO + deployment (Vercel live)  
 **Phase 4:** ✅ Complete — Backend integration (WIF infra ready)  
 **Phase 5:** 🟢 Complete — Ownership Application System (email notifications, admin dashboard)
 
 **Total Files:** ~60 source files  
-**Blockers:** 2 (Cloud Function deployment, Email notification implementation)
+**Blockers:** 1 (Organization policy blocking public Cloud Function access)
 
 ---
 
@@ -32,16 +32,17 @@
 | 2026-05-22 | Marketplace Section & Prototype | ✅ Complete | [logs/2026-05-22.md](logs/2026-05-22.md) |
 | 2026-06-11 | GCP Auth Blocker & WIF Infrastructure | ✅ Complete | [logs/2026-06-11.md](logs/2026-06-11.md) |
 | 2026-06-12 | Ownership Application System | ✅ Complete | [logs/2026-06-12.md](logs/2026-06-12.md) |
+| 2026-06-17 | Go Live Deployment | ✅ Complete | [logs/2026-06-17.md](logs/2026-06-17.md) |
 
 ---
 
 ## What's Next
 
-**Priority 1 — 🔴 BLOCKER:** Deploy Cloud Function
-- Run deployment command in `api/applications/`
-- Verify function is active and accessible
+**Priority 1 — 🟡 BLOCKER:** Organization Policy for Cloud Function
+- Function deployed but requires authentication
+- Options: (1) Use WIF auth from frontend, (2) Request org policy exception, (3) Grant Vercel OIDC SA access
 
-**Priority 2 — 🔴 BLOCKER:** Implement Email Notifications
+**Priority 2 — 🟡 BLOCKER:** Implement Email Notifications
 - Choose email provider (Gmail API, SendGrid, etc.)
 - Implement actual email sending
 - Test email delivery

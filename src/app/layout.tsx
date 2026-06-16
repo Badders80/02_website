@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
-import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -103,9 +102,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-black text-foreground antialiased relative" suppressHydrationWarning>
         <SmoothScrollProvider>
-          <NextAuthProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </NextAuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </SmoothScrollProvider>
       </body>
     </html>

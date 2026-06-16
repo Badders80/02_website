@@ -4,20 +4,20 @@ import Link from "next/link";
 import { FooterBar } from "@/components/site/Footer";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
 export default function VerificationPage() {
-  const { data: session } = useSession();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const handleVerifyIdentity = async () => {
-    if (!session) {
+    if (!user) {
       setError("Please sign in to verify your identity");
       return;
     }
@@ -53,6 +53,16 @@ export default function VerificationPage() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <main className="min-h-screen bg-background pt-28 text-mp-text-primary md:pt-36">
+        <div className="mx-auto max-w-2xl px-6 pb-24 md:px-10">
+          <p className="text-sm text-mp-text-secondary">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-background pt-28 text-mp-text-primary md:pt-36">
       <div className="mx-auto max-w-2xl space-y-8 px-6 pb-24 md:px-10">
@@ -70,7 +80,7 @@ export default function VerificationPage() {
           </p>
         </header>
 
-        {!session ? (
+        {!user ? (
           <div className="rounded-2xl border border-mp-border-prominent bg-mp-surface-card p-6">
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
