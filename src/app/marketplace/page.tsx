@@ -42,7 +42,7 @@ export default async function MarketplacePage() {
       is_active: true,
       horse: {
         name: "Prudentia",
-        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/2a02e2f0-ead0-4abf-abca-0b2c84eb1107.JPG",
+        image_url: "/images/stables/prudentia-action.png",
         story: "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
       },
       stats: {
