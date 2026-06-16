@@ -4,6 +4,10 @@ import { AuthProvider } from "@/lib/auth-context";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { FAQStructuredData } from "@/components/seo/FAQStructuredData";
+import { getPressArticlesForStructuredData } from "@/lib/press-articles";
+import { faqItems } from "@/lib/faq-items";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
@@ -11,20 +15,25 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 export const metadata: Metadata = {
   metadataBase: new URL("https://evolutionstables.nz"),
   title: {
-    default: "Evolution Stables - Digital Racehorse Ownership",
+    default: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
     template: "%s | Evolution Stables",
   },
   description:
-    "Own racehorses through digital-syndication. Evolution Stables makes elite thoroughbred racehorse ownership accessible, transparent, and connected for local fans.",
+    "Own racehorses through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset (RWA) investing powered by Tokinvest and blockchain technology.",
   keywords: [
     "racehorse ownership",
     "digital syndication",
+    "tokenized assets",
+    "real world assets",
+    "RWA",
+    "blockchain racing",
     "fractional ownership",
     "New Zealand racing",
     "NZTR",
+    "Tokinvest",
+    "Singularry",
     "regulated investment",
     "horse racing investment",
-    "syndicate horses",
   ],
   authors: [{ name: "Evolution Stables" }],
   creator: "Evolution Stables",
@@ -34,9 +43,9 @@ export const metadata: Metadata = {
     locale: "en_NZ",
     url: "https://evolutionstables.nz",
     siteName: "Evolution Stables",
-    title: "Evolution Stables - Digital Racehorse Ownership",
+    title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
     description:
-      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
+      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid through blockchain innovation.",
     images: [
       {
         url: "/images/Logo-Gold-Favicon.png",
@@ -50,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@EvolutionStables",
     creator: "@EvolutionStables",
-    title: "Evolution Stables - Digital Racehorse Ownership",
+    title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
     description:
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
   },
@@ -70,6 +79,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export const viewport = {
@@ -84,6 +96,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-NZ" className={cn("font-sans", geist.variable, geistMono.variable)} suppressHydrationWarning>
+      <head>
+        <StructuredData pressArticles={getPressArticlesForStructuredData()} />
+        <FAQStructuredData items={faqItems} />
+      </head>
       <body className="min-h-screen bg-black text-foreground antialiased relative" suppressHydrationWarning>
         <SmoothScrollProvider>
           <AuthProvider>{children}</AuthProvider>
