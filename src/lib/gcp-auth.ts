@@ -30,7 +30,7 @@ const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
  * The OIDC token is automatically resolved from the active request context
  * via next/headers — no manual extraction needed in route handlers.
  */
-export async function getGcpIdentityToken(): Promise<string | null> {
+export async function getGcpIdentityToken(oidcToken?: string | null): Promise<string | null> {
   // Return cached token if still fresh
   if (cachedToken && Date.now() < tokenExpiry - TOKEN_REFRESH_MARGIN_MS) {
     return cachedToken;
@@ -39,7 +39,7 @@ export async function getGcpIdentityToken(): Promise<string | null> {
   try {
     // Vercel production: use WIF OIDC
     if (process.env.VERCEL) {
-      const token = await getWifToken();
+      const token = await getWifToken(oidcToken);
       if (token) {
         cachedToken = token;
         // WIF tokens typically last 1 hour
@@ -76,10 +76,10 @@ export async function getGcpIdentityToken(): Promise<string | null> {
  *   2. VERCEL_OIDC_TOKEN env var (legacy / local dev pull)
  *   3. ACTIONS_ID_TOKEN_REQUEST_URL + TOKEN (GitHub Actions)
  */
-async function getWifToken(): Promise<string | null> {
+async function getWifToken(oidcToken?: string | null): Promise<string | null> {
   try {
     // Resolve OIDC token from multiple possible sources
-    let resolvedToken: string | null = null;
+    let resolvedToken: string | null = oidcToken || null;
 
     // Source 1: Extract automatically from active request headers via next/headers
     if (!resolvedToken) {
