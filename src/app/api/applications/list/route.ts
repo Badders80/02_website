@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGcpIdentityToken } from '@/lib/gcp-auth';
 
-const APPLICATIONS_API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082';
+const APPLICATIONS_API_BASE = `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082'}/applications`;
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,7 +11,8 @@ export async function GET(request: NextRequest) {
 
     // Get GCP identity token (WIF on Vercel, gcloud on local dev)
     // Auto-resolved from x-vercel-oidc-token request header via next/headers
-    const audience = process.env.NEXT_PUBLIC_API_BASE || 'https://australia-southeast1-evolution-engine.cloudfunctions.net';
+    const baseApi = process.env.NEXT_PUBLIC_API_BASE || 'https://australia-southeast1-evolution-engine.cloudfunctions.net';
+    const audience = `${baseApi}/applications`;
     const gcpToken = await getGcpIdentityToken(null, audience);
     if (gcpToken) {
       headers['Authorization'] = `Bearer ${gcpToken}`;
