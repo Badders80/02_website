@@ -63,45 +63,50 @@ export async function getGcpIdentityToken(): Promise<string | null> {
 /**
  * Get a token via Workload Identity Federation (Vercel OIDC).
  *
- * Vercel provides OIDC tokens at runtime via:
- *   ACTIONS_ID_TOKEN_REQUEST_URL  — the URL to fetch the OIDC token
- *   ACTIONS_ID_TOKEN_REQUEST_TOKEN — bearer token to authenticate the request
+ * Vercel provides OIDC tokens via two mechanisms:
+ *   1. VERCEL_OIDC_TOKEN — injected directly in Vercel Functions (serverless)
+ *   2. ACTIONS_ID_TOKEN_REQUEST_URL + ACTIONS_ID_TOKEN_REQUEST_TOKEN — GitHub Actions
  *
- * Flow: Fetch OIDC token → Exchange with GCP STS → Exchange for SA identity token
+ * Flow: Get OIDC token → Exchange with GCP STS → Exchange for SA identity token
  */
 async function getWifToken(): Promise<string | null> {
   try {
-    // Vercel provides OIDC tokens via ACTIONS_ID_TOKEN_REQUEST_URL + ACTIONS_ID_TOKEN_REQUEST_TOKEN
-    const oidcTokenUrl = process.env.ACTIONS_ID_TOKEN_REQUEST_URL;
-    const oidcTokenBearer = process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
+    let oidcToken: string | null = null;
 
-    if (!oidcTokenUrl || !oidcTokenBearer) {
+    // Method 1: Vercel Functions — token injected directly as env var
+    if (process.env.VERCEL_OIDC_TOKEN) {
+      oidcToken = process.env.VERCEL_OIDC_TOKEN;
+    }
+
+    // Method 2: GitHub Actions — fetch token from Vercel's OIDC broker
+    if (!oidcToken && process.env.ACTIONS_ID_TOKEN_REQUEST_URL && process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
+      const oidcRes = await fetch(
+        `${process.env.ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.googleapis.com`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}`,
+          },
+        }
+      );
+
+      if (!oidcRes.ok) {
+        const err = await oidcRes.text();
+        throw new Error(`OIDC token fetch failed (${oidcRes.status}): ${err}`);
+      }
+
+      const oidcData = await oidcRes.json();
+      oidcToken = oidcData.value;
+    }
+
+    if (!oidcToken) {
       console.warn(
-        "ACTIONS_ID_TOKEN_REQUEST_URL/TOKEN not set — WIF auth unavailable. " +
+        "No OIDC token available — WIF auth unavailable. " +
         "Ensure OIDC is enabled in Vercel project settings → Security → OpenID Connect."
       );
       return null;
     }
 
-    // Step 1: Fetch the OIDC token from Vercel's identity broker
-    const oidcRes = await fetch(`${oidcTokenUrl}&audience=sts.googleapis.com`, {
-      headers: {
-        Authorization: `Bearer ${oidcTokenBearer}`,
-      },
-    });
-
-    if (!oidcRes.ok) {
-      const err = await oidcRes.text();
-      throw new Error(`OIDC token fetch failed (${oidcRes.status}): ${err}`);
-    }
-
-    const oidcData = await oidcRes.json();
-    const oidcToken = oidcData.value;
-    if (!oidcToken) {
-      throw new Error("OIDC token response missing 'value' field");
-    }
-
-    // Step 2: Exchange OIDC token for GCP federated access token
+    // Exchange OIDC token for GCP federated access token
     const stsRes = await fetch("https://sts.googleapis.com/v1/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -126,7 +131,7 @@ async function getWifToken(): Promise<string | null> {
       throw new Error("STS response missing 'access_token'");
     }
 
-    // Step 3: Exchange access token for service account identity token
+    // Exchange access token for service account identity token
     const idRes = await fetch(
       `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${SERVICE_ACCOUNT}:generateIdToken`,
       {
