@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGcpIdentityToken } from '@/lib/gcp-auth';
 
-const KYC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082';
+const KYC_API_BASE = `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082'}/kyc`;
 
 export async function POST(request: NextRequest) {
   try {
