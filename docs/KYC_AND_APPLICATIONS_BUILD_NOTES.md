@@ -57,3 +57,14 @@ This document captures the architectural insights, troubleshooting notes, and re
   STORAGE_BUCKET_DOCS: evolution-horse-docs
   ALLOWED_ORIGINS: <comma_separated_origins>
   ```
+
+---
+
+## 5. Live Mode Transition (2026-06-17)
+
+### Live Credentials Applied
+* **Live Publishable Key:** `pk_live_51TLJdLJ2fl0Q0SxY7XCRx8lNnD3I1h6OlVYhOehhH5kxhrnx4N3jONMAqAMnmGJmyk3z8dmml9is85g45rc54M7Q00wBkDfCYp`
+* **Live Secret Key:** `rk_live_...` (Restricted Key configured in GCP KYC Function and Vercel)
+* **Live Webhook Endpoint:** Registered at Stripe for `https://australia-southeast1-evolution-engine.cloudfunctions.net/kyc/webhook`.
+* **Live Webhook Secret:** `whsec_...` (Signature secret configured in GCP KYC Function and Vercel)
+
