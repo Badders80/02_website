@@ -45,8 +45,8 @@ async function handleProxy(request: NextRequest) {
     };
 
     // Get GCP identity token via WIF (Vercel OIDC → GCP STS → SA identity token)
-    const oidcToken = request.headers.get("x-vercel-oidc-token");
-    const gcpToken = await getGcpIdentityToken(oidcToken);
+    // Auto-resolved from x-vercel-oidc-token request header via next/headers
+    const gcpToken = await getGcpIdentityToken();
     if (gcpToken) {
       headers["Authorization"] = `Bearer ${gcpToken}`;
     }

@@ -5,16 +5,17 @@
  *
  * - On Vercel (production): Uses Workload Identity Federation (OIDC)
  *   The OIDC token is injected by Vercel as the x-vercel-oidc-token request header.
- *   API routes must pass it to getGcpIdentityToken().
+ *   Automatically resolved via next/headers — no manual extraction needed.
  * - On local dev: Uses gcloud auth print-identity-token
  *
  * The token is cached and auto-refreshed before expiry.
  */
 
 import { execSync } from "child_process";
+import { headers } from "next/headers";
 
 const WIF_POOL = "projects/851430309148/locations/global/workloadIdentityPools/vercel-pool";
-const WIF_PROVIDER = "vercel-oidc";
+const WIF_PROVIDER = "vercel-oidc-team";
 const SERVICE_ACCOUNT = "website-api@evolution-engine.iam.gserviceaccount.com";
 const AUDIENCE = "https://australia-southeast1-evolution-engine.cloudfunctions.net";
 
@@ -24,11 +25,12 @@ const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
 
 /**
  * Get a GCP identity token for calling Cloud Functions.
+ * Uses WIF on Vercel, gcloud CLI on local dev.
  *
- * @param oidcToken - Vercel OIDC token from x-vercel-oidc-token request header.
- *   Required on Vercel production. Not needed for local dev.
+ * The OIDC token is automatically resolved from the active request context
+ * via next/headers — no manual extraction needed in route handlers.
  */
-export async function getGcpIdentityToken(oidcToken?: string | null): Promise<string | null> {
+export async function getGcpIdentityToken(): Promise<string | null> {
   // Return cached token if still fresh
   if (cachedToken && Date.now() < tokenExpiry - TOKEN_REFRESH_MARGIN_MS) {
     return cachedToken;
@@ -37,7 +39,7 @@ export async function getGcpIdentityToken(oidcToken?: string | null): Promise<st
   try {
     // Vercel production: use WIF OIDC
     if (process.env.VERCEL) {
-      const token = await getWifToken(oidcToken);
+      const token = await getWifToken();
       if (token) {
         cachedToken = token;
         // WIF tokens typically last 1 hour
@@ -69,21 +71,33 @@ export async function getGcpIdentityToken(oidcToken?: string | null): Promise<st
  *
  * Flow: OIDC token → GCP STS (federated access token) → IAM (SA identity token)
  *
- * @param oidcToken - The Vercel OIDC JWT from x-vercel-oidc-token header.
- *   If not provided, falls back to VERCEL_OIDC_TOKEN env var and
- *   ACTIONS_ID_TOKEN_REQUEST_URL (GitHub Actions).
+ * Resolves the OIDC token from (in order):
+ *   1. next/headers — active request context (Vercel serverless functions)
+ *   2. VERCEL_OIDC_TOKEN env var (legacy / local dev pull)
+ *   3. ACTIONS_ID_TOKEN_REQUEST_URL + TOKEN (GitHub Actions)
  */
-async function getWifToken(oidcToken?: string | null): Promise<string | null> {
+async function getWifToken(): Promise<string | null> {
   try {
     // Resolve OIDC token from multiple possible sources
-    let resolvedToken: string | null = oidcToken || null;
+    let resolvedToken: string | null = null;
 
-    // Fallback 1: Vercel Functions — token injected as env var (legacy)
+    // Source 1: Extract automatically from active request headers via next/headers
+    if (!resolvedToken) {
+      try {
+        const headersList = await headers();
+        resolvedToken = headersList.get("x-vercel-oidc-token");
+      } catch {
+        // Safe fallback if called outside of a request context
+        // (e.g., build-time, local dev CLI, or test environment)
+      }
+    }
+
+    // Source 2: Vercel Functions — token injected as env var (legacy)
     if (!resolvedToken && process.env.VERCEL_OIDC_TOKEN) {
       resolvedToken = process.env.VERCEL_OIDC_TOKEN;
     }
 
-    // Fallback 2: GitHub Actions — fetch from Vercel's OIDC broker
+    // Source 3: GitHub Actions — fetch from Vercel's OIDC broker
     if (!resolvedToken && process.env.ACTIONS_ID_TOKEN_REQUEST_URL && process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
       const oidcRes = await fetch(
         `${process.env.ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.googleapis.com`,

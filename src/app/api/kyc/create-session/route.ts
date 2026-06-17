@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
     };
 
     // Get GCP identity token (WIF on Vercel, gcloud on local dev)
-    const oidcToken = request.headers.get('x-vercel-oidc-token');
-    const gcpToken = await getGcpIdentityToken(oidcToken);
+    // Auto-resolved from x-vercel-oidc-token request header via next/headers
+    const gcpToken = await getGcpIdentityToken();
     if (gcpToken) {
       headers['Authorization'] = `Bearer ${gcpToken}`;
     }
