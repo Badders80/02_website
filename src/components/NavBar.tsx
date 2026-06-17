@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { LOGOS } from '@/lib/assets';
 import { GlowPillButton } from '@/components/ui/GlowPillButton';
+import { useAuth } from '@/lib/auth-context';
 
 /**
  * Navigation links configuration
@@ -28,6 +29,7 @@ const navLinks = [
  * - Responsive mobile menu
  */
 export function NavBar() {
+  const { user, signOut, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -135,16 +137,38 @@ export function NavBar() {
           </div>
         </div>
 
-        {/* Right Side Actions: CTA Button, Menu Toggle */}
+        {/* Right Side Actions: User Menu or CTA, Menu Toggle */}
         <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:flex-1 lg:justify-end lg:gap-4">
-          <Link
-            href="/auth/login"
-            className="hidden lg:block"
-          >
-            <GlowPillButton>
-              Get Started
-            </GlowPillButton>
-          </Link>
+          {loading ? (
+            <div className="hidden lg:block h-10 w-32 bg-white/5 rounded-full animate-pulse" />
+          ) : user ? (
+            <div className="hidden lg:flex items-center gap-3">
+              <Link
+                href="/mystable"
+                className="text-sm text-white/80 hover:text-white transition-colors"
+              >
+                MyStable
+              </Link>
+              <button
+                onClick={async () => {
+                  await signOut();
+                  window.location.reload();
+                }}
+                className="text-sm text-white/60 hover:text-white transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="hidden lg:block"
+            >
+              <GlowPillButton>
+                Get Started
+              </GlowPillButton>
+            </Link>
+          )}
 
           {/* Hamburger Menu - Mobile Only */}
           <button
@@ -186,17 +210,43 @@ export function NavBar() {
             ))}
 
             <div className="space-y-3 pt-6 border-t border-white/[0.05] mt-4">
-              <Link
-                href="/auth/login"
-                className="block"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <button
-                  className="w-full rounded-full bg-gradient-to-b from-primary via-primary to-primary/90 px-4 py-3 text-center text-label uppercase text-black font-medium transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,169,100,0.3)] hover:brightness-110 active:scale-[0.98]"
+              {user ? (
+                <>
+                  <Link
+                    href="/mystable"
+                    className="block"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <button
+                      className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-left text-sm text-white font-medium hover:bg-white/[0.08] transition-colors"
+                    >
+                      MyStable
+                    </button>
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      await signOut();
+                      setIsMenuOpen(false);
+                      window.location.reload();
+                    }}
+                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-left text-sm text-white/60 font-medium hover:bg-white/[0.08] hover:text-white transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="block"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  Get Started
-                </button>
-              </Link>
+                  <button
+                    className="w-full rounded-full bg-gradient-to-b from-primary via-primary to-primary/90 px-4 py-3 text-center text-label uppercase text-black font-medium transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,169,100,0.3)] hover:brightness-110 active:scale-[0.98]"
+                  >
+                    Get Started
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
