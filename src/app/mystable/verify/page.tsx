@@ -40,14 +40,14 @@ export default function VerificationPage() {
         throw new Error(data.error || "Failed to create verification session");
       }
 
-      const { clientSecret } = await response.json();
+      const { url } = await response.json();
 
-      if (!clientSecret) {
-        throw new Error("No client secret received");
+      if (!url) {
+        throw new Error("No verification URL received");
       }
 
       // Redirect to Stripe Identity verification page
-      window.location.href = `https://identity.stripe.com/verify/${clientSecret}`;
+      window.location.href = url;
       setSuccess(true);
     } catch (err) {
       console.error("[KYC] Error:", err);
