@@ -17,10 +17,13 @@ import { headers } from "next/headers";
 const WIF_POOL = "projects/851430309148/locations/global/workloadIdentityPools/vercel-pool";
 const WIF_PROVIDER = "vercel-oidc-team";
 const SERVICE_ACCOUNT = "website-api@evolution-engine.iam.gserviceaccount.com";
-const AUDIENCE = "https://evolution-api-proxy-ydhxz42mra-ts.a.run.app";
+const DEFAULT_AUDIENCE = "https://evolution-api-proxy-ydhxz42mra-ts.a.run.app";
 
-let cachedToken: string | null = null;
-let tokenExpiry: number = 0;
+interface CachedToken {
+  token: string;
+  expiry: number;
+}
+const tokenCache: Record<string, CachedToken> = {};
 const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
 
 /**
@@ -29,34 +32,47 @@ const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
  *
  * The OIDC token is automatically resolved from the active request context
  * via next/headers — no manual extraction needed in route handlers.
+ *
+ * @param oidcToken - Vercel OIDC token (optional)
+ * @param targetAudience - Target audience for the GCP ID token (optional)
  */
-export async function getGcpIdentityToken(oidcToken?: string | null): Promise<string | null> {
+export async function getGcpIdentityToken(
+  oidcToken?: string | null,
+  targetAudience?: string
+): Promise<string | null> {
+  const aud = targetAudience || DEFAULT_AUDIENCE;
+
   // Return cached token if still fresh
-  if (cachedToken && Date.now() < tokenExpiry - TOKEN_REFRESH_MARGIN_MS) {
-    return cachedToken;
+  const cached = tokenCache[aud];
+  if (cached && Date.now() < cached.expiry - TOKEN_REFRESH_MARGIN_MS) {
+    return cached.token;
   }
 
   try {
     // Vercel production: use WIF OIDC
     if (process.env.VERCEL) {
-      const token = await getWifToken(oidcToken);
+      const token = await getWifToken(oidcToken, aud);
       if (token) {
-        cachedToken = token;
-        // WIF tokens typically last 1 hour
-        tokenExpiry = Date.now() + 55 * 60 * 1000;
+        tokenCache[aud] = {
+          token,
+          expiry: Date.now() + 55 * 60 * 1000,
+        };
         return token;
       }
     }
 
     // Local dev: use gcloud CLI
-    const token = execSync("gcloud auth print-identity-token", {
+    const audFlag = targetAudience ? `--audiences="${targetAudience}"` : "";
+    const token = execSync(`gcloud auth print-identity-token ${audFlag}`, {
       encoding: "utf-8",
       timeout: 10000,
     }).trim();
 
     if (token) {
-      cachedToken = token;
-      tokenExpiry = Date.now() + 55 * 60 * 1000;
+      tokenCache[aud] = {
+        token,
+        expiry: Date.now() + 55 * 60 * 1000,
+      };
       return token;
     }
   } catch (err: any) {
@@ -76,7 +92,7 @@ export async function getGcpIdentityToken(oidcToken?: string | null): Promise<st
  *   2. VERCEL_OIDC_TOKEN env var (legacy / local dev pull)
  *   3. ACTIONS_ID_TOKEN_REQUEST_URL + TOKEN (GitHub Actions)
  */
-async function getWifToken(oidcToken?: string | null): Promise<string | null> {
+async function getWifToken(oidcToken?: string | null, targetAudience?: string): Promise<string | null> {
   try {
     // Resolve OIDC token from multiple possible sources
     let resolvedToken: string | null = oidcToken || null;
@@ -160,7 +176,7 @@ async function getWifToken(oidcToken?: string | null): Promise<string | null> {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          audience: AUDIENCE,
+          audience: targetAudience || DEFAULT_AUDIENCE,
           includeEmail: true,
         }),
       }
@@ -180,9 +196,10 @@ async function getWifToken(oidcToken?: string | null): Promise<string | null> {
 }
 
 /**
- * Clear the cached token.
+ * Clear the cached tokens.
  */
 export function clearGcpToken(): void {
-  cachedToken = null;
-  tokenExpiry = 0;
+  for (const key in tokenCache) {
+    delete tokenCache[key];
+  }
 }

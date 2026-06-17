@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
 
     // Get GCP identity token (WIF on Vercel, gcloud on local dev)
     // Auto-resolved from x-vercel-oidc-token request header via next/headers
-    const gcpToken = await getGcpIdentityToken();
+    const audience = process.env.NEXT_PUBLIC_API_BASE || 'https://australia-southeast1-evolution-engine.cloudfunctions.net';
+    const gcpToken = await getGcpIdentityToken(null, audience);
     if (gcpToken) {
       headers['Authorization'] = `Bearer ${gcpToken}`;
     }
