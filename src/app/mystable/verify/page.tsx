@@ -26,9 +26,13 @@ export default function VerificationPage() {
     setError(null);
 
     try {
+      const token = await user.getIdToken();
       const response = await fetch("/api/kyc/create-session", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
       });
 
       if (!response.ok) {

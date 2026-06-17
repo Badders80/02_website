@@ -17,7 +17,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Forward Firebase user token from the browser request
-    const firebaseToken = request.headers.get('x-firebase-token');
+    let firebaseToken = request.headers.get('x-firebase-token');
+    if (!firebaseToken) {
+      const authHeader = request.headers.get('authorization') || '';
+      if (authHeader.startsWith('Bearer ')) {
+        firebaseToken = authHeader.split('Bearer ')[1];
+      }
+    }
     if (firebaseToken) {
       headers['X-Firebase-Token'] = firebaseToken;
     }
