@@ -34,9 +34,10 @@ export async function GET(request: NextRequest) {
     ),
   };
 
-  // Try to get a GCP token
+  // Try to get a GCP token using the OIDC token from request header
   const start = Date.now();
-  const token = await getGcpIdentityToken();
+  const oidcToken = request.headers.get("x-vercel-oidc-token");
+  const token = await getGcpIdentityToken(oidcToken);
   results.token_obtained = !!token;
   results.token_preview = token ? `${token.substring(0, 20)}...` : null;
   results.token_ms = Date.now() - start;

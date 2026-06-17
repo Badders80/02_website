@@ -4,6 +4,8 @@
  * Gets identity tokens for calling Cloud Functions.
  *
  * - On Vercel (production): Uses Workload Identity Federation (OIDC)
+ *   The OIDC token is injected by Vercel as the x-vercel-oidc-token request header.
+ *   API routes must pass it to getGcpIdentityToken().
  * - On local dev: Uses gcloud auth print-identity-token
  *
  * The token is cached and auto-refreshed before expiry.
@@ -22,9 +24,11 @@ const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
 
 /**
  * Get a GCP identity token for calling Cloud Functions.
- * Uses WIF on Vercel, gcloud CLI on local dev.
+ *
+ * @param oidcToken - Vercel OIDC token from x-vercel-oidc-token request header.
+ *   Required on Vercel production. Not needed for local dev.
  */
-export async function getGcpIdentityToken(): Promise<string | null> {
+export async function getGcpIdentityToken(oidcToken?: string | null): Promise<string | null> {
   // Return cached token if still fresh
   if (cachedToken && Date.now() < tokenExpiry - TOKEN_REFRESH_MARGIN_MS) {
     return cachedToken;
@@ -33,7 +37,7 @@ export async function getGcpIdentityToken(): Promise<string | null> {
   try {
     // Vercel production: use WIF OIDC
     if (process.env.VERCEL) {
-      const token = await getWifToken();
+      const token = await getWifToken(oidcToken);
       if (token) {
         cachedToken = token;
         // WIF tokens typically last 1 hour
@@ -61,25 +65,26 @@ export async function getGcpIdentityToken(): Promise<string | null> {
 }
 
 /**
- * Get a token via Workload Identity Federation (Vercel OIDC).
+ * Exchange a Vercel OIDC token for a GCP service account identity token.
  *
- * Vercel provides OIDC tokens via two mechanisms:
- *   1. VERCEL_OIDC_TOKEN — injected directly in Vercel Functions (serverless)
- *   2. ACTIONS_ID_TOKEN_REQUEST_URL + ACTIONS_ID_TOKEN_REQUEST_TOKEN — GitHub Actions
+ * Flow: OIDC token → GCP STS (federated access token) → IAM (SA identity token)
  *
- * Flow: Get OIDC token → Exchange with GCP STS → Exchange for SA identity token
+ * @param oidcToken - The Vercel OIDC JWT from x-vercel-oidc-token header.
+ *   If not provided, falls back to VERCEL_OIDC_TOKEN env var and
+ *   ACTIONS_ID_TOKEN_REQUEST_URL (GitHub Actions).
  */
-async function getWifToken(): Promise<string | null> {
+async function getWifToken(oidcToken?: string | null): Promise<string | null> {
   try {
-    let oidcToken: string | null = null;
+    // Resolve OIDC token from multiple possible sources
+    let resolvedToken: string | null = oidcToken || null;
 
-    // Method 1: Vercel Functions — token injected directly as env var
-    if (process.env.VERCEL_OIDC_TOKEN) {
-      oidcToken = process.env.VERCEL_OIDC_TOKEN;
+    // Fallback 1: Vercel Functions — token injected as env var (legacy)
+    if (!resolvedToken && process.env.VERCEL_OIDC_TOKEN) {
+      resolvedToken = process.env.VERCEL_OIDC_TOKEN;
     }
 
-    // Method 2: GitHub Actions — fetch token from Vercel's OIDC broker
-    if (!oidcToken && process.env.ACTIONS_ID_TOKEN_REQUEST_URL && process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
+    // Fallback 2: GitHub Actions — fetch from Vercel's OIDC broker
+    if (!resolvedToken && process.env.ACTIONS_ID_TOKEN_REQUEST_URL && process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
       const oidcRes = await fetch(
         `${process.env.ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.googleapis.com`,
         {
@@ -95,10 +100,10 @@ async function getWifToken(): Promise<string | null> {
       }
 
       const oidcData = await oidcRes.json();
-      oidcToken = oidcData.value;
+      resolvedToken = oidcData.value;
     }
 
-    if (!oidcToken) {
+    if (!resolvedToken) {
       console.warn(
         "No OIDC token available — WIF auth unavailable. " +
         "Ensure OIDC is enabled in Vercel project settings → Security → OpenID Connect."
@@ -115,7 +120,7 @@ async function getWifToken(): Promise<string | null> {
         audience: `//iam.googleapis.com/${WIF_POOL}/providers/${WIF_PROVIDER}`,
         requestedTokenType: "urn:ietf:params:oauth:token-type:access_token",
         subjectTokenType: "urn:ietf:params:oauth:token-type:jwt",
-        subjectToken: oidcToken,
+        subjectToken: resolvedToken,
         scope: "https://www.googleapis.com/auth/cloud-platform",
       }),
     });

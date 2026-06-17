@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
     };
 
     // Get GCP identity token (WIF on Vercel, gcloud on local dev)
-    const gcpToken = await getGcpIdentityToken();
+    const oidcToken = request.headers.get('x-vercel-oidc-token');
+    const gcpToken = await getGcpIdentityToken(oidcToken);
     if (gcpToken) {
       headers['Authorization'] = `Bearer ${gcpToken}`;
     }
