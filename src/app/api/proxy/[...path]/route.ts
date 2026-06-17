@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getGcpIdentityToken } from "@/lib/gcp-auth";
 
 const CLOUD_RUN_PROXY =
   process.env.CLOUD_RUN_PROXY_URL ||
@@ -7,7 +8,7 @@ const CLOUD_RUN_PROXY =
 /**
  * Generic API proxy for Cloud Functions.
  *
- * Browser → Vercel (forwards Firebase token) → Cloud Run (verifies + adds GCP token) → Cloud Function
+ * Browser → Vercel (WIF → GCP identity token) → Cloud Run → Cloud Function
  *
  * Routes:
  *   /api/proxy/ssot/*   → Cloud Run /ssot/*   → SSOT Cloud Function
@@ -39,13 +40,18 @@ async function handleProxy(request: NextRequest) {
       return NextResponse.json({ error: "Missing proxy path" }, { status: 400 });
     }
 
-    // Forward Firebase user token to Cloud Run proxy
-    const firebaseToken = request.headers.get("x-firebase-token");
-
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
+    // Get GCP identity token via WIF (Vercel OIDC → GCP STS → SA identity token)
+    const gcpToken = await getGcpIdentityToken();
+    if (gcpToken) {
+      headers["Authorization"] = `Bearer ${gcpToken}`;
+    }
+
+    // Forward Firebase user token from the browser request
+    const firebaseToken = request.headers.get("x-firebase-token");
     if (firebaseToken) {
       headers["X-Firebase-Token"] = firebaseToken;
     }

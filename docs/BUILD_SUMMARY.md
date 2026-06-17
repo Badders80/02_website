@@ -1,11 +1,14 @@
 # Evolution Stables — Website Build Summary
 
-**Date:** 2026-06-11  
-**Status:** 🟡 Phase 4 — Backend Integration (Auth pipeline in progress)  
+**Date:** 2026-06-17  
+**Status:** 🟡 Phase 5 — Production Ready (WIF Configuration Required)  
 **Repository:** `02_website/`
 
 > **This is the map.** What the project is, what exists, the rules.
-> For session-by-session progress, see [PROGRESS.md](PROGRESS.md).`
+> For session-by-session progress, see [PROGRESS.md](PROGRESS.md).
+
+**CURRENT BLOCKER:** GCP Workload Identity Provider needs manual configuration.
+See: [docs/SESSION_BRIEF_2026_06_17.md](docs/SESSION_BRIEF_2026_06_17.md)
 
 ---
 

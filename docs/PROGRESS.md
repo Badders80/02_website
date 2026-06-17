@@ -8,8 +8,9 @@
 
 ## Local Status
 
-**Current Phase:** 🟢 Phase 5 — Ownership Application System (Complete)  
+**Current Phase:** � Phase 6 — Production Deployment (WIF Configuration Required)  
 **Last Updated:** 2026-06-17  
+**Blocker:** GCP WIF Provider Configuration (Manual GCP Console Action Required)
 
 **Phase 0:** ✅ Complete — Asset extraction (~40 images in public/images/)  
 **Phase 1:** ✅ Complete — Content extraction (faq.json, press.json, footer.json)  
@@ -17,7 +18,40 @@
 **Phase 3:** ✅ Complete — SEO + deployment (Vercel live)  
 **Phase 4:** ✅ Complete — Backend integration (WIF infra ready)  
 **Phase 5:** ✅ Complete — Ownership Application System (email notifications, admin dashboard)  
-**Phase 6:** ✅ Complete — Production deployment (www.evolutionstables.nz live with Google OAuth)
+**Phase 6:** ⏸️ In Progress — Production deployment (www.evolutionstables.nz live, awaiting WIF fix)
+
+### 🔴 Current Blocker (2026-06-17)
+
+**Issue:** Handshake endpoint shows 0/7 passing, KYC returns 403  
+**Root Cause:** GCP Workload Identity Provider not configured with Vercel's OIDC issuer  
+**Required Action:** Manual configuration in GCP Console (5 minutes)  
+**Instructions:** See [docs/SESSION_BRIEF_2026_06_17.md](docs/SESSION_BRIEF_2026_06_17.md)
+
+### ✅ What's Complete
+
+- Firebase Auth fully implemented (login/logout working)
+- NextAuth completely removed
+- KYC route fixed (correct `/kyc/create-session` endpoint)
+- All environment variables set in Vercel
+- OIDC enabled in Vercel Security settings
+- Build passes (0 errors, 0 warnings)
+- All routes deployed and returning 200 OK
+- Production site live: https://www.evolutionstables.nz
+
+### ⏸️ What's Blocked
+
+- GCP WIF provider configuration (gcloud CLI returning contradictory errors)
+- Handshake endpoint (0/7 due to 403 from all backend APIs)
+- KYC verification flow (requires WIF to work)
+- Backend API integration (SSOT, Assets, KYC all returning 403)
+
+### 🎯 Next Steps
+
+1. Configure WIF provider in GCP Console (see session brief)
+2. Redeploy to Vercel
+3. Verify handshake passes 7/7
+4. Test full KYC flow
+5. Launch to production
 
 **Total Files:** ~60 source files  
 **Blockers:** 1 (Organization policy blocking public Cloud Function access)

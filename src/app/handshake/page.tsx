@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAuthToken } from "@/lib/auth-token";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE ||
-  "https://evolution-api-proxy-ydhxz42mra-ts.a.run.app";
+// Route through Next.js API proxy (handles WIF auth server-side)
+// Cloud Functions have org-policy restrictions blocking direct browser access
+const PROXY_BASE = "/api/proxy";
 
 interface EndpointResult {
   label: string;
@@ -34,12 +33,11 @@ async function pingEndpoint(
 ): Promise<{ ms: number; data: unknown; error: string | null }> {
   const start = performance.now();
   try {
-    const token = await getAuthToken();
-    const res = await fetch(`${API_BASE}${path}`, {
+    // Route through Next.js API proxy — server-side handles WIF → GCP auth
+    const res = await fetch(`${PROXY_BASE}${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
@@ -101,7 +99,7 @@ export default function HandshakePage() {
           </p>
           <h1 className="text-2xl font-light tracking-tight mb-2">Handshake Status</h1>
           <p className="text-xs text-white/40">
-            {API_BASE}
+            {PROXY_BASE}/* → Cloud Run → Cloud Functions
           </p>
         </div>
 

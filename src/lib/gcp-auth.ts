@@ -62,18 +62,47 @@ export async function getGcpIdentityToken(): Promise<string | null> {
 
 /**
  * Get a token via Workload Identity Federation (Vercel OIDC).
+ *
+ * Vercel provides OIDC tokens at runtime via:
+ *   ACTIONS_ID_TOKEN_REQUEST_URL  — the URL to fetch the OIDC token
+ *   ACTIONS_ID_TOKEN_REQUEST_TOKEN — bearer token to authenticate the request
+ *
+ * Flow: Fetch OIDC token → Exchange with GCP STS → Exchange for SA identity token
  */
 async function getWifToken(): Promise<string | null> {
   try {
-    // Vercel provides OIDC tokens via ACTIONS_ID_TOKEN_REQUEST_URL
-    const oidcToken = process.env.VERCEL_OIDC_TOKEN;
-    if (!oidcToken) {
-      console.warn("VERCEL_OIDC_TOKEN not set — WIF auth unavailable");
+    // Vercel provides OIDC tokens via ACTIONS_ID_TOKEN_REQUEST_URL + ACTIONS_ID_TOKEN_REQUEST_TOKEN
+    const oidcTokenUrl = process.env.ACTIONS_ID_TOKEN_REQUEST_URL;
+    const oidcTokenBearer = process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
+
+    if (!oidcTokenUrl || !oidcTokenBearer) {
+      console.warn(
+        "ACTIONS_ID_TOKEN_REQUEST_URL/TOKEN not set — WIF auth unavailable. " +
+        "Ensure OIDC is enabled in Vercel project settings → Security → OpenID Connect."
+      );
       return null;
     }
 
-    // Exchange OIDC token for GCP federated token
-    const res = await fetch("https://sts.googleapis.com/v1/token", {
+    // Step 1: Fetch the OIDC token from Vercel's identity broker
+    const oidcRes = await fetch(`${oidcTokenUrl}&audience=sts.googleapis.com`, {
+      headers: {
+        Authorization: `Bearer ${oidcTokenBearer}`,
+      },
+    });
+
+    if (!oidcRes.ok) {
+      const err = await oidcRes.text();
+      throw new Error(`OIDC token fetch failed (${oidcRes.status}): ${err}`);
+    }
+
+    const oidcData = await oidcRes.json();
+    const oidcToken = oidcData.value;
+    if (!oidcToken) {
+      throw new Error("OIDC token response missing 'value' field");
+    }
+
+    // Step 2: Exchange OIDC token for GCP federated access token
+    const stsRes = await fetch("https://sts.googleapis.com/v1/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -86,15 +115,18 @@ async function getWifToken(): Promise<string | null> {
       }),
     });
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`STS token exchange failed: ${err}`);
+    if (!stsRes.ok) {
+      const err = await stsRes.text();
+      throw new Error(`STS token exchange failed (${stsRes.status}): ${err}`);
     }
 
-    const stsData = await res.json();
+    const stsData = await stsRes.json();
     const accessToken = stsData.access_token;
+    if (!accessToken) {
+      throw new Error("STS response missing 'access_token'");
+    }
 
-    // Exchange access token for identity token
+    // Step 3: Exchange access token for service account identity token
     const idRes = await fetch(
       `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${SERVICE_ACCOUNT}:generateIdToken`,
       {
@@ -112,7 +144,7 @@ async function getWifToken(): Promise<string | null> {
 
     if (!idRes.ok) {
       const err = await idRes.text();
-      throw new Error(`ID token generation failed: ${err}`);
+      throw new Error(`ID token generation failed (${idRes.status}): ${err}`);
     }
 
     const idData = await idRes.json();
