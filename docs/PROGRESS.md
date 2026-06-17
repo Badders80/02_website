@@ -16,7 +16,8 @@
 **Phase 2:** ✅ Complete — Press & Marketplace sections & pages  
 **Phase 3:** ✅ Complete — SEO + deployment (Vercel live)  
 **Phase 4:** ✅ Complete — Backend integration (WIF infra ready)  
-**Phase 5:** 🟢 Complete — Ownership Application System (email notifications, admin dashboard)
+**Phase 5:** ✅ Complete — Ownership Application System (email notifications, admin dashboard)  
+**Phase 6:** ✅ Complete — Production deployment (www.evolutionstables.nz live with Google OAuth)
 
 **Total Files:** ~60 source files  
 **Blockers:** 1 (Organization policy blocking public Cloud Function access)
@@ -32,20 +33,21 @@
 | 2026-05-22 | Marketplace Section & Prototype | ✅ Complete | [logs/2026-05-22.md](logs/2026-05-22.md) |
 | 2026-06-11 | GCP Auth Blocker & WIF Infrastructure | ✅ Complete | [logs/2026-06-11.md](logs/2026-06-11.md) |
 | 2026-06-12 | Ownership Application System | ✅ Complete | [logs/2026-06-12.md](logs/2026-06-12.md) |
-| 2026-06-17 | Go Live Deployment | ✅ Complete | [logs/2026-06-17.md](logs/2026-06-17.md) |
+| 2026-06-17 | Go Live Deployment + Google OAuth | ✅ Complete | [logs/2026-06-17.md](logs/2026-06-17.md) |
 
 ---
 
 ## What's Next
 
-**Priority 1 — 🟡 BLOCKER:** Organization Policy for Cloud Function
+**Priority 1 — � DEPLOYED:** Production website live at www.evolutionstables.nz
+- ✅ Website deployed to Vercel
+- ✅ Applications Cloud Function deployed to GCP
+- ✅ Google OAuth login implemented
+- ⏳ Firebase config needs to be added to Vercel environment variables (manual step)
+
+**Priority 2 — 🟡 BLOCKER:** Organization Policy for Cloud Function
 - Function deployed but requires authentication
 - Options: (1) Use WIF auth from frontend, (2) Request org policy exception, (3) Grant Vercel OIDC SA access
-
-**Priority 2 — 🟡 BLOCKER:** Implement Email Notifications
-- Choose email provider (Gmail API, SendGrid, etc.)
-- Implement actual email sending
-- Test email delivery
 
 **Priority 3:** Test full chain — visit /handshake, verify 7/7 green
 **Priority 4:** Test "Apply for Ownership" → Admin review flow
