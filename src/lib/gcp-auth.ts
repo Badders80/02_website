@@ -17,7 +17,7 @@ import { headers } from "next/headers";
 const WIF_POOL = "projects/851430309148/locations/global/workloadIdentityPools/vercel-pool";
 const WIF_PROVIDER = "vercel-oidc-team";
 const SERVICE_ACCOUNT = "website-api@evolution-engine.iam.gserviceaccount.com";
-const AUDIENCE = "https://australia-southeast1-evolution-engine.cloudfunctions.net";
+const AUDIENCE = "https://evolution-api-proxy-ydhxz42mra-ts.a.run.app";
 
 let cachedToken: string | null = null;
 let tokenExpiry: number = 0;
