@@ -27,8 +27,12 @@ async function apiCall(endpoint: string, options?: RequestInit) {
   const token = await getAuthToken();
 
   // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
+  // Server-side calls need an absolute URL (relative fetches fail on the server)
+  const host = typeof window === "undefined"
+    ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+    : "";
   const url = IS_CLOUD_FUNCTION
-    ? `/api/proxy${endpoint}`
+    ? `${host}/api/proxy${endpoint}`
     : `${API_BASE}${endpoint}`;
 
   const res = await fetch(url, {
