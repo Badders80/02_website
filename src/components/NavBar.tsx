@@ -90,8 +90,12 @@ export function NavBar() {
       style={{
         backdropFilter: 'blur(32px) saturate(160%)',
         WebkitBackdropFilter: 'blur(32px) saturate(160%)',
-        maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'
+        ...(isMenuOpen
+          ? {}
+          : {
+              maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+            }),
       }}
     >
       <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center px-6 sm:px-10 lg:px-12">
@@ -189,7 +193,7 @@ export function NavBar() {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-black/80 backdrop-blur-2xl border-t border-white/[0.03]" style={{ backdropFilter: 'blur(40px) saturate(150%)' }}>
+        <div className="md:hidden bg-black/95 backdrop-blur-2xl border-t border-white/[0.06]" style={{ backdropFilter: 'blur(40px) saturate(150%)' }}>
           <div className="space-y-1 px-6 py-6">
             {navLinks.map((link) => (
               <Link
@@ -228,11 +232,12 @@ export function NavBar() {
                   className="block"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <button
-                    className="w-full rounded-full bg-gradient-to-b from-primary via-primary to-primary/90 px-4 py-3 text-center text-label uppercase text-black font-medium transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,169,100,0.3)] hover:brightness-110 active:scale-[0.98]"
+                  <GlowPillButton
+                    wrapperClassName="w-full"
+                    className="w-full justify-center py-3.5 text-[12px] tracking-[0.15em]"
                   >
                     Get Started
-                  </button>
+                  </GlowPillButton>
                 </Link>
               )}
             </div>
