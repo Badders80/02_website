@@ -9,7 +9,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+// ISR: statically generate, revalidate every 60s.
+// Detail pages inherit the same staleness budget as the listing page.
+export const revalidate = 60;
+export const runtime = "nodejs";
+// Pre-render known campaign IDs at build time; allow on-demand generation for new ones.
+export const dynamicParams = true;
+
+// Pre-render the four known mock campaigns at build time.
+// New campaigns published later will be generated on-demand and cached for 60s.
+export async function generateStaticParams() {
+  return [
+    { id: "prudentia" },
+    { id: "hottathanafantasy" },
+    { id: "first-gear" },
+    { id: "i-stole-a-manolo" },
+  ];
+}
 
 interface Props {
   params: Promise<{ id: string }>;

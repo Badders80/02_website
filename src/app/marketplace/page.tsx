@@ -3,7 +3,11 @@ import { Footer } from "@/components/Footer";
 import { getHlts } from "@/lib/api";
 import { ListingGrid } from "@/components/marketplace/ListingGrid";
 
-export const dynamic = "force-dynamic";
+// ISR: statically generate, revalidate every 60s.
+// Listings rarely change minute-to-minute, so 60s staleness is invisible to users
+// while giving us CDN-cached TTFB + Lighthouse-friendly LCP.
+export const revalidate = 60;
+export const runtime = "nodejs";
 
 export const metadata = {
   title: "Marketplace | Evolution Stables",
