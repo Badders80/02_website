@@ -60,7 +60,7 @@ export function usePurchaseFlow() {
           user_id: user.uid,
           hlt_id: hltId,
           shares_to_buy: sharesToBuy,
-          bypass_kyc: true, // Allow test mode bypass for dev purposes
+          bypass_kyc: isBypassStripe, // Only bypass KYC in dev/test mode
         }),
       });
 

@@ -21,3 +21,11 @@ if (firebaseConfigRaw && firebaseConfigRaw !== "{}" && typeof window !== "undefi
 }
 
 export { auth };
+
+/**
+ * Check if Firebase Auth is properly initialized (not a dummy SSR/build-time stub).
+ * Replaces the fragile _getRecaptchaConfig internal-property check.
+ */
+export const isAuthInitialized = (): boolean => {
+  return Boolean(app && auth?.app);
+};

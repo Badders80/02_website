@@ -43,12 +43,12 @@ export default function AdminLayout({
   const { user, loading, role, kycStatus, isAdmin } = useAuth();
   const router = useRouter();
 
-  // Auth guard enabled for production/staging/live auth
+  // Auth guard: require login AND admin role
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && (!user || !isAdmin)) {
       router.push("/auth/login");
     }
-  }, [user, loading, router]);
+  }, [user, loading, isAdmin, router]);
 
   if (loading) {
     return (
@@ -58,7 +58,7 @@ export default function AdminLayout({
     );
   }
 
-  if (!user) {
+  if (!user || !isAdmin) {
     return null;
   }
 

@@ -65,8 +65,28 @@ Every task must end with verification:
 
 ---
 
+## Production vs. Sandbox Workflow Model
+
+The project utilizes a two-tiered sandbox model for visual iteration and prototyping:
+
+1. **Static Design Sandbox (`_sandbox/02_website/`):**
+   - Located outside the Next.js app in the parent directory.
+   - Contains static HTML/CSS mockup templates (e.g., `marketplace/index.html`) for raw visual experiments and typography/layout alignment.
+   - **Rule:** Use this folder to sketch layouts and micro-animations first, without Next.js compile overhead.
+
+2. **Interactive Code Sandbox (`02_website/src/app/sandbox/`):**
+   - Built into the Next.js app router.
+   - Integrates components like `ListingGridSandbox.tsx` with a client-side **Control Center** to toggle theme accents, hover styles, and presentation variations.
+
+3. **Production Integration (`02_website/src/app/`):**
+   - Once the design and interactive elements are finalized, promote them from the sandboxes into the production folders (e.g., `/marketplace`).
+   - Wire the finalized components to real backend APIs (`01_evolution/` calls) and Firebase Auth.
+
+---
+
 ## Related
 
 - **[GAME_PLAN.md](GAME_PLAN.md)** — Build plan
 - **[docs/PROGRESS.md](docs/PROGRESS.md)** — Current progress
 - **[01_evolution/AGENTS.md](../01_evolution/AGENTS.md)** — Backend agent rules
+

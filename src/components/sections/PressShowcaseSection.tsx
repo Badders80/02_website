@@ -122,42 +122,42 @@ export function PressShowcaseSection() {
   const partners = [
     {
       name: 'Investing.com',
-      src: '/images/partners/1_Investing_comLOGO.png',
+      src: '/images/partners/investing-com.png',
       wrapperClass: 'w-[155px] h-[31px] sm:w-[175px] sm:h-[35px] md:w-[185px] md:h-[37px] lg:w-[210px] lg:h-[42px]'
     },
     {
       name: 'BusinessDesk',
-      src: '/images/partners/2_businessdesk-Logo.jpg',
+      src: '/images/partners/businessdesk.jpg',
       wrapperClass: 'w-[155px] h-[31px] sm:w-[185px] sm:h-[37px] md:w-[200px] md:h-[40px] lg:w-[230px] lg:h-[46px]'
     },
     {
       name: 'Singularity',
-      src: '/images/partners/3_SingularryLOGO.png',
+      src: '/images/partners/singularry.png',
       wrapperClass: 'w-[175px] h-[33px] sm:w-[200px] sm:h-[38px] md:w-[215px] md:h-[40px] lg:w-[245px] lg:h-[46px]'
     },
     {
       name: 'Tokinvest',
-      src: '/images/partners/4_New Logo - White & Green.png',
+      src: '/images/partners/tokinvest-light.png',
       wrapperClass: 'w-[125px] h-[31px] sm:w-[140px] sm:h-[35px] md:w-[150px] md:h-[37px] lg:w-[175px] lg:h-[42px]'
     },
     {
       name: 'Trackside NZ',
-      src: '/images/partners/6_tracksideNZ-logo.png',
+      src: '/images/partners/trackside-nz.png',
       wrapperClass: 'w-[155px] h-[37px] sm:w-[185px] sm:h-[44px] md:w-[200px] md:h-[48px] lg:w-[230px] lg:h-[55px]'
     },
     {
       name: 'NZTR',
-      src: '/images/partners/8_NZTR_LOGO_WHITE.png',
+      src: '/images/partners/nztr-white.png',
       wrapperClass: 'w-[145px] h-[40px] sm:w-[165px] sm:h-[45px] md:w-[180px] md:h-[50px] lg:w-[205px] lg:h-[57px]'
     },
     {
       name: 'Stephen Grey Racing',
-      src: '/images/partners/9_StephenGreyRacingLogo.png',
+      src: '/images/partners/stephen-grey-racing.png',
       wrapperClass: 'w-[145px] h-[40px] sm:w-[165px] sm:h-[45px] md:w-[180px] md:h-[50px] lg:w-[205px] lg:h-[57px]'
     },
     {
       name: 'Arabian Business',
-      src: '/images/partners/10_arabian-bussiness-logo.png',
+      src: '/images/partners/arabian-business.png',
       wrapperClass: 'w-[100px] h-[36px] sm:w-[110px] sm:h-[40px] md:w-[125px] md:h-[45px] lg:w-[145px] lg:h-[52px]'
     },
   ];

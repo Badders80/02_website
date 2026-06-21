@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid through blockchain innovation.",
     images: [
       {
-        url: "/images/Logo-Gold-Favicon.png",
+        url: "/images/brand/legacy/legacy-logo-gold-favicon.png",
         width: 1200,
         height: 630,
         alt: "Evolution Stables Logo",
@@ -64,9 +64,9 @@ export const metadata: Metadata = {
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
   },
   icons: {
-    icon: "/images/Logo-Gold-Favicon.png",
-    shortcut: "/images/Logo-Gold-Favicon.png",
-    apple: "/images/Logo-Gold-Favicon.png",
+    icon: "/images/brand/legacy/legacy-logo-gold-favicon.png",
+    shortcut: "/images/brand/legacy/legacy-logo-gold-favicon.png",
+    apple: "/images/brand/legacy/legacy-logo-gold-favicon.png",
   },
   robots: {
     index: true,

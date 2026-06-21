@@ -8,7 +8,7 @@ import {
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, isAuthInitialized } from "./firebase";
 
 interface AuthContextType {
   user: User | null;
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [kycStatus, setKycStatus] = useState("none");
 
   useEffect(() => {
-    const isBypass = process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
 
     if (isBypass) {
       const mockLoggedOut = typeof window !== "undefined" && localStorage.getItem("mock_signed_out") === "true";
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!auth || !(auth as any)._getRecaptchaConfig) {
+    if (!isAuthInitialized()) {
       // Firebase not initialized (SSR/build time)
       setLoading(false);
       return;
@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const isBypass = process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
     if (isBypass) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("mock_signed_out");
@@ -108,12 +108,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!auth || !(auth as any)._getRecaptchaConfig) throw new Error("Auth not initialized");
+    if (!isAuthInitialized()) throw new Error("Auth not initialized");
     await signInWithEmailAndPassword(auth, email, password);
   };
 
   const signUp = async (email: string, password: string) => {
-    const isBypass = process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
     if (isBypass) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("mock_signed_out");
@@ -140,12 +140,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!auth || !(auth as any)._getRecaptchaConfig) throw new Error("Auth not initialized");
+    if (!isAuthInitialized()) throw new Error("Auth not initialized");
     await createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signOut = async () => {
-    const isBypass = process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
     if (isBypass) {
       if (typeof window !== "undefined") {
         localStorage.setItem("mock_signed_out", "true");
@@ -156,7 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!auth || !(auth as any)._getRecaptchaConfig) return;
+    if (!isAuthInitialized()) return;
     await firebaseSignOut(auth);
   };
 

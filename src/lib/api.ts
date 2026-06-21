@@ -138,10 +138,20 @@ export async function getContent(params?: { horse_microchip?: string; content_ty
 
 export async function uploadAsset(formData: FormData) {
   const token = await getAuthToken();
-  const res = await fetch(`${API_BASE}/assets/upload`, {
+
+  // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
+  const host = typeof window === "undefined"
+    ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+    : "";
+  const url = IS_CLOUD_FUNCTION
+    ? `${host}/api/proxy/assets/upload`
+    : `${API_BASE}/assets/upload`;
+
+  const res = await fetch(url, {
     method: "POST",
     headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      // Don't set Content-Type for FormData — browser sets multipart boundary
+      ...(token ? { "x-firebase-token": token } : {}),
     },
     body: formData,
   });

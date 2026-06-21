@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { getHltById } from "@/lib/api";
 import { PurchaseForm } from "@/components/marketplace/PurchaseForm";
 import { ApplyForm } from "@/components/marketplace/ApplyForm";
+import { KycRequestCard } from "@/components/marketplace/KycRequestCard";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -381,19 +382,7 @@ export default async function CampaignDetailPage({ params }: Props) {
               <ApplyForm hltId={hlt.id} horseName={horse?.name || "Racehorse"} />
 
               {/* Section I: KYC Verification */}
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
-                <h3 className="text-[16px] font-light text-white tracking-tight">Identity Verification</h3>
-                <p className="text-[13px] font-light text-white/60 leading-relaxed">
-                  Complete KYC verification to purchase shares. This secure process helps protect your account
-                  and ensures compliance with financial regulations.
-                </p>
-                <Link
-                  href="/mystable/verify"
-                  className="inline-flex w-full items-center justify-center rounded-lg border border-[#d4af37]/30 px-6 py-3 text-[13px] font-medium text-[#d4af37] transition hover:bg-[#d4af37]/10"
-                >
-                  Verify Identity (KYC)
-                </Link>
-              </div>
+              <KycRequestCard horseName={horse?.name || "Racehorse"} />
             </div>
 
           </div>

@@ -8,6 +8,8 @@ import { KycBanner } from "@/components/KycBanner";
 import { getHoldings, getHlts, getContent } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth, isAuthInitialized } from "@/lib/firebase";
 
 interface HoldingRecord {
   id: string;
@@ -61,6 +63,23 @@ export default function MyStablePage() {
   
   const [loadingData, setLoadingData] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      if (!isAuthInitialized()) {
+        throw new Error("Firebase authentication is not configured. Please contact support.");
+      }
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (err: any) {
+      console.error("[Google Sign-In] Error:", err);
+      alert(err.message || "Google sign-in failed. Please try email sign-in.");
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const MOCK_HOLDING: HoldingRecord = {
     id: "mock-holding-1",
@@ -106,7 +125,16 @@ export default function MyStablePage() {
   };
 
   useEffect(() => {
-    if (authLoading || !user) return;
+    if (authLoading) return;
+
+    if (!user) {
+      // Load mock dashboard data for the gated preview
+      setHoldings([MOCK_HOLDING]);
+      setCampaigns({ "mock-hlt-id": MOCK_CAMPAIGN });
+      setUpdates([MOCK_UPDATE]);
+      setLoadingData(false);
+      return;
+    }
 
     const loadDashboardData = async () => {
       setLoadingData(true);
@@ -194,63 +222,63 @@ export default function MyStablePage() {
   const indicativeReturnsNzd = totalInvestmentNzd > 0 ? totalInvestmentNzd * 0.082 : 0;
   const totalValueNzd = totalInvestmentNzd + indicativeReturnsNzd;
 
-  if (authLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="text-white/40 text-sm font-light">Verifying session...</div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <>
-        <NavBar />
-        <main className="min-h-screen bg-black text-foreground font-sans flex items-center justify-center pt-24 px-6">
-          <div className="max-w-md w-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 text-center space-y-6">
-            <div className="w-12 h-12 rounded-full bg-[#d4a964]/10 border border-[#d4a964]/20 flex items-center justify-center mx-auto text-xl">
-              🔑
-            </div>
-            <div>
-              <h3 className="text-xl font-light text-white mb-2">Sign In Required</h3>
-              <p className="text-sm font-light text-white/50 leading-relaxed">
-                Please log in to your account to view your ownership stakes, track race results, and listen to trainer logs.
-              </p>
-            </div>
-            <Link
-              href="/auth/login?redirect=/mystable"
-              className="block w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-widest bg-white text-black hover:bg-white/90 transition-all duration-300"
-            >
-              Sign In to Your Stable
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground font-sans selection:bg-white/10 selection:text-white">
-        {/* Header */}
-        <section className="pt-40 pb-16 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
-          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-6">
-            Evolution Stables
-          </p>
-          <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6 leading-[1.1]">
-            MyStable
-          </h1>
-          <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
-            Welcome, <span className="text-white font-normal">{user.email}</span>. This is your personal dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking morning preparations.
-          </p>
-        </section>
+      <main className="min-h-screen bg-black text-foreground font-sans selection:bg-white/10 selection:text-white relative">
+        {/* Glassmorphic Gated Overlay */}
+        {!user && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-[6px] px-6 py-20">
+            <div className="rounded-3xl border border-white/[0.08] bg-[#0A0A0F]/65 backdrop-blur-2xl p-8 max-w-md w-full text-center space-y-6 shadow-[0_0_50px_rgba(0,0,0,0.85)] animate-fade-in pointer-events-auto">
+              <div className="w-14 h-14 rounded-full bg-[#d4a964]/10 border border-[#d4a964]/20 flex items-center justify-center mx-auto text-2xl">
+                🔑
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-light text-white tracking-tight">Unlock Your Stable</h3>
+                <p className="text-sm font-light text-white/50 leading-relaxed">
+                  Log in to manage active holdings, track real-time equine valuations, and listen to morning preparations at Wexford Stables.
+                </p>
+              </div>
+              
+              <div className="space-y-4 pt-2">
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={googleLoading}
+                  className="w-full flex items-center justify-center gap-3 rounded-full bg-white text-gray-900 font-medium py-3.5 px-4 transition-all duration-200 hover:bg-white/90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {googleLoading ? "Signing in..." : "Continue with Google"}
+                </button>
+                
+                <Link
+                  href="/auth/login?redirect=/mystable"
+                  className="block w-full text-center border border-white/10 text-white hover:bg-white/5 transition-all py-3.5 rounded-full text-[11px] font-medium uppercase tracking-widest active:scale-[0.98]"
+                >
+                  Sign In with Email
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
 
-        {/* KYC Verification Banner */}
-        <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
-          <KycBanner />
-        </div>
+        <div className={!user ? "blur-[12px] pointer-events-none select-none opacity-45 transition-all duration-700" : "transition-all duration-700"}>
+          {/* Header */}
+          <section className="pt-40 pb-16 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-6">
+              Evolution Stables
+            </p>
+            <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6 leading-[1.1]">
+              MyStable
+            </h1>
+            <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
+              Welcome, <span className="text-white font-normal">{user?.email || "Guest"}</span>. This is your personal dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking morning preparations.
+            </p>
+          </section>
+
+          {/* KYC Verification Banner */}
+          <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
+            <KycBanner />
+          </div>
 
         {/* Dashboard Grid */}
         <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
@@ -418,6 +446,7 @@ export default function MyStablePage() {
             </div>
           )}
         </section>
+        </div>
       </main>
       <Footer />
     </>

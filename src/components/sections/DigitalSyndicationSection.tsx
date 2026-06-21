@@ -11,19 +11,19 @@ interface BenefitItem {
 
 const benefits: BenefitItem[] = [
   {
-    iconSrc: "/images/Increased Access.svg",
+    iconSrc: "/images/content/icons/increased-access.svg",
     title: "Increased Access",
     description: "A digital platform that lowers barriers and opens ownership to everyone.",
     alt: "INCREASED ACCESS",
   },
   {
-    iconSrc: "/images/greater-than-equal-icon-original.svg",
+    iconSrc: "/images/content/icons/greater-than-equal.svg",
     title: "Greater Transparency",
     description: "Real-time performance, clear costs, and open communication.",
     alt: "GREATER TRANSPARENCY",
   },
   {
-    iconSrc: "/images/Untitled design (36).svg",
+    iconSrc: "/images/content/illustrations/untitled-36.svg",
     title: "Borderless Flexibility",
     description: "Fractional shares and short-term commitments for modern investors.",
     alt: "BORDERLESS FLEXIBILITY",

@@ -116,6 +116,16 @@ export async function createKYCSession(userId: string) {
 
 ---
 
+## Development Sandboxes
+
+This repository supports a two-stage sandbox workflow:
+
+*   **Static Design Sandbox (`../_sandbox/02_website/`):** Raw HTML/CSS templates for rapid, compile-free design layout and micro-animation prototyping.
+*   **Next.js App Sandbox (`src/app/sandbox/`):** React-based implementation utilizing sandbox components (like `ListingGridSandbox.tsx`) equipped with interactive controls for real-time visual tweaks.
+*   **Production:** Promoted features reside in `/src/app/` (e.g. `/marketplace`), linked to real auth/database states.
+
+---
+
 ## Related
 
 - **[GAME_PLAN.md](GAME_PLAN.md)** — Build plan (Phases 0-3)

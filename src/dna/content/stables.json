@@ -10,7 +10,7 @@
         "strikeRate": "14%",
         "stakesWins": 12,
         "bio": "Stephen Grey has been a fixture of the New Zealand thoroughbred scene for over a decade. Known for patience with fillies and a sharp eye for track conditions, his stable has produced multiple group performers from modest bloodstock.",
-        "photo": "/images/stables/trainer-stephen-grey.jpg",
+        "photo": "/images/content/stables/trainer-stephen-grey.jpg",
         "logo": "/images/partners/stephen-grey-racing.png"
       },
       "horse": {
@@ -53,7 +53,7 @@
           ],
           "nextRace": null
         },
-        "photo": "/images/stables/prudentia-action.png",
+        "photo": "/images/content/stables/prudentia-action.png",
         "tokinvestUrl": "https://portal.tokinvest.capital/investments/prudentia"
       }
     },
@@ -67,7 +67,7 @@
         "strikeRate": "14%",
         "stakesWins": 12,
         "bio": "Stephen Grey has been a fixture of the New Zealand thoroughbred scene for over a decade. Known for patience with fillies and a sharp eye for track conditions, his stable has produced multiple group performers from modest bloodstock.",
-        "photo": "/images/stables/trainer-stephen-grey.jpg",
+        "photo": "/images/content/stables/trainer-stephen-grey.jpg",
         "logo": "/images/partners/stephen-grey-racing.png"
       },
       "horse": {
@@ -92,7 +92,7 @@
           "races": [],
           "nextRace": "First trial — target late 2026"
         },
-        "photo": "/images/stables/horse-hotta.jpg",
+        "photo": "/images/content/stables/horse-hotta.jpg",
         "tokinvestUrl": "https://portal.tokinvest.capital/investments/hotta-than-a-fantasy"
       }
     },
@@ -106,7 +106,7 @@
         "strikeRate": "11%",
         "stakesWins": 3,
         "bio": "Trevor Collins brings a disciplined, data-driven approach to his Cambridge stable. Former assistant to a top Australian trainer, he's known for getting the best out of stayers and late-maturing types.",
-        "photo": "/images/stables/trainer-trevor-collins.jpg",
+        "photo": "/images/content/stables/trainer-trevor-collins.jpg",
         "logo": null
       },
       "horse": {
@@ -130,7 +130,7 @@
           "races": [],
           "nextRace": "Autumn campaign 2026"
         },
-        "photo": "/images/stables/horse-first-gear.jpg",
+        "photo": "/images/content/stables/horse-first-gear.jpg",
         "tokinvestUrl": "https://portal.tokinvest.capital/investments/first-gear"
       }
     },
@@ -144,7 +144,7 @@
         "strikeRate": "14%",
         "stakesWins": 12,
         "bio": "Stephen Grey has been a fixture of the New Zealand thoroughbred scene for over a decade. Known for patience with fillies and a sharp eye for track conditions, his stable has produced multiple group performers from modest bloodstock.",
-        "photo": "/images/stables/trainer-stephen-grey.jpg",
+        "photo": "/images/content/stables/trainer-stephen-grey.jpg",
         "logo": "/images/partners/stephen-grey-racing.png"
       },
       "horse": {
@@ -169,7 +169,7 @@
           "races": [],
           "nextRace": "Breaking-in to resume July 2026"
         },
-        "photo": "/images/stables/horse-manolo.jpg",
+        "photo": "/images/content/stables/horse-manolo.jpg",
         "tokinvestUrl": "https://portal.tokinvest.capital/investments/i-stole-a-manolo"
       }
     }

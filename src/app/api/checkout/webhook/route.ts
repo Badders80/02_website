@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { execSync } from 'child_process';
+import { getGcpIdentityToken } from '@/lib/gcp-auth';
 
 const PAYMENTS_API_BASE = process.env.PAYMENTS_API_BASE || 
   (process.env.NEXT_PUBLIC_API_BASE 
@@ -20,16 +20,10 @@ export async function POST(request: NextRequest) {
       'Stripe-Signature': sigHeader,
     };
 
-    // Obtain local gcloud identity token if calling GCP Cloud Functions in dev
-    if (PAYMENTS_API_BASE.includes('cloudfunctions.net')) {
-      try {
-        const token = execSync('gcloud auth print-identity-token', { encoding: 'utf-8' }).trim();
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-      } catch (err: any) {
-        console.warn('Failed to obtain gcloud identity token:', err.message);
-      }
+    // Get GCP identity token via WIF (Vercel OIDC → GCP STS → SA identity token)
+    const gcpToken = await getGcpIdentityToken(null, PAYMENTS_API_BASE);
+    if (gcpToken) {
+      headers['Authorization'] = `Bearer ${gcpToken}`;
     }
 
     const response = await fetch(`${PAYMENTS_API_BASE}/webhook`, {

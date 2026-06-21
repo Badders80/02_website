@@ -1,12 +1,12 @@
 // Asset constants for images and media
 export const MARKETING = {
-  band1: '/images/Background-hooves-back-and-white.jpg',
-  band2: '/images/Horse-Double-Black.png',
-  hero: '/images/hero.svg',
+  band1: '/images/content/background/hooves-black-white.jpg',
+  band2: '/images/content/background/horse-double-black.png',
+  hero: '/images/content/illustrations/hero.svg',
   alt: {
-    horseAndFoal: '/images/Horse-and-foal.jpg',
-    landscapeOverlay: '/images/Landscape-digitaloverlay.jpg',
-    hoovesOnGrass: '/images/Hooves-on-grass.png',
+    horseAndFoal: '/images/content/background/horse-and-foal.jpg',
+    landscapeOverlay: '/images/content/background/landscape-digital-overlay.jpg',
+    hoovesOnGrass: '/images/content/background/hooves-on-grass.png',
   },
 };
 
@@ -16,37 +16,37 @@ export const horseLegs = MARKETING.alt.hoovesOnGrass;
 
 export const LOGOS = {
   // Main logos
-  main: '/images/Evolution-Stables-Logo.svg',
-  black: '/images/Evolution-Stables-Logo-Black.svg',
-  white: '/images/Evolution-Stables-Logo-White.svg',
+  main: '/images/brand/lockups/gold/lockup-horizontal-gold.svg',
+  black: '/images/brand/lockups/black/lockup-horizontal-black.svg',
+  white: '/images/brand/lockups/white/lockup-horizontal-white.svg',
 
   // Monochrome variants
   mono: {
-    black: '/images/EvolutionStables-Mono-Black.svg',
-    white: '/images/EvolutionStables-Mono-White.svg',
-    gold: '/images/EvolutionStables-Mono-Gold.svg',
+    black: '/images/brand/monograms/black/monogram-black.svg',
+    white: '/images/brand/monograms/white/monogram-white.svg',
+    gold: '/images/brand/monograms/gold/monogram-gold.svg',
   },
 
   // Simple/icon versions
   simple: {
-    black: '/images/Logo-Black.png',
-    gold: '/images/Logo-Gold.png',
-    grey: '/images/Logo-Grey.png',
+    black: '/images/brand/legacy/legacy-logo-black.png',
+    gold: '/images/brand/legacy/legacy-logo-gold.png',
+    grey: '/images/brand/legacy/legacy-logo-grey.png',
   },
 
   // Name logos (new)
   name: {
-    black: '/images/Evolution-Stables-Name-Logo-Black.svg',
-    white: '/images/Evolution-Stables-Name-Logo-White.svg',
-    gold: '/images/Evolution-Stables-Name-Logo-Gold.svg',
-    grey: '/images/Evolution-Stables-Name-Logo-Grey.svg',
+    black: '/images/brand/wordmarks/black/wordmark-black.svg',
+    white: '/images/brand/wordmarks/white/wordmark-white.svg',
+    gold: '/images/brand/wordmarks/gold/wordmark-gold.svg',
+    grey: '/images/brand/wordmarks/grey/wordmark-grey.svg',
   },
 };
 
 export const ILLUSTRATIONS = {
-  illus1: '/images/illus-1.svg',
-  illus2: '/images/illus-2.svg',
-  illus3: '/images/illus-3.svg',
+  illus1: '/images/content/illustrations/illus-1.svg',
+  illus2: '/images/content/illustrations/illus-2.svg',
+  illus3: '/images/content/illustrations/illus-3.svg',
 };
 
 export const PLACEHOLDERS = {

@@ -42,7 +42,7 @@ export default async function MarketplacePage() {
       is_active: true,
       horse: {
         name: "Prudentia",
-        image_url: "/images/stables/prudentia-action.png",
+        image_url: "/images/content/stables/prudentia-action.png",
         story: "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
       },
       stats: {

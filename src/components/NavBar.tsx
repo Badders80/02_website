@@ -142,22 +142,18 @@ export function NavBar() {
           {loading ? (
             <div className="hidden lg:block h-10 w-32 bg-white/5 rounded-full animate-pulse" />
           ) : user ? (
-            <div className="hidden lg:flex items-center gap-3">
-              <Link
-                href="/mystable"
-                className="text-sm text-white/80 hover:text-white transition-colors"
-              >
-                MyStable
-              </Link>
-              <button
+            <div className="hidden lg:flex items-center gap-4">
+              <span className="text-[12px] font-[300] tracking-[0.15em] uppercase text-white/50">
+                Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
+              </span>
+              <GlowPillButton
                 onClick={async () => {
                   await signOut();
                   window.location.reload();
                 }}
-                className="text-sm text-white/60 hover:text-white transition-colors"
               >
                 Sign Out
-              </button>
+              </GlowPillButton>
             </div>
           ) : (
             <Link
@@ -193,13 +189,13 @@ export function NavBar() {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-background/80 backdrop-blur-2xl border-t border-white/[0.03]" style={{ backdropFilter: 'blur(40px) saturate(150%)' }}>
+        <div className="md:hidden bg-black/80 backdrop-blur-2xl border-t border-white/[0.03]" style={{ backdropFilter: 'blur(40px) saturate(150%)' }}>
           <div className="space-y-1 px-6 py-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="group block rounded-xl px-4 py-3.5 text-[14px] font-light tracking-wide uppercase text-white/60 transition-all duration-300 hover:bg-white/[0.04] hover:text-white active:scale-[0.98]"
+                className="group block rounded-xl px-4 py-3.5 text-[14px] font-light tracking-wide uppercase text-white transition-all duration-300 hover:bg-white/10 hover:text-white active:scale-[0.98]"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="relative">
@@ -211,29 +207,21 @@ export function NavBar() {
 
             <div className="space-y-3 pt-6 border-t border-white/[0.05] mt-4">
               {user ? (
-                <>
-                  <Link
-                    href="/mystable"
-                    className="block"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <button
-                      className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-left text-sm text-white font-medium hover:bg-white/[0.08] transition-colors"
-                    >
-                      MyStable
-                    </button>
-                  </Link>
+                <div className="space-y-3">
+                  <div className="px-4 py-2 text-xs uppercase tracking-wider text-white/40">
+                    Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
+                  </div>
                   <button
                     onClick={async () => {
                       await signOut();
                       setIsMenuOpen(false);
                       window.location.reload();
                     }}
-                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-left text-sm text-white/60 font-medium hover:bg-white/[0.08] hover:text-white transition-colors"
+                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-center text-sm text-white/60 font-medium hover:bg-white/[0.08] hover:text-white transition-colors"
                   >
                     Sign Out
                   </button>
-                </>
+                </div>
               ) : (
                 <Link
                   href="/auth/login"

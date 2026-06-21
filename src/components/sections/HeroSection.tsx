@@ -11,7 +11,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  backgroundImage = '/images/Horse-Double-Black.png',
+  backgroundImage = '/images/content/background/horse-double-black.png',
   overlay = true,
   className = '',
 }: HeroSectionProps) {
@@ -50,7 +50,7 @@ export function HeroSection({
           className="relative w-full max-w-[720px] animate-hero-logo"
         >
           <Image
-            src="/images/Evolution-Stables-Logo.png"
+            src="/images/brand/lockups/gold/lockup-horizontal-gold.png"
             alt="Evolution Stables - The Future of Racehorse Ownership"
             width={1200}
             height={400}

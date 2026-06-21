@@ -25,7 +25,7 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
     name: "Evolution Stables",
     alternateName: "Evolution Stables NZ",
     url: "https://evolutionstables.nz",
-    logo: "https://evolutionstables.nz/images/Logo-Gold-Favicon.png",
+    logo: "https://evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png",
     description:
       "Digital-syndication platform for racehorse ownership. Making racehorse ownership accessible, transparent, and liquid through modern technology and blockchain innovation.",
     foundingDate: "2024",

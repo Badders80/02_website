@@ -84,7 +84,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                   href={getDetailPath(camp.id)}
                   className="block w-full md:w-[60%] flex-shrink-0 md:order-last"
                 >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/[0.04] bg-zinc-950">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-zinc-950">
                     <Image
                       src={camp.horse.image_url}
                       alt={camp.horse.name}

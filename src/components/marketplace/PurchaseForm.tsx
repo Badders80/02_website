@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { usePurchaseFlow } from "@/lib/usePurchaseFlow";
+import { useRouter } from "next/navigation";
 
 interface HltData {
   id: string;
@@ -23,8 +23,12 @@ interface PurchaseFormProps {
 }
 
 export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
-  const { user, kycStatus, loading } = useAuth();
-  const { purchase, isRedirecting, errorMsg } = usePurchaseFlow();
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const sharesAvailable = hlt.shares_total - hlt.shares_sold;
   const initialShares = sharesAvailable > 0 ? 1 : 0;
@@ -35,13 +39,45 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
   const percentPerShare = hlt.fractional_interest_per_share || (100.0 / hlt.shares_total);
   const totalPercentOwned = percentPerShare * sharesToBuy;
 
-  const handleAction = () => {
-    purchase({
-      hltId: hlt.id,
-      sharesToBuy,
-      allDocumentsChecked: true,
-      sharesAvailable,
-    });
+  const handleAction = async () => {
+    if (!user) {
+      router.push(`/auth/login?redirect=/marketplace/${hlt.id}`);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMsg("");
+
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch("/api/applications/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          user_id: user.uid,
+          hlt_id: hlt.id,
+          email: user.email || "",
+          name: user.displayName || user.email || "Investor",
+          units_requested: sharesToBuy,
+          message: "Expressed interest in acquiring shares via Acquire Stake button"
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: `Failed to submit request: ${res.status}` }));
+        throw new Error(errorData.error || `Failed to submit request: ${res.status}`);
+      }
+
+      setSuccess(true);
+    } catch (err: any) {
+      console.error("Acquisition interest error:", err);
+      setErrorMsg(err.message || "Failed to submit interest. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getDocUrl = (docType: "pds" | "sa" | "term_sheet") => {
@@ -50,16 +86,32 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
 
   const getButtonText = () => {
     if (loading) return "Loading...";
-    if (isRedirecting) return "Redirecting...";
+    if (isSubmitting) return "Registering...";
     if (sharesAvailable <= 0) return "Fully subscribed";
     return "Acquire stake";
   };
 
   const isButtonDisabled = () => {
-    if (loading || isRedirecting) return true;
+    if (loading || isSubmitting) return true;
     if (sharesAvailable <= 0) return true;
     return false;
   };
+
+  if (success) {
+    return (
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 text-center space-y-4">
+        <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 flex items-center justify-center">
+          <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-[18px] font-medium text-white">Interest Registered!</h3>
+        <p className="text-[13px] leading-relaxed text-white/60">
+          We have received your request to acquire {sharesToBuy} units in {horseName}. Our team will contact you shortly to finalize your onboarding.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

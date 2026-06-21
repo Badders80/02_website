@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { execSync } from 'child_process';
+import { getGcpIdentityToken } from '@/lib/gcp-auth';
 
 const PAYMENTS_API_BASE = process.env.PAYMENTS_API_BASE || 
   (process.env.NEXT_PUBLIC_API_BASE 
@@ -19,16 +19,22 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'application/json',
     };
 
-    // Obtain local gcloud identity token if calling GCP Cloud Functions in dev
-    if (PAYMENTS_API_BASE.includes('cloudfunctions.net')) {
-      try {
-        const token = execSync('gcloud auth print-identity-token', { encoding: 'utf-8' }).trim();
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-      } catch (err: any) {
-        console.warn('Failed to obtain gcloud identity token:', err.message);
+    // Get GCP identity token via WIF (Vercel OIDC → GCP STS → SA identity token)
+    const gcpToken = await getGcpIdentityToken(null, PAYMENTS_API_BASE);
+    if (gcpToken) {
+      headers['Authorization'] = `Bearer ${gcpToken}`;
+    }
+
+    // Forward Firebase user token from the browser request
+    let firebaseToken = request.headers.get('x-firebase-token');
+    if (!firebaseToken) {
+      const authHeader = request.headers.get('authorization') || '';
+      if (authHeader.startsWith('Bearer ')) {
+        firebaseToken = authHeader.split('Bearer ')[1];
       }
+    }
+    if (firebaseToken) {
+      headers['X-Firebase-Token'] = firebaseToken;
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3050';

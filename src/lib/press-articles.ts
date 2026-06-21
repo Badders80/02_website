@@ -38,7 +38,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'TOKINVEST',
     date: '2026-01-20',
     excerpt: "Digital syndication is transforming racehorse ownership globally, and Evolution Stables stands at the forefront of this revolution. The partnership between Dubai Racing Club and Tokinvest validates what we've been building in New Zealand—a regulated, accessible model for fractional horse ownership. While Dubai targets elite international campaigns with premium investor tiers, Evolution Stables democratizes the experience for local racing enthusiasts. This landmark partnership proves digital syndication isn't just the future—it's happening now, and Evolution is leading the charge locally.",
-    imageUrl: '/images/press/Tokinvest+DRC.png',
+    imageUrl: '/images/press/tokinvest-drc.png',
   },
   {
     title: 'Tokinvest and Singularry Superapp Partner to Make Regulated Real-World Asset Investing Accessible to Everyone',
@@ -46,7 +46,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'Investing.com',
     date: '2024-12-19',
     excerpt: 'Strategic partnership bringing regulated real-world asset investing to mainstream audiences through innovative digital platforms.',
-    imageUrl: '/images/press/Investing.com.png',
+    imageUrl: '/images/press/investing-com.png',
   },
   {
     title: 'Thoroughbred Ownership Reimagined',
@@ -54,7 +54,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'Trackside',
     date: '2024-11-15',
     excerpt: 'How Evolution Stables is transforming traditional racehorse syndication through digital innovation and blockchain technology.',
-    imageUrl: '/images/press/Trackside.png',
+    imageUrl: '/images/press/trackside.png',
   },
   {
     title: 'Digital Investment in Thoroughbred Horses: The New Frontier',
@@ -62,7 +62,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'BusinessDesk',
     date: '2025-01-16',
     excerpt: 'To most people, a racehorse is a thoroughbred animal that runs around a racetrack. To an emerging group of investors, it represents a digital transaction on a blockchain.',
-    imageUrl: '/images/press/BD-Digital investment.png',
+    imageUrl: '/images/press/businessdesk-digital-investment.png',
   },
   {
     title: 'Tokinvest Appointed by Evolution Stables to Launch Tokenised Racehorse Leases',
@@ -70,7 +70,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'Tokinvest',
     date: '2025-04-04',
     excerpt: 'Tokinvest, the VARA-regulated marketplace transforming real-world asset (RWA) investing, has been appointed by Evolution Stables.',
-    imageUrl: '/images/press/Tokinvest.png',
+    imageUrl: '/images/press/tokinvest.png',
   },
   {
     title: 'Tokinvest Raises $3.2m Pre-Seed for RWA Platform',
@@ -78,7 +78,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'FinTech Global',
     date: '2025-09-30',
     excerpt: 'Founded to democratise access to premium assets, Tokinvest provides a platform for fractional ownership across diverse asset classes.',
-    imageUrl: '/images/press/FinTechGlobal.png',
+    imageUrl: '/images/press/fintech-global.png',
   },
   {
     title: 'Bringing Racing into the Digital Age',
@@ -86,7 +86,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'BusinessDesk',
     date: '2024-10-28',
     excerpt: 'New Zealand racing industry embraces digital transformation with Evolution Stables leading the charge.',
-    imageUrl: '/images/press/BD-Bringing racing into the digital age.png',
+    imageUrl: '/images/press/businessdesk-bringing-racing-into-digital-age.png',
   },
   {
     title: "New Zealand's Evolution Stables Teams Up with Tokinvest for Tokenised Racehorse Leases Ahead of Dubai World Cup",
@@ -94,7 +94,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'Arabian Business',
     date: '2025-01-10',
     excerpt: 'Evolution Stables partners with Tokinvest to bring tokenised racehorse ownership to the Middle East market.',
-    imageUrl: '/images/press/ArabianBusiness.png',
+    imageUrl: '/images/press/arabian-business.png',
   },
   {
     title: "Tokinvest secures VARA's first multi-asset issuance licence, raises $3.2m",
@@ -102,7 +102,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'Gulf Business',
     date: '2025-10-03',
     excerpt: "Tokinvest's $3.2m pre-seed round was backed by VCs, family offices and high-net-worth investors, including Triliv Holdings and Exponential Science.",
-    imageUrl: '/images/press/GulfBusiness.jpg',
+    imageUrl: '/images/press/gulf-business.jpg',
   },
 ];
 
