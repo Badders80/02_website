@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getGcpIdentityToken } from '@/lib/gcp-auth';
 
-const KYC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082';
+const KYC_API_BASE = `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082'}/kyc`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,9 +12,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
     }
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Get GCP identity token (WIF on Vercel, gcloud on local dev)
+    // Auto-resolved from x-vercel-oidc-token request header via next/headers
+    const gcpToken = await getGcpIdentityToken(null, KYC_API_BASE);
+    if (gcpToken) {
+      headers['Authorization'] = `Bearer ${gcpToken}`;
+    }
+
+    // Forward Firebase user token from the browser request
+    let firebaseToken = request.headers.get('x-firebase-token');
+    if (!firebaseToken) {
+      const authHeader = request.headers.get('authorization') || '';
+      if (authHeader.startsWith('Bearer ')) {
+        firebaseToken = authHeader.split('Bearer ')[1];
+      }
+    }
+    if (firebaseToken) {
+      headers['X-Firebase-Token'] = firebaseToken;
+    }
+
     const response = await fetch(`${KYC_API_BASE}/create-session`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ 
         user_id, 
         email, 

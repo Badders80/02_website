@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace | Evolution Stables</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: auto; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Inter Tight', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO ===== */
+        .hero-track {
+            height: 200vh;
+            position: relative;
+        }
+        .hero-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 80%, rgba(20,20,25,0.4) 0%, transparent 60%);
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 48rem;
+            padding: 0 1.5rem;
+        }
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.30);
+            margin-bottom: 2rem;
+        }
+        .hero-headline {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .hero-sub {
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.7;
+            color: rgba(255,255,255,0.50);
+            max-width: 36rem;
+            margin: 0 auto 2.5rem;
+        }
+        .hero-cta {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.60);
+            border: 1px solid rgba(255,255,255,0.20);
+            padding: 14px 36px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+        .hero-cta:hover {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.90);
+            border-color: rgba(255,255,255,0.35);
+        }
+
+        /* ===== NUGGETS — Stacking Sticky Panels ===== */
+        .nuggets-container {
+            position: relative;
+            height: 500vh; /* 5 nuggets × ~100vh scroll each */
+        }
+        .nugget {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        .nugget:nth-child(1) { z-index: 1; }
+        .nugget:nth-child(2) { z-index: 2; }
+        .nugget:nth-child(3) { z-index: 3; }
+        .nugget:nth-child(4) { z-index: 4; }
+
+        .nugget-bg {
+            position: absolute;
+            inset: 0;
+            background: #000000;
+            z-index: -1;
+        }
+        .nugget-faint-img {
+            position: absolute;
+            inset: 0;
+            opacity: 0.06;
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%);
+            z-index: -1;
+        }
+        .nugget-inner {
+            text-align: center;
+            max-width: 42rem;
+            padding: 0 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .nugget-inner.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nugget-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.30);
+            margin-bottom: 1.5rem;
+        }
+        .nugget-headline {
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+        }
+        .nugget-headline-large {
+            font-size: clamp(40px, 7vw, 80px);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+        .nugget-headline-large span {
+            color: rgba(255,255,255,0.65);
+        }
+        .nugget-body {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.75;
+            color: rgba(255,255,255,0.45);
+            max-width: 32rem;
+            margin: 0 auto;
+        }
+        .nugget-sub {
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.35);
+            max-width: 24rem;
+            margin: 1rem auto 0;
+        }
+        .nugget-cta {
+            display: inline-block;
+            margin-top: 2rem;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.40);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+        .nugget-cta:hover {
+            color: rgba(255,255,255,0.75);
+            border-bottom-color: rgba(255,255,255,0.40);
+        }
+        .nugget-badge {
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+            margin-top: 1.5rem;
+        }
+
+        /* ===== IMAGE CAROUSEL — Horizontal on Vertical Scroll ===== */
+        .carousel-track {
+            position: relative;
+            height: 500vh; /* scroll distance drives horizontal translation */
+        }
+        .carousel-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .carousel-strip {
+            display: flex;
+            flex-wrap: nowrap;
+            will-change: transform;
+            height: 100%;
+        }
+        .carousel-panel {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.8s ease, transform 6s ease;
+        }
+        .carousel-panel.active img {
+            filter: grayscale(0%);
+        }
+        .carousel-black {
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-black h2 {
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+        .carousel-black a {
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.40);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+        .carousel-black a:hover {
+            color: rgba(255,255,255,0.75);
+            border-bottom-color: rgba(255,255,255,0.40);
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            border-top: 1px solid rgba(255,255,255,0.04);
+            padding: 48px 24px;
+            text-align: center;
+        }
+        .site-footer p {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .hero-headline { font-size: clamp(28px, 10vw, 48px); }
+            .nugget-headline { font-size: clamp(20px, 6vw, 32px); }
+            .nugget-headline-large { font-size: clamp(32px, 10vw, 56px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero-track" id="heroTrack">
+        <div class="hero-sticky">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <p class="hero-eyebrow">Evolution Stables</p>
+                <h1 class="hero-headline">Ownership, evolved.</h1>
+                <p class="hero-sub">
+                    Regulated digital-syndication for racehorse ownership in New Zealand.
+                    The moments. The access. The stable.
+                </p>
+                <a href="#nuggets" class="hero-cta" onclick="event.preventDefault(); document.getElementById('nuggets').scrollIntoView({behavior:'smooth'});">
+                    Enter the stable
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== NUGGETS — Scroll-Locked Vertical Stack ===== -->
+    <section class="nuggets-container" id="nuggets">
+
+        <!-- Nugget 1: The Model -->
+        <div class="nugget" data-nugget="1">
+            <div class="nugget-bg"></div>
+            <div class="nugget-inner">
+                <p class="nugget-label">The model</p>
+                <h2 class="nugget-headline">Racing ownership has been a closed shop for centuries.</h2>
+                <p class="nugget-body">
+                    Traditional syndicates remain opaque, illiquid, and relationship-gated.
+                    Evolution introduces a regulated, transparent, and accessible framework.
+                </p>
+            </div>
+        </div>
+
+        <!-- Nugget 2: Fixed Priced. Fixed Return. -->
+        <div class="nugget" data-nugget="2">
+            <div class="nugget-bg"></div>
+            <div class="nugget-faint-img" style="background-image: url('https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&q=80&w=1600');"></div>
+            <div class="nugget-inner">
+                <h2 class="nugget-headline-large">Fixed priced.<br><span>Fixed return.</span></h2>
+                <p class="nugget-sub">
+                    No hidden fees. No monthly surprises. What you see is what you own.
+                </p>
+            </div>
+        </div>
+
+        <!-- Nugget 3: Authorised. Regulated. -->
+        <div class="nugget" data-nugget="3">
+            <div class="nugget-bg"></div>
+            <div class="nugget-inner">
+                <p class="nugget-label">Trust</p>
+                <h2 class="nugget-headline">Authorised under New Zealand's governing body.</h2>
+                <p class="nugget-body">
+                    Evolution Stables is an authorised syndicator, operating within the regulatory framework that protects owners.
+                    Every campaign is documented. Every transaction is recorded.
+                </p>
+                <p class="nugget-badge">NZTR Authorised Syndicator · FMA Equine Exemptions</p>
+            </div>
+        </div>
+
+        <!-- Nugget 4: Taste the Thrill -->
+        <div class="nugget" data-nugget="4">
+            <div class="nugget-bg"></div>
+            <div class="nugget-inner">
+                <p class="nugget-label">Experience</p>
+                <h2 class="nugget-headline">Taste the thrill of ownership.</h2>
+                <p class="nugget-body">
+                    A level of commitment and risk that suits you. From a single share to a significant stake —
+                    ownership is no longer reserved for the few.
+                </p>
+                <a href="#carousel" class="nugget-cta" onclick="event.preventDefault(); document.getElementById('carousel').scrollIntoView({behavior:'smooth'});">
+                    Meet the stable →
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===== IMAGE CAROUSEL — Horizontal on Vertical Scroll ===== -->
+    <section class="carousel-track" id="carousel">
+        <div class="carousel-sticky">
+            <div class="carousel-strip" id="carouselStrip">
+
+                <div class="carousel-panel" data-panel="0">
+                    <img src="https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&q=80&w=1920" alt="Prudentia">
+                </div>
+
+                <div class="carousel-panel" data-panel="1">
+                    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&q=80&w=1920" alt="Hotta">
+                </div>
+
+                <div class="carousel-panel" data-panel="2">
+                    <img src="https://images.unsplash.com/photo-1551887373-6edba6dbaa95?auto=format&fit=crop&q=80&w=1920" alt="Horse 3">
+                </div>
+
+                <div class="carousel-panel" data-panel="3">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1920" alt="Horse 4">
+                </div>
+
+                <div class="carousel-panel carousel-black" data-panel="4">
+                    <h2>Meet the stable</h2>
+                    <a href="/stables">View the whole stable →</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <p>© 2026 Evolution Stables. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // ===== HERO SCROLL REVEAL =====
+        const heroTrack = document.getElementById('heroTrack');
+        const heroContent = document.querySelector('.hero-content');
+
+        // ===== NUGGETS OBSERVER =====
+        const nuggets = document.querySelectorAll('.nugget-inner');
+        const nuggetObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.4, rootMargin: '0px 0px -10% 0px' });
+
+        nuggets.forEach(n => nuggetObserver.observe(n));
+
+        // ===== IMAGE CAROUSEL — Horizontal Scroll =====
+        const carouselTrack = document.getElementById('carousel');
+        const carouselStrip = document.getElementById('carouselStrip');
+        const carouselPanels = document.querySelectorAll('.carousel-panel');
+
+        let ticking = false;
+
+        function updateCarousel() {
+            const trackRect = carouselTrack.getBoundingClientRect();
+            const trackHeight = carouselTrack.offsetHeight;
+            const viewHeight = window.innerHeight;
+
+            const totalScrollable = trackHeight - viewHeight;
+            const currentScroll = -trackRect.top;
+            const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
+
+            const stripWidth = carouselStrip.scrollWidth;
+            const viewWidth = window.innerWidth;
+            const maxDelta = Math.max(0, stripWidth - viewWidth);
+
+            if (maxDelta > 0) {
+                const scrollX = progress * maxDelta;
+                carouselStrip.style.transform = `translateX(-${scrollX}px)`;
+
+                // Activate panel based on which is in centre view
+                const panelWidth = viewWidth;
+                const activeIndex = Math.min(
+                    carouselPanels.length - 1,
+                    Math.floor((scrollX + viewWidth * 0.5) / panelWidth)
+                );
+
+                carouselPanels.forEach((panel, i) => {
+                    if (i === activeIndex) {
+                        panel.classList.add('active');
+                    } else {
+                        panel.classList.remove('active');
+                    }
+                });
+            }
+
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateCarousel);
+                ticking = true;
+            }
+        });
+
+        // Initial call
+        updateCarousel();
+    </script>
+
+</body>
+</html>

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 import { AuthProvider } from "@/lib/auth-context";
-import { Geist } from "next/font/google";
+import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { FAQStructuredData } from "@/components/seo/FAQStructuredData";
+import { getPressArticlesForStructuredData } from "@/lib/press-articles";
+import { faqItems } from "@/lib/faq-items";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
+const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://evolutionstables.nz"),
@@ -37,12 +43,12 @@ export const metadata: Metadata = {
     locale: "en_NZ",
     url: "https://evolutionstables.nz",
     siteName: "Evolution Stables",
-    title: "Evolution Stables - Digital Racehorse Ownership",
+    title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
     description:
-      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
+      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid through blockchain innovation.",
     images: [
       {
-        url: "/images/Logo-Gold-Favicon.png",
+        url: "/images/brand/legacy/legacy-logo-gold-favicon.png",
         width: 1200,
         height: 630,
         alt: "Evolution Stables Logo",
@@ -53,14 +59,14 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@EvolutionStables",
     creator: "@EvolutionStables",
-    title: "Evolution Stables - Digital Racehorse Ownership",
+    title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
     description:
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
   },
   icons: {
-    icon: "/images/Logo-Gold-Favicon.png",
-    shortcut: "/images/Logo-Gold-Favicon.png",
-    apple: "/images/Logo-Gold-Favicon.png",
+    icon: "/images/brand/legacy/legacy-logo-gold-favicon.png",
+    shortcut: "/images/brand/legacy/legacy-logo-gold-favicon.png",
+    apple: "/images/brand/legacy/legacy-logo-gold-favicon.png",
   },
   robots: {
     index: true,
@@ -72,6 +78,9 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 
@@ -86,9 +95,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-NZ" className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-black text-foreground antialiased">
-        <AuthProvider>{children}</AuthProvider>
+    <html lang="en-NZ" className={cn("font-sans", geist.variable, geistMono.variable)} suppressHydrationWarning>
+      <head>
+        <StructuredData pressArticles={getPressArticlesForStructuredData()} />
+        <FAQStructuredData items={faqItems} />
+      </head>
+      <body className="min-h-screen bg-black text-foreground antialiased relative" suppressHydrationWarning>
+        <SmoothScrollProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </SmoothScrollProvider>
       </body>
     </html>
   );

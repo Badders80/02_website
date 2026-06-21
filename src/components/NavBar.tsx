@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { LOGOS } from '@/lib/assets';
 import { GlowPillButton } from '@/components/ui/GlowPillButton';
+import { useAuth } from '@/lib/auth-context';
 
 /**
  * Navigation links configuration
@@ -28,6 +29,7 @@ const navLinks = [
  * - Responsive mobile menu
  */
 export function NavBar() {
+  const { user, signOut, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -86,10 +88,14 @@ export function NavBar() {
           : 'bg-black/40 text-white'
       } ${visible ? 'opacity-100 translate-y-0' : '-translate-y-4 opacity-0'}`}
       style={{
-        backdropFilter: 'blur(24px) saturate(120%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(120%)',
-        maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)'
+        backdropFilter: 'blur(32px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(160%)',
+        ...(isMenuOpen
+          ? {}
+          : {
+              maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+            }),
       }}
     >
       <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center px-6 sm:px-10 lg:px-12">
@@ -135,17 +141,34 @@ export function NavBar() {
           </div>
         </div>
 
-        {/* Right Side Actions: CTA Button, Menu Toggle */}
+        {/* Right Side Actions: User Menu or CTA, Menu Toggle */}
         <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:flex-1 lg:justify-end lg:gap-4">
-          <GlowPillButton
-            onClick={() => {
-              const el = document.getElementById('about');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            wrapperClassName="hidden lg:block"
-          >
-            Get Started
-          </GlowPillButton>
+          {loading ? (
+            <div className="hidden lg:block h-10 w-32 bg-white/5 rounded-full animate-pulse" />
+          ) : user ? (
+            <div className="hidden lg:flex items-center gap-4">
+              <span className="text-[12px] font-[300] tracking-[0.15em] uppercase text-white/50">
+                Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
+              </span>
+              <GlowPillButton
+                onClick={async () => {
+                  await signOut();
+                  window.location.reload();
+                }}
+              >
+                Sign Out
+              </GlowPillButton>
+            </div>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="hidden lg:block"
+            >
+              <GlowPillButton>
+                Get Started
+              </GlowPillButton>
+            </Link>
+          )}
 
           {/* Hamburger Menu - Mobile Only */}
           <button
@@ -170,13 +193,13 @@ export function NavBar() {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-background/80 backdrop-blur-2xl border-t border-white/[0.03]" style={{ backdropFilter: 'blur(40px) saturate(150%)' }}>
+        <div className="md:hidden bg-black/80 border-t border-white/[0.06]">
           <div className="space-y-1 px-6 py-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="group block rounded-xl px-4 py-3.5 text-[14px] font-light tracking-wide uppercase text-white/60 transition-all duration-300 hover:bg-white/[0.04] hover:text-white active:scale-[0.98]"
+                className="group block rounded-xl px-4 py-3.5 text-[14px] font-light tracking-wide uppercase text-white transition-all duration-300 hover:bg-white/10 hover:text-white active:scale-[0.98]"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="relative">
@@ -187,16 +210,36 @@ export function NavBar() {
             ))}
 
             <div className="space-y-3 pt-6 border-t border-white/[0.05] mt-4">
-              <button
-                onClick={() => {
-                  const el = document.getElementById('about');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                  setIsMenuOpen(false);
-                }}
-                className="w-full block rounded-full bg-gradient-to-b from-primary via-primary to-primary/90 px-4 py-3 text-center text-label uppercase text-black font-medium transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,169,100,0.3)] hover:brightness-110 active:scale-[0.98]"
-              >
-                Get Started
-              </button>
+              {user ? (
+                <div className="space-y-3">
+                  <div className="px-4 py-2 text-xs uppercase tracking-wider text-white/40">
+                    Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
+                  </div>
+                  <button
+                    onClick={async () => {
+                      await signOut();
+                      setIsMenuOpen(false);
+                      window.location.reload();
+                    }}
+                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-center text-sm text-white/60 font-medium hover:bg-white/[0.08] hover:text-white transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="block"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <GlowPillButton
+                    wrapperClassName="w-full"
+                    className="w-full justify-center py-3.5 text-[12px] tracking-[0.15em]"
+                  >
+                    Get Started
+                  </GlowPillButton>
+                </Link>
+              )}
             </div>
           </div>
         </div>

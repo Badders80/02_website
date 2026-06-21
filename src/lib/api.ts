@@ -5,14 +5,40 @@
  * - SSOT API: https://australia-southeast1-evolution-engine.cloudfunctions.net/ssot
  * - Assets API: https://australia-southeast1-evolution-engine.cloudfunctions.net/assets
  * - KYC API: https://australia-southeast1-evolution-engine.cloudfunctions.net/kyc
+ * - Applications API: https://australia-southeast1-evolution-engine.cloudfunctions.net/applications
+ * 
+ * All API calls include a Firebase ID token in the Authorization header.
+ * The token is obtained from anonymous sign-in (public browsing) or the
+ * current authenticated user.
+ * 
+ * When targeting Cloud Functions (production), calls are routed through
+ * the Next.js API proxy (/api/proxy/...) which forwards to the Cloud Run proxy,
+ * since Cloud Functions have org-policy restrictions on direct public access.
+ * The Cloud Run proxy authenticates as the website-api@ service account.
  */
 
+import { getAuthToken } from "./auth-token";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";
+const IS_CLOUD_FUNCTION = API_BASE.includes("cloudfunctions.net");
 
 async function apiCall(endpoint: string, options?: RequestInit) {
-  const res = await fetch(`${API_BASE}${endpoint}`, {
+  // Get auth token (anonymous sign-in if no user)
+  const token = await getAuthToken();
+
+  // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
+  // Server-side calls need an absolute URL (relative fetches fail on the server)
+  const host = typeof window === "undefined"
+    ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+    : "";
+  const url = IS_CLOUD_FUNCTION
+    ? `${host}/api/proxy${endpoint}`
+    : `${API_BASE}${endpoint}`;
+
+  const res = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { "x-firebase-token": token } : {}),
       ...options?.headers,
     },
     ...options,
@@ -44,7 +70,7 @@ export async function createHorse(data: HorseCreatePayload) {
 }
 
 export async function extractFromLoveracing(url: string) {
-  return apiCall("/extract", {
+  return apiCall("/ssot/extract", {
     method: "POST",
     body: JSON.stringify({ url }),
   });
@@ -72,8 +98,18 @@ export async function createTrainer(data: any) {
   });
 }
 
-export async function getHlts() {
-  return apiCall("/ssot/hlts");
+export async function getHlts(params?: { status?: string; horse_microchip?: string; resolve?: boolean }) {
+  const query = new URLSearchParams();
+  if (params?.status) query.set("status", params.status);
+  if (params?.horse_microchip) query.set("horse_microchip", params.horse_microchip);
+  if (params?.resolve) query.set("resolve", "true");
+  
+  const queryString = query.toString();
+  return apiCall(`/ssot/hlts${queryString ? `?${queryString}` : ""}`);
+}
+
+export async function getHltById(id: string, resolve = false) {
+  return apiCall(`/ssot/hlts/${id}${resolve ? "?resolve=true" : ""}`);
 }
 
 export async function createHlt(data: any) {
@@ -83,11 +119,40 @@ export async function createHlt(data: any) {
   });
 }
 
+export async function getHoldings(userId: string) {
+  return apiCall(`/ssot/holdings?user_id=${userId}`);
+}
+
+export async function getContent(params?: { horse_microchip?: string; content_type?: string; status?: string }) {
+  const query = new URLSearchParams();
+  if (params?.horse_microchip) query.set("horse_microchip", params.horse_microchip);
+  if (params?.content_type) query.set("content_type", params.content_type);
+  if (params?.status) query.set("status", params.status);
+  
+  const queryString = query.toString();
+  return apiCall(`/ssot/content${queryString ? `?${queryString}` : ""}`);
+}
+
+
 // ─── Assets API ────────────────────────────────────────────────────────────────
 
 export async function uploadAsset(formData: FormData) {
-  const res = await fetch(`${API_BASE}/assets/upload`, {
+  const token = await getAuthToken();
+
+  // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
+  const host = typeof window === "undefined"
+    ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+    : "";
+  const url = IS_CLOUD_FUNCTION
+    ? `${host}/api/proxy/assets/upload`
+    : `${API_BASE}/assets/upload`;
+
+  const res = await fetch(url, {
     method: "POST",
+    headers: {
+      // Don't set Content-Type for FormData — browser sets multipart boundary
+      ...(token ? { "x-firebase-token": token } : {}),
+    },
     body: formData,
   });
 
@@ -109,9 +174,13 @@ export async function retrieveAssets(entityType?: string, entityId?: string) {
 // ─── KYC API ──────────────────────────────────────────────────────────────────
 
 export async function createKYCSession(userId: string, email?: string) {
+  const token = await getAuthToken();
   const res = await fetch("/api/kyc/create-session", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ user_id: userId, email }),
   });
 

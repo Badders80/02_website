@@ -1,11 +1,14 @@
 # Evolution Stables — Website Build Summary
 
-**Date:** 2026-05-20  
-**Status:** � Phase 2 — Fresh Build (Press section complete)  
+**Date:** 2026-06-17  
+**Status:** 🟡 Phase 5 — Production Ready (WIF Configuration Required)  
 **Repository:** `02_website/`
 
 > **This is the map.** What the project is, what exists, the rules.
-> For session-by-session progress, see [PROGRESS.md](PROGRESS.md).`
+> For session-by-session progress, see [PROGRESS.md](PROGRESS.md).
+
+**CURRENT BLOCKER:** GCP Workload Identity Provider needs manual configuration.
+See: [docs/SESSION_BRIEF_2026_06_17.md](docs/SESSION_BRIEF_2026_06_17.md)
 
 ---
 
@@ -59,8 +62,8 @@ Website (Vercel) → API Calls → Backend (GCP)
 
 ## What Exists Now
 
-**Files:** ~35 source files  
-**Folders:** Complete skeleton + key components
+**Files:** ~45 source files  
+**Folders:** Complete skeleton + key components + auth infrastructure + API proxy
 
 ```
 02_website/
@@ -70,10 +73,16 @@ Website (Vercel) → API Calls → Backend (GCP)
 │   │   ├── press/page.tsx        ← Press page (3-col grid, SEO)
 │   │   ├── admin/                ← Admin dashboard (CRUD UI)
 │   │   ├── marketplace/page.tsx  ← Marketplace landing
-│   │   └── mystable/page.tsx     ← User dashboard
+│   │   ├── marketplace-sandbox/  ← Interactive sandbox with "Apply to Own"
+│   │   ├── mystable/page.tsx     ← User dashboard
+│   │   ├── mystable-sandbox/     ← Sandbox investor dashboard
+│   │   ├── handshake/page.tsx    ← Backend handshake diagnostics page
+│   │   ├── api/proxy/[...path]/  ← API proxy -> Cloud Run -> Cloud Functions
+│   │   └── api/kyc/              ← KYC session creation endpoint
 │   ├── components/
 │   │   ├── NavBar.tsx            ← Navigation
 │   │   ├── Footer.tsx            ← Footer
+│   │   ├── KycBanner.tsx         ← KYC status banner
 │   │   └── sections/
 │   │       ├── HeroSection.tsx
 │   │       ├── PressShowcaseSection.tsx ← Production code (logos + carousel)
@@ -83,7 +92,12 @@ Website (Vercel) → API Calls → Backend (GCP)
 │   │       └── FAQSection.tsx
 │   └── lib/
 │       ├── press-articles.ts     ← Press data
-│       └── api.ts                ← API client
+│       ├── api.ts                ← API client (routes through proxy)
+│       ├── gcp-auth.ts           ← WIF token exchange for Vercel→GCP
+│       ├── auth.ts               ← Firebase auth utilities
+│       ├── auth-context.tsx       ← Auth context provider
+│       ├── firebase.ts           ← Firebase client init
+│       └── usePurchaseFlow.ts    ← KYC purchase flow hook
 ├── public/images/                ← ~40 extracted assets
 ├── dna/content/
 │   ├── press.json                ← Press articles
@@ -99,15 +113,42 @@ Website (Vercel) → API Calls → Backend (GCP)
 
 ## Architecture
 
-| Feature | Frontend | Backend |
-|---------|----------|---------|
-| **Browse horses** | Display UI | `GET /ssot/horses` |
-| **KYC verification** | Redirect UI | `POST /kyc/create-session` |
-| **Login/auth** | Firebase UI | Token verification |
+| Feature | Frontend | Backend | Status |
+|---------|----------|---------|--------|
+| **Browse horses** | Marketplace sandbox | `GET /ssot/horses` (via Cloud Run proxy) | 🟡 Auth pending |
+| **Assets/media** | Image display | `GET /assets/*` (via Cloud Run proxy) | 🟡 Auth pending |
+| **KYC verification** | Redirect to Stripe Identity | `POST /kyc/create-session` (via Cloud Run proxy) | 🟡 Auth pending |
+| **Login/auth** | Firebase UI + gcp-auth.ts | Token verification in Cloud Functions | ✅ Code ready |
+| **Auth pipeline** | WIF → `website-api@` SA | Vercel OIDC → GCP STS → identity token | 🟡 OIDC not enabled |
 
-**Environment:**
+### Request Flow
+```
+Browser ──Firebase ID Token──→ Vercel (Next.js)
+                                   │
+                              src/app/api/proxy/[...path]/
+                                   │
+                            src/lib/gcp-auth.ts (WIF exchange)
+                                   │
+                         Vercel OIDC Token ─→ GCP STS ─→ identity token
+                                   │
+                         Cloud Run: evolution-api-proxy
+                                   │
+                         ┌─────────┼─────────┐
+                         ▼         ▼         ▼
+                    ssot CF   assets CF   kyc CF
+                    (Firebase Auth middleware on all 3)
+```
+
+### GCP Infrastructure
+- **Cloud Functions:** ssot (v13), assets (v5), kyc (v9) — all ACTIVE with Firebase Auth
+- **Cloud Run:** evolution-api-proxy — SERVING, IAM bridge between Vercel and CFs
+- **WIF:** vercel-pool / vercel-oidc — OIDC provider linked to https://oidc.vercel.com
+- **Service Account:** website-api@evolution-engine.iam.gserviceaccount.com
+
+### Environment
 ```env
 NEXT_PUBLIC_API_BASE=https://australia-southeast1-evolution-engine.cloudfunctions.net
+NEXT_PUBLIC_BYPASS_AUTH_KYC=true  # local dev only
 ```
 
 ---
@@ -121,6 +162,7 @@ NEXT_PUBLIC_API_BASE=https://australia-southeast1-evolution-engine.cloudfunction
 5. **Backend handshake** — All data via HTTP calls to `01_evolution/`
 6. **No secrets** — Public keys only, secrets live in backend
 7. **Production as source of truth** — Copy exact code from Evolution-3.1 GitHub repo instead of recreating from scratch
+8. **WIF auth for Vercel→GCP** — All API calls route through Cloud Run proxy using Workload Identity Federation; no `allUsers` IAM bindings, no service account keys
 
 ---
 

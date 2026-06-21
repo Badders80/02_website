@@ -1,64 +1,108 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import footerData from "@/dna/content/footer.json";
 
-export function Footer() {
-  const [displayText, setDisplayText] = useState("");
+interface FooterProps {
+  minimal?: boolean;
+}
+
+export function Footer({ minimal = false }: FooterProps) {
+  const [visible, setVisible] = useState(false);
+  const [startCursor, setStartCursor] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // TypeWriter effect for "Has Arrived"
+  // Set visible on intersection
   useEffect(() => {
-    const text = footerData.tagline.typewriter;
-    let index = 0;
-    const typingDelay = setTimeout(() => {
-      const typeInterval = setInterval(() => {
-        if (index < text.length) {
-          setDisplayText(text.slice(0, index + 1));
-          index++;
-        } else {
-          clearInterval(typeInterval);
+    if (minimal) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
         }
-      }, 100);
-      return () => clearInterval(typeInterval);
-    }, 500);
+      },
+      { threshold: 0.6 }
+    );
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [minimal]);
 
-    return () => clearTimeout(typingDelay);
-  }, []);
-
-  // Cursor blink
+  // Delay cursor blink until reveal completes (approx 600ms start + 800ms duration)
   useEffect(() => {
+    if (minimal || !visible) return;
+    const timer = setTimeout(() => {
+      setStartCursor(true);
+    }, 1400);
+    return () => clearTimeout(timer);
+  }, [visible, minimal]);
+
+  // Cursor blink interval
+  useEffect(() => {
+    if (minimal || !startCursor) return;
     const cursorInterval = setInterval(() => {
       setShowCursor((prev) => !prev);
     }, 530);
     return () => clearInterval(cursorInterval);
-  }, []);
+  }, [minimal, startCursor]);
+
+  const line1Style = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(12px)",
+    transition: visible
+      ? "opacity 800ms cubic-bezier(0.16, 1, 0.3, 1) 400ms, transform 800ms cubic-bezier(0.16, 1, 0.3, 1) 400ms"
+      : "none",
+  };
+
+  const line2Style = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(12px)",
+    transition: visible
+      ? "opacity 800ms cubic-bezier(0.16, 1, 0.3, 1) 600ms, transform 800ms cubic-bezier(0.16, 1, 0.3, 1) 600ms"
+      : "none",
+  };
 
   return (
     <footer className="relative bg-black overflow-hidden">
       <div className="mx-auto flex max-w-6xl flex-col px-8 pt-16 pb-12 md:px-16 md:pt-24 md:pb-16">
         {/* Hero Tagline - Centerpiece */}
-        <div className="flex flex-col items-center justify-center text-center py-16 md:py-24 animate-fade-in">
-          <div className="max-w-4xl space-y-8">
-            <div className="flex flex-col items-center gap-2">
-              <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-white tracking-tight">
-                The Future of{" "}
-                <span className="text-gold">Ownership</span>
-              </h2>
-              <div className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-white">
-                {displayText}
-                <span className={`${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`}>|</span>
+        {!minimal && (
+          <div className="flex flex-col items-center justify-center text-center py-16 md:py-24 animate-fade-in">
+            <div className="max-w-4xl space-y-8">
+              <div ref={containerRef} className="flex flex-col items-center gap-4">
+                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight flex flex-col items-center gap-3">
+                  {/* Row 1: The Future of Ownership */}
+                  <span style={line1Style} className="inline-block">
+                    The Future of <span className="text-gold">Ownership</span>
+                  </span>
+                  {/* Row 2: Has Arrived | */}
+                  <span style={line2Style} className="inline-block flex items-center justify-center">
+                    Has Arrived
+                    <span
+                      style={{
+                        opacity: startCursor && showCursor ? 1 : 0,
+                        transition: "opacity 150ms",
+                      }}
+                      className="ml-1 text-white/50 animate-fade-in"
+                    >
+                      |
+                    </span>
+                  </span>
+                </h2>
               </div>
+              <p className="text-[11px] md:text-[12px] font-light tracking-[0.15em] uppercase text-white/40">
+                {footerData.tagline.subtitle}
+              </p>
             </div>
-            <p className="text-sm md:text-base font-light text-gray-400">
-              {footerData.tagline.subtitle}
-            </p>
           </div>
-        </div>
+        )}
 
         {/* Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
+        {!minimal && (
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
+        )}
 
         {/* Bottom Section - Footer Bar */}
         <div className="flex flex-col gap-6 text-xs text-muted md:flex-row md:justify-between md:items-center">

@@ -1,20 +1,24 @@
+'use client';
+
 export function MarketplaceSection() {
   return (
-    <section id="marketplace" className="py-56 bg-black">
+    <section id="marketplace" className="py-56 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
-        {/* Label */}
+        {/* Original Regulated Marketplace Label */}
         <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
           REGULATED MARKETPLACE
         </p>
 
         {/* Headline */}
         <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
-          Transformation Powered by{" "}
+          Transformation Powered
+          <br />
+          by{" "}
           <a
             href="https://tokinvest.capital/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#21B981] hover:text-[#2dd4a4] transition-all"
+            className="text-[#21B981] hover:!text-[#2dd4a4] hover:font-normal hover:tracking-[-0.02em] transition-all"
           >
             Tokinvest
           </a>
@@ -24,8 +28,8 @@ export function MarketplaceSection() {
         <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
           Behind our integrated marketplace, Tokinvest delivers the raw
           horsepower that powers digital-syndication — built on regulated,
-          financial-grade infrastructure, tailored from institutional finance
-          and adapted to meet the demands of modern owners.
+          financial-grade infrastructure, tailored from institutional
+          finance and adapted to meet the demands of modern owners.
         </p>
 
         {/* Features */}
@@ -33,8 +37,9 @@ export function MarketplaceSection() {
           <div className="grid grid-cols-1 md:grid-cols-3">
             {/* Card 1 - Discover Opportunities */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
+              {/* Vertical lines */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-white/[0.08]" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-gold origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
@@ -69,8 +74,9 @@ export function MarketplaceSection() {
 
             {/* Card 2 - Trade with Confidence */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
+              {/* Vertical lines */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-white/[0.08]" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-gold origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
@@ -105,8 +111,9 @@ export function MarketplaceSection() {
 
             {/* Card 3 - Real-Time Insight */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
+              {/* Vertical lines */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-white/[0.08]" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-gold origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
@@ -147,17 +154,24 @@ export function MarketplaceSection() {
 
           {/* CTA Button */}
           <div className="mt-32">
-            <a
-              href="https://tokinvest.capital/report"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-8 py-3.5 text-[11px] font-light tracking-wider uppercase text-white/70 transition-all duration-300 hover:text-white hover:scale-105 focus:outline-none bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] overflow-hidden"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent animate-shimmer opacity-50" />
-              <span className="relative z-10 inline-block transition-all duration-300 group-hover:scale-110">
-                Learn More About Tokinvest
-              </span>
-            </a>
+            <div className="relative group inline-block">
+              {/* Subtle breathing glow on hover */}
+              <div className="absolute -inset-[2px] rounded-full bg-gradient-to-r from-white/5 via-white/10 to-white/5 blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+              {/* Gold accent on hover - bottom highlight */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-0 bg-gradient-to-r from-transparent via-[#d4a964] to-transparent opacity-0 blur-[2px] group-hover:w-full group-hover:opacity-100 transition-all duration-500 ease-out" />
+              <a
+                href="https://tokinvest.capital/report"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-8 py-3.5 text-[11px] font-light tracking-wider uppercase text-white/70 transition-all duration-300 hover:text-white hover:scale-105 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] overflow-hidden"
+              >
+                {/* Gentle shimmer animation */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent animate-shimmer opacity-50" />
+                <span className="relative z-10 inline-block transition-all duration-300 group-hover:scale-110">
+                  Learn More About Tokinvest
+                </span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

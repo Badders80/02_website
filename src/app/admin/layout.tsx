@@ -43,24 +43,24 @@ export default function AdminLayout({
   const { user, loading, role, kycStatus, isAdmin } = useAuth();
   const router = useRouter();
 
-  // AUTH BYPASSED FOR DEV — re-enable before production
-  // useEffect(() => {
-  //   if (!loading && !user) {
-  //     router.push("/auth/login");
-  //   }
-  // }, [user, loading, router]);
+  // Auth guard: require login AND admin role
+  useEffect(() => {
+    if (!loading && (!user || !isAdmin)) {
+      router.push("/auth/login");
+    }
+  }, [user, loading, isAdmin, router]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex min-h-screen items-center justify-center bg-black">
-  //       <div className="text-muted">Loading...</div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="text-muted">Loading...</div>
+      </div>
+    );
+  }
 
-  // if (!user) {
-  //   return null;
-  // }
+  if (!user || !isAdmin) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -108,6 +108,12 @@ export default function AdminLayout({
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-white/[0.04] hover:text-foreground"
           >
             📄 HLTs
+          </Link>
+          <Link
+            href="/admin/applications"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-white/[0.04] hover:text-foreground"
+          >
+            📝 Applications
           </Link>
 
           <div className="mb-2 mt-6 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted">

@@ -53,7 +53,66 @@
 
 ---
 
+## 5. Email Notification Implementation — 🔴 TODO
+
+- **Status:** Placeholder implemented (logs to console)
+- **What's needed:** Choose email provider and implement actual sending
+- **Handoff:** User chooses email provider (Gmail API, SendGrid, etc.)
+
+**Options:**
+- Gmail API (using existing email-ingest infrastructure)
+- SendGrid (35k emails/month free)
+- Firebase Functions email trigger (100/day free)
+
+**ETA:** 2-4 hours
+
+**Status:** 🔴 TODO
+
+---
+
+## 6. Cloud Function Deployment — 🔴 TODO
+
+- **Status:** Code ready, needs deployment
+- **What's needed:** Deploy `api/applications` Cloud Function
+- **Handoff:** User runs deployment command
+
+**Command:**
+```bash
+cd api/applications
+gcloud functions deploy applications \
+  --runtime python311 \
+  --trigger-http \
+  --region australia-southeast1 \
+  --allow-unauthenticated \
+  --set-env-vars="ALLOWED_ORIGINS=https://evolution.2.0.vercel.app,https://02website-pearl.vercel.app"
+```
+
+**ETA:** 15 minutes
+
+**Status:** 🔴 TODO
+
+---
+
+## 7. Email Notification Implementation — 🔴 TODO
+
+- **Status:** Placeholder implemented (logs to console)
+- **What's needed:** Choose email provider and implement actual sending
+- **Handoff:** User chooses email provider (Gmail API, SendGrid, etc.)
+
+**Options:**
+- Gmail API (using existing email-ingest infrastructure)
+- SendGrid (35k emails/month free)
+- Firebase Functions email trigger (100/day free)
+
+**ETA:** 2-4 hours
+
+**Status:** 🔴 TODO
+
+---
+
 ## Related
 
 - **[docs/PROGRESS.md](docs/PROGRESS.md)** — Current progress
 - **[01_evolution/BLOCKERS.md](../01_evolution/BLOCKERS.md)** — Backend blockers
+- **[docs/APPLICATION_SYSTEM.md](docs/APPLICATION_SYSTEM.md)** — Application system documentation
+- **[docs/IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md)** — Implementation summary

@@ -8,7 +8,7 @@ import {
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, isAuthInitialized } from "./firebase";
 
 interface AuthContextType {
   user: User | null;
@@ -30,7 +30,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [kycStatus, setKycStatus] = useState("none");
 
   useEffect(() => {
-    if (!auth || !(auth as any)._getRecaptchaConfig) {
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+
+    if (isBypass) {
+      const mockLoggedOut = typeof window !== "undefined" && localStorage.getItem("mock_signed_out") === "true";
+      if (mockLoggedOut) {
+        setUser(null);
+        setRole("viewer");
+        setKycStatus("none");
+      } else {
+        const mockUser: User = {
+          uid: "mock-user-123",
+          email: "mock-admin@example.com",
+          displayName: "Mock User",
+          getIdTokenResult: async () => ({
+            token: "mock-token",
+            authTime: new Date().toISOString(),
+            issuedAtTime: new Date().toISOString(),
+            expirationTime: new Date().toISOString(),
+            signInProvider: "password",
+            claims: {
+              role: process.env.NEXT_PUBLIC_MOCK_ROLE || "admin",
+              kyc_status: process.env.NEXT_PUBLIC_MOCK_KYC || "verified",
+            },
+          }),
+        } as any;
+        setUser(mockUser);
+        setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
+        setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
+      }
+      setLoading(false);
+      return;
+    }
+
+    if (!isAuthInitialized()) {
       // Firebase not initialized (SSR/build time)
       setLoading(false);
       return;
@@ -48,17 +81,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    if (!auth || !(auth as any)._getRecaptchaConfig) throw new Error("Auth not initialized");
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    if (isBypass) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("mock_signed_out");
+      }
+      const mockUser: User = {
+        uid: "mock-user-123",
+        email: email || "mock-admin@example.com",
+        displayName: "Mock User",
+        getIdTokenResult: async () => ({
+          token: "mock-token",
+          authTime: new Date().toISOString(),
+          issuedAtTime: new Date().toISOString(),
+          expirationTime: new Date().toISOString(),
+          signInProvider: "password",
+          claims: {
+            role: process.env.NEXT_PUBLIC_MOCK_ROLE || "admin",
+            kyc_status: process.env.NEXT_PUBLIC_MOCK_KYC || "verified",
+          },
+        }),
+      } as any;
+      setUser(mockUser);
+      setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
+      setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
+      return;
+    }
+
+    if (!isAuthInitialized()) throw new Error("Auth not initialized");
     await signInWithEmailAndPassword(auth, email, password);
   };
 
   const signUp = async (email: string, password: string) => {
-    if (!auth || !(auth as any)._getRecaptchaConfig) throw new Error("Auth not initialized");
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    if (isBypass) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("mock_signed_out");
+      }
+      const mockUser: User = {
+        uid: "mock-user-123",
+        email: email || "mock-admin@example.com",
+        displayName: "Mock User",
+        getIdTokenResult: async () => ({
+          token: "mock-token",
+          authTime: new Date().toISOString(),
+          issuedAtTime: new Date().toISOString(),
+          expirationTime: new Date().toISOString(),
+          signInProvider: "password",
+          claims: {
+            role: process.env.NEXT_PUBLIC_MOCK_ROLE || "admin",
+            kyc_status: process.env.NEXT_PUBLIC_MOCK_KYC || "verified",
+          },
+        }),
+      } as any;
+      setUser(mockUser);
+      setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
+      setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
+      return;
+    }
+
+    if (!isAuthInitialized()) throw new Error("Auth not initialized");
     await createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signOut = async () => {
-    if (!auth || !(auth as any)._getRecaptchaConfig) return;
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    if (isBypass) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("mock_signed_out", "true");
+      }
+      setUser(null);
+      setRole("viewer");
+      setKycStatus("none");
+      return;
+    }
+
+    if (!isAuthInitialized()) return;
     await firebaseSignOut(auth);
   };
 

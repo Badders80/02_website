@@ -11,6 +11,7 @@ export default {
         panel: "var(--color-surface)",
         "surface-alt": "var(--color-surface-alt)",
         foreground: "var(--color-foreground)",
+        heading: "var(--color-heading)",
         muted: "var(--color-muted)",
         "muted-foreground": "var(--color-muted-foreground)",
         border: "var(--color-border)",
@@ -55,6 +56,7 @@ export default {
       fontFamily: {
         sans: ['"Geist Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
         display: ['"Geist Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace'],
       },
       fontSize: {
         "11": "11px",
@@ -78,6 +80,13 @@ export default {
         "lg": "16px",
         "xl": "24px",
         "2xl": "32px",
+        "3xl": "32px",
+      },
+      transitionDuration: {
+        DEFAULT: "500ms",
+      },
+      transitionTimingFunction: {
+        DEFAULT: "ease-out",
       },
       spacing: {
         // Component spacing
@@ -86,11 +95,17 @@ export default {
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",
+        "bolt-shimmer": "boltShimmer 4s ease-in-out infinite",
         "fade-in": "fadeIn 0.8s ease-out",
       },
       keyframes: {
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        boltShimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "20%": { backgroundPosition: "200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
         fadeIn: {

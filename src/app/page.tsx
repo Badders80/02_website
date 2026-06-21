@@ -27,7 +27,7 @@ export default function HomePage() {
 
         <section className="px-0 md:px-0 m-0 p-0 border-none" data-cta-overlay="off">
           <FixedBg
-            src="/images/Background-hooves-back-and-white.jpg"
+            src="/images/content/background/hooves-black-white.jpg"
             height="h-[50vh]"
             alt="Horse hooves background"
           />
@@ -37,7 +37,7 @@ export default function HomePage() {
 
         <section className="px-0 md:px-0 m-0 p-0 border-none" data-cta-overlay="off">
           <FixedBg
-            src="/images/Landscape-digitaloverlay.jpg"
+            src="/images/content/background/landscape-digital-overlay.jpg"
             height="h-[50vh]"
             alt="Digital landscape background"
           />
@@ -47,7 +47,7 @@ export default function HomePage() {
 
         <section className="px-0 md:px-0 m-0 p-0 border-none">
           <FixedBg
-            src="/images/Horse-and-foal.jpg"
+            src="/images/content/background/horse-and-foal.jpg"
             height="h-[50vh]"
             alt="Horse and foal background"
           />
@@ -56,7 +56,7 @@ export default function HomePage() {
         <MarketplaceSection />
 
         <section id="get-started" className="bg-black">
-          <GrassBg src="/images/Hooves-on-grass.png" alt="Hooves on grass background" />
+          <GrassBg src="/images/content/background/hooves-on-grass.png" alt="Hooves on grass background" />
         </section>
 
         <PressShowcaseSection />
