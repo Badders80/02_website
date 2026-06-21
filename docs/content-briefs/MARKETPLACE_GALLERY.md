@@ -1,7 +1,29 @@
 # Content Brief — Marketplace Gallery Page (`/marketplace`)
-# Version: 1.0.0
-# Status: Active — guides the reframed build
-# Updated: 2026-06-09
+# Version: 1.1.0
+# Status: Active — tone direction locked, ready for build
+# Updated: 2026-06-21
+
+## Session Notes (2026-06-21)
+
+### Decisions Locked
+- **Direction B: Story with substance.** Not pure atmosphere (too opaque for new visitors), not a pitch (violates Fight Club). Founder voice — plain, calm, "this is what we do and why."
+- **No live purchases.** Per-horse page (/marketplace/{id}) replaces Stripe checkout with an apply/enquire model. A form that triggers an email to Alex for follow-up. CTA copy TBD — we know it's there, don't get bogged down in wording yet.
+- **Focus: marketplace page first**, then per-horse page.
+- **Core principle: storytelling over selling.** The balance and tone of content matters more than the mechanics.
+
+### Tone Critique of v1.0.0 Brief
+The v1.0.0 brief had the right STRUCTURE (hero → nuggets → image strip → exit) but the COPY was still half-pitching:
+- "Regulated digital-syndication for racehorse ownership" = fintech pitch language
+- "Evolution introduces a regulated, transparent, and accessible framework" = product explainer
+- "Traditional syndicates remain opaque, illiquid, and relationship-gated" = competitive positioning
+
+These should be rewritten in founder voice — journal entry, not term sheet. Same ideas, different voice. Product mechanics belong on /model or /how-it-works, not on the gallery.
+
+### What Needs To Happen Next
+1. **Rewrite the marketplace page copy** in the brief — shift from pitch to story. Keep structure, change voice.
+2. **Build the marketplace page** to match the rewritten brief (replacing the current shopping-grid ListingGrid).
+3. **Then design the per-horse page** — two-column layout (narrative left, enquiry form right). No Stripe. Apply/enquire sends email to Alex.
+4. **Static data model** — mock campaigns stay as the data source. No backend wiring needed yet.
 
 ## The Rule
 This brief is the single source of truth for what the `/marketplace` gallery page must say and do.
