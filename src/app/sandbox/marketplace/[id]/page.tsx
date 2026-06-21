@@ -217,7 +217,9 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
     try {
       hlt = await getHltById(id, true);
     } catch (err: any) {
-      console.error(`Failed to fetch HLT ${id} in sandbox:`, err.message);
+      // Backend unreachable in local dev (Vercel OIDC → GCP STS only works on Vercel).
+      // This is an expected soft failure — fall back to MOCK_CAMPAIGNS.
+      console.warn(`Sandbox marketplace[${id}]: backend unavailable, using mock data.`, err?.message);
       // Fallback in case of dev testing or missing backend entries
       hlt = MOCK_CAMPAIGNS[id] || MOCK_CAMPAIGNS.prudentia;
     }

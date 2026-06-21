@@ -145,7 +145,9 @@ export default async function MarketplacePage() {
         campaigns = MOCK_CAMPAIGNS;
       }
     } catch (err: any) {
-      console.error("Failed to fetch campaigns for marketplace:", err.message);
+      // Backend unreachable in local dev (Vercel OIDC → GCP STS only works on Vercel).
+      // This is an expected soft failure — fall back to MOCK_CAMPAIGNS.
+      console.warn("Marketplace: backend unavailable, using mock data.", err?.message);
       campaigns = MOCK_CAMPAIGNS;
     }
   }
