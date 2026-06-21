@@ -39,7 +39,7 @@ export default async function CampaignDetailPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Proisir (AUS)",
         dam_name: "Little Bit Irish (NZ)",
-        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/2a02e2f0-ead0-4abf-abca-0b2c84eb1107.JPG",
+        image_url: "/images/content/stables/prudentia-action.png",
         story: `Prudentia is a New Zealand-bred four-year-old mare by Proisir. Trained from Matamata by Lance O'Sullivan and Andrew Scott at Wexford Stables, she has already recorded a maiden victory and performed across a range of distances and track conditions.
 
         Her win came over 1400 metres at Tauranga, where she handled testing Heavy conditions to score decisively. Since breaking her maiden, she has stepped into Rating 65 Benchmark company, continuing her preparation against stronger opposition.
