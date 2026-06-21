@@ -193,7 +193,7 @@ export function NavBar() {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-black/95 backdrop-blur-2xl border-t border-white/[0.06]" style={{ backdropFilter: 'blur(40px) saturate(150%)' }}>
+        <div className="md:hidden bg-black/80 border-t border-white/[0.06]">
           <div className="space-y-1 px-6 py-6">
             {navLinks.map((link) => (
               <Link
