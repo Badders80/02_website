@@ -60,7 +60,7 @@ export default async function MarketplacePage() {
       is_active: false,
       horse: {
         name: "Hottathanafantasy",
-        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/ecff499a-445a-4cf0-a746-29e763e5ec4c/5caf253b-5ed3-485a-a8ba-4e14cf8ecb73.JPG?format=750w",
+        image_url: "/images/content/horses/Hottathan-BG.png",
         story: "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
       },
       stats: {
@@ -78,7 +78,7 @@ export default async function MarketplacePage() {
       is_active: false,
       horse: {
         name: "First Gear",
-        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/0f8455e5-6ae4-4524-9ced-43115c3d966b.png",
+        image_url: "/images/content/horses/FirstGear-BG.png",
         story: "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
       },
       stats: {
@@ -96,7 +96,7 @@ export default async function MarketplacePage() {
       is_active: false,
       horse: {
         name: "I Stole A Manolo",
-        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/24dba76b-c802-4d2a-9257-9b73eb5c28f7/IMG_7126.jpg?format=750w",
+        image_url: "/images/content/horses/IStole-BG.png",
         story: "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
       },
       stats: {

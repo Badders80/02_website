@@ -79,7 +79,7 @@ export default async function CampaignDetailPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Contributer",
         dam_name: "Whiffle",
-        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/ecff499a-445a-4cf0-a746-29e763e5ec4c/5caf253b-5ed3-485a-a8ba-4e14cf8ecb73.JPG?format=750w",
+        image_url: "/images/content/horses/Hottathan-BG.png",
         story: `A promising two-year-old with an elite international pedigree. Currently in her first racing preparation at Wexford Stables under Lance O'Sullivan.
         
         She shows the physical traits of a high-performance athlete ready to make her mark on the New Zealand turf. Pedigree analysis points to middle-distance strength in future campaigns.`,
@@ -117,7 +117,7 @@ export default async function CampaignDetailPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Derryn",
         dam_name: "A'Guin Ace",
-        image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/0f8455e5-6ae4-4524-9ced-43115c3d966b.png",
+        image_url: "/images/content/horses/FirstGear-BG.png",
         story: `Early race success with $20K+ in prizemoney and international buyer interest. Trained by Group 1-winning horseman Stephen Gray at Copper Belt Lodge.
         
         In just five starts he has recorded a win, two placings, and over $20,000 in prizemoney — including turning down a recent six-figure offer from Australian interests.`,
@@ -155,7 +155,7 @@ export default async function CampaignDetailPage({ params }: Props) {
         colour: "Bay",
         sire_name: "Satono Aladdin",
         dam_name: "Canuhandleajandal",
-        image_url: "https://images.squarespace-cdn.com/content/v1/68b3a55795fa0517264bfda3/24dba76b-c802-4d2a-9257-9b73eb5c28f7/IMG_7126.jpg?format=750w",
+        image_url: "/images/content/horses/IStole-BG.png",
         story: `Daughter of Group 1 winner Satono Aladdin with real presence and correct action. In early racing education at Wexford Stables with Lance O'Sullivan & Andrew Scott.
         
         She is being carefully prepared to follow in the footsteps of the stable's many Group 1 champions on the turf.`,
@@ -231,18 +231,18 @@ export default async function CampaignDetailPage({ params }: Props) {
             <div className="space-y-12">
               
               {/* Section A: Cover Media */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-zinc-950">
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
                 {horse?.image_url ? (
                   <>
                     <Image
                       src={horse.image_url}
                       alt={horse.name}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       priority
                     />
-                    {/* Bottom vignette fade overlay (gradient: transparent -> black 80%) */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 pointer-events-none" />
+                    {/* Bottom vignette fade overlay (gradient: transparent -> black 40%) */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                   </>
                 ) : (
                   <div className="flex h-full items-center justify-center text-white/20 text-xs font-light bg-zinc-900">

@@ -84,16 +84,16 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                   href={getDetailPath(camp.id)}
                   className="block w-full md:w-[60%] flex-shrink-0 md:order-last"
                 >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-zinc-950">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
                     <Image
                       src={camp.horse.image_url}
                       alt={camp.horse.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 60vw"
-                      className="object-cover opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100"
+                      className="object-contain opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                     
                     {/* Status Badge */}
                     <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 select-none">
@@ -161,15 +161,15 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                   href={getDetailPath(camp.id)}
                   className="block w-full md:w-[40%] flex-shrink-0 md:order-last"
                 >
-                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-white/[0.03] bg-zinc-950">
+                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl">
                     <Image
                       src={camp.horse.image_url}
                       alt={camp.horse.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 40vw"
-                      className="object-cover opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100"
+                      className="object-contain opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                     
                     {/* Status Badge */}
                     <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 select-none">
