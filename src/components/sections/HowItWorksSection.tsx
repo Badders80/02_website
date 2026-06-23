@@ -44,8 +44,8 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        {/* 3 Cards horizontally aligned */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* 3 Cards — horizontal split (1/3 title, 2/3 body), vertical stack below lg */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {cards.map((card, index) => (
             <div
               key={index}
@@ -59,17 +59,21 @@ export function HowItWorksSection() {
                     "linear-gradient(140deg, rgba(255,255,255,0.06), rgba(67,129,255,0.08) 40%, transparent 70%)",
                 }}
               />
-              <div className="relative space-y-4">
-                <p className="text-sm font-light uppercase tracking-[0.32em] text-white/40">
+              <div className="relative grid grid-cols-1 xl:grid-cols-3 gap-x-8 gap-y-4">
+                {/* Left third — title */}
+                <p className="text-sm font-light uppercase tracking-[0.32em] text-white/40 xl:col-span-1">
                   {card.title.split(" & ")[0]} & <br />
                   {card.title.split(" & ")[1] || ""}
                 </p>
-                <h4 className="text-[21px] font-light text-white leading-tight">
-                  {card.subtitle}
-                </h4>
-                <p className="text-[15px] leading-[1.9] font-light text-white/60">
-                  {card.description}
-                </p>
+                {/* Right two-thirds — subtitle + description */}
+                <div className="space-y-4 xl:col-span-2">
+                  <h4 className="text-[21px] font-light text-white leading-tight">
+                    {card.subtitle}
+                  </h4>
+                  <p className="text-[15px] leading-[1.9] font-light text-white/60">
+                    {card.description}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

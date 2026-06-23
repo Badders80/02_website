@@ -33,7 +33,7 @@ const benefits: BenefitItem[] = [
 export function DigitalSyndicationSection() {
   return (
     <section id="digital-syndication" className="py-56 bg-black text-foreground">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         {/* Section Label */}
         <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
           OUR MODEL
