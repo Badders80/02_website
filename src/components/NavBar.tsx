@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LOGOS } from '@/lib/assets';
@@ -33,10 +33,41 @@ export function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
+  const navRowRef = useRef<HTMLDivElement>(null);
 
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
+  }, []);
+
+  /**
+   * Detect overflow on the nav row — flip to hamburger only when the tabs
+   * actually run out of horizontal room. Lets the tabs render down to ~950px
+   * (where content is ~910px wide) instead of collapsing at a fixed breakpoint.
+   */
+  useEffect(() => {
+    const row = navRowRef.current;
+    if (!row) return;
+
+    const measure = () => {
+      // 1px buffer prevents sub-pixel rounding flicker
+      const overflowing = row.scrollWidth - row.clientWidth > 1;
+      // Safety floor — never keep tabs below 880px regardless of measured width,
+      // guards against sub-100% zoom + unusual font rendering.
+      const tooNarrow = window.innerWidth < 880;
+      setIsCompact(overflowing || tooNarrow);
+    };
+
+    measure();
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(row);
+    window.addEventListener('resize', measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
   }, []);
 
   /**
@@ -98,9 +129,12 @@ export function NavBar() {
             }),
       }}
     >
-      <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center px-6 sm:px-10 lg:px-12">
+      <div
+        ref={navRowRef}
+        className="mx-auto flex h-20 w-full max-w-[1440px] items-center px-6 sm:px-10 lg:px-12"
+      >
         {/* Logo */}
-        <div className="flex flex-1 items-center">
+        <div className="flex flex-1 flex-shrink-0 items-center">
           <Link
             href="/"
             className="group flex shrink-0 items-center transition-all duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-sm"
@@ -119,7 +153,9 @@ export function NavBar() {
         </div>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center">
+        <div
+          className={`flex flex-1 flex-shrink-0 items-center justify-center ${isCompact ? 'hidden' : 'lg:flex'}`}
+        >
           <div className="flex items-center gap-0">
             {navLinks.map((link) => (
               <div
@@ -142,11 +178,11 @@ export function NavBar() {
         </div>
 
         {/* Right Side Actions: User Menu or CTA, Menu Toggle */}
-        <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:flex-1 lg:justify-end lg:gap-4">
+        <div className={`flex flex-1 flex-shrink-0 items-center justify-end gap-4 ${isCompact ? '' : 'lg:flex'}`}>
           {loading ? (
-            <div className="hidden lg:block h-10 w-32 bg-white/5 rounded-full animate-pulse" />
+            <div className={`h-10 w-32 bg-white/5 rounded-full animate-pulse ${isCompact ? 'hidden' : 'lg:block'}`} />
           ) : user ? (
-            <div className="hidden lg:flex items-center gap-4">
+            <div className={`items-center gap-4 ${isCompact ? 'hidden' : 'lg:flex'}`}>
               <span className="text-[12px] font-[300] tracking-[0.15em] uppercase text-white/50">
                 Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
               </span>
@@ -162,7 +198,7 @@ export function NavBar() {
           ) : (
             <Link
               href="/auth/login"
-              className="hidden lg:block"
+              className={isCompact ? 'hidden' : 'lg:block'}
             >
               <GlowPillButton>
                 Get Started
@@ -170,10 +206,10 @@ export function NavBar() {
             </Link>
           )}
 
-          {/* Hamburger Menu - Mobile Only */}
+          {/* Hamburger Menu - shown only when content overflows */}
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center text-secondary/90 transition-all duration-300 hover:text-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-lg hover:bg-white/[0.04] lg:hidden"
+            className={`h-11 w-11 items-center justify-center text-secondary/90 transition-all duration-300 hover:text-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-lg hover:bg-white/[0.04] ${isCompact ? 'flex' : 'hidden'}`}
             onClick={() => setIsMenuOpen((prev) => !prev)}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -193,7 +229,7 @@ export function NavBar() {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-black/80 border-t border-white/[0.06]">
+        <div className="bg-black/80 border-t border-white/[0.06]">
           <div className="space-y-1 px-6 py-6">
             {navLinks.map((link) => (
               <Link
