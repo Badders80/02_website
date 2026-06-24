@@ -1,118 +1,123 @@
-# Blockers & Handoff Points — Website
+# Blockers & Handoff Points — Website (Post-GCP)
 
-## 1. Asset Extraction — 🔶 Ready to Start
-
-- **Status:** Can extract from `Evolution_Content/assets/`
-- **What's needed:** Manual copy of ~15 images
-- **Handoff:** User copies images from backend to frontend
-
-**Checklist:**
-- [ ] Partner logos (Investing.com, BusinessDesk, Trackside, etc.)
-- [ ] Icons (Increased Access, Greater Transparency)
-- [ ] Hero images (Horse-Double-Black.png, Logo.png)
+**Last Updated:** 2026-06-24
+**Supersedes:** v1.0 (GCP-backend architecture — retired)
 
 ---
 
-## 2. Content Extraction — 🔶 Ready to Start
+## GCP Backend — 🔴 RETIRED
 
-- **Status:** Can extract from live site (evolutionstables.nz)
-- **What's needed:** Manual copy of text content
-- **Handoff:** User provides content or I scrape from live site
+GCP Cloud Functions, Firestore, and GCS are retired (billing delinquent). The website is being reframed to operate without them. See [01_evolution/BLOCKERS.md](../01_evolution/BLOCKERS.md) for GCP retirement details.
 
-**Checklist:**
-- [ ] Homepage copy (hero, sections, FAQ)
-- [ ] Press releases (10 releases with metadata)
-- [ ] Footer content (links, social)
+All former blockers referencing GCP APIs, Cloud Function deployment, and backend integration are **moot** — the backend is gone.
 
 ---
 
-## 3. Environment Variables — ⬜ Not Started
+## Active Blockers (Post-GCP Reframe)
 
-- **Status:** Need to configure
-- **What's needed:** Stripe public key, Firebase config
-- **Handoff:** User provides keys from Stripe/Firebase dashboards
+### ~~1. Spreadsheet Inventory Design~~ ✅ DONE
 
-**Variables:**
-- `NEXT_PUBLIC_API_BASE` — Backend URL (known)
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` — From Stripe dashboard
-- `NEXT_PUBLIC_FIREBASE_CONFIG` — From Firebase console
+Sync script built: `scripts/sync_inventory.py` (pure Python stdlib, no deps)
+- `--seed` flag: generates JSON from existing mock data (already run)
+- `--sheet <name>`: syncs one sheet from Google Sheets CSV export
+- No args: syncs all sheets from `sheets_config.json`
+Config template: `scripts/sheets_config.json` (placeholder IDs, needs real sheet IDs)
+CSV templates: `scripts/sheet_templates/` (horses, hlts, trainers, owners, holdings)
+JSON data: `src/data/` (horses.json 4 records, hlts.json 4 records, trainers.json 2, owners.json 2, holdings.json 0)
+TypeScript compiles clean.
 
----
-
-## 4. Deployment — ⬜ Not Started
-
-- **Status:** Vercel account needed
-- **What's needed:** Connect GitHub repo to Vercel
-- **Handoff:** User creates Vercel project
-
-**Steps:**
-1. Push code to GitHub
-2. Connect to Vercel
-3. Set environment variables
-4. Deploy
+**Remaining handoff (user):**
+1. Create Google Sheet with 5 tabs (horses, hlts, trainers, owners, holdings)
+2. Import CSV templates from `scripts/sheet_templates/` into each tab
+3. Share as "Anyone with link"
+4. Copy sheet ID from URL, paste into `scripts/sheets_config.json` replacing `YOUR_SHEET_ID_HERE`
+5. Run `python3 scripts/sync_inventory.py` (no --seed) to verify
+6. Replay workflow: Edit Sheet → `python3 scripts/sync_inventory.py` → `npm run build` → `git commit`
 
 ---
 
-## 5. Email Notification Implementation — 🔴 TODO
+### 3. Stripe Route Rewrite — 🔴 TODO
 
-- **Status:** Placeholder implemented (logs to console)
-- **What's needed:** Choose email provider and implement actual sending
-- **Handoff:** User chooses email provider (Gmail API, SendGrid, etc.)
+**Status:** Not started
+**What's needed:** Install `stripe` server package and rewrite four Next.js API routes to call Stripe directly instead of proxying through GCP:
 
-**Options:**
-- Gmail API (using existing email-ingest infrastructure)
-- SendGrid (35k emails/month free)
-- Firebase Functions email trigger (100/day free)
+| Route | Current (dead — forwards to GCP) | Target |
+|---|---|---|
+| `src/app/api/kyc/create-session/route.ts` | `getGcpIdentityToken()` → `fetch(${KYC_API_BASE}/create-session)` | Call `stripe.identity.VerificationSession.create()` directly |
+| `src/app/api/checkout/create-session/route.ts` | `getGcpIdentityToken()` → `fetch(${PAYMENTS_API_BASE}/create-session)` | Call `stripe.checkout.Session.create()` directly |
+| `src/app/api/kyc/callback/route.ts` | Uses GCP auth for Stripe webhook | Verify Stripe signature directly |
+| `src/app/api/checkout/webhook/route.ts` | Uses GCP auth for Stripe webhook | Verify Stripe signature directly |
 
-**ETA:** 2-4 hours
+**Additional GCP-coupled routes (dormant-ify):** `api/proxy/[...path]/`, `api/diagnostics/wif/`, `api/applications/submit/`, `api/applications/list/` — all import `gcp-auth.ts`, all dead.
 
-**Status:** 🔴 TODO
+**Prerequisite:** `stripe` server SDK is NOT installed. Only `@stripe/stripe-js` (client) is in package.json. Must `npm install stripe` first.
 
----
+**Handoff:** User provides `STRIPE_SECRET_KEY` for Vercel env vars. Currently the secret key lives in GCP env — needs to move to Vercel.
 
-## 6. Cloud Function Deployment — 🔴 TODO
-
-- **Status:** Code ready, needs deployment
-- **What's needed:** Deploy `api/applications` Cloud Function
-- **Handoff:** User runs deployment command
-
-**Command:**
-```bash
-cd api/applications
-gcloud functions deploy applications \
-  --runtime python311 \
-  --trigger-http \
-  --region australia-southeast1 \
-  --allow-unauthenticated \
-  --set-env-vars="ALLOWED_ORIGINS=https://evolution.2.0.vercel.app,https://02website-pearl.vercel.app"
-```
-
-**ETA:** 15 minutes
-
-**Status:** 🔴 TODO
+**ETA:** 2-3 hours
 
 ---
 
-## 7. Email Notification Implementation — 🔴 TODO
+### 4. Marketplace/MyStable Rewire — 🔴 TODO
 
-- **Status:** Placeholder implemented (logs to console)
-- **What's needed:** Choose email provider and implement actual sending
-- **Handoff:** User chooses email provider (Gmail API, SendGrid, etc.)
+**Status:** Not started
+**What's needed:** Rewire two pages to read from local JSON instead of dead API calls:
 
-**Options:**
-- Gmail API (using existing email-ingest infrastructure)
-- SendGrid (35k emails/month free)
-- Firebase Functions email trigger (100/day free)
+| Page | Current (dead) | Target |
+|---|---|---|
+| `src/app/marketplace/page.tsx` | `import { getHlts } from "@/lib/api"` → GCP API call | `import hlts from "@/data/hlts.json"` |
+| `src/app/mystable/page.tsx` | `import { getHoldings, getHlts, getContent } from "@/lib/api"` → GCP API calls | `import holdings from "@/data/holdings.json"` |
 
-**ETA:** 2-4 hours
+**Dependencies:** Sync script (blocker 2) must produce the JSON files first.
 
-**Status:** 🔴 TODO
+**ETA:** 2-3 hours
+
+---
+
+### 5. Environment Variables — 🔴 TODO
+
+**Status:** Not started
+**What's needed:** Configure Vercel environment variables for post-GCP architecture:
+
+| Variable | Scope | Purpose |
+|---|---|---|
+| `NEXT_PUBLIC_FIREBASE_CONFIG` | Client | Firebase Auth (likely already set) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client | Stripe.js (likely already set) |
+| `STRIPE_SECRET_KEY` | Server | Stripe session creation (NEW — was in GCP) |
+| `NEXT_PUBLIC_APP_URL` | Client/Server | App URL for redirects |
+| `NEXT_PUBLIC_BYPASS_STRIPE` | Client (dev) | **Critical** — gates mock data path for marketplace/mystable. Without it, listings are empty in dev. |
+| `GOOGLE_SHEETS_WEB_APP_URL` | Server | Google Apps Script URL — needed by replay script (build-order #3) |
+
+**Remove (no longer needed):**
+- `NEXT_PUBLIC_API_BASE` — no backend API
+- `CLOUD_RUN_PROXY_URL` — GCP retired
+- `PAYMENTS_API_BASE` — GCP retired
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` / `NEXTAUTH_*` — NextAuth server-side, likely stale
+
+**Handoff:** User sets these in Vercel dashboard.
+
+---
+
+## Resolved Blockers (Historical)
+
+### ~~Asset Extraction~~ ✅ DONE
+427 files consolidated into `_assets/`. Symlinks active. See [_assets/WHATS_LEFT.md](../_assets/WHATS_LEFT.md).
+
+### ~~Content Extraction~~ ✅ DONE (partial)
+Homepage copy, press releases, footer content extracted. Horse profiles pending spreadsheet design.
+
+### ~~Cloud Function Deployment~~ 🔴 RETIRED (was: TODO)
+Was: deploy applications Cloud Function. Now: GCP retired, no functions to deploy.
+
+### ~~Email Notification Implementation~~ 🔴 DEFERRED
+Was: placeholder logs to console. Now: secondary priority. The "Enquire" CTA can use a simple `mailto:` link or embedded form initially. Full email provider integration is post-launch.
 
 ---
 
 ## Related
 
-- **[docs/PROGRESS.md](docs/PROGRESS.md)** — Current progress
-- **[01_evolution/BLOCKERS.md](../01_evolution/BLOCKERS.md)** — Backend blockers
-- **[docs/APPLICATION_SYSTEM.md](docs/APPLICATION_SYSTEM.md)** — Application system documentation
-- **[docs/IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md)** — Implementation summary
+- **[AGENTS.md](AGENTS.md)** — Website agent rules (post-GCP)
+- **[HANDSHAKE.md](HANDSHAKE.md)** — Data + auth contract (post-GCP)
+- **[01_evolution/BLOCKERS.md](../01_evolution/BLOCKERS.md)** — Backend blockers (GCP retired)
+- **[_assets/WHATS_LEFT.md](../_assets/WHATS_LEFT.md)** — Asset consolidation status
+- **[GAME_PLAN.md](../01_evolution/GAME_PLAN.md)** — Post-GCP reframe plan
