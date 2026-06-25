@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGcpIdentityToken } from '@/lib/gcp-auth';
+import Stripe from 'stripe';
 
-const PAYMENTS_API_BASE = process.env.PAYMENTS_API_BASE || 
-  (process.env.NEXT_PUBLIC_API_BASE 
-    ? `${process.env.NEXT_PUBLIC_API_BASE.replace(/\/ssot|\/assets|\/kyc/g, '')}/payments`
-    : 'http://localhost:8083');
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2025-06-30.basil' as any,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,54 +11,67 @@ export async function POST(request: NextRequest) {
     const { user_id, hlt_id, shares_to_buy, bypass_kyc } = body;
 
     if (!user_id || !hlt_id || !shares_to_buy) {
-      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required parameters: user_id, hlt_id, shares_to_buy' },
+        { status: 400 }
+      );
     }
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    // Get GCP identity token via WIF (Vercel OIDC → GCP STS → SA identity token)
-    const gcpToken = await getGcpIdentityToken(null, PAYMENTS_API_BASE);
-    if (gcpToken) {
-      headers['Authorization'] = `Bearer ${gcpToken}`;
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'STRIPE_SECRET_KEY not configured' },
+        { status: 500 }
+      );
     }
 
-    // Forward Firebase user token from the browser request
-    let firebaseToken = request.headers.get('x-firebase-token');
-    if (!firebaseToken) {
-      const authHeader = request.headers.get('authorization') || '';
-      if (authHeader.startsWith('Bearer ')) {
-        firebaseToken = authHeader.split('Bearer ')[1];
-      }
-    }
-    if (firebaseToken) {
-      headers['X-Firebase-Token'] = firebaseToken;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+    // Load HLT data from local JSON to get pricing
+    // In production this is baked into the build; for the API route we import directly
+    const hltsModule = await import('@/data/hlts.json');
+    const hlts = (hltsModule.default || hltsModule) as any[];
+    const hlt = hlts.find((h: any) => (h.horse_slug || h.id) === hlt_id);
+
+    if (!hlt) {
+      return NextResponse.json({ error: 'HLT not found' }, { status: 404 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3050';
+    const pricePerShareNzd = hlt.price_per_share_nzd || 1500;
+    const totalNzdCents = pricePerShareNzd * shares_to_buy * 100;
 
-    const response = await fetch(`${PAYMENTS_API_BASE}/create-session`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ 
-        user_id, 
-        hlt_id, 
-        shares_to_buy,
-        bypass_kyc: bypass_kyc || false,
-        success_url: `${appUrl}/mystable?success=true`, 
-        cancel_url: `${appUrl}/marketplace/${hlt_id}` 
-      }),
+    // Create Stripe Checkout session directly
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items: [
+        {
+          quantity: shares_to_buy,
+          price_data: {
+            currency: 'nzd',
+            unit_amount: pricePerShareNzd * 100, // per share in cents
+            product_data: {
+              name: `${hlt.horse_name || hlt_id} — Share${shares_to_buy > 1 ? 's' : ''}`,
+              description: `Syndication share${shares_to_buy > 1 ? 's' : ''} in ${hlt.horse_name || hlt_id}. ${hlt.lease_period_months || 36}-month lease, ${(hlt.investor_return_pct || 80)}% return to investors.`,
+            },
+          },
+        },
+      ],
+      metadata: {
+        user_id,
+        hlt_id,
+        shares_to_buy: String(shares_to_buy),
+        horse_microchip: hlt.horse_microchip || '',
+        bypass_kyc: String(bypass_kyc || false),
+      },
+      success_url: `${appUrl}/mystable?success=true`,
+      cancel_url: `${appUrl}/marketplace/${hlt_id}`,
     });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: `API error: ${response.status}` }));
-      return NextResponse.json({ error: error.error }, { status: response.status });
-    }
-
-    const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json({ session_url: session.url, session_id: session.id });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Failed to initiate Stripe Checkout session' }, { status: 500 });
+    console.error('Checkout session creation error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to create checkout session' },
+      { status: 500 }
+    );
   }
 }

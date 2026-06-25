@@ -1,0 +1,16 @@
+[
+  {
+    "id": "trainer-sam-spratt",
+    "name": "Sam Spratt",
+    "stable_name": "Wexford Stables",
+    "location": "Matamata, NZ",
+    "email": ""
+  },
+  {
+    "id": "trainer-stephen-gray",
+    "name": "Stephen Gray",
+    "stable_name": "Copper Belt Lodge",
+    "location": "Palmerston North, NZ",
+    "email": ""
+  }
+]

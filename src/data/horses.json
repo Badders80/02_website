@@ -1,0 +1,102 @@
+[
+  {
+    "id": "prudentia",
+    "name": "Prudentia",
+    "name_slug": "prudentia",
+    "microchip": "985125000126462",
+    "life_number": "NZ00427416",
+    "loveracing_id": 427416,
+    "foaling_date": "2021-11-01",
+    "sex": "mare",
+    "colour": "Bay",
+    "sire_name": "Proisir (AUS) 2009",
+    "dam_name": "Little Bit Irish (NZ) 2012",
+    "breeder": "Goldeye Trust",
+    "status": "active",
+    "image_path": "/images/content/stables/prudentia-action.png",
+    "story": "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
+    "trainer_name": "Sam Spratt",
+    "trainer_stable": "Wexford Stables",
+    "trainer_location": "Matamata, NZ",
+    "stats": {
+      "wins": "2",
+      "placed": "4",
+      "next_up": "23 June"
+    }
+  },
+  {
+    "id": "hottathanafantasy",
+    "name": "Hottathanafantasy",
+    "name_slug": "hottathanafantasy",
+    "microchip": "985125000139165",
+    "life_number": "NZ00452052",
+    "loveracing_id": 452052,
+    "foaling_date": "2022-11-01",
+    "sex": "filly",
+    "colour": "Bay",
+    "sire_name": "Contributer",
+    "dam_name": "Whiffle",
+    "breeder": "Goldeye Trust",
+    "status": "active",
+    "image_path": "/images/content/horses/Hottathan-BG.png",
+    "story": "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
+    "trainer_name": "Sam Spratt",
+    "trainer_stable": "Wexford Stables",
+    "trainer_location": "Matamata, NZ",
+    "stats": {
+      "wins": "0",
+      "placed": "0",
+      "next_up": "TBD"
+    }
+  },
+  {
+    "id": "first-gear",
+    "name": "First Gear",
+    "name_slug": "first-gear",
+    "microchip": "985125000126713",
+    "life_number": "NZ00428364",
+    "loveracing_id": 428364,
+    "foaling_date": "2020-11-01",
+    "sex": "gelding",
+    "colour": "Bay",
+    "sire_name": "Derryn",
+    "dam_name": "A'Guin Ace",
+    "breeder": "M & W Rose",
+    "status": "active",
+    "image_path": "/images/content/horses/FirstGear-BG.png",
+    "story": "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
+    "trainer_name": "Stephen Gray",
+    "trainer_stable": "Copper Belt Lodge",
+    "trainer_location": "Palmerston North, NZ",
+    "stats": {
+      "wins": "0",
+      "placed": "0",
+      "next_up": "TBD"
+    }
+  },
+  {
+    "id": "i-stole-a-manolo",
+    "name": "I Stole A Manolo",
+    "name_slug": "i-stole-a-manolo",
+    "microchip": "985125000139219",
+    "life_number": "NZ00451442",
+    "loveracing_id": 451442,
+    "foaling_date": "2022-11-01",
+    "sex": "filly",
+    "colour": "Grey",
+    "sire_name": "Satono Aladdin",
+    "dam_name": "Canuhandleajandal",
+    "breeder": "Goldeye Trust",
+    "status": "active",
+    "image_path": "/images/content/horses/IStole-BG.png",
+    "story": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
+    "trainer_name": "Sam Spratt",
+    "trainer_stable": "Wexford Stables",
+    "trainer_location": "Matamata, NZ",
+    "stats": {
+      "wins": "0",
+      "placed": "0",
+      "next_up": "Trial (Sep)"
+    }
+  }
+]

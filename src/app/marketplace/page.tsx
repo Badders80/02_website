@@ -1,12 +1,9 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import { getHlts } from "@/lib/api";
 import { ListingGrid } from "@/components/marketplace/ListingGrid";
+import hltsData from "@/data/hlts.json";
 
-// ISR: statically generate, revalidate every 60s.
-// Listings rarely change minute-to-minute, so 60s staleness is invisible to users
-// while giving us CDN-cached TTFB + Lighthouse-friendly LCP.
-export const revalidate = 60;
+// SSG: data comes from local JSON, no runtime API calls.
 export const runtime = "nodejs";
 
 export const metadata = {
@@ -35,126 +32,35 @@ interface Campaign {
 }
 
 export default async function MarketplacePage() {
-  // Define 4 premium campaigns using the Asymmetric Row specifications
-  const MOCK_CAMPAIGNS: Campaign[] = [
-    {
-      id: "prudentia",
-      location: "MATAMATA · WEXFORD STABLES",
-      pedigree: "Mare / Bay / Proisir (AUS) x Little Bit Irish (NZ)",
-      price: "$1,500 NZD",
-      availability: "77 / 100 Left",
-      is_active: true,
-      horse: {
-        name: "Prudentia",
-        image_url: "/images/content/stables/prudentia-action.png",
-        story: "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
-      },
-      stats: {
-        wins: "2",
-        placed: "4",
-        nextUp: "23 June",
-      },
-    },
-    {
-      id: "hottathanafantasy",
-      location: "MATAMATA · WEXFORD STABLES",
-      pedigree: "Filly / Bay / Contributer x Whiffle",
-      price: "$1,500 NZD",
-      availability: "100 / 100 Left",
-      is_active: false,
-      horse: {
-        name: "Hottathanafantasy",
-        image_url: "/images/content/horses/Hottathan-BG.png",
-        story: "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
-      },
-      stats: {
-        wins: "0",
-        placed: "0",
-        nextUp: "TBD",
-      },
-    },
-    {
-      id: "first-gear",
-      location: "PALMERSTON NORTH · COPPER BELT LODGE",
-      pedigree: "Gelding / Bay / Derryn x A'Guin Ace",
-      price: "$1,500 NZD",
-      availability: "100 / 100 Left",
-      is_active: false,
-      horse: {
-        name: "First Gear",
-        image_url: "/images/content/horses/FirstGear-BG.png",
-        story: "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
-      },
-      stats: {
-        wins: "0",
-        placed: "0",
-        nextUp: "TBD",
-      },
-    },
-    {
-      id: "i-stole-a-manolo",
-      location: "MATAMATA · WEXFORD STABLES",
-      pedigree: "Filly / Bay / Satono Aladdin x Canuhandleajandal",
-      price: "$1,500 NZD",
-      availability: "100 / 100 Left",
-      is_active: false,
-      horse: {
-        name: "I Stole A Manolo",
-        image_url: "/images/content/horses/IStole-BG.png",
-        story: "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
-      },
-      stats: {
-        wins: "0",
-        placed: "0",
-        nextUp: "Trial (Sep)",
-      },
-    },
-  ];
-
-  let campaigns: Campaign[] = [];
-  const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
-
-  if (isBypass) {
-    campaigns = MOCK_CAMPAIGNS;
-  } else {
-    try {
-      const data = await getHlts({ resolve: true });
-      const active = (data || []).filter(
-        (c: any) => c.status === "published" || c.status === "publish_ready" || c.status === "reviewed"
-      );
-      if (active && active.length > 0) {
-        // Map dynamic records to Asymmetric Row format
-        campaigns = active.map((c: any) => {
-          const mockMatch = MOCK_CAMPAIGNS.find((m) => m.id === c.id);
-          return {
-            id: c.id,
-            location: mockMatch?.location || (c.trainer ? `${c.trainer.location.toUpperCase()} · ${c.trainer.stable_name.toUpperCase()}` : "MATAMATA · WEXFORD STABLES"),
-            pedigree: mockMatch?.pedigree || `${c.horse?.sex || "Horse"} / ${c.horse?.colour || "Bay"} / ${c.horse?.sire_name || "Sire"} x ${c.horse?.dam_name || "Dam"}`,
-            price: mockMatch?.price || `$${((c.share_price_cents || 150000) / 100).toLocaleString()} NZD`,
-            availability: mockMatch?.availability || `${c.shares_total - c.shares_sold} / ${c.shares_total} Left`,
-            is_active: c.status === "published" || c.status === "publish_ready",
-            horse: {
-              name: c.horse?.name || "Thoroughbred",
-              image_url: c.horse?.image_url || mockMatch?.horse.image_url || "https://storage.googleapis.com/tokinvest-ds-bucket/offering/2a02e2f0-ead0-4abf-abca-0b2c84eb1107.JPG",
-              story: c.horse?.story || mockMatch?.horse.story || "",
-            },
-            stats: {
-              wins: mockMatch?.stats?.wins || "0",
-              placed: mockMatch?.stats?.placed || "0",
-              nextUp: mockMatch?.stats?.nextUp || "TBD"
-            }
-          };
-        });
-      } else {
-        campaigns = MOCK_CAMPAIGNS;
-      }
-    } catch (err: any) {
-      // Backend unreachable in local dev (Vercel OIDC → GCP STS only works on Vercel).
-      // This is an expected soft failure — fall back to MOCK_CAMPAIGNS.
-      console.warn("Marketplace: backend unavailable, using mock data.", err?.message);
-      campaigns = MOCK_CAMPAIGNS;
-    }
-  }
+  // Read from local JSON (synced from Google Sheets via replay script)
+  const campaigns: Campaign[] = (hltsData as any[])
+    .filter((hlt) => hlt.marketplace_visible === true || hlt.marketplace_visible === "TRUE")
+    .map((hlt) => {
+      const location = `${(hlt.trainer_location || "Matamata NZ").toUpperCase().replace(/,?\s*NZ$/, "")} · ${(hlt.trainer_stable || "Wexford Stables").toUpperCase()}`;
+      const sex = hlt.sex || (hlt as any).horse_sex || "";
+      const colour = hlt.colour || (hlt as any).horse_colour || "";
+      const sire = hlt.sire_name || (hlt as any).horse_sire_name || "";
+      const dam = hlt.dam_name || (hlt as any).horse_dam_name || "";
+      const pedigreeParts = [sex, colour, sire && dam ? `${sire} x ${dam}` : sire || dam].filter(Boolean);
+      return {
+        id: hlt.horse_slug || hlt.id,
+        location,
+        pedigree: hlt.pedigree || pedigreeParts.join(" / "),
+        price: `$${(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
+        availability: `${hlt.shares_total - hlt.shares_sold} / ${hlt.shares_total} Left`,
+        is_active: hlt.listing_status === "active",
+        horse: {
+          name: hlt.horse_name || hlt.id,
+          image_url: hlt.image_path || "/images/content/horses/placeholder.png",
+          story: hlt.story || "",
+        },
+        stats: {
+          wins: hlt.stats?.wins || "0",
+          placed: hlt.stats?.placed || "0",
+          nextUp: hlt.stats?.next_up || "TBD",
+        },
+      };
+    });
 
   return (
     <>

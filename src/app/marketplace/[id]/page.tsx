@@ -1,6 +1,5 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import { getHltById } from "@/lib/api";
 import { PurchaseForm } from "@/components/marketplace/PurchaseForm";
 import { ApplyForm } from "@/components/marketplace/ApplyForm";
 import { KycRequestCard } from "@/components/marketplace/KycRequestCard";
@@ -8,23 +7,17 @@ import { ComingSoonOverlay } from "@/components/ui/ComingSoonOverlay";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import hltsData from "@/data/hlts.json";
+import horsesData from "@/data/horses.json";
 
-// ISR: statically generate, revalidate every 60s.
-// Detail pages inherit the same staleness budget as the listing page.
-export const revalidate = 60;
+// SSG: data comes from local JSON, no runtime API calls.
 export const runtime = "nodejs";
 // Pre-render known campaign IDs at build time; allow on-demand generation for new ones.
 export const dynamicParams = true;
 
-// Pre-render the four known mock campaigns at build time.
-// New campaigns published later will be generated on-demand and cached for 60s.
+// Pre-render campaigns at build time from local JSON.
 export async function generateStaticParams() {
-  return [
-    { id: "prudentia" },
-    { id: "hottathanafantasy" },
-    { id: "first-gear" },
-    { id: "i-stole-a-manolo" },
-  ];
+  return (hltsData as any[]).map((hlt) => ({ id: hlt.horse_slug || hlt.id }));
 }
 
 interface Props {
@@ -35,190 +28,59 @@ export default async function CampaignDetailPage({ params }: Props) {
   const { id } = await params;
   let hlt: any = null;
 
-  const MOCK_CAMPAIGNS: Record<string, any> = {
-    "prudentia": {
-      id: "prudentia",
-      status: "published",
-      shares_total: 100,
-      shares_sold: 23,
-      share_price_cents: 150000,
-      fractional_interest_per_share: 1.0,
-      leasehold_stake_percentage: 100,
-      lease_period_months: 18,
-      lease_start_date: "2026-07-01",
-      investor_return_percentage: 80,
-      horse_microchip: "982000123456789",
-      horse: {
-        name: "Prudentia",
-        age: 4,
-        sex: "Mare",
-        colour: "Bay",
-        sire_name: "Proisir (AUS)",
-        dam_name: "Little Bit Irish (NZ)",
-        image_url: "/images/content/stables/prudentia-action.png",
-        story: `Prudentia is a New Zealand-bred four-year-old mare by Proisir. Trained from Matamata by Lance O'Sullivan and Andrew Scott at Wexford Stables, she has already recorded a maiden victory and performed across a range of distances and track conditions.
+  // Find HLT from local JSON data
+  hlt = (hltsData as any[]).find((h) => (h.horse_slug || h.id) === id);
 
-        Her win came over 1400 metres at Tauranga, where she handled testing Heavy conditions to score decisively. Since breaking her maiden, she has stepped into Rating 65 Benchmark company, continuing her preparation against stronger opposition.
-        
-        Each stake unit secures a fractional interest in an 18-month lease. Investors receive a pro rata share of 80% of net eligible race earnings, with distributions made as earned.`,
-        life_number: "NZ00427416",
-        left_shoulder_brand: "KB INSIDE CIRCLE",
-        right_shoulder_brand: "85 OVER 1",
-        breeder: "Golden Eye Trust"
-      },
-      trainer: {
-        name: "Lance O'Sullivan",
-        stable_name: "Wexford Stables",
-        location: "Matamata, NZ",
-        nztr_license_number: "LIC-WEXFORD"
-      },
-      owner: {
-        name: "Evolution Stables"
-      }
+  if (!hlt) {
+    notFound();
+  }
+
+  // Find horse data from local JSON
+  const horseData = (horsesData as any[]).find((h) => h.id === id || h.name_slug === id);
+
+  // Build the HLT object in the shape the page expects
+  const hltRecord = {
+    id: hlt.horse_slug || hlt.id,
+    status: hlt.listing_status === "active" ? "published" : "draft",
+    shares_total: hlt.shares_total,
+    shares_sold: hlt.shares_sold,
+    share_price_cents: (hlt.price_per_share_nzd || 1500) * 100,
+    fractional_interest_per_share: 1.0,
+    leasehold_stake_percentage: hlt.leasehold_stake_pct || 100,
+    lease_period_months: hlt.lease_period_months || 36,
+    lease_start_date: hlt.lease_start_date || "TBD",
+    investor_return_percentage: hlt.investor_return_pct || 80,
+    horse_microchip: hlt.horse_microchip,
+    horse: {
+      name: hlt.horse_name || horseData?.name || "Racehorse",
+      age: horseData?.foaling_date ? new Date().getFullYear() - new Date(horseData.foaling_date).getFullYear() : undefined,
+      sex: (horseData?.sex || "").charAt(0).toUpperCase() + (horseData?.sex || "").slice(1),
+      colour: horseData?.colour || "",
+      sire_name: horseData?.sire_name || "",
+      dam_name: horseData?.dam_name || "",
+      image_url: hlt.image_path || horseData?.image_path || "/images/content/horses/placeholder.png",
+      story: hlt.story || horseData?.story || "",
+      life_number: horseData?.life_number || "",
+      microchip: hlt.horse_microchip || horseData?.microchip || "",
+      left_shoulder_brand: "",
+      right_shoulder_brand: "",
+      breeder: horseData?.breeder || "",
     },
-    "hottathanafantasy": {
-      id: "hottathanafantasy",
-      status: "published",
-      shares_total: 100,
-      shares_sold: 0,
-      share_price_cents: 150000,
-      fractional_interest_per_share: 1.0,
-      leasehold_stake_percentage: 100,
-      lease_period_months: 18,
-      lease_start_date: "2026-08-01",
-      investor_return_percentage: 80,
-      horse_microchip: "982000123456788",
-      horse: {
-        name: "Hottathanafantasy",
-        age: 2,
-        sex: "Filly",
-        colour: "Bay",
-        sire_name: "Contributer",
-        dam_name: "Whiffle",
-        image_url: "/images/content/horses/Hottathan-BG.png",
-        story: `A promising two-year-old with an elite international pedigree. Currently in her first racing preparation at Wexford Stables under Lance O'Sullivan.
-        
-        She shows the physical traits of a high-performance athlete ready to make her mark on the New Zealand turf. Pedigree analysis points to middle-distance strength in future campaigns.`,
-        life_number: "NZ00427812",
-        left_shoulder_brand: "WS",
-        right_shoulder_brand: "12 OVER 4",
-        breeder: "Golden Eye Trust"
-      },
-      trainer: {
-        name: "Lance O'Sullivan",
-        stable_name: "Wexford Stables",
-        location: "Matamata, NZ",
-        nztr_license_number: "LIC-WEXFORD"
-      },
-      owner: {
-        name: "Evolution Stables"
-      }
+    trainer: {
+      name: hlt.trainer_name || horseData?.trainer_name || "",
+      stable_name: hlt.trainer_stable || horseData?.trainer_stable || "",
+      location: hlt.trainer_location || horseData?.trainer_location || "",
+      nztr_license_number: "",
     },
-    "first-gear": {
-      id: "first-gear",
-      status: "published",
-      shares_total: 100,
-      shares_sold: 0,
-      share_price_cents: 150000,
-      fractional_interest_per_share: 1.0,
-      leasehold_stake_percentage: 100,
-      lease_period_months: 36,
-      lease_start_date: "2026-07-01",
-      investor_return_percentage: 80,
-      horse_microchip: "982000123456787",
-      horse: {
-        name: "First Gear",
-        age: 4,
-        sex: "Gelding",
-        colour: "Bay",
-        sire_name: "Derryn",
-        dam_name: "A'Guin Ace",
-        image_url: "/images/content/horses/FirstGear-BG.png",
-        story: `Early race success with $20K+ in prizemoney and international buyer interest. Trained by Group 1-winning horseman Stephen Gray at Copper Belt Lodge.
-        
-        In just five starts he has recorded a win, two placings, and over $20,000 in prizemoney — including turning down a recent six-figure offer from Australian interests.`,
-        life_number: "NZ00427901",
-        left_shoulder_brand: "CB",
-        right_shoulder_brand: "90 OVER 2",
-        breeder: "Copper Belt Breeder"
-      },
-      trainer: {
-        name: "Stephen Gray",
-        stable_name: "Copper Belt Lodge",
-        location: "Palmerston North, NZ",
-        nztr_license_number: "LIC-GRAY"
-      },
-      owner: {
-        name: "Evolution Stables"
-      }
+    owner: {
+      name: hlt.owner_name || "",
     },
-    "i-stole-a-manolo": {
-      id: "i-stole-a-manolo",
-      status: "published",
-      shares_total: 100,
-      shares_sold: 0,
-      share_price_cents: 150000,
-      fractional_interest_per_share: 1.0,
-      leasehold_stake_percentage: 100,
-      lease_period_months: 16,
-      lease_start_date: "2026-09-01",
-      investor_return_percentage: 80,
-      horse_microchip: "982000123456786",
-      horse: {
-        name: "I Stole A Manolo",
-        age: 2,
-        sex: "Filly",
-        colour: "Bay",
-        sire_name: "Satono Aladdin",
-        dam_name: "Canuhandleajandal",
-        image_url: "/images/content/horses/IStole-BG.png",
-        story: `Daughter of Group 1 winner Satono Aladdin with real presence and correct action. In early racing education at Wexford Stables with Lance O'Sullivan & Andrew Scott.
-        
-        She is being carefully prepared to follow in the footsteps of the stable's many Group 1 champions on the turf.`,
-        life_number: "NZ00427113",
-        left_shoulder_brand: "LO",
-        right_shoulder_brand: "11 OVER 4",
-        breeder: "Waikato Syndicate Stud"
-      },
-      trainer: {
-        name: "Lance O'Sullivan & Andrew Scott",
-        stable_name: "Wexford Stables",
-        location: "Matamata, NZ",
-        nztr_license_number: "LIC-WEXFORD"
-      },
-      owner: {
-        name: "Evolution Stables"
-      }
-    }
   };
 
-  const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
-
-  if (isBypass) {
-    hlt = MOCK_CAMPAIGNS[id] || MOCK_CAMPAIGNS.prudentia;
-  } else {
-    try {
-      hlt = await getHltById(id, true);
-    } catch (err: any) {
-      // Backend unreachable in local dev (Vercel OIDC → GCP STS only works on Vercel).
-      // This is an expected soft failure — fall back to MOCK_CAMPAIGNS.
-      console.warn(`Marketplace[${id}]: backend unavailable, using mock data.`, err?.message);
-    }
-    if (!hlt) {
-      hlt = MOCK_CAMPAIGNS[id] || MOCK_CAMPAIGNS.prudentia;
-    }
-  }
-
-  // Handle error states from brief (draft or archive should disable or not show)
-  if (hlt.status !== "published" && hlt.status !== "publish_ready") {
-    // If not found or not published, render the 404 message or render as disabled
-    // We will render it but pass the status downstream so PurchaseForm is disabled if not published
-  }
-
-  const horse = hlt.horse;
-  const trainer = hlt.trainer;
-  const sharesAvailable = hlt.shares_total - hlt.shares_sold;
-  const totalLeasePercent = hlt.leasehold_stake_percentage || 100;
+  const horse = hltRecord.horse;
+  const trainer = hltRecord.trainer;
+  const sharesAvailable = hltRecord.shares_total - hltRecord.shares_sold;
+  const totalLeasePercent = hltRecord.leasehold_stake_percentage || 100;
 
   // Initials for avatar fallback
   const trainerInitials = trainer?.name
@@ -382,26 +244,26 @@ export default async function CampaignDetailPage({ params }: Props) {
                       </div>
                       <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
                         <span className="text-white/40">Lease Period</span>
-                        <span className="text-white font-medium">{hlt.lease_period_months} Months</span>
+                        <span className="text-white font-medium">{hltRecord.lease_period_months} Months</span>
                       </div>
                       <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
                         <span className="text-white/40">Lease Start Date</span>
-                        <span className="text-white font-medium">{hlt.lease_start_date}</span>
+                        <span className="text-white font-medium">{hltRecord.lease_start_date}</span>
                       </div>
                       <div className="flex justify-between pb-1">
                         <span className="text-white/40">Investor Returns</span>
-                        <span className="text-[#34D399] font-medium">{hlt.investor_return_percentage}% of prize money</span>
+                        <span className="text-[#34D399] font-medium">{hltRecord.investor_return_percentage}% of prize money</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Section G: The Purchase Widget */}
-                  <PurchaseForm hlt={hlt} horseName={horse?.name || "Racehorse"} />
+                  <PurchaseForm hlt={hltRecord} horseName={horse?.name || "Racehorse"} />
                 </div>
               </ComingSoonOverlay>
 
               {/* Section H: Apply for Ownership (Simple Application) */}
-              <ApplyForm hltId={hlt.id} horseName={horse?.name || "Racehorse"} />
+              <ApplyForm hltId={hltRecord.id} horseName={horse?.name || "Racehorse"} />
 
               {/* Section I: KYC Verification */}
               <KycRequestCard horseName={horse?.name || "Racehorse"} />

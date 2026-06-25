@@ -3,24 +3,24 @@
     {
       "id": "prudentia",
       "trainer": {
-        "name": "Stephen Grey Racing",
+        "name": "Wexford Stables",
         "location": "Matamata, New Zealand",
         "yearsTraining": 15,
-        "wins": 450,
+        "wins": 600,
         "strikeRate": "14%",
         "stakesWins": 12,
-        "bio": "Stephen Grey has been a fixture of the New Zealand thoroughbred scene for over a decade. Known for patience with fillies and a sharp eye for track conditions, his stable has produced multiple group performers from modest bloodstock.",
-        "photo": "/images/content/stables/trainer-stephen-grey.jpg",
-        "logo": "/images/partners/stephen-grey-racing.png"
+        "bio": "Wexford Stables is headed by Lance O'Sullivan ONZM and Andrew Scott at Matamata. Lance is a 12-time champion jockey with 2,479 career wins, including the 1989 Japan Cup aboard Horlicks. The training partnership has produced 600+ wins.",
+        "photo": "/images/content/stables/trainer-wexford.jpg",
+        "logo": "/images/partners/wexford-stables.png"
       },
       "horse": {
         "name": "Prudentia",
         "age": "4-Year-Old",
         "sex": "Mare",
-        "sire": "Savabeel",
-        "dam": "Penny Ante",
+        "sire": "Proisir",
+        "dam": "Little Bit Irish",
         "colour": "Bay",
-        "microchip": "985141004512345",
+        "microchip": "985125000126462",
         "story": "Prudentia was bought as a yearling out of the NZ Bloodstock Select Sale. She showed early promise in the breaking-in yard — a willing attitude and a turn of foot on soft ground. She won her maiden at Tauranga as a 3-year-old and went on to claim a tough, tactical victory in Race 7 (BM65, 1300m) at Te Rapa on a Heavy 10 in April 2026.",
         "campaign": {
           "status": "sold-out",
@@ -58,27 +58,27 @@
       }
     },
     {
-      "id": "hotta-than-a-fantasy",
+      "id": "hottathanafantasy",
       "trainer": {
-        "name": "Stephen Grey Racing",
+        "name": "Wexford Stables",
         "location": "Matamata, New Zealand",
         "yearsTraining": 15,
-        "wins": 450,
+        "wins": 600,
         "strikeRate": "14%",
         "stakesWins": 12,
-        "bio": "Stephen Grey has been a fixture of the New Zealand thoroughbred scene for over a decade. Known for patience with fillies and a sharp eye for track conditions, his stable has produced multiple group performers from modest bloodstock.",
-        "photo": "/images/content/stables/trainer-stephen-grey.jpg",
-        "logo": "/images/partners/stephen-grey-racing.png"
+        "bio": "Wexford Stables is headed by Lance O'Sullivan ONZM and Andrew Scott at Matamata. Lance is a 12-time champion jockey with 2,479 career wins, including the 1989 Japan Cup aboard Horlicks. The training partnership has produced 600+ wins.",
+        "photo": "/images/content/stables/trainer-wexford.jpg",
+        "logo": "/images/partners/wexford-stables.png"
       },
       "horse": {
-        "name": "Hotta than a fantasy",
-        "shortName": "Hotta",
+        "name": "Hottathanafantasy",
+        "shortName": "Hottathanafantasy",
         "age": "2-Year-Old",
         "sex": "Filly",
-        "sire": "Savabeel",
-        "dam": "Hotta",
+        "sire": "Contributer",
+        "dam": "Whiffle",
         "colour": "Bay",
-        "microchip": "985141004517845",
+        "microchip": "985125000139165",
         "story": "A late-season 2-year-old filly showing early maturity in the breaking-in yard. Hotta's dam was a sharp sprinter over 1200m, and the filly has inherited that early speed. Currently in pre-training.",
         "campaign": {
           "status": "open",
@@ -93,30 +93,30 @@
           "nextRace": "First trial — target late 2026"
         },
         "photo": "/images/content/stables/horse-hotta.jpg",
-        "tokinvestUrl": "https://portal.tokinvest.capital/investments/hotta-than-a-fantasy"
+        "tokinvestUrl": "https://portal.tokinvest.capital/investments/hottathanafantasy"
       }
     },
     {
       "id": "first-gear",
       "trainer": {
-        "name": "Trevor Collins",
-        "location": "Cambridge, New Zealand",
+        "name": "Stephen Gray Racing",
+        "location": "Copper Belt Lodge, near Palmerston North, New Zealand",
         "yearsTraining": 8,
         "wins": 210,
         "strikeRate": "11%",
         "stakesWins": 3,
-        "bio": "Trevor Collins brings a disciplined, data-driven approach to his Cambridge stable. Former assistant to a top Australian trainer, he's known for getting the best out of stayers and late-maturing types.",
-        "photo": "/images/content/stables/trainer-trevor-collins.jpg",
-        "logo": null
+        "bio": "Stephen Gray Racing operates from Copper Belt Lodge near Palmerston North. Owned by Stephen Gray & Kevin Gray, the stable is known for getting the best out of stayers and late-maturing types.",
+        "photo": "/images/content/stables/trainer-stephen-gray.jpg",
+        "logo": "/images/partners/stephen-grey-racing.png"
       },
       "horse": {
         "name": "First Gear",
         "age": "3-Year-Old",
         "sex": "Gelding",
-        "sire": "Maurice",
-        "dam": "Shifting Gears",
-        "colour": "Chestnut",
-        "microchip": "985141004523601",
+        "sire": "Derryn",
+        "dam": "A'Guin Ace",
+        "colour": "Bay",
+        "microchip": "985125000126713",
         "story": "First Gear is a 12-month lease syndication with clear campaign targets. He's a staying type who should mature into a genuine 2000m horse. His first preparation showed enough to believe there's a stakes campaign in him.",
         "campaign": {
           "status": "sold-out",
@@ -137,25 +137,25 @@
     {
       "id": "i-stole-a-manolo",
       "trainer": {
-        "name": "Stephen Grey Racing",
+        "name": "Wexford Stables",
         "location": "Matamata, New Zealand",
         "yearsTraining": 15,
-        "wins": 450,
+        "wins": 600,
         "strikeRate": "14%",
         "stakesWins": 12,
-        "bio": "Stephen Grey has been a fixture of the New Zealand thoroughbred scene for over a decade. Known for patience with fillies and a sharp eye for track conditions, his stable has produced multiple group performers from modest bloodstock.",
-        "photo": "/images/content/stables/trainer-stephen-grey.jpg",
-        "logo": "/images/partners/stephen-grey-racing.png"
+        "bio": "Wexford Stables is headed by Lance O'Sullivan ONZM and Andrew Scott at Matamata. Lance is a 12-time champion jockey with 2,479 career wins, including the 1989 Japan Cup aboard Horlicks. The training partnership has produced 600+ wins.",
+        "photo": "/images/content/stables/trainer-wexford.jpg",
+        "logo": "/images/partners/wexford-stables.png"
       },
       "horse": {
         "name": "I Stole A Manolo",
         "shortName": "Manolo",
         "age": "2-Year-Old",
         "sex": "Filly",
-        "sire": "Savabeel",
-        "dam": "Fashion Victim",
+        "sire": "Satono Aladdin",
+        "dam": "Canuhandleajandal",
         "colour": "Grey",
-        "microchip": "985141004518932",
+        "microchip": "985125000139219",
         "story": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after a successful breaking-in. Next preparation will show whether she has the speed for a 2-year-old campaign.",
         "campaign": {
           "status": "coming-soon",

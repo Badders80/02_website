@@ -1,0 +1,37 @@
+{
+  "_comment": "Google Sheets configuration for inventory sync. Create a Google Sheet for each entity, then paste the sheet ID (from the URL) here. gid=0 is the first tab. Run: python scripts/sync_inventory.py",
+  "sheets": {
+    "horses": {
+      "id": "YOUR_SHEET_ID_HERE",
+      "gid": "0",
+      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+    },
+    "hlts": {
+      "id": "YOUR_SHEET_ID_HERE",
+      "gid": "0",
+      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+    },
+    "trainers": {
+      "id": "YOUR_SHEET_ID_HERE",
+      "gid": "0",
+      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+    },
+    "owners": {
+      "id": "YOUR_SHEET_ID_HERE",
+      "gid": "0",
+      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+    },
+    "holdings": {
+      "id": "YOUR_SHEET_ID_HERE",
+      "gid": "0",
+      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+    }
+  },
+  "_sheet_templates": {
+    "horses": "name, slug, microchip, life_number, loveracing_id, foaling_date, sex, colour, sire_name, dam_name, breeder, status, image_path, story, trainer_name, trainer_stable, trainer_location, wins, placed, next_up",
+    "hlts": "horse_microchip, horse_name, horse_slug, owner_name, trainer_name, trainer_stable, trainer_location, lease_period_months, lease_start_date, leasehold_stake_pct, investor_return_pct, syndicate_price_nzd, shares_total, shares_sold, price_per_share_nzd, listing_status, marketplace_visible, image_path, story, pedigree, wins, placed, next_up",
+    "trainers": "name, stable_name, location, email",
+    "owners": "name, email, type",
+    "holdings": "user_email, hlt_id, shares_owned, purchase_date, kyc_status"
+  }
+}

@@ -5,11 +5,12 @@ import { useAuth } from "@/lib/auth-context";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { KycBanner } from "@/components/KycBanner";
-import { getHoldings, getHlts, getContent } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, isAuthInitialized } from "@/lib/firebase";
+import holdingsData from "@/data/holdings.json";
+import hltsData from "@/data/hlts.json";
 
 interface HoldingRecord {
   id: string;
@@ -56,11 +57,11 @@ interface ContentUpdate {
 
 export default function MyStablePage() {
   const { user, loading: authLoading, kycStatus } = useAuth();
-  
+
   const [holdings, setHoldings] = useState<HoldingRecord[]>([]);
   const [campaigns, setCampaigns] = useState<Record<string, Campaign>>({});
   const [updates, setUpdates] = useState<ContentUpdate[]>([]);
-  
+
   const [loadingData, setLoadingData] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -83,8 +84,8 @@ export default function MyStablePage() {
 
   const MOCK_HOLDING: HoldingRecord = {
     id: "mock-holding-1",
-    hlt_id: "mock-hlt-id",
-    horse_microchip: "982000123456789",
+    hlt_id: "hlt-prudentia",
+    horse_microchip: "985125000126462",
     shares_owned: 1,
     percentage_owned: 1.0,
     purchase_price_cents: 150000,
@@ -92,31 +93,10 @@ export default function MyStablePage() {
     created_at: new Date().toISOString(),
   };
 
-  const MOCK_CAMPAIGN: Campaign = {
-    id: "mock-hlt-id",
-    shares_total: 100,
-    share_price_cents: 150000,
-    horse_microchip: "982000123456789",
-    horse: {
-      name: "Prudentia",
-      age: 3,
-      sex: "Mare",
-      colour: "Bay",
-      sire_name: "Proisir (AUS)",
-      dam_name: "Prudent (NZ)",
-      image_url: "/updates/prudentia_te_rapa_may30.jpg"
-    },
-    trainer: {
-      name: "Mark Walker",
-      stable_name: "Te Akau Racing",
-      location: "Matamata, NZ"
-    }
-  };
-
   const MOCK_UPDATE: ContentUpdate = {
     id: "mock-update-1",
     content_type: "text",
-    horse_microchip: "982000123456789",
+    horse_microchip: "985125000126462",
     title: "Morning gallop on the sand",
     content_date: "2026-06-08",
     full_text: "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Mark Walker reported she was relaxed and hit the line with plenty in reserve.",
@@ -130,83 +110,82 @@ export default function MyStablePage() {
     if (!user) {
       // Load mock dashboard data for the gated preview
       setHoldings([MOCK_HOLDING]);
-      setCampaigns({ "mock-hlt-id": MOCK_CAMPAIGN });
+      const previewCampaign: Campaign = {
+        id: "hlt-prudentia",
+        shares_total: 100,
+        share_price_cents: 150000,
+        horse_microchip: "985125000126462",
+        horse: {
+          name: "Prudentia",
+          age: 4,
+          sex: "Mare",
+          colour: "Bay",
+          sire_name: "Proisir (AUS)",
+          dam_name: "Little Bit Irish (NZ)",
+          image_url: "/images/content/stables/prudentia-action.png"
+        },
+        trainer: {
+          name: "Sam Spratt",
+          stable_name: "Wexford Stables",
+          location: "Matamata, NZ"
+        }
+      };
+      setCampaigns({ "hlt-prudentia": previewCampaign });
       setUpdates([MOCK_UPDATE]);
       setLoadingData(false);
       return;
     }
 
-    const loadDashboardData = async () => {
+    // Load from local JSON data
+    const loadDashboardData = () => {
       setLoadingData(true);
       setErrorMsg("");
+
       try {
-        let activeHoldings: HoldingRecord[] = [];
+        // Build campaign map from local JSON
         const hltMap: Record<string, Campaign> = {};
-        const allUpdates: ContentUpdate[] = [];
+        (hltsData as any[]).forEach((hlt: any) => {
+          hltMap[hlt.id] = {
+            id: hlt.id,
+            shares_total: hlt.shares_total,
+            share_price_cents: (hlt.price_per_share_nzd || 1500) * 100,
+            horse_microchip: hlt.horse_microchip,
+            horse: {
+              name: hlt.horse_name,
+              sex: hlt.sex || "",
+              colour: hlt.colour || "",
+              sire_name: hlt.sire_name || "",
+              dam_name: hlt.dam_name || "",
+              image_url: hlt.image_path || "",
+            },
+            trainer: {
+              name: hlt.trainer_name || "",
+              stable_name: hlt.trainer_stable || "",
+              location: hlt.trainer_location || "",
+            },
+          };
+        });
 
-        const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+        // Filter holdings by user email (from local JSON)
+        const userHoldings = (holdingsData as any[])
+          .filter((h: any) => h.user_email === user.email && h.kyc_status === "verified")
+          .map((h: any) => ({
+            id: `${h.hlt_id}-${h.user_email}`,
+            hlt_id: h.hlt_id,
+            horse_microchip: hltMap[h.hlt_id]?.horse_microchip || "",
+            shares_owned: h.shares_owned,
+            percentage_owned: (h.shares_owned / (hltMap[h.hlt_id]?.shares_total || 100)) * 100,
+            purchase_price_cents: (hltMap[h.hlt_id]?.share_price_cents || 150000) * h.shares_owned,
+            status: "paid",
+            created_at: h.purchase_date || new Date().toISOString(),
+          }));
 
-        if (isBypass) {
-          activeHoldings = [MOCK_HOLDING];
-          hltMap["mock-hlt-id"] = MOCK_CAMPAIGN;
-          allUpdates.push(MOCK_UPDATE);
-        } else {
-          try {
-            // 1. Fetch user's holdings
-            const holdingsData = await getHoldings(user.uid);
-            activeHoldings = (holdingsData || []).filter((h: any) => h.status === "paid");
-          } catch (err) {
-            console.error("Failed to fetch live holdings:", err);
-            throw err;
-          }
-
-          if (activeHoldings.length > 0) {
-            try {
-              // 2. Fetch all resolved HLTs to map details
-              const hltList = await getHlts({ resolve: true });
-              hltList.forEach((hlt: Campaign) => {
-                hltMap[hlt.id] = hlt;
-              });
-            } catch (err) {
-              console.error("Failed to fetch live HLTs:", err);
-              throw err;
-            }
-
-            // 3. Fetch campaign updates for owned horses
-            for (const holding of activeHoldings) {
-              const horseHlt = hltMap[holding.hlt_id];
-              const horseName = horseHlt?.horse?.name || "Racehorse";
-              
-              try {
-                const horseUpdates = await getContent({
-                  horse_microchip: holding.horse_microchip,
-                  status: "published",
-                });
-                
-                if (horseUpdates && horseUpdates.length > 0) {
-                  horseUpdates.forEach((up: any) => {
-                    allUpdates.push({
-                      ...up,
-                      horse_name: horseName,
-                    });
-                  });
-                }
-              } catch (err) {
-                console.warn(`Failed to fetch updates for horse ${holding.horse_microchip}:`, err);
-              }
-            }
-          }
-        }
-
-        setHoldings(activeHoldings);
+        setHoldings(userHoldings);
         setCampaigns(hltMap);
-        
-        // Sort updates by date descending
-        allUpdates.sort((a, b) => new Date(b.content_date).getTime() - new Date(a.content_date).getTime());
-        setUpdates(allUpdates);
+        setUpdates([]); // No content updates in local JSON yet
       } catch (err: any) {
         console.error("Dashboard loading error:", err);
-        setErrorMsg("Failed to load dashboard statistics. Please refresh the page.");
+        setErrorMsg("Failed to load dashboard data.");
       } finally {
         setLoadingData(false);
       }

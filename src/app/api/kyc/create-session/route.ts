@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGcpIdentityToken } from '@/lib/gcp-auth';
+import Stripe from 'stripe';
 
-const KYC_API_BASE = `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8082'}/kyc`;
+// Initialize Stripe with server-side secret key
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2025-06-30.basil' as any,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,47 +15,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
     }
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    // Get GCP identity token (WIF on Vercel, gcloud on local dev)
-    // Auto-resolved from x-vercel-oidc-token request header via next/headers
-    const gcpToken = await getGcpIdentityToken(null, KYC_API_BASE);
-    if (gcpToken) {
-      headers['Authorization'] = `Bearer ${gcpToken}`;
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'STRIPE_SECRET_KEY not configured' },
+        { status: 500 }
+      );
     }
 
-    // Forward Firebase user token from the browser request
-    let firebaseToken = request.headers.get('x-firebase-token');
-    if (!firebaseToken) {
-      const authHeader = request.headers.get('authorization') || '';
-      if (authHeader.startsWith('Bearer ')) {
-        firebaseToken = authHeader.split('Bearer ')[1];
-      }
-    }
-    if (firebaseToken) {
-      headers['X-Firebase-Token'] = firebaseToken;
-    }
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-    const response = await fetch(`${KYC_API_BASE}/create-session`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ 
-        user_id, 
-        email, 
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3050'}/auth/verify` 
-      }),
+    // Create Stripe Identity verification session directly
+    const session = await stripe.identity.VerificationSession.create({
+      type: 'document',
+      metadata: {
+        user_id,
+        email: email || '',
+      },
+      return_url: `${appUrl}/auth/verify`,
     });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: `API error: ${response.status}` }));
-      return NextResponse.json({ error: error.error }, { status: response.status });
-    }
-
-    const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json({ session_url: session.url, session_id: session.id });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Failed to create KYC session' }, { status: 500 });
+    console.error('KYC session creation error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to create KYC session' },
+      { status: 500 }
+    );
   }
 }

@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace | Evolution Stables</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Inter Tight', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(32px) saturate(160%);
+            -webkit-backdrop-filter: blur(32px) saturate(160%);
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+        .navbar.solid {
+            background: rgba(0, 0, 0, 0.8);
+            mask-image: none;
+            -webkit-mask-image: none;
+        }
+        .nav-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+        @media (min-width: 1024px) {
+            .nav-inner { padding: 0 48px; }
+        }
+        .nav-logo {
+            height: 28px;
+            width: auto;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+        .nav-logo:hover { opacity: 0.65; }
+        .nav-links {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        @media (min-width: 1024px) {
+            .nav-links { display: flex; }
+        }
+        .nav-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            padding: 16px 10px;
+            font-size: 12px;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        .nav-link:hover { color: rgba(255, 255, 255, 1); }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 10px;
+            right: 10px;
+            height: 0.5px;
+            background: #d4a964;
+            transform: scaleX(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left;
+        }
+        .nav-link:hover::after { transform: scaleX(1); }
+        .nav-cta {
+            display: none;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+        }
+        @media (min-width: 1024px) {
+            .nav-cta { display: flex; }
+        }
+        .nav-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .nav-pill:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 1);
+        }
+        .nav-pill::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #d4a964;
+            box-shadow: 0 0 8px rgba(212, 169, 100, 0.6);
+        }
+        .nav-burger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .nav-burger:hover { background: rgba(255, 255, 255, 0.04); }
+        @media (min-width: 1024px) {
+            .nav-burger { display: none; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 120px 48px 80px;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 80%, rgba(20, 20, 25, 0.4) 0%, transparent 60%);
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            max-width: 32rem;
+            margin-right: auto;
+        }
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.30);
+            margin-bottom: 2rem;
+        }
+        .hero-headline {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+        }
+        .hero-sub {
+            font-size: 15px;
+            font-weight: 300;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.50);
+            max-width: 30rem;
+            margin: 0 0 2rem 0;
+        }
+        .hero-cta {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.60);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            padding: 14px 36px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+        .hero-cta:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.90);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ===== HORIZONTAL SCROLL CAROUSEL — Validation ===== */
+        .carousel-track {
+            position: relative;
+            height: 400vh; /* 4 panels × 100vh scroll each */
+        }
+        .carousel-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .carousel-strip {
+            display: flex;
+            flex-wrap: nowrap;
+            will-change: transform;
+            height: 100%;
+        }
+        .carousel-panel {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-panel-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.12;
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%);
+            z-index: 0;
+        }
+        .carousel-panel.active .carousel-panel-bg {
+            opacity: 0.20;
+            filter: grayscale(40%);
+            transition: opacity 1.2s ease, filter 1.2s ease;
+        }
+        .carousel-panel-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 40rem;
+            padding: 0 2rem;
+        }
+        .carousel-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.30);
+            margin-bottom: 2rem;
+        }
+        .carousel-headline {
+            font-size: clamp(28px, 5vw, 56px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .carousel-headline span {
+            color: rgba(255, 255, 255, 0.50);
+        }
+        .carousel-body {
+            font-size: 15px;
+            font-weight: 300;
+            line-height: 1.75;
+            color: rgba(255, 255, 255, 0.45);
+            max-width: 30rem;
+            margin: 0 auto;
+        }
+        .carousel-quote {
+            font-size: clamp(20px, 3vw, 32px);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.70);
+            max-width: 34rem;
+            margin: 0 auto 2rem;
+            letter-spacing: -0.01em;
+        }
+        .carousel-quote-source {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.30);
+        }
+        .carousel-credits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem 2.5rem;
+            margin-top: 2rem;
+        }
+        .carousel-credit {
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+        }
+        .carousel-stat {
+            font-size: clamp(40px, 7vw, 80px);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 1rem;
+        }
+        .carousel-stat-label {
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.40);
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+        }
+        /* Progress indicator */
+        .carousel-progress {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .carousel-progress-dot {
+            width: 24px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 1px;
+            transition: background 0.4s ease;
+        }
+        .carousel-progress-dot.active {
+            background: #d4a964;
+        }
+
+        /* ===== MEET THE STABLE — Stacking Name Headers ===== */
+        .stable-section {
+            position: relative;
+        }
+
+        /* Section header — also sticky */
+        .stable-header {
+            text-align: center;
+            padding: 120px 48px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 15;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .stable-header-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.30);
+            margin-bottom: 0.5rem;
+        }
+        .stable-header-title {
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 0;
+        }
+
+        /* Name bars are now direct children of .stable-section, not inside .horse-panel */
+        .horse-name-bar {
+            position: sticky;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 48px;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 10;
+        }
+        .horse-name-bar:hover {
+            background: rgba(15, 15, 15, 0.98);
+        }
+        /* Name bar tops set inline per horse: 120px, 176px, 232px, 288px */
+
+        .horse-name-bar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 72rem;
+            margin: 0 auto;
+        }
+        .horse-name-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .horse-name-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+            flex-shrink: 0;
+        }
+        .horse-name-dot.coming {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+        }
+        .horse-name-text {
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            color: rgba(255, 255, 255, 0.75);
+            transition: color 0.3s;
+        }
+        .horse-name-bar:hover .horse-name-text {
+            color: #ffffff;
+        }
+        .horse-name-location {
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+        }
+        .horse-name-cta {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #d4a964;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .horse-name-bar:hover .horse-name-cta {
+            opacity: 1;
+        }
+
+        /* Horse content — scrolls away under the sticky name */
+        .horse-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 56px);
+            padding: 40px 48px 80px;
+            position: relative;
+            overflow: hidden;
+            background: #000000;
+            z-index: 5;
+        }
+        .horse-content-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.08;
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%);
+            z-index: 0;
+        }
+        .horse-content-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 72rem;
+            margin: 0 auto;
+            gap: 32px;
+        }
+        @media (min-width: 768px) {
+            .horse-content-inner {
+                flex-direction: row;
+                align-items: center;
+                gap: 48px;
+            }
+        }
+
+        .horse-media {
+            position: relative;
+            aspect-ratio: 16/10;
+            border-radius: 16px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        @media (min-width: 768px) {
+            .horse-media { width: 55%; }
+            .horse-info { width: 45%; }
+        }
+        .horse-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+        .horse-media-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent 50%);
+            pointer-events: none;
+        }
+        .horse-status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 4px 12px;
+        }
+        .horse-status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+        }
+        .horse-status-dot.coming {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+        }
+        .horse-status-text {
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .horse-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .horse-story {
+            font-size: 15px;
+            line-height: 1.8;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 1.5rem;
+        }
+        .horse-meta {
+            display: flex;
+            gap: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
+            margin-bottom: 1.5rem;
+        }
+        .horse-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .horse-meta-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .horse-meta-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+        .horse-meta-value.gold {
+            font-size: 13px;
+            font-weight: 300;
+            color: #d4a964;
+        }
+        .horse-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #d4a964;
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: fit-content;
+        }
+        .horse-cta:hover { color: #ffffff; }
+
+        /* ===== COMING SOON LIST ===== */
+        .coming-soon {
+            padding: 80px 48px 120px;
+            text-align: center;
+        }
+        .coming-soon-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.30);
+            margin-bottom: 2rem;
+        }
+        .coming-soon-list {
+            max-width: 40rem;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .coming-soon-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: padding 0.3s;
+        }
+        .coming-soon-item:hover {
+            padding-left: 12px;
+        }
+        .coming-soon-item:last-child {
+            border-bottom: none;
+        }
+        .coming-soon-pedigree {
+            font-size: 15px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s;
+        }
+        .coming-soon-item:hover .coming-soon-pedigree {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .coming-soon-tag {
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ===== APPLY SECTION ===== */
+        .apply-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 48px;
+            position: relative;
+            z-index: 5;
+        }
+        .apply-inner {
+            max-width: 36rem;
+        }
+        .apply-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.30);
+            margin-bottom: 2rem;
+        }
+        .apply-headline {
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+        .apply-headline span {
+            color: rgba(255, 255, 255, 0.50);
+        }
+        .apply-body {
+            font-size: 15px;
+            font-weight: 300;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 2.5rem;
+        }
+        .apply-cta {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.60);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            padding: 14px 36px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+        .apply-cta:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.90);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 48px 24px;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-inner">
+            <div style="flex: 1; display: flex; align-items: center;">
+                <img src="../public/images/brand/legacy/legacy-logo-grey.png" alt="Evolution Stables" class="nav-logo" onclick="window.location.href='/'" style="height: 28px;">
+            </div>
+            <div class="nav-links">
+                <a href="/#about" class="nav-link">About</a>
+                <a href="/#mission" class="nav-link">Mission</a>
+                <a href="/#digital-syndication" class="nav-link">Model</a>
+                <a href="/marketplace" class="nav-link">Marketplace</a>
+                <a href="/mystable" class="nav-link">MyStable</a>
+                <a href="/#faq" class="nav-link">FAQ</a>
+            </div>
+            <div class="nav-cta">
+                <a href="/auth/login" class="nav-pill">Get Started</a>
+            </div>
+            <div class="nav-burger" style="margin-left: auto;">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Become an Owner</p>
+            <h1 class="hero-headline">Join the thrill of ownership.</h1>
+            <p class="hero-sub">
+                Not buying a product — joining a journey. Meet the horses, meet the trainers,
+                and find the one that speaks to you.
+            </p>
+            <a href="#horses" class="hero-cta">Meet the horses</a>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: VALIDATION (HORIZONTAL SCROLL) ===== -->
+    <section class="carousel-track" id="validation">
+        <div class="carousel-sticky">
+            <div class="carousel-strip" id="carouselStrip">
+
+                <!-- Panel 1: The Win -->
+                <div class="carousel-panel" data-panel="0">
+                    <div class="carousel-panel-bg" style="background-image: url('../public/images/content/stables/prudentia-action.png');"></div>
+                    <div class="carousel-panel-content">
+                        <p class="carousel-label">First Win</p>
+                        <div class="carousel-stat">0.33L</div>
+                        <p class="carousel-stat-label">Maiden victory, Te Rapa, 17 April 2026</p>
+                        <h2 class="carousel-headline">Prudentia <span>gets her first win.</span></h2>
+                        <p class="carousel-body">
+                            BM65, 1300m, Heavy 10 track. Coming from deep in the field at the halfway mark,
+                            she ran the perfect race to take the lead where it counted and fought hard
+                            all the way to the line under Masa Hashizume.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Panel 2: The First Horse -->
+                <div class="carousel-panel" data-panel="1">
+                    <div class="carousel-panel-bg" style="background-image: url('../public/images/content/horses/FirstGear-BG.png');"></div>
+                    <div class="carousel-panel-content">
+                        <p class="carousel-label">The First</p>
+                        <h2 class="carousel-headline">First Gear. <span>The first horse through Evolution.</span></h2>
+                        <p class="carousel-body">
+                            Five starts. A win, two placings, and over $20,000 in prizemoney.
+                            A six-figure offer from Australian interests — turned down. He's ours,
+                            and he's just getting started.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Panel 3: The Team -->
+                <div class="carousel-panel" data-panel="2">
+                    <div class="carousel-panel-bg" style="background-image: url('../public/images/content/background/horse-closeup.jpg');"></div>
+                    <div class="carousel-panel-content">
+                        <p class="carousel-label">The Team</p>
+                        <p class="carousel-quote">
+                            "She trotted up soundly this morning and scoped completely clean.
+                            The rail race was frustrating, but her final 100 metres showed
+                            massive tenacity. She is in superb order."
+                        </p>
+                        <p class="carousel-quote-source">— Andrew Scott, Wexford Stables</p>
+                    </div>
+                </div>
+
+                <!-- Panel 4: Recognised -->
+                <div class="carousel-panel" data-panel="3">
+                    <div class="carousel-panel-content">
+                        <img src="../public/images/content/documents/authorised-seal.svg" alt="NZTR Authorised Syndicator" style="width: 120px; height: 120px; margin: 0 auto 2rem; opacity: 0.15; transition: opacity 1.2s ease;">
+                        <p class="carousel-label">Recognised</p>
+                        <h2 class="carousel-headline">Authorised. <span>Regulated.</span></h2>
+                        <p class="carousel-body">
+                            NZTR-authorised syndicator operating within New Zealand's racing
+                            regulatory framework. Every campaign is documented. Every transaction
+                            is recorded.
+                        </p>
+                        <div class="carousel-credits">
+                            <span class="carousel-credit">BusinessDesk</span>
+                            <span class="carousel-credit">Trackside</span>
+                            <span class="carousel-credit">Arabian Business</span>
+                            <span class="carousel-credit">Gulf Business</span>
+                            <span class="carousel-credit">NZTR Authorised</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Progress dots -->
+            <div class="carousel-progress" id="carouselProgress">
+                <span class="carousel-progress-dot active"></span>
+                <span class="carousel-progress-dot"></span>
+                <span class="carousel-progress-dot"></span>
+                <span class="carousel-progress-dot"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3: MEET THE STABLE ===== -->
+    <section class="stable-section" id="horses">
+        <!-- Section header (sticky) -->
+        <div class="stable-header">
+            <p class="stable-header-label">The Stable</p>
+            <h2 class="stable-header-title">Meet the Stable</h2>
+        </div>
+
+        <!-- Prudentia -->
+        <div class="horse-name-bar" style="top: 120px; z-index: 14;">
+            <div class="horse-name-bar-inner">
+                <div class="horse-name-left">
+                    <span class="horse-name-dot"></span>
+                    <span class="horse-name-text">Prudentia</span>
+                    <span class="horse-name-location">Matamata · Wexford Stables</span>
+                </div>
+                <span class="horse-name-cta">Apply →</span>
+            </div>
+        </div>
+        <div class="horse-content">
+            <div class="horse-content-bg" style="background-image: url('../public/images/content/stables/prudentia-action.png');"></div>
+            <div class="horse-content-inner">
+                <div class="horse-media">
+                    <img src="../public/images/content/stables/prudentia-action.png" alt="Prudentia">
+                    <div class="horse-media-overlay"></div>
+                    <div class="horse-status-badge">
+                        <span class="horse-status-dot"></span>
+                        <span class="horse-status-text">Open for Ownership</span>
+                    </div>
+                </div>
+                <div class="horse-info">
+                    <p class="horse-story">
+                        A four-year-old mare by Proisir with a maiden win already on the board.
+                        Trained by Lance O'Sullivan and Andrew Scott, she's stepping into Benchmark 75
+                        company this winter with her next target at Tauranga on 27 June.
+                    </p>
+                    <div class="horse-meta">
+                        <div class="horse-meta-item">
+                            <span class="horse-meta-label">Wins</span>
+                            <span class="horse-meta-value">2</span>
+                        </div>
+                        <div class="horse-meta-item">
+                            <span class="horse-meta-label">Placed</span>
+                            <span class="horse-meta-value">4</span>
+                        </div>
+                        <div class="horse-meta-item">
+                            <span class="horse-meta-label">Next Up</span>
+                            <span class="horse-meta-value gold">27 June · Tauranga</span>
+                        </div>
+                    </div>
+                    <a href="#" class="horse-cta">
+                        <span>Apply for Ownership</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hottathanafantasy -->
+        <div class="horse-name-bar" style="top: 176px; z-index: 13;">
+            <div class="horse-name-bar-inner">
+                <div class="horse-name-left">
+                    <span class="horse-name-dot coming"></span>
+                    <span class="horse-name-text">Hottathanafantasy</span>
+                    <span class="horse-name-location">Matamata · Wexford Stables</span>
+                </div>
+                <span class="horse-name-cta">Apply →</span>
+            </div>
+        </div>
+        <div class="horse-content">
+            <div class="horse-content-bg" style="background-image: url('../public/images/content/horses/Hottathan-BG.png');"></div>
+            <div class="horse-content-inner">
+                <div class="horse-media">
+                    <img src="../public/images/content/horses/Hottathan-BG.png" alt="Hottathanafantasy">
+                    <div class="horse-media-overlay"></div>
+                    <div class="horse-status-badge">
+                        <span class="horse-status-dot coming"></span>
+                        <span class="horse-status-text">Coming Soon</span>
+                    </div>
+                </div>
+                <div class="horse-info">
+                    <p class="horse-story">
+                        An elite international pedigree by Contributer, showing immense maturity
+                        in pre-training. A sharp sprinter in the making, preparing for her first
+                        racing campaign under Lance O'Sullivan.
+                    </p>
+                    <a href="#" class="horse-cta">
+                        <span>Apply for Ownership</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Gear -->
+        <div class="horse-name-bar" style="top: 232px; z-index: 12;">
+            <div class="horse-name-bar-inner">
+                <div class="horse-name-left">
+                    <span class="horse-name-dot coming"></span>
+                    <span class="horse-name-text">First Gear</span>
+                    <span class="horse-name-location">Palmerston North · Copper Belt Lodge</span>
+                </div>
+                <span class="horse-name-cta">Apply →</span>
+            </div>
+        </div>
+        <div class="horse-content">
+            <div class="horse-content-bg" style="background-image: url('../public/images/content/horses/FirstGear-BG.png');"></div>
+            <div class="horse-content-inner">
+                <div class="horse-media">
+                    <img src="../public/images/content/horses/FirstGear-BG.png" alt="First Gear">
+                    <div class="horse-media-overlay"></div>
+                    <div class="horse-status-badge">
+                        <span class="horse-status-dot coming"></span>
+                        <span class="horse-status-text">Coming Soon</span>
+                    </div>
+                </div>
+                <div class="horse-info">
+                    <p class="horse-story">
+                        The first horse through Evolution Stables. Five starts, a win, two placings,
+                        and over $20,000 in prizemoney. A six-figure offer from Australian interests
+                        was turned down. Trained by Group 1-winning horseman Stephen Gray.
+                    </p>
+                    <a href="#" class="horse-cta">
+                        <span>Apply for Ownership</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- I Stole A Manolo -->
+        <div class="horse-name-bar" style="top: 288px; z-index: 11;">
+            <div class="horse-name-bar-inner">
+                <div class="horse-name-left">
+                    <span class="horse-name-dot coming"></span>
+                    <span class="horse-name-text">I Stole A Manolo</span>
+                    <span class="horse-name-location">Matamata · Wexford Stables</span>
+                </div>
+                <span class="horse-name-cta">Apply →</span>
+            </div>
+        </div>
+        <div class="horse-content">
+            <div class="horse-content-bg" style="background-image: url('../public/images/content/horses/IStole-BG.png');"></div>
+            <div class="horse-content-inner">
+                <div class="horse-media">
+                    <img src="../public/images/content/horses/IStole-BG.png" alt="I Stole A Manolo">
+                    <div class="horse-media-overlay"></div>
+                    <div class="horse-status-badge">
+                        <span class="horse-status-dot coming"></span>
+                        <span class="horse-status-text">Coming Soon</span>
+                    </div>
+                </div>
+                <div class="horse-info">
+                    <p class="horse-story">
+                        A stylish filly by Group 1 winner Satono Aladdin with a pedigree suggesting
+                        middle-distance strength. Currently in early racing education at Wexford
+                        Stables with Lance O'Sullivan & Andrew Scott.
+                    </p>
+                    <a href="#" class="horse-cta">
+                        <span>Apply for Ownership</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coming Soon List -->
+        <div class="coming-soon">
+            <p class="coming-soon-label">Coming Soon</p>
+            <div class="coming-soon-list">
+                <div class="coming-soon-item">
+                    <span class="coming-soon-pedigree">Turn Me Loose x Yearn — 2yo Filly</span>
+                    <span class="coming-soon-tag">In Pre-Training</span>
+                </div>
+                <div class="coming-soon-item">
+                    <span class="coming-soon-pedigree">Almanzor x ______ — 2yo Filly</span>
+                    <span class="coming-soon-tag">In Pre-Training</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4: APPLY ===== -->
+    <section class="apply-section">
+        <div class="apply-inner">
+            <p class="apply-label">Your Turn</p>
+            <h2 class="apply-headline">
+                If one of these speaks to you,<br>
+                <span>apply to come on board.</span>
+            </h2>
+            <p class="apply-body">
+                No pressure, no checkout. Just tell us which horse caught your eye
+                and a bit about yourself. We'll take it from there.
+            </p>
+            <a href="#" class="apply-cta">Apply for Ownership</a>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <p>© 2026 Evolution Stables. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        const hero = document.getElementById('hero');
+
+        if (hero && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    const entry = entries[0];
+                    navbar.classList.toggle('solid', !entry.isIntersecting);
+                },
+                {
+                    root: null,
+                    rootMargin: '-64px 0px 0px 0px',
+                    threshold: 0,
+                }
+            );
+            observer.observe(hero);
+        } else {
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('solid', window.scrollY > window.innerHeight * 0.6);
+            }, { passive: true });
+        }
+
+        // Carousel horizontal scroll
+        const carouselTrack = document.getElementById('validation');
+        const carouselStrip = document.getElementById('carouselStrip');
+        const carouselPanels = document.querySelectorAll('.carousel-panel');
+        const progressDots = document.querySelectorAll('.carousel-progress-dot');
+
+        let ticking = false;
+        function updateCarousel() {
+            const trackRect = carouselTrack.getBoundingClientRect();
+            const trackHeight = carouselTrack.offsetHeight;
+            const viewHeight = window.innerHeight;
+
+            const totalScrollable = trackHeight - viewHeight;
+            const currentScroll = -trackRect.top;
+            const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
+
+            const stripWidth = carouselStrip.scrollWidth;
+            const viewWidth = window.innerWidth;
+            const maxDelta = Math.max(0, stripWidth - viewWidth);
+
+            if (maxDelta > 0) {
+                const scrollX = progress * maxDelta;
+                carouselStrip.style.transform = `translateX(-${scrollX}px)`;
+
+                // Activate panel based on position
+                const activeIndex = Math.min(
+                    carouselPanels.length - 1,
+                    Math.floor((scrollX + viewWidth * 0.5) / viewWidth)
+                );
+
+                carouselPanels.forEach((panel, i) => {
+                    if (i === activeIndex) panel.classList.add('active');
+                    else panel.classList.remove('active');
+                });
+
+                progressDots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === activeIndex);
+                });
+            }
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateCarousel);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        updateCarousel();
+    </script>
+
+</body>
+</html>
