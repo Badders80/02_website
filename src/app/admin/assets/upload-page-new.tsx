@@ -3,7 +3,8 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { AdminButton, AdminInput, AdminSelect, AdminForm, AdminBadge, AdminEmptyState } from "@/components/admin";
-import { uploadAsset } from "@/lib/api";
+// DORMANT: was import { uploadAsset } from "@/lib/api";
+// Admin is dormant — GCP backend retired. This function hits dead endpoints.
 
 interface UploadResult {
   name: string;
@@ -91,8 +92,8 @@ export default function UploadPage() {
       if (tags) formData.append("tags", tags);
 
       try {
-        const data = await uploadAsset(formData);
-        uploaded.push({ name: file.name, success: true, data });
+        // DORMANT: uploadAsset() hit the retired GCP assets endpoint.
+        throw new Error("Admin is dormant — asset upload is unavailable (GCP backend retired).");
       } catch (err: any) {
         uploaded.push({ name: file.name, success: false, error: err.message });
       }

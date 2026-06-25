@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AdminButton, AdminInput, AdminSelect, AdminForm } from "@/components/admin";
-import { createHorse, extractFromLoveracing } from "@/lib/api";
+// DORMANT: was import { createHorse, extractFromLoveracing } from "@/lib/api";
+// Admin is dormant — GCP backend retired. These functions hit dead endpoints.
 
 interface LoveracingRef {
   loveracing_id: number;
@@ -56,37 +57,9 @@ export default function NewHorsePage() {
         return;
       }
 
-      // Call the real scraping API
-      const extractedData = await extractFromLoveracing(url);
-
-      setLoveracingRef({
-        loveracing_id: extractedData.loveracing_id,
-        name_slug: extractedData.name_slug,
-        life_number: extractedData.life_number,
-        sire_name: extractedData.sire_name || "",
-        dam_name: extractedData.dam_name || "",
-        colour: extractedData.colour || "",
-        sex: extractedData.sex || "",
-        foaling_date: extractedData.foaling_date.split('T')[0] || "",
-        breeder: extractedData.breeder || "",
-        brands: "",
-        source_url: url,
-      });
-
-      // Auto-populate Step 2 form with extracted data
-      setForm(prev => ({
-        ...prev,
-        microchip: extractedData.microchip || "",
-        name: extractedData.name || "",
-        foaling_date: extractedData.foaling_date.split('T')[0] || "",
-        sex: extractedData.sex || "",
-        colour: extractedData.colour || "",
-        sire_name: extractedData.sire_name || "",
-        dam_name: extractedData.dam_name || "",
-        breeder: extractedData.breeder || "",
-      }));
-
-      setError(null);
+      // DORMANT: extractFromLoveracing() hit the retired GCP scraping endpoint.
+      // Admin UI is kept for reference; the backend is gone.
+      throw new Error("Admin is dormant — loveracing.nz scraping is unavailable (GCP backend retired).");
     } catch (err: any) {
       setError(err.message || "Failed to extract data from loveracing.nz");
     } finally {
@@ -105,17 +78,8 @@ export default function NewHorsePage() {
         throw new Error("Microchip must be 15 digits");
       }
 
-      const payload = {
-        ...form,
-        loveracing_ref: loveracingRef ? {
-          loveracing_id: loveracingRef.loveracing_id,
-          name_slug: loveracingRef.name_slug,
-          source_url: loveracingRef.source_url,
-        } : undefined,
-      };
-
-      await createHorse(payload);
-      router.push("/admin/horses");
+      // DORMANT: createHorse() hit the retired GCP SSOT endpoint.
+      throw new Error("Admin is dormant — horse registration is unavailable (GCP backend retired).");
     } catch (err: any) {
       setError(err.message || "Failed to register horse");
     } finally {

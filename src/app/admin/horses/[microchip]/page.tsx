@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AdminButton, AdminBadge, AdminEmptyState, AdminLoading } from "@/components/admin";
-import { getHorseByMicrochip, retrieveAssets } from "@/lib/api";
+// DORMANT: was import { getHorseByMicrochip, retrieveAssets } from "@/lib/api";
+// Admin is dormant — GCP backend retired. These functions hit dead endpoints.
 
 interface Horse {
   microchip: string;
@@ -52,19 +53,11 @@ export default function HorseDetailPage() {
   useEffect(() => {
     if (!microchip) return;
 
-    Promise.all([
-      getHorseByMicrochip(microchip).catch(() => null),
-      retrieveAssets("horse", microchip).catch(() => ({ assets: [] })),
-    ])
-      .then(([horseData, assetsData]) => {
-        setHorse(horseData);
-        setAssets(assetsData.assets || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    // DORMANT: getHorseByMicrochip() and retrieveAssets() hit the retired GCP
+    // endpoints. Surface a clear "admin is dormant" state instead of calling
+    // names that no longer exist in the import graph.
+    setError("Admin is dormant — horse data is unavailable (GCP backend retired).");
+    setLoading(false);
   }, [microchip]);
 
   if (loading) {
