@@ -15,7 +15,7 @@
     "status": "active",
     "image_path": "/images/content/stables/prudentia-action.png",
     "story": "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
-    "trainer_name": "Sam Spratt",
+    "trainer_name": "Lance O'Sullivan & Andrew Scott",
     "trainer_stable": "Wexford Stables",
     "trainer_location": "Matamata, NZ",
     "stats": {
@@ -40,7 +40,7 @@
     "status": "active",
     "image_path": "/images/content/horses/Hottathan-BG.png",
     "story": "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
-    "trainer_name": "Sam Spratt",
+    "trainer_name": "Lance O'Sullivan & Andrew Scott",
     "trainer_stable": "Wexford Stables",
     "trainer_location": "Matamata, NZ",
     "stats": {
@@ -66,7 +66,7 @@
     "image_path": "/images/content/horses/FirstGear-BG.png",
     "story": "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
     "trainer_name": "Stephen Gray",
-    "trainer_stable": "Copper Belt Lodge",
+    "trainer_stable": "Stephen Gray Racing",
     "trainer_location": "Palmerston North, NZ",
     "stats": {
       "wins": "0",
@@ -90,7 +90,7 @@
     "status": "active",
     "image_path": "/images/content/horses/IStole-BG.png",
     "story": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
-    "trainer_name": "Sam Spratt",
+    "trainer_name": "Lance O'Sullivan & Andrew Scott",
     "trainer_stable": "Wexford Stables",
     "trainer_location": "Matamata, NZ",
     "stats": {

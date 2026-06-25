@@ -125,7 +125,7 @@ export default function MyStablePage() {
           image_url: "/images/content/stables/prudentia-action.png"
         },
         trainer: {
-          name: "Sam Spratt",
+          name: "Lance O'Sullivan & Andrew Scott",
           stable_name: "Wexford Stables",
           location: "Matamata, NZ"
         }

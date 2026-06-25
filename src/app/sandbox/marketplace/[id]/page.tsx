@@ -146,7 +146,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
       },
       trainer: {
         name: "Stephen Gray",
-        stable_name: "Copper Belt Lodge",
+        stable_name: "Stephen Gray Racing",
         location: "Palmerston North, NZ",
         nztr_license_number: "LIC-GRAY"
       },
