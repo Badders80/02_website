@@ -79,8 +79,8 @@ function UploadForm() {
       fd.append("entity_id", entityId);
       if (tags) fd.append("tags", tags);
       try {
-        const data = await uploadAsset(fd);
-        uploaded.push({ name: file.name, success: true, data });
+        // DORMANT: uploadAsset() hit the retired GCP assets endpoint.
+        throw new Error("Admin is dormant — asset upload is unavailable (GCP backend retired).");
       } catch (err: any) {
         uploaded.push({ name: file.name, success: false, error: err.message });
       }

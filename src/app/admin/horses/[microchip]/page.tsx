@@ -53,19 +53,11 @@ export default function HorseDetailPage() {
   useEffect(() => {
     if (!microchip) return;
 
-    Promise.all([
-      getHorseByMicrochip(microchip).catch(() => null),
-      retrieveAssets("horse", microchip).catch(() => ({ assets: [] })),
-    ])
-      .then(([horseData, assetsData]) => {
-        setHorse(horseData);
-        setAssets(assetsData.assets || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    // DORMANT: getHorseByMicrochip() and retrieveAssets() hit the retired GCP
+    // endpoints. Surface a clear "admin is dormant" state instead of calling
+    // names that no longer exist in the import graph.
+    setError("Admin is dormant — horse data is unavailable (GCP backend retired).");
+    setLoading(false);
   }, [microchip]);
 
   if (loading) {
