@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AdminButton, AdminBadge, AdminEmptyState, AdminLoading } from "@/components/admin";
-import { getHorseByMicrochip, retrieveAssets } from "@/lib/api";
+// DORMANT: was import { getHorseByMicrochip, retrieveAssets } from "@/lib/api";
+// Admin is dormant — GCP backend retired. These functions hit dead endpoints.
 
 interface Horse {
   microchip: string;

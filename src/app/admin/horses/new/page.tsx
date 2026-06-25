@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AdminButton, AdminInput, AdminSelect, AdminForm } from "@/components/admin";
-import { createHorse, extractFromLoveracing } from "@/lib/api";
+// DORMANT: was import { createHorse, extractFromLoveracing } from "@/lib/api";
+// Admin is dormant — GCP backend retired. These functions hit dead endpoints.
 
 interface LoveracingRef {
   loveracing_id: number;

@@ -4,7 +4,8 @@ import { useState, useCallback, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AdminButton, AdminInput, AdminSelect, AdminForm, AdminBadge, AdminEmptyState } from "@/components/admin";
-import { uploadAsset } from "@/lib/api";
+// DORMANT: was import { uploadAsset } from "@/lib/api";
+// Admin is dormant — GCP backend retired. This function hits dead endpoints.
 
 interface UploadResult {
   name: string;
