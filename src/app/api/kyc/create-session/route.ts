@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     // Create Stripe Identity verification session directly
-    const session = await stripe.identity.VerificationSession.create({
+    const session = await stripe.identity.verificationSessions.create({
       type: 'document',
       metadata: {
         user_id,

@@ -71,6 +71,7 @@ export default async function CampaignDetailPage({ params }: Props) {
       stable_name: hlt.trainer_stable || horseData?.trainer_stable || "",
       location: hlt.trainer_location || horseData?.trainer_location || "",
       nztr_license_number: "",
+      bio: "",
     },
     owner: {
       name: hlt.owner_name || "",

@@ -39,8 +39,9 @@ export async function POST(request: NextRequest) {
         console.log('KYC verified for user:', session.metadata?.user_id);
         // TODO: Update user's KYC status (Firebase custom claims or local record)
         break;
-      case 'identity.verification_session.requires_attention':
-        console.log('KYC requires attention for user:', event.data.object.metadata?.user_id);
+      case 'identity.verification_session.requires_input':
+        const attentionSession = event.data.object as Stripe.Identity.VerificationSession;
+        console.log('KYC requires attention for user:', attentionSession.metadata?.user_id);
         break;
       default:
         console.log(`Unhandled KYC event type: ${event.type}`);
