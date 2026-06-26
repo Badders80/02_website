@@ -29,22 +29,19 @@
 | **Auth context** | ✅ LIVE | `src/lib/auth-context.tsx` — `useAuth()` hook. Dev bypass: `NEXT_PUBLIC_BYPASS_AUTH_KYC=true` |
 | **Marketplace page** | ⚠️ LIVE but degraded | `src/app/marketplace/page.tsx` calls `getHlts()` from `api.ts` → hits dead GCP → try/catch falls back to mock data. Works visually but data is fake. |
 | **MyStable page** | ⚠️ LIVE but degraded | `src/app/mystable/page.tsx` calls `getHoldings()`, `getHlts()`, `getContent()` from `api.ts` → dead GCP → fallback. |
-| **KYC verify page** | ⚠️ LIVE but broken | `src/app/mystable/verify/page.tsx` loads Stripe.js (`loadStripe(NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)`) but the `stripePromise` is **never used**. Actual KYC flow: `fetch("/api/kyc/create-session")` → that route forwards to GCP → dead. |
-| **Stripe payments** | ❌ NOT LIVE | `src/app/api/checkout/create-session/route.ts` forwards to GCP Payments API → dead. No `stripe` server package installed. `@stripe/stripe-js` (client) is installed. |
+| **KYC verify page** | ✅ LIVE (direct) | `src/app/mystable/verify/page.tsx` + `/auth/verify/page.tsx` — direct create-session, redirects to Stripe url. (unused loadStripe cleaned) |
+| **Stripe payments** | ✅ LIVE (direct) | `src/app/api/checkout/create-session/route.ts` calls stripe.checkout directly. Token verified. |
+| **KYC webhook** | ✅ LIVE | `api/kyc/callback` — direct sig + sets Firebase custom claims (kyc_status/role) |
+| **Checkout webhook** | ✅ LIVE | `api/checkout/webhook` — direct sig + appends holding (sheets webapp or console log) |
 
-### Active but broken (GCP-coupled — to be rewritten or dormant-ified)
+### Active but cleaned / dormant (GCP-coupled)
 
-| File | Imports from | What it does | Disposition |
-|---|---|---|---|
-| `src/lib/api.ts` | — (is the API client) | GCP API client: `getHorses`, `getHlts`, `getHoldings`, `getContent`, `uploadAsset`, `createHorse`, etc. Referenced by 8 pages. All calls hit dead GCP endpoints, fall back to mock data via try/catch. | **Rewire** to read from `src/data/*.json` (build-order #4) |
-| `src/lib/gcp-auth.ts` | `child_process`, `next/headers` | GCP Workload Identity Federation token exchange. Imported by 7 API routes. | **Remove** from routes being rewritten; dormant-ify rest (build-order #5) |
-| `src/app/api/kyc/create-session/route.ts` | `gcp-auth.ts` | Forwards to GCP KYC API. Dead. | **Rewrite** to call Stripe directly (build-order #5) |
-| `src/app/api/kyc/callback/route.ts` | `gcp-auth.ts` | Stripe webhook callback. Uses GCP auth to forward. | **Rewrite** — verify Stripe signature directly |
-| `src/app/api/checkout/create-session/route.ts` | `gcp-auth.ts` | Forwards to GCP Payments API. Dead. | **Rewrite** to call Stripe directly (build-order #5) |
-| `src/app/api/checkout/webhook/route.ts` | `gcp-auth.ts` | Payment webhook. Uses GCP auth. | **Rewrite** — verify Stripe signature directly |
-| `src/app/api/applications/submit/route.ts` | `gcp-auth.ts` | Submits applications to GCP. Hardcodes `cloudfunctions.net` fallback URL. | **Dormant-ify** or rewrite to local |
-| `src/app/api/applications/list/route.ts` | `gcp-auth.ts` | Lists applications from GCP. Hardcodes `cloudfunctions.net` fallback URL. | **Dormant-ify** or rewrite to local |
-| `src/app/api/proxy/[...path]/route.ts` | `gcp-auth.ts` | Cloud Functions proxy. Nothing to proxy to. | **Dormant-ify** |
+| File | Status | Notes |
+|---|---|---|
+| `src/lib/api.ts` + `src/lib/gcp-auth.ts` | Partial legacy | Some pages may still import (fallback). Rewire where seen. |
+| `api/proxy/[...path]/route.ts` | Dormant (410) | Retired. |
+| `api/applications/*` | Dormant (410) | Retired. |
+| `api/diagnostics/wif` | Dormant | Old WIF. |
 | `src/app/api/diagnostics/wif/route.ts` | `gcp-auth.ts` | GCP WIF diagnostics. | **Dormant-ify** |
 
 ### Dormant (parked, not deleted — may revive if GCP returns)

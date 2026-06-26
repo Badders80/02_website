@@ -52,12 +52,17 @@ export function usePurchaseFlow() {
     }
 
     try {
-      // Call local Next.js proxy route to create Stripe checkout session
+      const token = await user.getIdToken();
+      // Call local Next.js route to create Stripe checkout session (direct)
       const res = await fetch("/api/checkout/create-session", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({
           user_id: user.uid,
+          user_email: user.email || '',
           hlt_id: hltId,
           shares_to_buy: sharesToBuy,
           bypass_kyc: isBypassStripe, // Only bypass KYC in dev/test mode

@@ -2,29 +2,29 @@
   "_comment": "Google Sheets configuration for inventory sync. Create a Google Sheet for each entity, then paste the sheet ID (from the URL) here. gid=0 is the first tab. Run: python scripts/sync_inventory.py",
   "sheets": {
     "horses": {
-      "id": "YOUR_SHEET_ID_HERE",
+      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
       "gid": "0",
-      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=0"
     },
     "hlts": {
-      "id": "YOUR_SHEET_ID_HERE",
-      "gid": "0",
-      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
+      "gid": "1",
+      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=1"
     },
     "trainers": {
-      "id": "YOUR_SHEET_ID_HERE",
-      "gid": "0",
-      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
+      "gid": "2",
+      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=2"
     },
     "owners": {
-      "id": "YOUR_SHEET_ID_HERE",
-      "gid": "0",
-      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
+      "gid": "3",
+      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=3"
     },
     "holdings": {
-      "id": "YOUR_SHEET_ID_HERE",
-      "gid": "0",
-      "url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit"
+      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
+      "gid": "4",
+      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=4"
     }
   },
   "_sheet_templates": {

@@ -7,11 +7,12 @@
 
 ## ✅ What's Been Completed
 
-### 1. **Stripe KYC Frontend** ✅
-- ✅ Verify page created: `/mystable/verify/page.tsx`
-- ✅ KYC buttons added to marketplace detail pages
-- ✅ Working "Start Identity Verification" flow
-- ✅ Redirects to Stripe Identity verification page
+### 1. **Stripe KYC + Payments (direct)** ✅
+- ✅ Direct routes (kyc/create + checkout/create + webhooks) — no GCP
+- ✅ Token verification + firebase-admin claims set on webhook
+- ✅ Holdings record via sheets webapp (or console) on payment complete
+- ✅ usePurchaseFlow gates + /auth/verify canonical return + success banner
+- ✅ Stripe package + client flows live (bypass for dev)
 
 ### 2. **SEO Implementation** ✅
 - ✅ StructuredData component (Organization + Website schema)

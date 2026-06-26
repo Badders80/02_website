@@ -65,6 +65,7 @@ export default function MyStablePage() {
   const [loadingData, setLoadingData] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
@@ -106,6 +107,16 @@ export default function MyStablePage() {
 
   useEffect(() => {
     if (authLoading) return;
+
+    // Detect post-Stripe checkout success (sheet write happens in webhook; json updates after manual sync + rebuild)
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('success') === 'true') {
+        setPurchaseSuccess(true);
+        // Clean url (optional)
+        window.history.replaceState({}, '', '/mystable');
+      }
+    }
 
     if (!user) {
       // Load mock dashboard data for the gated preview
@@ -258,6 +269,14 @@ export default function MyStablePage() {
           <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
             <KycBanner />
           </div>
+
+          {purchaseSuccess && (
+            <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-sm text-emerald-400">
+                ✅ Payment received. Holding recorded in source sheet (via webhook). Run <code>python scripts/sync_inventory.py</code> then rebuild/deploy to surface in this JSON-powered view. kyc_status claims updated for future purchases.
+              </div>
+            </div>
+          )}
 
         {/* Dashboard Grid */}
         <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">

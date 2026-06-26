@@ -136,7 +136,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
         sire_name: "Derryn",
         dam_name: "A'Guin Ace",
         image_url: "https://storage.googleapis.com/tokinvest-ds-bucket/offering/0f8455e5-6ae4-4524-9ced-43115c3d966b.png",
-        story: `Early race success with $20K+ in prizemoney and international buyer interest. Trained by Group 1-winning horseman Stephen Gray at Copper Belt Lodge.
+        story: `Early race success with $20K+ in prizemoney and international buyer interest. Trained by Group 1-winning horseman Stephen Gray at Stephen Gray Racing.
         
         In just five starts he has recorded a win, two placings, and over $20,000 in prizemoney — including turning down a recent six-figure offer from Australian interests.`,
         life_number: "NZ00427901",

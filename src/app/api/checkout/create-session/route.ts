@@ -1,16 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+import { verifyIdToken } from '@/lib/firebase-admin';
+import { getStripe } from '@/lib/stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-06-30.basil' as any,
-});
+// Load HLT data statically (baked at build for api route)
+import hltsModule from '@/data/hlts.json';
+
+const hlts = (hltsModule as any).default || (hltsModule as any);
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { user_id, hlt_id, shares_to_buy, bypass_kyc } = body;
+    const { user_id: bodyUserId, hlt_id, shares_to_buy, bypass_kyc, user_email } = body;
 
-    if (!user_id || !hlt_id || !shares_to_buy) {
+    // Verify caller via Firebase ID token (sent as Bearer)
+    const authHeader = request.headers.get('authorization') || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) {
+      return NextResponse.json({ error: 'Missing Authorization Bearer token' }, { status: 401 });
+    }
+
+    let verifiedUid: string;
+    let verifiedEmail: string | undefined;
+    try {
+      const decoded = await verifyIdToken(token);
+      verifiedUid = decoded.uid;
+      verifiedEmail = decoded.email || body.user_email;
+    } catch (e: any) {
+      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+    }
+
+    const userId = bodyUserId || verifiedUid;
+    if (userId !== verifiedUid) {
+      return NextResponse.json({ error: 'user_id mismatch with token' }, { status: 403 });
+    }
+
+    if (!userId || !hlt_id || !shares_to_buy) {
       return NextResponse.json(
         { error: 'Missing required parameters: user_id, hlt_id, shares_to_buy' },
         { status: 400 }
@@ -25,11 +49,6 @@ export async function POST(request: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-
-    // Load HLT data from local JSON to get pricing
-    // In production this is baked into the build; for the API route we import directly
-    const hltsModule = await import('@/data/hlts.json');
-    const hlts = (hltsModule.default || hltsModule) as any[];
     const hlt = hlts.find((h: any) => (h.horse_slug || h.id) === hlt_id);
 
     if (!hlt) {
@@ -40,7 +59,7 @@ export async function POST(request: NextRequest) {
     const totalNzdCents = pricePerShareNzd * shares_to_buy * 100;
 
     // Create Stripe Checkout session directly
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
       line_items: [
         {
@@ -56,7 +75,8 @@ export async function POST(request: NextRequest) {
         },
       ],
       metadata: {
-        user_id,
+        user_id: userId,
+        user_email: user_email || verifiedEmail || '',
         hlt_id,
         shares_to_buy: String(shares_to_buy),
         horse_microchip: hlt.horse_microchip || '',

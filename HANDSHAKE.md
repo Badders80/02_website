@@ -111,64 +111,42 @@ NEXT_PUBLIC_FIREBASE_CONFIG={"apiKey":"...","authDomain":"...","projectId":"evol
 
 ---
 
-## Stripe — KYC + Payments (TARGET: Direct — CURRENT: GCP proxy, dead)
+## Stripe — KYC + Payments (DIRECT — IMPLEMENTED, CLAIMS + HOLDINGS IN PROGRESS)
 
-### Current state (broken)
+### Current state (2026-06)
 
-Both KYC and checkout routes forward to GCP via `getGcpIdentityToken()`:
+- `stripe` server SDK installed + used.
+- All routes direct (no GCP proxy, proxy route returns 410).
+- create-session (kyc + checkout): create sessions directly, return url. **Token verified server-side via firebase-admin.**
+- webhooks (kyc/callback + checkout/webhook): sig verified directly. Events handled.
+- KYC webhook: on verified/requires_input/canceled → `setCustomUserClaims(uid, {kyc_status, role})` via admin (drives useAuth + purchase gates).
+- Checkout webhook: on completed → log record + optional POST to GOOGLE_SHEETS_WEB_APP_URL (append to holdings tab). Falls back to console for manual sync.
+- Client: usePurchaseFlow gates on kycStatus==="verified", calls with Bearer token. Bypass flags for dev.
+- Data for listings/holdings: local json (synced from sheets).
+- Return handlers: /auth/verify (canonical, polls claims), /mystable?success=true (banner + note to re-sync).
 
-| Route | Current behavior | Status |
-|---|---|---|
-| `api/kyc/create-session/route.ts` | Gets GCP token → `fetch(${KYC_API_BASE}/create-session)` → dead | ❌ Broken |
-| `api/checkout/create-session/route.ts` | Gets GCP token → `fetch(${PAYMENTS_API_BASE}/create-session)` → dead | ❌ Broken |
-| `api/kyc/callback/route.ts` | Uses GCP auth to process Stripe webhook | ⚠️ Needs rewrite |
-| `api/checkout/webhook/route.ts` | Uses GCP auth to process Stripe webhook | ⚠️ Needs rewrite |
+`firebase-admin` now active for claims (was remnant).
 
-**The `stripe` server SDK is NOT installed.** Only `@stripe/stripe-js` (client) is in package.json. The server package must be added before the rewrite.
+`mystable/verify/page.tsx` cleaned (unused loadStripe removed); return goes to /auth/verify.
 
-`mystable/verify/page.tsx` calls `loadStripe(NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)` but the `stripePromise` is never used — the actual KYC flow goes through the Next.js API route → GCP.
-
-### Target state (direct Stripe)
-
-**KYC flow:**
-```
-User clicks "Verify Identity"
-  → POST /api/kyc/create-session (Next.js route)
-  → Route calls stripe.identity.VerificationSession.create() directly
-  → Returns { session_url }
-  → Client redirects to Stripe
-  → Stripe redirects back to /auth/verify?session_id=...
-  → Client polls for status (or webhook updates via /api/kyc/callback)
-```
-
-**Payment flow:**
-```
-User clicks "Buy Shares" on a listing
-  → POST /api/checkout/create-session (Next.js route)
-  → Route calls stripe.checkout.Session.create() directly
-  → Returns { session_url }
-  → Client redirects to Stripe Checkout
-  → Stripe redirects back to /mystable?success=true
-```
-
-### Environment
+### Environment (Vercel + local)
 
 ```env
-# Client-side (public) — LIVE
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
-
-# Server-side (Vercel env, never in client code) — TO BE ADDED
-STRIPE_SECRET_KEY=***
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_APP_URL=https://...
+FIREBASE_SERVICE_ACCOUNT_KEY='{"type":"service_account", ...}'  # for claims
+GOOGLE_SHEETS_WEB_APP_URL=https://script.../exec  # optional for holdings write
+NEXT_PUBLIC_BYPASS_STRIPE=true   # dev only
+NEXT_PUBLIC_BYPASS_AUTH_KYC=true # dev only
 ```
 
-### What needs to happen
-
-1. Install `stripe` server package: `npm install stripe`
-2. Rewrite `api/kyc/create-session/route.ts` — remove `getGcpIdentityToken()`, call `stripe.identity.VerificationSession.create()` directly
-3. Rewrite `api/checkout/create-session/route.ts` — remove `getGcpIdentityToken()`, call `stripe.checkout.Session.create()` directly
-4. Rewrite `api/kyc/callback/route.ts` — verify Stripe signature directly (no GCP)
-5. Rewrite `api/checkout/webhook/route.ts` — verify Stripe signature directly (no GCP)
-6. Add `STRIPE_SECRET_KEY` to Vercel env vars
+### Remaining (post this pass)
+- Confirm sheets web app accepts {action:"append_holding", row:...} or adjust.
+- Register webhooks in Stripe dashboard (test + live) pointing to /api/kyc/callback and /api/checkout/webhook.
+- Re-sync json + deploy after real purchases for dashboard visibility.
+- Optional: optimistic UI holding on success (since static json).
 
 ---
 

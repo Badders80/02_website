@@ -1,18 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-
-// Initialize Stripe with server-side secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-06-30.basil' as any,
-});
+import { verifyIdToken } from '@/lib/firebase-admin';
+import { getStripe } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { user_id, email } = body;
+    const { user_id: bodyUserId, email, return_url } = body;
 
-    if (!user_id) {
-      return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
+    // Verify caller via Firebase ID token (sent as Bearer)
+    const authHeader = request.headers.get('authorization') || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) {
+      return NextResponse.json({ error: 'Missing Authorization Bearer token' }, { status: 401 });
+    }
+
+    let verifiedUid: string;
+    try {
+      const decoded = await verifyIdToken(token);
+      verifiedUid = decoded.uid;
+    } catch (e: any) {
+      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+    }
+
+    const userId = bodyUserId || verifiedUid;
+    if (userId !== verifiedUid) {
+      return NextResponse.json({ error: 'user_id mismatch with token' }, { status: 403 });
     }
 
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -23,15 +35,16 @@ export async function POST(request: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const finalReturnUrl = return_url || `${appUrl}/auth/verify`;
 
     // Create Stripe Identity verification session directly
-    const session = await stripe.identity.verificationSessions.create({
+    const session = await getStripe().identity.verificationSessions.create({
       type: 'document',
       metadata: {
-        user_id,
+        user_id: userId,
         email: email || '',
       },
-      return_url: `${appUrl}/auth/verify`,
+      return_url: finalReturnUrl,
     });
 
     return NextResponse.json({ session_url: session.url, session_id: session.id });

@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { FooterBar } from "@/components/site/Footer";
 import { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
 import { useAuth } from "@/lib/auth-context";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
-);
+// Note: KYC return_url is /auth/verify (canonical status + claims polling page).
+// This page is one entry point; /auth/verify is the post-Stripe handler.
 
 export default function VerificationPage() {
   const { user, loading: authLoading } = useAuth();

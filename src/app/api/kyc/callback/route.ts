@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-06-30.basil' as any,
-});
+import type Stripe from 'stripe';
+import { setCustomClaims } from '@/lib/firebase-admin';
+import { getStripe } from '@/lib/stripe';
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 
@@ -26,25 +24,37 @@ export async function POST(request: NextRequest) {
     // Verify Stripe signature directly (no GCP)
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(rawBody, sigHeader, WEBHOOK_SECRET);
+      event = getStripe().webhooks.constructEvent(rawBody, sigHeader, WEBHOOK_SECRET);
     } catch (err: any) {
       console.error('Stripe signature verification failed:', err.message);
       return NextResponse.json({ error: `Signature verification failed: ${err.message}` }, { status: 400 });
     }
 
-    // Handle the event
-    switch (event.type) {
-      case 'identity.verification_session.verified':
-        const session = event.data.object as Stripe.Identity.VerificationSession;
-        console.log('KYC verified for user:', session.metadata?.user_id);
-        // TODO: Update user's KYC status (Firebase custom claims or local record)
-        break;
-      case 'identity.verification_session.requires_input':
-        const attentionSession = event.data.object as Stripe.Identity.VerificationSession;
-        console.log('KYC requires attention for user:', attentionSession.metadata?.user_id);
-        break;
-      default:
-        console.log(`Unhandled KYC event type: ${event.type}`);
+    // Handle the event + set claims (this is what gates the purchase flow)
+    const session = event.data.object as Stripe.Identity.VerificationSession;
+    const uid = session.metadata?.user_id;
+
+    if (uid) {
+      try {
+        if (event.type === 'identity.verification_session.verified') {
+          await setCustomClaims(uid, { kyc_status: 'verified', role: 'investor' });
+          console.log('KYC verified + claims set for user:', uid);
+        } else if (event.type === 'identity.verification_session.requires_input') {
+          await setCustomClaims(uid, { kyc_status: 'requires_input' });
+          console.log('KYC requires_input + claims set for user:', uid);
+        } else if (event.type === 'identity.verification_session.canceled') {
+          await setCustomClaims(uid, { kyc_status: 'canceled' });
+          console.log('KYC canceled + claims set for user:', uid);
+        }
+      } catch (claimErr: any) {
+        console.error('Failed to set KYC claims (admin key missing?):', claimErr.message);
+      }
+    } else {
+      console.warn('KYC webhook event missing user_id in metadata');
+    }
+
+    if (!['identity.verification_session.verified', 'identity.verification_session.requires_input', 'identity.verification_session.canceled'].includes(event.type)) {
+      console.log(`Unhandled KYC event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
