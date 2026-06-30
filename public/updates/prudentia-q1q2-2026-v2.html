@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Investor Report: Prudentia (10)</title>
+    <style>
+        body { font-family: 'Times New Roman', serif; color: #000; background: #f9f9f9; line-height: 1.5; padding: 0; margin: 0; -webkit-print-color-adjust: exact; }
+        @media print {
+            body { background: #fff; }
+            .page { margin: 0; border: none; box-shadow: none; page-break-after: always; }
+        }
+        .page {
+            width: 210mm; min-height: 296mm; /* Fixed A4 */
+            padding: 25mm; margin: 20mm auto;
+            background: #fff; position: relative;
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        /* Typography */
+        h1, h2, h3 { font-weight: 200; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .serif-light { font-weight: 200; }
+        .sans-bold { font-family: sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem; }
+
+        /* Layout Elements */
+        .section-anchor { border-top: 4px solid #000; padding-top: 15px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: baseline; }
+        .label { font-family: sans-serif; text-transform: uppercase; letter-spacing: 2.5px; font-size: 0.75rem; font-weight: 800; }
+        .metadata { font-family: sans-serif; font-size: 0.75rem; color: #666; }
+
+        /* Components */
+        .big-number { font-size: 5.5rem; font-weight: 400; letter-spacing: -2px; line-height: 1; margin: 20px 0; }
+        .pillar-grid { display: flex; justify-content: space-between; gap: 0; font-family: sans-serif; margin-bottom: 50px; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 30px 0; }
+        .pillar { flex: 1; text-align: center; }
+        .pillar:not(:last-child) { border-right: 1px solid #eee; }
+        .pillar .val { font-family: 'Times New Roman', serif; font-size: 2.8rem; margin-top: 5px; }
+
+        .receipt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+        .receipt-table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 0.85rem; }
+        .receipt-table tr { border-bottom: 1px solid #eee; }
+        .receipt-table td { padding: 12px 0; }
+        .receipt-table td:last-child { text-align: right; font-weight: 700; }
+        .receipt-header { border-bottom: 1.5px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+
+        .race-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-family: sans-serif; font-size: 0.85rem; }
+        .race-table th { text-align: left; border-bottom: 1px solid #000; padding: 10px 5px; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+        .race-table td { padding: 12px 5px; border-bottom: 1px solid #eee; }
+
+        /* Footer/Disclosure */
+        .footer { margin-top: auto; border-top: 1px solid #eee; padding-top: 20px; font-family: sans-serif; font-size: 0.65rem; color: #999; display: flex; justify-content: space-between; align-items: flex-end; }
+        .institutional-seal { font-weight: 800; color: #000; letter-spacing: 1px; }
+
+        /* Page Specifics */
+        .page-cover { justify-content: center; text-align: center; background: #fff; border: 20mm solid #fff; }
+        .cover-photo { width: 100%; height: 60%; background: #eee; margin-bottom: 50px; position: relative; overflow: hidden; }
+        .cover-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+    </style>
+</head>
+<body>
+    <!-- PAGE 1: COVER -->
+    <div class="page page-cover">
+        <div class="cover-photo">
+            <img src="/reports/prudentia-q2-2026/assets/prudentia_jockey_post_race.png" alt="Prudentia">
+        </div>
+        <div style="text-align: left;">
+            <div class="label" style="margin-bottom: 20px;">Asset ID 10 · Evolution Stables</div>
+            <h1 style="font-size: 4.5rem; margin-bottom: 10px;">Prudentia</h1>
+            <h2 style="font-size: 1.5rem; color: #666; margin-bottom: 60px;">Quarterly Investor Report · Q1/Q2 2026</h2>
+
+            <div style="display: flex; gap: 40px; font-family: sans-serif; font-size: 0.8rem; color: #666;">
+                <div>
+                    <div class="sans-bold" style="color: #000; margin-bottom: 5px;">Reporting Period</div>
+                    1 Jan – 30 Jun 2026
+                </div>
+                <div>
+                    <div class="sans-bold" style="color: #000; margin-bottom: 5px;">Distribution</div>
+                    First Quarterly (Q1/Q2)
+                </div>
+                <div>
+                    <div class="sans-bold" style="color: #000; margin-bottom: 5px;">Trainer</div>
+                    Lance O'Sullivan & Andrew Scott
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="institutional-seal">EVOLUTION STABLES x TOKINVEST DMCC</div>
+            <div>STRICTLY CONFIDENTIAL</div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: EXECUTIVE NOTES -->
+    <div class="page">
+        <div class="section-anchor">
+            <div class="label">Executive Notes</div>
+            <div class="metadata">Prudentia (NZ) · Q1/Q2 2026</div>
+        </div>
+
+        <div class="receipt-grid" style="margin-top: 20px;">
+            <div style="font-family: 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.7; text-align: justify;">
+                <div class="label" style="margin-bottom: 25px; border-bottom: 1px solid #000; padding-bottom: 10px;">Alex Baddeley — Evolution Stables</div>
+                <p>Welcome to Prudentia's first quarterly update — the first full distribution cycle on Tokinvest. This report covers her performance, earnings, and payouts to token holders this quarter. Evolution Stables originates the asset, manages the lease, and transfers eligible prize money to Tokinvest. Tokinvest operates the platform and distributes returns to investors. A real horse. Real returns — delivered on schedule.</p>
+                <p>Prudentia has shown remarkable grit this season. Her victory at Te Rapa in April wasn't just a win on the board; it was a validation of our selection criteria for tough, resilient winter athletes. We focus on the physical asset and the operational delivery to ensure your capital is backed by genuine performance.</p>
+            </div>
+            <div style="font-family: 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.7; text-align: justify;">
+                <div class="label" style="margin-bottom: 25px; border-bottom: 1px solid #000; padding-bottom: 10px;">Scott Thiel — Tokinvest</div>
+                <p>This distribution marks a significant milestone for Tokinvest. We have successfully bridged the gap between elite New Zealand thoroughbred performance and institutional-grade digital asset management. The seamless transition from racetrack settlement to digital wallet disbursement validates our core mission: providing transparent, frictionless access to alternative yield.</p>
+                <p>As we expand the Asset ID 10 lifecycle, our focus remains on regulatory excellence and platform scalability. By bringing these assets on-chain with full transparency, we are creating the infrastructure for the next generation of investors.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 100px;">
+            <div class="label" style="color: #666; margin-bottom: 20px;">About this Report</div>
+            <div style="font-family: sans-serif; font-size: 0.8rem; color: #666; line-height: 1.6; max-width: 80%;">
+                This quarterly investor report is issued by Evolution Stables in partnership with Tokinvest DMCC for holders of Prudentia (NZ) digital tokens. It forms part of the ongoing reporting obligations under the syndication agreement and is published each calendar quarter. The report covers race performance, prize money earned, the calculation of investor returns, and the distribution carried out by Tokinvest.
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="institutional-seal">TOKINVEST DMCC · LICENSED BY VARA</div>
+            <div>PAGE 02</div>
+        </div>
+    </div>
+
+    <!-- PAGE 3: CAMPAIGN REVIEW -->
+    <div class="page">
+        <div class="section-anchor">
+            <div class="label">Campaign Review</div>
+            <div class="metadata">Q1/Q2 2026 · Racing Performance</div>
+        </div>
+
+        <div class="pillar-grid">
+            <div class="pillar">
+                <div class="label" style="color: #666;">Official Starts</div>
+                <div class="val">5</div>
+            </div>
+            <div class="pillar">
+                <div class="label" style="color: #666;">Placed Finishes</div>
+                <div class="val">2</div>
+            </div>
+            <div class="pillar">
+                <div class="label" style="color: #666;">Best Finish</div>
+                <div class="val">1st</div>
+            </div>
+            <div class="pillar">
+                <div class="label" style="color: #666;">Class Progression</div>
+                <div class="val" style="font-size: 1.8rem; margin-top: 15px; font-weight: 700;">R65 &rarr; R75</div>
+            </div>
+        </div>
+
+        <h3 class="serif-light" style="font-size: 2rem; margin-bottom: 30px;">Prudentia (NZ): The Winter Campaign</h3>
+
+        <div style="text-align: center; font-style: italic; font-size: 1.2rem; color: #444; margin-bottom: 40px; padding: 0 40px;">
+            "A gritty, come-from-behind victory at Te Rapa defined a quarter where Prudentia proved her resilience on testing winter turf."
+        </div>
+
+        <div style="font-family: 'Times New Roman', serif; font-size: 1rem; line-height: 1.6; color: #333;">
+            <p>The quarter opened at Tauranga on 14 March with a fifth in Rating 65 company — a useful resumption that set the base for what followed. Four weeks later at Te Rapa, Prudentia broke through with the performance that defined this campaign: from midfield under Masa Hashizume, she produced a gritty come-from-behind win over 1300m on Heavy 9, taking Rating 65 by a short margin.</p>
+            <p>She was stepped straight into Rating 75 and answered immediately. A close third on debut over 1400m at Te Rapa on 2 May confirmed she belonged at the higher grade. The campaign closed at Tauranga on 27 June on a heavy, sticky surface that did not suit her running style — an honest sixth that underscored what the stable already knew: she wants genuine heavy, not mud.</p>
+        </div>
+
+        <div class="footer">
+            <div class="institutional-seal">EVOLUTION STABLES · NZTR AUTHORISED SYNDICATOR</div>
+            <div>PAGE 03</div>
+        </div>
+    </div>
+
+    <!-- PAGE 4: DETAILED PERFORMANCE -->
+    <div class="page">
+        <div class="section-anchor">
+            <div class="label">Race by Race Detail</div>
+            <div class="metadata">Asset ID 10 · Reporting Period</div>
+        </div>
+
+        <table class="race-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Venue</th>
+                    <th>Distance</th>
+                    <th>Rating</th>
+                    <th>Finish</th>
+                    <th>Jockey / Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>14 Mar 2026</td>
+                    <td>Tauranga</td>
+                    <td>1400m</td>
+                    <td>R65</td>
+                    <td>5th</td>
+                    <td>M. Hashizume / Sound resumption</td>
+                </tr>
+                <tr>
+                    <td>17 Apr 2026</td>
+                    <td>Te Rapa</td>
+                    <td>1300m</td>
+                    <td>R65</td>
+                    <td>1st</td>
+                    <td>M. Hashizume / Gritty win on Heavy 9</td>
+                </tr>
+                <tr>
+                    <td>2 May 2026</td>
+                    <td>Te Rapa</td>
+                    <td>1400m</td>
+                    <td>R75</td>
+                    <td>3rd</td>
+                    <td>M. Hashizume / Strong debut in R75</td>
+                </tr>
+                <tr>
+                    <td>30 May 2026</td>
+                    <td>Te Rapa</td>
+                    <td>1200m</td>
+                    <td>R75</td>
+                    <td>5th</td>
+                    <td>M. Hashizume / Gutsy run from pocket</td>
+                </tr>
+                <tr>
+                    <td>27 Jun 2026</td>
+                    <td>Tauranga</td>
+                    <td>1400m</td>
+                    <td>R75</td>
+                    <td>6th</td>
+                    <td>M. Hashizume / Track too sticky</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 60px;">
+            <div class="label" style="margin-bottom: 20px;">Key Achievement</div>
+            <div style="border-left: 3px solid #000; padding-left: 20px; font-family: 'Times New Roman', serif;">
+                <h4 style="margin: 0; font-size: 1.2rem;">Class Graduation</h4>
+                <p style="margin: 10px 0 0 0; color: #666;">Successfully graduated from R65 to R75 and placed third on debut at the higher grade — competitive immediately against stronger fields.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="institutional-seal">EVOLUTION STABLES · ASSET ID 10</div>
+            <div>PAGE 04</div>
+        </div>
+    </div>
+
+    <!-- PAGE 5: FINANCIALS & DISCLOSURES -->
+    <div class="page">
+        <div class="section-anchor">
+            <div class="label">Financial Distribution</div>
+            <div class="metadata">Q1/Q2 2026 · Distribution Summary</div>
+        </div>
+
+        <div style="margin-bottom: 60px;">
+            <div class="label" style="color: #666; margin-bottom: 5px;">Return per Digital Token</div>
+            <div class="big-number">AED 96.75</div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="sans-bold" style="background: #000; color: #fff; padding: 4px 10px; border-radius: 2px;">✓ Distribution Completed</div>
+                <div class="metadata">Settled 26 June 2026</div>
+            </div>
+        </div>
+
+        <div class="receipt-grid">
+            <div>
+                <div class="receipt-header label">Asset Performance</div>
+                <table class="receipt-table">
+                    <tr>
+                        <td>Total Stakes Earned (100%)</td>
+                        <td>$25,675.00 NZD</td>
+                    </tr>
+                    <tr>
+                        <td>Included in Distribution</td>
+                        <td>$25,150.00 NZD</td>
+                    </tr>
+                    <tr style="color: #666;">
+                        <td>Carry Forward to Q3 2026</td>
+                        <td>$525.00 NZD</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <div class="receipt-header label">Distribution Calculus</div>
+                <table class="receipt-table">
+                    <tr>
+                        <td>5% Lease Share (Pool)</td>
+                        <td>$1,257.50 NZD</td>
+                    </tr>
+                    <tr>
+                        <td>75% Investor Payout Pool</td>
+                        <td>$943.13 NZD</td>
+                    </tr>
+                    <tr>
+                        <td>Per Token (1 of 20)</td>
+                        <td>$47.16 NZD</td>
+                    </tr>
+                    <tr style="border-top: 1.5px solid #000;">
+                        <td>Final Payout (FX 2.05)</td>
+                        <td>AED 96.75</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-top: 60px; background: #f9f9f9; padding: 30px; border-radius: 4px;">
+            <div class="label" style="margin-bottom: 15px;">Regulatory Disclosures</div>
+            <div style="font-family: sans-serif; font-size: 0.7rem; color: #666; line-height: 1.6;">
+                Tokinvest DMCC (DMCC-928046) is licensed by the Dubai Virtual Assets Regulatory Authority as a Virtual Asset Broker Dealer and Category 1 VA Issuance Services provider (VARA VL/2024/12/004). Evolution Stables is an authorised syndicator operating under New Zealand Thoroughbred Racing (NZTR) rules. This report is co-published by Evolution Stables and Tokinvest DMCC. Information herein is believed accurate as at the report date but is not warranted complete or current. Evolution Stables and Tokinvest DMCC accept no liability for any loss arising from reliance on this report.
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="institutional-seal">TOKINVEST DMCC x EVOLUTION STABLES</div>
+            <div>PAGE 05</div>
+        </div>
+    </div>
+</body>
+</html>
