@@ -292,8 +292,7 @@ See `BACKEND_DATA_MAP.md` for full API contract. Key fields for this page:
 ---
 
 ## Context Chain
-<- inherits from: /home/evo/workspace/DNA/brand/BRAND_NARRATIVE.md
-<- inherits from: /home/evo/workspace/DNA/brand/BRAND_SYSTEM.md
+<- inherits from: evo_01/_shared/dna/brand/ (slim central brand atoms — in progress); legacy full: /home/evo/workspace/DNA/brand/BRAND_NARRATIVE.md and BRAND_SYSTEM.md
 <- inherits from: MARKETPLACE_GALLERY.md
 -> overrides by: none
 -> used by: 02_website build

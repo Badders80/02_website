@@ -1,10 +1,12 @@
 # Evolution Stables — Website Game Plan
 
+> **STALE (2026-05).** Do not use for agent boot. Live state: [`STATE.md`](STATE.md).
+
 **Track:** Frontend (investor/user-facing)  
 **Repository:** `02_website/`  
 **Deployment:** Vercel  
 **Timeline:** 6-8 weeks  
-**Status:** 🟢 Phase 0 — Asset Extraction
+**Status:** 🟢 Phase 0 — Asset Extraction *(historical)*
 
 ---
 

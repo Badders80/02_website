@@ -1,7 +1,9 @@
 # Evolution Stables — Website Build Summary
 
+> **STALE (2026-06-17, GCP/WIF era).** Do not use for agent boot. Live state: [`../STATE.md`](../STATE.md).
+
 **Date:** 2026-06-17  
-**Status:** 🟡 Phase 5 — Production Ready (WIF Configuration Required)  
+**Status:** 🟡 Phase 5 — Production Ready (WIF Configuration Required) *(historical)*  
 **Repository:** `02_website/`
 
 > **This is the map.** What the project is, what exists, the rules.

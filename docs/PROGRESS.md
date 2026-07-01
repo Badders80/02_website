@@ -1,8 +1,9 @@
 # 02_website — Progress
 
-> **This project uses `01_evolution` as the Task Master hub.**
-> For tasks, sprints, logs, and audits, see:
-> [`../../01_evolution/docs/PROGRESS.md`](../../01_evolution/docs/PROGRESS.md)
+> **STALE (2026-06-17, GCP/WIF era).** Do not use for agent boot. Live state: [`../STATE.md`](../STATE.md).
+
+> **Historical:** This project used `01_evolution` as the Task Master hub.
+> For backend sprints/logs, see [`../../01_evolution/docs/PROGRESS.md`](../../01_evolution/docs/PROGRESS.md)
 
 ---
 

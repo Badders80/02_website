@@ -236,8 +236,7 @@ Standard footer. No additional content block before it.
 ---
 
 ## Context Chain
-<- inherits from: /home/evo/workspace/DNA/brand/BRAND_NARRATIVE.md
-<- inherits from: /home/evo/workspace/DNA/brand/BRAND_SYSTEM.md
+<- inherits from: evo_01/_shared/dna/brand/ (slim central brand atoms — in progress); legacy full: /home/evo/workspace/DNA/brand/BRAND_NARRATIVE.md and BRAND_SYSTEM.md
 -> overrides by: none
 -> used by: 02_website build
 -> next: ASSET_DOSSIER.md (the dossier page)
