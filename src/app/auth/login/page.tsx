@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
@@ -12,8 +12,9 @@ import { LOGOS } from "@/lib/assets";
 
 
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signIn, signUp, user } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -22,6 +23,22 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const getRedirectTarget = () => {
+    const raw = searchParams.get("redirect") || "";
+    if (raw.startsWith("/") && !raw.startsWith("//")) {
+      return raw; // safe relative same-origin path
+    }
+    if (raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("//")) {
+      try {
+        const u = new URL(raw.startsWith("//") ? `https:${raw}` : raw);
+        if (typeof window !== "undefined" && u.origin === window.location.origin) {
+          return (u.pathname || "/") + (u.search || "") + (u.hash || "");
+        }
+      } catch {}
+    }
+    return "/mystable"; // default + strip externals
+  };
+
   // Check redirect result on mount (to handle redirect login fallback)
   useEffect(() => {
     if (!isAuthInitialized()) return;
@@ -29,7 +46,7 @@ export default function LoginPage() {
     getRedirectResult(auth)
       .then((result) => {
         if (result?.user) {
-          router.push("/mystable");
+          router.push(getRedirectTarget());
         }
       })
       .catch((err) => {
@@ -38,10 +55,10 @@ export default function LoginPage() {
       });
   }, [router]);
 
-  // If user is already signed in, push to mystable
+  // If user is already signed in, push to mystable (respect redirect param)
   useEffect(() => {
     if (user) {
-      router.push("/mystable");
+      router.push(getRedirectTarget());
     }
   }, [user, router]);
 
@@ -56,7 +73,7 @@ export default function LoginPage() {
       } else {
         await signUp(email, password);
       }
-      router.push("/mystable");
+      router.push(getRedirectTarget());
     } catch (err: any) {
       setError(err.message || "Authentication failed");
     } finally {
@@ -78,7 +95,7 @@ export default function LoginPage() {
       try {
         console.log("[Google Sign-In] Attempting popup auth...");
         await signInWithPopup(auth, provider);
-        router.push("/mystable");
+        router.push(getRedirectTarget());
       } catch (popupErr: any) {
         // If popup is blocked, cancelled, or closed, fallback to redirect immediately
         if (
@@ -245,6 +262,14 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen w-full bg-black text-white items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
 

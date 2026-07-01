@@ -62,6 +62,27 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
     }
   };
 
+  // Auth gate: don't show form to unauthenticated users
+  if (!authLoading && !user) {
+    return (
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6 text-center">
+        <div>
+          <h3 className="text-[16px] font-light text-white tracking-tight">Apply for Ownership</h3>
+          <p className="text-[12px] text-white/40 mt-1">
+            Sign in to enquire about a stake in {horseName}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => router.push(`/auth/login?redirect=/marketplace/${hltId}`)}
+          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#c49954] transition-all duration-300 active:scale-[0.98]"
+        >
+          Sign In to Enquire
+        </button>
+      </div>
+    );
+  }
+
   if (success) {
     return (
       <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 text-center space-y-4">
@@ -181,7 +202,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
         {/* CTA Button */}
         <button
           type="submit"
-          disabled={isSubmitting || !user}
+          disabled={isSubmitting}
           className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#c49954] disabled:border disabled:border-white/10 disabled:text-white/30 disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
         >
           {isSubmitting ? "Submitting..." : "Submit Application"}
