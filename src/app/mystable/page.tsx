@@ -56,9 +56,10 @@ interface ContentUpdate {
 }
 
 export default function MyStablePage() {
-  const { user, loading: authLoading, kycStatus } = useAuth();
+  const { user, loading: authLoading, kycStatus, isAdmin } = useAuth();
 
   const [holdings, setHoldings] = useState<HoldingRecord[]>([]);
+  const [adminLedger, setAdminLedger] = useState<any[]>([]);
   const [campaigns, setCampaigns] = useState<Record<string, Campaign>>({});
   const [updates, setUpdates] = useState<ContentUpdate[]>([]);
 
@@ -191,6 +192,12 @@ export default function MyStablePage() {
             created_at: h.purchase_date || new Date().toISOString(),
           }));
 
+        if (isAdmin) {
+          setAdminLedger(holdingsData as any[]);
+        } else {
+          setAdminLedger([]);
+        }
+
         setHoldings(userHoldings);
         setCampaigns(hltMap);
         setUpdates([]); // No content updates in local JSON yet
@@ -203,7 +210,7 @@ export default function MyStablePage() {
     };
 
     loadDashboardData();
-  }, [user, authLoading]);
+  }, [user, authLoading, isAdmin]);
 
   // Aggregate stats
   const totalInvestmentCents = holdings.reduce((sum, h) => sum + h.purchase_price_cents, 0);
@@ -288,6 +295,43 @@ export default function MyStablePage() {
 
           {loadingData ? (
             <div className="text-center py-20 text-white/30 text-sm font-light">Loading holdings and update timelines...</div>
+          ) : isAdmin && user ? (
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-[20px] font-light text-white mb-1">Holdings Ledger</h2>
+                <p className="text-xs font-light text-white/40">All ownership records (admin view)</p>
+              </div>
+              {adminLedger.length === 0 ? (
+                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-12 text-center text-sm font-light text-white/40">
+                  No holdings recorded yet.
+                </div>
+              ) : (
+                <div className="overflow-x-auto rounded-2xl border border-white/[0.06]">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-white/[0.06] bg-white/[0.02] text-[10px] uppercase tracking-wider text-white/40">
+                        <th className="px-4 py-3 font-medium">Email</th>
+                        <th className="px-4 py-3 font-medium">HLT</th>
+                        <th className="px-4 py-3 font-medium">Shares</th>
+                        <th className="px-4 py-3 font-medium">Purchase Date</th>
+                        <th className="px-4 py-3 font-medium">KYC</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {adminLedger.map((row: any, idx: number) => (
+                        <tr key={`${row.hlt_id}-${row.user_email}-${idx}`} className="border-b border-white/[0.04] text-white/70">
+                          <td className="px-4 py-3 font-light">{row.user_email}</td>
+                          <td className="px-4 py-3 font-light">{row.hlt_id}</td>
+                          <td className="px-4 py-3 font-light">{row.shares_owned}</td>
+                          <td className="px-4 py-3 font-light">{row.purchase_date || "—"}</td>
+                          <td className="px-4 py-3 font-light capitalize">{row.kyc_status || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           ) : holdings.length === 0 ? (
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-16 text-center space-y-6">
               <p className="text-lg font-light text-white/60">No active ownership stakes found</p>

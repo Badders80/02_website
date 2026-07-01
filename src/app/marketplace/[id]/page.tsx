@@ -3,7 +3,6 @@ import { Footer } from "@/components/Footer";
 import { PurchaseForm } from "@/components/marketplace/PurchaseForm";
 import { ApplyForm } from "@/components/marketplace/ApplyForm";
 import { KycRequestCard } from "@/components/marketplace/KycRequestCard";
-import { ComingSoonOverlay } from "@/components/ui/ComingSoonOverlay";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -232,36 +231,34 @@ export default async function CampaignDetailPage({ params }: Props) {
 
             {/* RIGHT COLUMN — Transaction Layer (The Acquisition) */}
             <div className="space-y-8 lg:sticky lg:top-28">
-              <ComingSoonOverlay>
-                <div className="space-y-8">
-                  {/* Section F: Campaign Specifications */}
-                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
-                    <h3 className="text-[16px] font-light text-white tracking-tight">Campaign</h3>
-                    
-                    <div className="space-y-4 text-[13px] font-light">
-                      <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                        <span className="text-white/40">Total Lease Percentage</span>
-                        <span className="text-white font-medium">{totalLeasePercent}%</span>
-                      </div>
-                      <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                        <span className="text-white/40">Lease Period</span>
-                        <span className="text-white font-medium">{hltRecord.lease_period_months} Months</span>
-                      </div>
-                      <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                        <span className="text-white/40">Lease Start Date</span>
-                        <span className="text-white font-medium">{hltRecord.lease_start_date}</span>
-                      </div>
-                      <div className="flex justify-between pb-1">
-                        <span className="text-white/40">Investor Returns</span>
-                        <span className="text-[#34D399] font-medium">{hltRecord.investor_return_percentage}% of prize money</span>
-                      </div>
+              <div className="space-y-8">
+                {/* Section F: Campaign Specifications */}
+                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+                  <h3 className="text-[16px] font-light text-white tracking-tight">Campaign</h3>
+                  
+                  <div className="space-y-4 text-[13px] font-light">
+                    <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                      <span className="text-white/40">Total Lease Percentage</span>
+                      <span className="text-white font-medium">{totalLeasePercent}%</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                      <span className="text-white/40">Lease Period</span>
+                      <span className="text-white font-medium">{hltRecord.lease_period_months} Months</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                      <span className="text-white/40">Lease Start Date</span>
+                      <span className="text-white font-medium">{hltRecord.lease_start_date}</span>
+                    </div>
+                    <div className="flex justify-between pb-1">
+                      <span className="text-white/40">Investor Returns</span>
+                      <span className="text-[#34D399] font-medium">{hltRecord.investor_return_percentage}% of prize money</span>
                     </div>
                   </div>
-
-                  {/* Section G: The Purchase Widget */}
-                  <PurchaseForm hlt={hltRecord} horseName={horse?.name || "Racehorse"} />
                 </div>
-              </ComingSoonOverlay>
+
+                {/* Section G: The Purchase Widget */}
+                <PurchaseForm hlt={hltRecord} horseName={horse?.name || "Racehorse"} />
+              </div>
 
               {/* Section H: Apply for Ownership (Simple Application) */}
               <ApplyForm hltId={hltRecord.id} horseName={horse?.name || "Racehorse"} />
