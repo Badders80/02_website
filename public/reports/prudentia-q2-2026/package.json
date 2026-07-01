@@ -1,0 +1,11 @@
+{
+  "name": "prudentia-q2-2026-report",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "export": "node export-pdf.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
+  }
+}

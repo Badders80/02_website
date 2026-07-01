@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Prudentia (NZ) — Quarterly Investor Report Q1/Q2 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── FONTS ── */
+    @font-face {
+      font-family: 'Geist Sans';
+      src: url('../../../_assets/brand/fonts/GeistSans-VF.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Geist Sans';
+      src: url('../../../_assets/brand/fonts/GeistSans-VFItalic.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: 'Geist Mono';
+      src: url('../../../_assets/brand/fonts/GeistMono-VF.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+    }
+
+    /* ── BRAND TOKENS (from _assets/brand/colors/tokens.json) ── */
+    :root {
+      /* Evolution Gold */
+      --gold: #d4a964;
+      --gold-hover: #c49a5a;
+
+      /* Navy & Cream (primary palette for print) */
+      --navy: #0F172A;
+      --navy-surface: #1E293B;
+      --navy-muted: #94A3B8;
+      --cream: #F8F5F0;
+
+      /* Greyscale */
+      --ink: #1a1a1a;
+      --ink-soft: #333333;
+      --muted: #888888;
+      --rule: #d4cfc0;
+
+      /* Paper tones */
+      --paper: #f4f2ee;
+      --paper-warm: #faf9f7;
+      --beige-panel: #f0ede8;
+
+      /* Status */
+      --win: #2d6a4f;
+      --carry: #b8860b;
+
+      /* Typography */
+      --font-sans: 'Geist Sans', -apple-system, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+      /* Page */
+      --page-w: 210mm;
+      --page-h: 297mm;
+      --mx: 18mm;
+      --my: 16mm;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: #ddd8d0;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @page { size: A4; margin: 0; }
+      html { zoom: calc(100vw / 210mm); }
+
+    .page {
+      width: var(--page-w);
+      height: var(--page-h);
+      margin: 0 auto 10px;
+      overflow: hidden;
+      position: relative;
+      page-break-after: always;
+      break-after: page;
+      background: #fff;
+    }
+    .page:last-child { page-break-after: auto; }
+
+    /* ═══════════════════════════════════════════════════
+       COVER
+       ═══════════════════════════════════════════════════ */
+    .cover {
+      background: var(--navy);
+      color: var(--cream);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    .cover-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11mm var(--mx) 8mm;
+      border-bottom: 1px solid rgba(248,245,240,0.08);
+    }
+    .cover-bar img { display: block; height: 7.5mm; width: auto; }
+    .cover-bar .tokinvest { height: 6mm; opacity: 0.96; }
+
+    .cover-visual {
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .cover-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: right center;
+      display: block;
+    }
+    .cover-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(15,23,42,0.15) 0%,
+        rgba(15,23,42,0.02) 35%,
+        rgba(15,23,42,0.55) 72%,
+        rgba(15,23,42,1) 100%);
+    }
+
+    .cover-copy {
+      padding: 0 var(--mx) 15mm;
+      position: relative;
+      z-index: 1;
+      margin-top: -2mm;
+    }
+    .cover-eyebrow {
+      font-size: 7pt;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 3mm;
+    }
+    .cover-name {
+      font-family: var(--font-serif);
+      font-size: 36pt;
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+      margin-bottom: 2mm;
+    }
+    .cover-type {
+      font-size: 12pt;
+      color: rgba(248,245,240,0.82);
+      margin-bottom: 5mm;
+    }
+    .cover-divider {
+      height: 1px;
+      background: rgba(248,245,240,0.14);
+      margin-bottom: 5mm;
+    }
+    .cover-facts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm 10mm;
+      font-size: 7pt;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.55;
+      color: rgba(248,245,240,0.62);
+    }
+    .cover-facts strong {
+      display: block;
+      color: var(--cream);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      margin-top: 0.5mm;
+      text-transform: none;
+      font-size: 7.5pt;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       INTERIOR SHELL
+       ═══════════════════════════════════════════════════ */
+    .sheet {
+      background: var(--paper);
+      height: 100%;
+      padding: var(--my) var(--mx);
+      display: flex;
+      flex-direction: column;
+    }
+    .sheet-white { background: #fff; }
+
+    .mast {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 4mm;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 9mm;
+    }
+    .mast img { height: 5mm; display: block; }
+    .mast .num {
+      font-family: var(--font-mono);
+      font-size: 8pt;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .body { flex: 1; min-height: 0; }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 22pt;
+      font-weight: 500;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 8mm;
+    }
+    h2 {
+      font-size: 7.5pt;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4mm;
+    }
+    .section-kicker {
+      font-size: 7pt;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2mm;
+    }
+
+    .prose {
+      font-size: 10pt;
+      line-height: 1.72;
+      color: var(--ink-soft);
+      text-align: justify;
+      hyphens: auto;
+    }
+    .prose p + p { margin-top: 3.5mm; }
+
+    .foot {
+      margin-top: auto;
+      padding-top: 5mm;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+      font-size: 6.5pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    /* ── Founders ── */
+    .letters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6mm;
+      align-items: stretch;
+    }
+    .letter {
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .letter-head {
+      height: 38mm;
+      overflow: hidden;
+      background: var(--beige-panel);
+    }
+    .letter-head img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+    }
+    .letter-body {
+      padding: 5mm 5.5mm 6mm;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .letter-body .name {
+      font-family: var(--font-serif);
+      font-size: 14pt;
+      font-weight: 500;
+      margin-bottom: 1mm;
+    }
+    .letter-body .role {
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4mm;
+    }
+    .letter-body .copy {
+      font-size: 9.5pt;
+      line-height: 1.68;
+      color: var(--ink-soft);
+      text-align: justify;
+      flex: 1;
+    }
+    .letter-body .copy p + p { margin-top: 3mm; }
+    .letter-body .sign {
+      margin-top: 5mm;
+      font-size: 9pt;
+      font-style: italic;
+      color: var(--ink);
+    }
+    .pending { color: #aaa; font-style: italic; }
+
+    /* ── Document note ── */
+    .doc-note {
+      max-width: 85%;
+    }
+    .doc-note .prose p { margin-bottom: 4mm; }
+
+    /* ── Campaign ── */
+    .campaign-title {
+      font-family: var(--font-serif);
+      font-size: 20pt;
+      font-weight: 500;
+      line-height: 1.15;
+      margin-bottom: 2mm;
+    }
+    .campaign-sub {
+      font-size: 8pt;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7mm;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+      margin-bottom: 8mm;
+    }
+    .kpi {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 5mm 4mm;
+      text-align: center;
+    }
+    .kpi .val {
+      font-family: var(--font-serif);
+      font-size: 18pt;
+      font-weight: 500;
+      line-height: 1.1;
+      margin-bottom: 2mm;
+      color: #fff;
+    }
+    .kpi .val.money { font-size: 13pt; }
+    .kpi .lbl {
+      font-size: 6pt;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      line-height: 1.4;
+    }
+
+    .results {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin-bottom: 7mm;
+    }
+    .results thead th {
+      text-align: left;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      padding: 0 2mm 2.5mm 0;
+      border-bottom: 1.5px solid var(--ink);
+    }
+    .results thead th:last-child { text-align: right; padding-right: 0; }
+    .results tbody td {
+      padding: 2.8mm 2mm 2.8mm 0;
+      border-bottom: 1px solid rgba(212,207,192,0.7);
+      vertical-align: top;
+      color: var(--ink-soft);
+    }
+    .results tbody td:last-child {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 8.5pt;
+      padding-right: 0;
+      white-space: nowrap;
+    }
+    .results tbody tr.win td { color: var(--ink); }
+    .results tbody tr.win .place { font-weight: 700; color: var(--win); }
+    .results tbody tr.carry td { color: var(--carry); }
+    .results tbody tr.carry .place { font-style: italic; }
+    .results .mono {
+      font-family: var(--font-mono);
+      font-size: 8.5pt;
+    }
+    .results tfoot td {
+      padding-top: 3mm;
+      border-top: 1.5px solid var(--ink);
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 9pt;
+    }
+    .results tfoot td:last-child {
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+
+    .campaign-blocks { display: grid; gap: 5mm; }
+    .campaign-block h3 {
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2mm;
+    }
+    .campaign-block p {
+      font-size: 9.5pt;
+      line-height: 1.62;
+      color: var(--ink-soft);
+      text-align: justify;
+    }
+
+    /* ── Highlights / Achievements ── */
+    .notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm;
+      margin-bottom: 7mm;
+    }
+    .note {
+      background: var(--paper-warm);
+      border: 1px solid rgba(212,207,192,0.65);
+      padding: 4.5mm 5mm;
+    }
+    .note h3 {
+      font-size: 9.5pt;
+      font-weight: 600;
+      margin-bottom: 2mm;
+      color: var(--ink);
+    }
+    .note p {
+      font-size: 9pt;
+      line-height: 1.58;
+      color: var(--ink-soft);
+      text-align: justify;
+    }
+
+    /* ── Filler slots ── */
+    .filler {
+      margin-top: 6mm;
+      border: 1px dashed #c4b896;
+      background: rgba(212,169,100,0.04);
+      padding: 4mm 5mm;
+    }
+    .filler-label {
+      font-size: 6pt;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-bottom: 2mm;
+    }
+    .filler-content {
+      font-size: 9pt;
+      line-height: 1.55;
+      color: #999;
+    }
+    .filler-content em {
+      font-style: italic;
+      color: #aaa;
+    }
+
+    /* ── Feature image block ── */
+    .feature {
+      position: relative;
+      margin-top: 4mm;
+      min-height: 68mm;
+    }
+    .feature img {
+      width: 100%;
+      height: 68mm;
+      object-fit: cover;
+      object-position: 42% 28%;
+      display: block;
+    }
+    .feature .aside {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 46%;
+      min-height: 34mm;
+      background: var(--navy);
+      color: var(--cream);
+      padding: 6mm 5.5mm;
+      font-size: 9.5pt;
+      line-height: 1.55;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FINANCIAL WATERFALL
+       ═══════════════════════════════════════════════════ */
+    .waterfall {
+      display: grid;
+      gap: 5mm;
+    }
+    .wf-layer {
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .wf-head {
+      padding: 4mm 5mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wf-head .label {
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .wf-head .total {
+      font-family: var(--font-mono);
+      font-size: 11pt;
+      font-weight: 600;
+    }
+    .wf-body {
+      padding: 4mm 5mm 5mm;
+      background: var(--paper-warm);
+    }
+    .wf-body .desc {
+      font-size: 8.5pt;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      margin-bottom: 3mm;
+    }
+    .wf-lines {
+      display: grid;
+      gap: 0;
+    }
+    .wf-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 2mm 0;
+      font-size: 9pt;
+      border-bottom: 1px solid rgba(212,207,192,0.45);
+    }
+    .wf-line:last-child { border-bottom: none; }
+    .wf-line .amt {
+      font-family: var(--font-mono);
+      font-size: 8.5pt;
+      white-space: nowrap;
+    }
+    .wf-line.sub { font-size: 8pt; color: #666; }
+    .wf-line.sub .amt { color: #666; }
+
+    /* Layer colour coding */
+    .wf-layer.l1 .wf-head { background: var(--navy); color: var(--cream); }
+    .wf-layer.l1 .wf-head .label { color: var(--gold); }
+    .wf-layer.l1 .wf-head .total { color: #fff; }
+
+    .wf-layer.l2 .wf-head { background: var(--beige-panel); color: var(--ink); }
+    .wf-layer.l2 .wf-head .label { color: var(--gold); }
+
+    .wf-layer.l3 .wf-head { background: #e8f0f8; color: var(--ink); }
+    .wf-layer.l3 .wf-head .label { color: #3b6ea5; }
+
+    .wf-layer.l4 .wf-head { background: var(--navy); color: var(--cream); }
+    .wf-layer.l4 .wf-head .label { color: var(--gold); }
+    .wf-layer.l4 .wf-head .total { color: var(--gold); }
+
+    /* Carry-forward callout */
+    .carry-box {
+      margin-top: 5mm;
+      border: 1px solid var(--carry);
+      background: rgba(184,134,11,0.06);
+      padding: 4mm 5mm;
+      border-radius: 3px;
+    }
+    .carry-box .carry-label {
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--carry);
+      margin-bottom: 2mm;
+    }
+    .carry-box p {
+      font-size: 8.5pt;
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+    .carry-box .carry-amt {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--carry);
+    }
+
+    /* Distribution confirmation */
+    .confirm {
+      margin-top: 5mm;
+      padding: 3.5mm 5mm;
+      background: var(--paper-warm);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      font-size: 8.5pt;
+      color: #666;
+    }
+    .confirm strong { color: var(--win); }
+
+    .xref {
+      margin-top: 6mm;
+      padding: 3.5mm 4mm;
+      background: var(--beige-panel);
+      border: 1px solid var(--rule);
+      font-size: 8pt;
+      color: #777;
+      text-align: center;
+    }
+    .stamp {
+      margin-top: 5mm;
+      font-family: var(--font-mono);
+      font-size: 7pt;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Terms ── */
+    .legal {
+      border-top: 1px solid var(--rule);
+      padding-top: 6mm;
+      margin-top: 4mm;
+    }
+    .legal h3 {
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 2.5mm;
+    }
+    .legal p {
+      font-size: 8.5pt;
+      line-height: 1.62;
+      color: #555;
+      text-align: justify;
+      margin-bottom: 5mm;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 1 · COVER
+       ═══════════════════════════════════════════════════ -->
+  <section class="page cover">
+    <div class="cover-bar">
+      <img src="../../../_assets/brand/lockups/horizontal/gold/lockup-horizontal-gold.svg" alt="Evolution Stables">
+      <img class="tokinvest" src="../../../_assets/partners/tokinvest-light.png" alt="Tokinvest">
+    </div>
+    <div class="cover-visual">
+      <img src="../../../_assets/horses/prudentia/images/prudentia-cover-hero.svg" alt="Prudentia at Te Rapa">
+    </div>
+    <div class="cover-copy">
+      <div class="cover-eyebrow">Digital Syndication · Asset ID 10</div>
+      <div class="cover-name">Prudentia (NZ)</div>
+      <div class="cover-type">Quarterly Investor Report</div>
+      <div class="cover-divider"></div>
+      <div class="cover-facts">
+        <div>Reporting period<strong>1 Jan – 30 Jun 2026</strong></div>
+        <div>Distribution<strong>Q1/Q2 2026 (Completed 26 Jun)</strong></div>
+        <div>Trainer<strong>Lance O'Sullivan &amp; Andrew Scott · Wexford Stables</strong></div>
+        <div>Lease end<strong>June 2027</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 2 · FOUNDERS' NOTES
+       ═══════════════════════════════════════════════════ -->
+  <section class="page">
+    <div class="sheet sheet-white">
+      <header class="mast">
+        <img src="assets/lockup-horizontal-black.svg" alt="Evolution Stables">
+        <span class="num">01</span>
+      </header>
+      <div class="body">
+        <h1>A note from our founders</h1>
+        <div class="letters">
+          <article class="letter">
+            <div class="letter-head">
+              <img src="assets/prudentia_jockey_post_race.png" alt="Alex Baddeley">
+            </div>
+            <div class="letter-body">
+              <div class="name">Alex Baddeley</div>
+              <div class="role">Founder · Evolution Stables</div>
+              <div class="copy">
+                <p>Welcome to Prudentia's first quarterly update — the first full distribution cycle on Tokinvest. This report covers her performance, earnings, and payouts to token holders this quarter.</p>
+                <p>Evolution Stables originates the asset, manages the lease, and transfers eligible prize money to Tokinvest. Tokinvest operates the platform and distributes returns to investors.</p>
+                <p>A real horse. Real returns — delivered on schedule.</p>
+              </div>
+              <div class="sign">— Alex</div>
+            </div>
+          </article>
+          <article class="letter">
+            <div class="letter-head">
+              <!-- SCOTT THIEL HEADSHOT — TO BE SUPPLIED -->
+            </div>
+            <div class="letter-body">
+              <div class="name">Scott Thiel</div>
+              <div class="role">Founder · Tokinvest</div>
+              <div class="copy pending">
+                <p>Quarterly note forthcoming.</p>
+              </div>
+              <div class="sign">— Scott</div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <footer class="foot">This report is co-published by Evolution Stables and Tokinvest DMCC</footer>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 3 · DOCUMENT CONTENT NOTE
+       ═══════════════════════════════════════════════════ -->
+  <section class="page">
+    <div class="sheet">
+      <header class="mast">
+        <img src="assets/lockup-horizontal-black.svg" alt="Evolution Stables">
+        <span class="num">02</span>
+      </header>
+      <div class="body">
+        <h1>About this report</h1>
+        <div class="doc-note">
+          <div class="prose">
+            <p>This quarterly investor report is issued by Evolution Stables in partnership with Tokinvest DMCC for holders of Prudentia (NZ) digital tokens (Asset ID 10). It forms part of the ongoing reporting obligations under the syndication agreement and is published each calendar quarter.</p>
+            <p>The report covers race performance, prize money earned, the calculation of investor returns through the syndication structure, and the distribution carried out by Tokinvest. Stakes earned in the final month of the quarter are carried forward to the next distribution cycle, as settlement from New Zealand Thoroughbred Racing occurs after the distribution date.</p>
+            <p>This document is confidential and intended solely for Prudentia token holders. It is co-published by Evolution Stables, an authorised NZTR syndicator, and Tokinvest DMCC, licensed by the Dubai Virtual Assets Regulatory Authority (VARA).</p>
+          </div>
+        </div>
+      </div>
+      <footer class="foot">Prudentia (NZ) · Asset ID 10 · Q1/Q2 2026</footer>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 4 · THE HORSE & CAMPAIGN
+       (May span 2 pages — intro, highlights, results, what's next)
+       ═══════════════════════════════════════════════════ -->
+
+  <!-- 4A · Intro + Highlights + Results -->
+  <section class="page">
+    <div class="sheet sheet-white">
+      <header class="mast">
+        <img src="assets/lockup-horizontal-black.svg" alt="Evolution Stables">
+        <span class="num">03</span>
+      </header>
+      <div class="body">
+        <div class="section-kicker">Campaign review</div>
+        <div class="campaign-title">Prudentia · Q1/Q2 racing campaign</div>
+        <div class="campaign-sub">5 official starts · 1 Jan – 30 Jun 2026</div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="val">5</div><div class="lbl">Starts</div></div>
+          <div class="kpi"><div class="val">1st</div><div class="lbl">Best finish</div></div>
+          <div class="kpi"><div class="val money">$25,675</div><div class="lbl">Total stakes (NZD)</div></div>
+          <div class="kpi"><div class="val money">$20,125</div><div class="lbl">Feature win</div></div>
+        </div>
+
+        <h2>Race results</h2>
+        <table class="results">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Venue</th>
+              <th>Finish</th>
+              <th>Stakes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">14 Mar 2026</td>
+              <td>Tauranga</td>
+              <td class="place mono">5th</td>
+              <td>$1,000 NZD</td>
+            </tr>
+            <tr class="win">
+              <td class="mono">17 Apr 2026</td>
+              <td>Te Rapa</td>
+              <td class="place mono">1st</td>
+              <td>$20,125 NZD</td>
+            </tr>
+            <tr>
+              <td class="mono">2 May 2026</td>
+              <td>Te Rapa</td>
+              <td class="place mono">3rd</td>
+              <td>$3,150 NZD</td>
+            </tr>
+            <tr>
+              <td class="mono">30 May 2026</td>
+              <td>Te Rapa</td>
+              <td class="place mono">5th</td>
+              <td>$875 NZD</td>
+            </tr>
+            <tr class="carry">
+              <td class="mono">27 Jun 2026</td>
+              <td>Tauranga</td>
+              <td class="place mono">6th</td>
+              <td>$525 NZD</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Total stakes (reporting period)</td>
+              <td>$25,675.00 NZD</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="campaign-blocks">
+          <div class="campaign-block">
+            <h3>The horse</h3>
+            <p>Prudentia is a 4-year-old bay mare by Proisir (AUS) out of Little Bit Irish (NZ), bred by Goldeye Trust and trained by Lance O'Sullivan &amp; Andrew Scott at Wexford Stables, Matamata. She races in the Bloodstock Achieving Excellence I'm Pru Syndicate (Manager: K Bax) and has established a preference for 1300–1600m on heavy ground, with both career wins coming on Heavy9–10 tracks.</p>
+          </div>
+          <div class="campaign-block">
+            <h3>Feature performance</h3>
+            <p>The standout came at Te Rapa on 17 April — a decisive Rating 65 win over 1300m on Heavy9, claiming $20,125 in stakes and earning a 5-point rating rise. This single result drove 80% of the quarter's distributable earnings.</p>
+          </div>
+        </div>
+      </div>
+      <footer class="foot">Prudentia (NZ) · Asset ID 10 · Q1/Q2 2026</footer>
+    </div>
+  </section>
+
+  <!-- 4B · Achievements + What's next + Filler slots -->
+  <section class="page">
+    <div class="sheet sheet-white">
+      <header class="mast">
+        <img src="assets/lockup-horizontal-black.svg" alt="Evolution Stables">
+        <span class="num">04</span>
+      </header>
+      <div class="body">
+        <h2>Key highlights &amp; achievements</h2>
+        <div class="notes">
+          <div class="note">
+            <h3>Class progression</h3>
+            <p>Graduated from BM65 to BM75 and placed third on debut at the higher grade — competitive immediately against stronger fields.</p>
+          </div>
+          <div class="note">
+            <h3>Feature performance</h3>
+            <p>Decisive Te Rapa victory on 17 April under Masa Hashizume — the standout run of the quarter and the performance that drove this distribution.</p>
+          </div>
+          <div class="note">
+            <h3>Consistency</h3>
+            <p>Earned a placing or finish in the frame in three of five starts. Handles varying going, including heavy and soft tracks.</p>
+          </div>
+          <div class="note">
+            <h3>Milestone</h3>
+            <p>First full investor distribution cycle completed — from racecourse performance through to platform payout for all token holders.</p>
+          </div>
+        </div>
+
+        <h2>Looking ahead</h2>
+        <p class="prose" style="margin-bottom:6mm;">The stable's focus over the coming months: consolidate at Rating 75, target 1400m–1600m races that suit her running style, and maintain fitness through the winter programme. Evolution Stables will continue performance updates between quarterly reports. Your next full financial summary and distribution is expected in Q3 2026.</p>
+
+        <!-- FILLER SLOT: Masa Hashizume partnership feature -->
+        <div class="filler">
+          <div class="filler-label">⊕ Filler — Jockey partnership feature</div>
+          <div class="filler-content">
+            <em>Masa Hashizume and Prudentia have struck up a great partnership — see them both bring the best out in each other.</em>
+            <br><br>
+            <em>[Optional: image of Masa and Prudentia post-race, or quote from Masa]</em>
+          </div>
+        </div>
+
+        <!-- FILLER SLOT: Owner/trainer quote -->
+        <div class="filler" style="margin-top:4mm;">
+          <div class="filler-label">⊕ Filler — Owner / Trainer quote</div>
+          <div class="filler-content">
+            <em>[Optional: pull quote from Kyle Bax (owner) or Andrew Scott (trainer) post-race transcript — available from 27 Jun Tauranga]</em>
+          </div>
+        </div>
+
+      </div>
+      <footer class="foot">Prudentia (NZ) · Asset ID 10 · Q1/Q2 2026</footer>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 5 · FINANCIALS & INVESTOR RETURN
+       4-layer waterfall: NZD stakes → 5% lease → 75% payout → AED
+       ═══════════════════════════════════════════════════ -->
+  <section class="page">
+    <div class="sheet sheet-white">
+      <header class="mast">
+        <img src="assets/lockup-horizontal-black.svg" alt="Evolution Stables">
+        <span class="num">05</span>
+      </header>
+      <div class="body">
+        <div class="section-kicker">Financial summary</div>
+        <div class="campaign-title" style="margin-bottom:2mm;">Stakes, syndicate share &amp; investor return</div>
+        <div class="campaign-sub" style="margin-bottom:7mm;">From racetrack to token holder — Q1/Q2 2026</div>
+
+        <div class="waterfall">
+
+          <!-- LAYER 1: THE HORSE -->
+          <div class="wf-layer l1">
+            <div class="wf-head">
+              <span class="label">① The horse — Total stakes won (NZD)</span>
+              <span class="total">$25,150.00</span>
+            </div>
+            <div class="wf-body">
+              <div class="desc">Total prize money earned by Prudentia across 4 starts in the distribution period. Stakes from the 27 June start ($525) are carried forward — see below.</div>
+              <div class="wf-lines">
+                <div class="wf-line"><span>Total stakes distributed this quarter</span><span class="amt">$25,150.00 NZD</span></div>
+                <div class="wf-line sub"><span>Per 1% of horse</span><span class="amt">$251.50 NZD</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 2: THE SYNDICATE -->
+          <div class="wf-layer l2">
+            <div class="wf-head">
+              <span class="label">② The syndicate — Evolution's 5% lease share (NZD)</span>
+              <span class="total">$1,257.50</span>
+            </div>
+            <div class="wf-body">
+              <div class="desc">The Tokinvest syndicate holds a 5% lease on Prudentia. 5% of total stakes flows into the lease pool.</div>
+              <div class="wf-lines">
+                <div class="wf-line"><span>Lease pool allocation (5% of $25,150)</span><span class="amt">$1,257.50 NZD</span></div>
+                <div class="wf-line sub"><span>Per 1% of horse</span><span class="amt">$251.50 NZD</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 3: THE INVESTOR -->
+          <div class="wf-layer l3">
+            <div class="wf-head">
+              <span class="label">③ The investor — 75% payout pool (NZD)</span>
+              <span class="total">$943.13</span>
+            </div>
+            <div class="wf-body">
+              <div class="desc">Token holders receive 75% of the lease pool. The remaining 25% covers stable and syndication costs.</div>
+              <div class="wf-lines">
+                <div class="wf-line"><span>Investor payout pool (75% of $1,257.50)</span><span class="amt">$943.13 NZD</span></div>
+                <div class="wf-line sub"><span>Per 1% of horse</span><span class="amt">$188.63 NZD</span></div>
+                <div class="wf-line sub"><span>Per token (0.25% — 1 of 20)</span><span class="amt">$47.16 NZD</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 4: THE PAYOUT -->
+          <div class="wf-layer l4">
+            <div class="wf-head">
+              <span class="label">④ The payout — Tokinvest distribution (AED)</span>
+              <span class="total">AED 1,934.99</span>
+            </div>
+            <div class="wf-body">
+              <div class="desc">Funds converted to AED and distributed to token holders via the Tokinvest platform.</div>
+              <div class="wf-lines">
+                <div class="wf-line"><span>Total Q1/Q2 distribution (all token holders)</span><span class="amt">AED 1,934.99</span></div>
+                <div class="wf-line sub"><span>Return per token (1 of 20)</span><span class="amt">~AED 96.75</span></div>
+                <div class="wf-line sub"><span>Implied conversion rate</span><span class="amt">~2.05 NZD/AED</span></div>
+                <div class="wf-line sub"><span>Total tokens in issue</span><span class="amt">20</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARRY-FORWARD CALLOUT -->
+        <div class="carry-box">
+          <div class="carry-label">↻ Carry forward to Q3 2026</div>
+          <p>Stakes from the final month of the quarter — <span class="carry-amt">$525.00 NZD</span> (Tauranga, 27 Jun) — will be included in the Q3 distribution. NZTR settlement occurs after this quarter's distribution date.</p>
+        </div>
+
+        <!-- DISTRIBUTION CONFIRMATION -->
+        <div class="confirm">
+          <strong>✓ Distribution completed</strong> — Confirmed by Tokinvest Operations, 26 June 2026. Funds disbursed to all token holder accounts.
+        </div>
+
+        <div class="xref">Terms, conditions, risk disclosures and regulatory information — see next page.</div>
+        <div class="stamp">Report date · 30 June 2026</div>
+      </div>
+      <footer class="foot">Prudentia (NZ) · Asset ID 10 · Q1/Q2 2026</footer>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 6 · TERMS & DISCLOSURES
+       ═══════════════════════════════════════════════════ -->
+  <section class="page">
+    <div class="sheet sheet-white">
+      <header class="mast">
+        <img src="assets/lockup-horizontal-black.svg" alt="Evolution Stables">
+        <span class="num">06</span>
+      </header>
+      <div class="body">
+        <h1>Terms, conditions &amp; disclosures</h1>
+        <div class="legal">
+          <h3>Regulatory disclosure</h3>
+          <p>Tokinvest DMCC (DMCC-928046) is licensed by the Dubai Virtual Assets Regulatory Authority as a Virtual Asset Broker Dealer and Category 1 VA Issuance Services provider (VARA VL/2024/12/004). Evolution Stables is an authorised syndicator operating under New Zealand Thoroughbred Racing (NZTR) rules. This report is co-published by Evolution Stables and Tokinvest DMCC.</p>
+          <h3>Disclaimer</h3>
+          <p>This report and any attachments are confidential and intended solely for Prudentia token holders. Information herein is believed accurate as at the report date but is not warranted complete or current. Evolution Stables and Tokinvest DMCC accept no liability for any loss arising from reliance on this report. For definitive terms, refer to the governing syndication and tokenisation documents.</p>
+          <h3>Distribution note</h3>
+          <p>Prize money is settled by New Zealand Thoroughbred Racing following each race meeting. Stakes earned in the final month of a quarterly reporting period may not be received before the distribution date and are carried forward to the next cycle. The carry-forward amount is disclosed in the financial summary section of this report.</p>
+        </div>
+      </div>
+      <footer class="foot">Prudentia (NZ) · Asset ID 10 · Q1/Q2 2026</footer>
+    </div>
+  </section>
+
+</body>
+</html>
