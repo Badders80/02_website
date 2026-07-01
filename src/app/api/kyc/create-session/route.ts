@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       return_url: finalReturnUrl,
     });
 
-    return NextResponse.json({ session_url: session.url, session_id: session.id });
+    return NextResponse.json({ url: session.url, session_url: session.url, session_id: session.id });
   } catch (error: any) {
     console.error('KYC session creation error:', error);
     return NextResponse.json(

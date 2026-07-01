@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       cancel_url: `${appUrl}/marketplace/${hlt_id}`,
     });
 
-    return NextResponse.json({ session_url: session.url, session_id: session.id });
+    return NextResponse.json({ url: session.url, session_url: session.url, session_id: session.id });
   } catch (error: any) {
     console.error('Checkout session creation error:', error);
     return NextResponse.json(
