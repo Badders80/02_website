@@ -96,6 +96,8 @@ Enable Email/Password at Firebase Console → Authentication → Sign-in method 
 - **GCP SSOT API retired** — do not plan new website features around Cloud Functions or Firestore runtime
 - **Stripe on Vercel** — no GCP proxy for payments/KYC
 - **Inventory** — `src/data/*.json` is display SSOT for the site; canonical horse knowledge lives in `01_evolution/horses/`
+- **Fire-and-forget sheet writes** — API routes write to Sheets without awaiting. On Vercel serverless, unawaited promises may not complete before function freeze. Low risk for enquiries; small risk of lost holding records on checkout.
+- **OAuth token longevity** — refresh tokens expire after 7 days while OAuth consent screen is in "Testing" mode. Publish the consent screen (see `docs/STRIPE_SETUP.md` §6) for permanent tokens.
 
 ---
 

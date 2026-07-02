@@ -1,20 +1,37 @@
 # 🚀 Production Go-Live Checklist
 
-**Date**: 2026-06-16  
-**Status**: Ready for Credential Setup
+**Date**: 2026-07-02  
+**Status**: Awaiting Stripe + Firebase credential setup (see `docs/STRIPE_SETUP.md`)
 
 ---
 
 ## ✅ What's Been Completed
 
-### 1. **Stripe KYC + Payments (direct)** ✅
+### 1. Stripe KYC + Payments (direct) ✅
 - ✅ Direct routes (kyc/create + checkout/create + webhooks) — no GCP
 - ✅ Token verification + firebase-admin claims set on webhook
-- ✅ Holdings record via sheets webapp (or console) on payment complete
+- ✅ Per-endpoint webhook secrets (STRIPE_KYC_WEBHOOK_SECRET + STRIPE_CHECKOUT_WEBHOOK_SECRET)
+- ✅ Holdings record written to Google Sheet via OAuth on payment complete
+- ✅ Applications written to Google Sheet via OAuth on enquiry submit
 - ✅ usePurchaseFlow gates + /auth/verify canonical return + success banner
 - ✅ Stripe package + client flows live (bypass for dev)
 
-### 2. **SEO Implementation** ✅
+### 2. Google Sheets Integration ✅
+- ✅ OAuth write access via Desktop app credentials
+- ✅ `scripts/sheets_writer.py` — Python read/write/append via gspread
+- ✅ `src/lib/sheets-write.ts` — Node.js server-side sheet writes via raw fetch
+- ✅ `scripts/sync_inventory.py` — sheet → JSON with type transforms
+- ✅ Applications tab created with headers
+- ✅ Holdings tab headers updated (stripe_session_id, horse_microchip)
+- ✅ Fire-and-forget pattern (writes don't block API responses)
+
+### 3. Auth ✅
+- ✅ Firebase Auth (email/Google) with redirect support
+- ✅ ApplyForm auth gate (unauthenticated → sign-in prompt)
+- ✅ KYC nudge on ApplyForm (soft banner for unverified users)
+- ✅ KYC banner on MyStable
+
+### 4. SEO ✅
 - ✅ StructuredData component (Organization + Website schema)
 - ✅ FAQStructuredData component (FAQ schema)
 - ✅ OpenGraph image generation (branded social shares)
@@ -24,210 +41,47 @@
 - ✅ Enhanced metadata (keywords: RWA, blockchain, tokenized)
 - ✅ Structured data rendered in layout.tsx
 
-### 3. **Environment Configuration** ✅
-- ✅ `.env.local` updated with production structure
-- ✅ Mock bypasses flagged for removal
-- ✅ Placeholders for all required credentials
+---
+
+## ⏳ Remaining Steps (for Alex)
+
+### 5. Environment Configuration
+See `docs/STRIPE_SETUP.md` for step-by-step:
+
+- [ ] Stripe Dashboard: get test API keys + register 2 webhook endpoints
+- [ ] Vercel: set all env vars (see STATE.md env table)
+- [ ] Firebase Console: generate service account key
+- [ ] Remove stale Vercel env vars (NEXT_PUBLIC_API_BASE, CLOUD_RUN_PROXY_URL, etc.)
+- [ ] Set local .env.local with test keys + bypass flags
+
+### 6. OAuth Consent Screen
+- [ ] **Publish the OAuth consent screen** in Google Cloud Console (Auth Platform → Audience → "Publish app")
+- [ ] While in "Testing" mode, refresh tokens expire after 7 days
+- [ ] After publishing, refresh tokens don't expire (unless revoked)
+
+### 7. Test Flow (just-me)
+- [ ] Login → marketplace → KYC verify → Stripe Identity test
+- [ ] Submit enquiry → check Google Sheet Applications tab
+- [ ] (If checkout wired) Purchase → Stripe test checkout → check holdings tab
+- [ ] Run `python3 scripts/sync_inventory.py` → build → MyStable shows holding
+
+### 8. Go Live
+- [ ] Replace test keys with live keys in Vercel
+- [ ] Update webhook endpoints to live mode in Stripe
+- [ ] Remove NEXT_PUBLIC_BYPASS_STRIPE + NEXT_PUBLIC_BYPASS_AUTH_KYC
+- [ ] Deploy: `vercel --prod`
 
 ---
 
-## 🔧 Credentials Needed (90 min setup)
+## ⚠️ Known Limitations
 
-### 1. **Google OAuth** (15 min)
-**Get from**: [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+- **Fire-and-forget sheet writes**: On Vercel serverless, unawaited promises may not complete before the function is frozen. Enquiry writes are low-risk. Checkout holding writes have a small risk of being lost — acceptable for now, document if it becomes an issue.
+- **OAuth token on Vercel**: Token stored as `GOOGLE_OAUTH_TOKEN` env var (JSON string). Auto-refreshes when expired. If refresh fails (revoked, consent screen unpublished), writes silently fail with console log.
+- **Sheet display is build-time**: `sync_inventory.py` must be run manually after sheet changes to update `src/data/*.json`. No live sheet reads for marketplace/mystable display.
 
-```bash
-ENABLE_GOOGLE_AUTH=true
-GOOGLE_CLIENT_ID=<your-client-id>
-GOOGLE_CLIENT_SECRET=<your-client-secret>
-```
-
-**Redirect URI to add**:
-```
-https://www.evolutionstables.nz/api/auth/callback/google
-```
-
----
-
-### 2. **Stripe Live Keys** (25 min)
-**Get from**: [Stripe Dashboard → API Keys](https://dashboard.stripe.com/apikeys)
-
-```bash
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
-
-**Enable Stripe Identity**:
-1. Go to [Stripe Identity](https://dashboard.stripe.com/identity)
-2. Click "Enable Identity"
-3. Complete business verification
-
-**Create Webhook**:
-1. Go to **Developers → Webhooks**
-2. Add endpoint: `https://www.evolutionstables.nz/api/kyc/callback`
-3. Events: `identity.verification_session.*`
-4. Copy signing secret → `STRIPE_WEBHOOK_SECRET`
-
----
-
-### 3. **Google Sheets Webhook** (10 min)
-**Sheet**: https://docs.google.com/spreadsheets/d/1r1tLSTKIrcjxfn6NPGIfnmmj9GGebKXat8EZXMTHEyk
-
-**Steps**:
-1. Open Google Sheet
-2. Extensions → Apps Script
-3. Paste this code:
-
-```javascript
-function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = JSON.parse(e.postData.contents);
-  
-  sheet.appendRow([
-    new Date(),
-    data.email || '',
-    data.name || '',
-    data.source || 'website',
-    data.kyc_status || 'pending'
-  ]);\n\n  return ContentService\n    .createTextOutput(JSON.stringify({ success: true }))\n    .setMimeType(ContentService.MimeType.JSON);\n}
-```
-
-4. Deploy → New deployment → Web app
-5. Execute as: **Me**
-6. Who has access: **Anyone**
-7. Copy Web app URL → `GOOGLE_SHEETS_WEB_APP_URL`
-
----
-
-### 4. **NextAuth Secret** (2 min)
-**Generate**:
-```bash
-openssl rand -base64 32
-```
-
-Add to Vercel:
-```bash
-NEXTAUTH_SECRET=<generated-secret>
-NEXTAUTH_URL=https://www.evolutionstables.nz
-```
-
----
-
-## 📋 Vercel Setup
-
-### Add Environment Variables
-
-Go to Vercel → `evolution-3-0` → Settings → Environment Variables:
-
-```bash
-# Auth
-NEXTAUTH_URL=https://www.evolutionstables.nz
-NEXTAUTH_SECRET=<from-openssl>
-
-# Google OAuth
-ENABLE_GOOGLE_AUTH=true
-GOOGLE_CLIENT_ID=<from-google>
-GOOGLE_CLIENT_SECRET=<from-google>
-
-# Stripe
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_<from-stripe>
-STRIPE_SECRET_KEY=sk_live_<from-stripe>
-STRIPE_WEBHOOK_SECRET=whsec_<from-stripe>
-
-# Google Sheets
-GOOGLE_SHEETS_WEB_APP_URL=<from-apps-script>
-
-# Remove mock bypasses (set to false or delete)
-NEXT_PUBLIC_BYPASS_AUTH_KYC=false
-NEXT_PUBLIC_BYPASS_STRIPE=false
-NEXT_PUBLIC_MOCK_ROLE=
-NEXT_PUBLIC_MOCK_KYC=
-```
-
----
-
-## 🧪 Testing Checklist
-
-### Before Deploy
-- [ ] All credentials added to Vercel
-- [ ] Mock bypasses removed/disabled
-- [ ] Stripe Identity enabled
-- [ ] Webhook configured
-
-### After Deploy
-- [ ] Homepage loads correctly
-- [ ] Marketplace pages load
-- [ ] "Verify Identity (KYC)" button appears on horse details
-- [ ] Click KYC button → redirects to Stripe
-- [ ] Complete verification → returns to site
-- [ ] Check database: `users.kyc_status = 'verified'`
-- [ ] Test application form → check Google Sheets
-- [ ] Test Google OAuth sign-in
-
----
-
-## 📊 Files Changed
-
-### New Files Created
-- `src/app/mystable/verify/page.tsx` — KYC verification page
-- `src/components/seo/StructuredData.tsx` — Organization schema
-- `src/components/seo/FAQStructuredData.tsx` — FAQ schema
-- `src/app/opengraph-image.tsx` — Dynamic OG image
-- `src/app/manifest.ts` — PWA manifest
-
-### Files Updated
-- `src/app/layout.tsx` — Added structured data + enhanced metadata
-- `src/app/sitemap.ts` — Added all routes + priorities
-- `src/app/robots.ts` — Added disallow rules
-- `src/app/marketplace/[id]/page.tsx` — Added KYC button
-- `.env.local` — Production structure
-
----
-
-## 🎯 Next Steps
-
-1. **Get credentials** (Google, Stripe, Sheets) — 50 min
-2. **Add to Vercel** — 10 min
-3. **Remove mock bypasses** — 2 min
-4. **Deploy** — 5 min (auto-deploy on push)
-5. **Test flow** — 20 min
-
-**Total time**: ~90 minutes
-
----
-
-## 🚨 Before You Deploy
-
-**CRITICAL**: Remove these mock bypasses!
-
-```bash
-# In .env.local or Vercel env vars
-NEXT_PUBLIC_BYPASS_AUTH_KYC=false  # Was: true
-NEXT_PUBLIC_BYPASS_STRIPE=false    # Was: true
-NEXT_PUBLIC_MOCK_ROLE=             # Was: admin
-NEXT_PUBLIC_MOCK_KYC=              # Was: verified
-```
-
-If you don't remove these, the site will:
-- ❌ Skip authentication
-- ❌ Skip KYC verification
-- ❌ Mock all Stripe calls
-- ❌ Show admin access to everyone
-
----
-
-## 📞 Support
-
-**Build successful?** Run `npm run build` to verify compilation.
-
-**SEO working?** Check page source for `<script type="application/ld+json">`.
-
-**KYC flow?** Test with Stripe test mode first.
-
-**Questions?** Check the comprehensive guides in `/home/evo/evo_01/_sandbox/Evolution-3.1/`
-
----
-
-**Last Updated**: 2026-06-16  
-**Status**: Ready for Credential Setup ✅
+## Deprecated (do not use)
+- ~~`GOOGLE_SHEETS_WEB_APP_URL`~~ — replaced by direct OAuth API writes
+- ~~Apps Script `doPost`~~ — not needed, direct writes via `sheets-write.ts`
+- ~~`NEXTAUTH_*`~~ — Firebase Auth only
+- ~~`NEXT_PUBLIC_API_BASE`~~ — GCP retired
+- ~~Firestore `users.kyc_status`~~ — Firebase custom claims via Stripe webhook

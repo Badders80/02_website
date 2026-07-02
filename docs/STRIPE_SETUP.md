@@ -83,7 +83,17 @@ Once everything is configured:
 8. Check Google Sheet holdings tab for new row
 9. Run `python3 scripts/sync_inventory.py` → `npm run build` → MyStable shows holding
 
-## 6. Going Live
+## 6. Publish OAuth Consent Screen
+
+**Important:** While the OAuth consent screen is in "Testing" mode, refresh tokens expire after 7 days. After 7 days, sheet writes from Vercel will silently fail until you re-run the Python OAuth flow locally.
+
+To fix this permanently:
+1. Go to: https://console.cloud.google.com/auth/audience?project=evolution-sheets
+2. Click **Publish app** (or "Move to production")
+3. Google may require verification if you use sensitive scopes, but `spreadsheets` scope is usually fine for internal use
+4. After publishing, refresh tokens don't expire (unless explicitly revoked)
+
+## 7. Going Live
 
 When ready to switch from test to live:
 1. Replace test keys with live keys in Vercel
