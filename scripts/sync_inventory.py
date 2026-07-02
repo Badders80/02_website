@@ -63,6 +63,72 @@ def write_json(filename, data):
     print(f"  ✅ {path.name} — {len(data)} records")
 
 
+def transform_hlts(records):
+    """Transform raw HLTS CSV rows (strings) to the structure the site expects."""
+    transformed = []
+    for rec in records:
+        r = dict(rec)  # copy
+        # Convert numeric fields to int
+        for field in [
+            "lease_period_months",
+            "leasehold_stake_pct",
+            "investor_return_pct",
+            "syndicate_price_nzd",
+            "shares_total",
+            "shares_sold",
+            "price_per_share_nzd",
+        ]:
+            if field in r and r[field] != "":
+                try:
+                    r[field] = int(r[field])
+                except (ValueError, TypeError):
+                    pass
+        # Convert marketplace_visible: "TRUE"/"true"/"1" → true, else false
+        mv = str(r.get("marketplace_visible", "")).strip().upper()
+        r["marketplace_visible"] = mv in ("TRUE", "true", "1")
+        # Build stats object from flat CSV columns, remove the flat keys
+        stats = {
+            "wins": r.pop("wins", "0") or "0",
+            "placed": r.pop("placed", "0") or "0",
+            "next_up": r.pop("next_up", "TBD") or "TBD",
+        }
+        r["stats"] = stats
+        # Add id field: "hlt-" + horse_slug (if no id present)
+        if not r.get("id"):
+            slug = r.get("horse_slug", "")
+            if slug:
+                r["id"] = "hlt-" + slug
+        transformed.append(r)
+    return transformed
+
+
+def transform_horses(records):
+    """Transform raw horses CSV rows (strings) to the structure the site expects."""
+    transformed = []
+    for rec in records:
+        r = dict(rec)  # copy
+        # Convert loveracing_id to int
+        if "loveracing_id" in r and r["loveracing_id"] != "":
+            try:
+                r["loveracing_id"] = int(r["loveracing_id"])
+            except (ValueError, TypeError):
+                pass
+        # Add id field from slug if missing
+        if not r.get("id"):
+            slug = r.get("slug", "")
+            if slug:
+                r["id"] = slug
+        # Build stats object from flat CSV columns (same as hlts), remove flat keys
+        stats = {
+            "wins": r.pop("wins", "0") or "0",
+            "placed": r.pop("placed", "0") or "0",
+            "next_up": r.pop("next_up", "TBD") or "TBD",
+        }
+        r["stats"] = stats
+        transformed.append(r)
+    return transformed
+
+
 def sync_from_sheets(config):
     """Sync all sheets from Google Sheets."""
     sheets = config.get("sheets", {})
@@ -73,6 +139,11 @@ def sync_from_sheets(config):
         try:
             csv_text = fetch_sheet_csv(sheet_id, gid)
             records = csv_to_json(csv_text)
+            if name == "hlts":
+                records = transform_hlts(records)
+            elif name == "horses":
+                records = transform_horses(records)
+            # trainers, owners, holdings: pass through as-is
             write_json(f"{name}.json", records)
         except Exception as e:
             print(f"  ❌ {name}: {e}")
@@ -354,6 +425,11 @@ def main():
         try:
             csv_text = fetch_sheet_csv(sheet_info["id"], sheet_info.get("gid", "0"))
             records = csv_to_json(csv_text)
+            if args.sheet == "hlts":
+                records = transform_hlts(records)
+            elif args.sheet == "horses":
+                records = transform_horses(records)
+            # trainers, owners, holdings: pass through as-is
             write_json(f"{args.sheet}.json", records)
         except Exception as e:
             print(f"  ❌ {args.sheet}: {e}")

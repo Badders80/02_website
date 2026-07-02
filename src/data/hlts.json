@@ -1,6 +1,5 @@
 [
   {
-    "id": "hlt-prudentia",
     "horse_microchip": "985125000126462",
     "horse_name": "Prudentia",
     "horse_slug": "prudentia",
@@ -25,10 +24,10 @@
       "wins": "2",
       "placed": "4",
       "next_up": "23 June"
-    }
+    },
+    "id": "hlt-prudentia"
   },
   {
-    "id": "hlt-hottathanafantasy",
     "horse_microchip": "985125000139165",
     "horse_name": "Hottathanafantasy",
     "horse_slug": "hottathanafantasy",
@@ -53,10 +52,10 @@
       "wins": "0",
       "placed": "0",
       "next_up": "TBD"
-    }
+    },
+    "id": "hlt-hottathanafantasy"
   },
   {
-    "id": "hlt-first-gear",
     "horse_microchip": "985125000126713",
     "horse_name": "First Gear",
     "horse_slug": "first-gear",
@@ -81,10 +80,10 @@
       "wins": "0",
       "placed": "0",
       "next_up": "TBD"
-    }
+    },
+    "id": "hlt-first-gear"
   },
   {
-    "id": "hlt-i-stole-a-manolo",
     "horse_microchip": "985125000139219",
     "horse_name": "I Stole A Manolo",
     "horse_slug": "i-stole-a-manolo",
@@ -109,6 +108,7 @@
       "wins": "0",
       "placed": "0",
       "next_up": "Trial (Sep)"
-    }
+    },
+    "id": "hlt-i-stole-a-manolo"
   }
 ]
