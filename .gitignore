@@ -28,3 +28,5 @@ Thumbs.db
 .env.production
 scripts/token.json
 scripts/client-secret.json
+scripts/firebase-service-account.json
+scripts/cloud-token.json
