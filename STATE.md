@@ -41,7 +41,8 @@ No runtime calls to `cloudfunctions.net` for marketplace, mystable, KYC, or chec
 | **MyStable** | ✅ | `src/app/mystable/page.tsx` reads `src/data/holdings.json` + `hlts.json` |
 | **Stripe KYC** | ✅ | `api/kyc/create-session` → Stripe direct |
 | **Stripe Checkout** | ✅ | `api/checkout/create-session` → Stripe direct |
-| **Webhooks** | ✅ | `api/kyc/callback`, `api/checkout/webhook` — Stripe sig verify |
+| **Sheet writes (OAuth)** | ✅ | `src/lib/sheets-write.ts` — direct Sheets API v4 via OAuth |
+| **Webhooks** | ✅ | `api/kyc/callback`, `api/checkout/webhook` — Stripe sig verify, per-endpoint secrets |
 | **Local inventory JSON** | ✅ | `src/data/` seeded; `scripts/sync_inventory.py` built |
 | **Assets** | ✅ | `_assets/` via symlinks |
 
@@ -49,9 +50,9 @@ No runtime calls to `cloudfunctions.net` for marketplace, mystable, KYC, or chec
 
 ## Remaining work
 
-1. **Dormant-ify GCP leftovers** — `src/lib/api.ts`, `gcp-auth.ts`, `api/proxy/`, admin routes still import dead GCP paths
-2. **SEO** — sitemap, JSON-LD, Open Graph (partial — check `src/app/sitemap.xml`)
-3. **Env cleanup on Vercel** — remove stale vars (see Handoffs)
+1. **Stripe secrets + webhooks on Vercel** — see `.hermes/plans/remaining-work-2026-07-02.md` §4
+2. **Dormant-ify GCP leftovers** — `src/lib/api.ts`, `gcp-auth.ts`, `api/proxy/`, admin routes still import dead GCP paths
+3. **SEO** — sitemap, JSON-LD, Open Graph (partial — check `src/app/sitemap.xml`)
 4. **Sandbox/admin cleanup** — remove dead `api.ts` usage from `src/app/sandbox/`
 
 ---
@@ -73,10 +74,16 @@ No runtime calls to `cloudfunctions.net` for marketplace, mystable, KYC, or chec
 | `NEXT_PUBLIC_FIREBASE_CONFIG` | Client | Likely set |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client | Likely set |
 | `STRIPE_SECRET_KEY` | Server | Required for KYC/checkout |
+| `STRIPE_KYC_WEBHOOK_SECRET` | Server | Stripe KYC webhook signing secret |
+| `STRIPE_CHECKOUT_WEBHOOK_SECRET` | Server | Stripe checkout webhook signing secret |
+| `FIREBASE_SERVICE_ACCOUNT_KEY` | Server | Firebase Admin JSON (for KYC claims) |
 | `NEXT_PUBLIC_APP_URL` | Both | `https://www.evolutionstables.nz` |
 | `NEXT_PUBLIC_BYPASS_STRIPE` | Client (dev) | Without it, dev listings are empty |
+| `NEXT_PUBLIC_BYPASS_AUTH_KYC` | Client (dev) | Bypass KYC gate for dev testing |
+| `GOOGLE_OAUTH_TOKEN` | Server | JSON string of OAuth token (for sheet writes) |
+| `GOOGLE_CLIENT_SECRET` | Server | JSON string of OAuth client secret (for token refresh) |
 
-**Remove if still set:** `NEXT_PUBLIC_API_BASE`, `CLOUD_RUN_PROXY_URL`, `PAYMENTS_API_BASE`, stale `NEXTAUTH_*`
+**Remove if still set:** `NEXT_PUBLIC_API_BASE`, `CLOUD_RUN_PROXY_URL`, `PAYMENTS_API_BASE`, stale `NEXTAUTH_*`, `GOOGLE_SHEETS_WEB_APP_URL` (replaced by direct API writes)
 
 ### Firebase (one-time)
 
