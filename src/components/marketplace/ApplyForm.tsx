@@ -10,7 +10,7 @@ interface ApplyFormProps {
 }
 
 export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, kycStatus } = useAuth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -83,6 +83,9 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
     );
   }
 
+  // KYC nudge: soft banner for logged-in but unverified users (does not block submit)
+  const showKycNudge = !authLoading && user && kycStatus !== "verified";
+
   if (success) {
     return (
       <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 text-center space-y-4">
@@ -107,6 +110,22 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* KYC Nudge */}
+      {showKycNudge && (
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 flex items-center justify-between gap-3">
+          <p className="text-[11px] font-light text-amber-200/70 leading-relaxed">
+            Identity verification required to purchase shares. Complete KYC to unlock acquisition.
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push("/auth/verify")}
+            className="flex-shrink-0 text-[10px] uppercase tracking-wider text-amber-300 hover:text-amber-200 transition whitespace-nowrap"
+          >
+            Verify →
+          </button>
+        </div>
+      )}
+
       {/* Main Widget Card */}
       <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
         
