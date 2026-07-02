@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
+import { appendToSheet } from '@/lib/sheets-write';
 
-const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
-const SHEETS_WEB_APP_URL = process.env.GOOGLE_SHEETS_WEB_APP_URL || '';
+const WEBHOOK_SECRET = process.env.STRIPE_CHECKOUT_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (!WEBHOOK_SECRET) {
       return NextResponse.json(
-        { error: 'STRIPE_WEBHOOK_SECRET not configured' },
+        { error: 'STRIPE_CHECKOUT_WEBHOOK_SECRET not configured' },
         { status: 500 }
       );
     }
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Handle the event
     switch (event.type) {
-      case 'checkout.session.completed':
+      case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         const meta = session.metadata || {};
         const record = {
@@ -47,29 +47,18 @@ export async function POST(request: NextRequest) {
 
         console.log('Payment completed:', record);
 
-        // Record holding to source of truth (Google Sheet via web app)
-        if (SHEETS_WEB_APP_URL) {
-          try {
-            const res = await fetch(SHEETS_WEB_APP_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'append_holding',
-                row: record,
-              }),
-            });
-            if (res.ok) {
-              console.log('✅ Holding appended to sheets via web app');
-            } else {
-              console.warn('Sheets web app responded', res.status);
-            }
-          } catch (e: any) {
-            console.error('Failed to append holding via sheets web app (will need manual sync):', e.message);
-          }
-        } else {
-          console.log('⚠️ No GOOGLE_SHEETS_WEB_APP_URL — holding record (sync to holdings tab manually):', record);
-        }
+        // Fire-and-forget write to Google Sheet Holdings tab
+        appendToSheet('Holdings', [
+          record.user_email,
+          record.hlt_id,
+          record.shares_owned,
+          record.purchase_date,
+          record.kyc_status,
+          record.stripe_session_id,
+          record.horse_microchip,
+        ]).catch((e) => console.error('Sheets write failed:', e));
         break;
+      }
 
       case 'checkout.session.expired':
         console.log('Checkout session expired:', event.data.object.id);

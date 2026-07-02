@@ -3,7 +3,7 @@ import type Stripe from 'stripe';
 import { setCustomClaims } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
 
-const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
+const WEBHOOK_SECRET = process.env.STRIPE_KYC_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (!WEBHOOK_SECRET) {
       return NextResponse.json(
-        { error: 'STRIPE_WEBHOOK_SECRET not configured' },
+        { error: 'STRIPE_KYC_WEBHOOK_SECRET not configured' },
         { status: 500 }
       );
     }

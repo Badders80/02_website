@@ -25,6 +25,11 @@
       "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
       "gid": "2099258130",
       "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=2099258130"
+    },
+    "Applications": {
+      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
+      "gid": "1217853084",
+      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=1217853084"
     }
   },
   "_sheet_templates": {
@@ -32,6 +37,6 @@
     "hlts": "horse_microchip, horse_name, horse_slug, owner_name, trainer_name, trainer_stable, trainer_location, lease_period_months, lease_start_date, leasehold_stake_pct, investor_return_pct, syndicate_price_nzd, shares_total, shares_sold, price_per_share_nzd, listing_status, marketplace_visible, image_path, story, pedigree, wins, placed, next_up",
     "trainers": "name, stable_name, location, email",
     "owners": "name, email, type",
-    "holdings": "user_email, hlt_id, shares_owned, purchase_date, kyc_status"
+    "holdings": "user_email, hlt_id, shares_owned, purchase_date, kyc_status, stripe_session_id, horse_microchip"
   }
 }
