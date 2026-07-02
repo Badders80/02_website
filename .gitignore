@@ -26,3 +26,5 @@ Thumbs.db
 .vercel
 .env*.local
 .env.production
+scripts/token.json
+scripts/client-secret.json
