@@ -44,6 +44,9 @@ export function KycBanner() {
 
   if (loading) return null;
 
+  // Only show banner for authenticated users who need verification
+  if (!user) return null;
+
   const config = STATUS_CONFIG[kycStatus] || STATUS_CONFIG.none;
   if (!config.show && !success) return null;
 
@@ -53,7 +56,8 @@ export function KycBanner() {
     setErrorMsg("");
 
     try {
-      const token = await user.getIdToken();
+      // Force token refresh to ensure we have a fresh, valid ID token
+      const token = await user.getIdToken(true);
       const res = await fetch("/api/kyc/create-session", {
         method: "POST",
         headers: {
@@ -90,39 +94,26 @@ export function KycBanner() {
   return (
     <section className="px-8 md:px-12 lg:px-16 max-w-6xl mx-auto pb-6">
       <div className={`rounded-xl border p-6 md:p-8 ${
-        success 
-          ? "border-emerald-500/20 bg-emerald-500/5" 
-          : "border-warning-border bg-warning-bg"
+        "border-warning-border bg-warning-bg"
       }`}>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            {success ? (
-              <>
-                <h2 className="text-xl font-medium text-emerald-400 mb-2">Verification request received!</h2>
-                <p className="text-sm font-light text-muted max-w-2xl">We will contact you to initiate secure onboarding.</p>
-              </>
-            ) : (
-              <>
-                <h2 className="text-xl font-medium text-foreground mb-2">{config.title}</h2>
-                <p className="text-sm font-light text-muted max-w-2xl">{config.message}</p>
-                {errorMsg && (
-                  <p className="text-xs font-light text-red-400 mt-2">{errorMsg}</p>
-                )}
-              </>
+            <h2 className="text-xl font-medium text-foreground mb-2">{config.title}</h2>
+            <p className="text-sm font-light text-muted max-w-2xl">{config.message}</p>
+            {errorMsg && (
+              <p className="text-xs font-light text-red-400 mt-2">{errorMsg}</p>
             )}
           </div>
-          {!success && (
-            <div className="flex-shrink-0">
-              <button
-                type="button"
-                onClick={handleStartVerification}
-                disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-gold-hover disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? "Starting..." : config.action} →
-              </button>
-            </div>
-          )}
+          <div className="flex-shrink-0">
+            <button
+              type="button"
+              onClick={handleStartVerification}
+              disabled={isSubmitting}
+              className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-gold-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Starting..." : config.action} →
+            </button>
+          </div>
         </div>
       </div>
     </section>
