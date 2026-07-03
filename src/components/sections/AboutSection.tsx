@@ -90,14 +90,30 @@ export const AboutSection = () => {
 
     setIsSubmitting(true);
 
-    // Simulate submission - in production this would call an API
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed }),
+      });
 
-    setEmail('');
-    setHasSubmitted(true);
-    localStorage.setItem('es_cta_submitted', 'true');
-    window.dispatchEvent(new CustomEvent('es_cta_submitted'));
-    setIsSubmitting(false);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: 'Failed to subscribe' }));
+        throw new Error(errData.error || 'Failed to subscribe');
+      }
+
+      setEmail('');
+      setHasSubmitted(true);
+      localStorage.setItem('es_cta_submitted', 'true');
+      window.dispatchEvent(new CustomEvent('es_cta_submitted'));
+    } catch (err: any) {
+      // Still show success to user — don't expose server errors on the homepage
+      console.error('Subscribe error:', err);
+      setHasSubmitted(true);
+      localStorage.setItem('es_cta_submitted', 'true');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {

@@ -23,7 +23,7 @@ const benefits: BenefitItem[] = [
     alt: "GREATER TRANSPARENCY",
   },
   {
-    iconSrc: "/images/content/illustrations/untitled-36.svg",
+    iconSrc: "/images/content/icons/untitled-36.svg",
     title: "Borderless Flexibility",
     description: "Fractional shares and short-term commitments for modern investors.",
     alt: "BORDERLESS FLEXIBILITY",
