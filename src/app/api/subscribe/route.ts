@@ -84,7 +84,70 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Append to Google Sheet — try "Waitlist" tab first, fallback to "Sheet1"
+    // First, ensure the "Waitlist" tab exists by creating it if needed
+    const metaRes = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    if (!metaRes.ok) {
+      const metaErr = await metaRes.text();
+      console.error('Cannot access spreadsheet:', metaRes.status, metaErr);
+      return NextResponse.json(
+        { error: 'Cannot access spreadsheet — check SA permissions' },
+        { status: 502 }
+      );
+    }
+
+    const meta = await metaRes.json();
+    const tabNames = (meta.sheets || []).map((s: any) => s.properties?.title);
+    const hasWaitlist = tabNames.includes('Waitlist');
+
+    if (!hasWaitlist) {
+      // Create the Waitlist tab
+      const createTabRes = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            requests: [
+              {
+                addSheet: {
+                  properties: { title: 'Waitlist' },
+                },
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!createTabRes.ok) {
+        const createErr = await createTabRes.text();
+        console.error('Failed to create Waitlist tab:', createErr);
+        // Try anyway — the tab might already exist from a race condition
+      }
+
+      // Add headers
+      await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Waitlist!A1:B1?valueInputOption=USER_ENTERED`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            values: [['Email', 'Timestamp']],
+          }),
+        }
+      );
+    }
+
+    // Append to the Waitlist tab
     const range = 'Waitlist!A:B';
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
 
@@ -102,29 +165,10 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Google Sheets API error:', response.status, errorText);
-
-      // Fallback: try Sheet1
-      const fallbackRange = 'Sheet1!A:C';
-      const fallbackUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(fallbackRange)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-      const fallbackRes = await fetch(fallbackUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          values: [['Waitlist', trimmed, new Date().toISOString()]],
-        }),
-      });
-
-      if (!fallbackRes.ok) {
-        const fbError = await fallbackRes.text();
-        console.error('Fallback sheet append also failed:', fallbackRes.status, fbError);
-        return NextResponse.json(
-          { error: 'Failed to save email — sheet configuration issue' },
-          { status: 502 }
-        );
-      }
+      return NextResponse.json(
+        { error: 'Failed to save email — sheet write failed' },
+        { status: 502 }
+      );
     }
 
     return NextResponse.json({ success: true });
