@@ -122,7 +122,7 @@ export function PressShowcaseSection() {
   const partners = [
     {
       name: 'Investing.com',
-      src: '/images/partners/investing-com.png',
+      src: '/images/partners/investing-com.webp',
       wrapperClass: 'w-[155px] h-[31px] sm:w-[175px] sm:h-[35px] md:w-[185px] md:h-[37px] lg:w-[210px] lg:h-[42px]'
     },
     {
@@ -132,7 +132,7 @@ export function PressShowcaseSection() {
     },
     {
       name: 'Singularity',
-      src: '/images/partners/singularry.png',
+      src: '/images/partners/singularry.webp',
       wrapperClass: 'w-[175px] h-[33px] sm:w-[200px] sm:h-[38px] md:w-[215px] md:h-[40px] lg:w-[245px] lg:h-[46px]'
     },
     {
@@ -157,7 +157,7 @@ export function PressShowcaseSection() {
     },
     {
       name: 'Arabian Business',
-      src: '/images/partners/arabian-business.png',
+      src: '/images/partners/arabian-business.webp',
       wrapperClass: 'w-[100px] h-[36px] sm:w-[110px] sm:h-[40px] md:w-[125px] md:h-[45px] lg:w-[145px] lg:h-[52px]'
     },
   ];
