@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
+import { getAuth } from 'firebase-admin/auth';
 
-type AdminApp = any; // firebase-admin types are loose in this setup
+type AdminApp = any;
 
 let app: AdminApp | null = null;
 
@@ -17,8 +18,9 @@ function getApp(): AdminApp {
   if (keyJson) {
     try {
       const serviceAccount = JSON.parse(keyJson);
+      // firebase-admin v14: admin.cert() directly (not admin.credential.cert())
       app = (admin as any).initializeApp({
-        credential: (admin as any).credential.cert(serviceAccount),
+        credential: (admin as any).cert(serviceAccount),
       });
       return app;
     } catch (e) {
@@ -26,9 +28,9 @@ function getApp(): AdminApp {
     }
   }
 
-  // Fallback
+  // Fallback: application default credentials
   try {
-    app = (admin as any).initializeApp();
+    app = (admin as any).initializeApp({ credential: (admin as any).applicationDefault() });
   } catch (e) {
     console.error('[firebase-admin] Fallback failed. Set FIREBASE_SERVICE_ACCOUNT_KEY env.', e);
     throw new Error('Firebase Admin not configured (FIREBASE_SERVICE_ACCOUNT_KEY = full service account JSON).');
@@ -38,7 +40,8 @@ function getApp(): AdminApp {
 }
 
 export function getAdminAuth() {
-  return getApp().auth();
+  // firebase-admin v14: use getAuth() from firebase-admin/auth
+  return getAuth(getApp());
 }
 
 export async function verifyIdToken(idToken: string) {
