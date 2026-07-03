@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { KycBanner } from "@/components/KycBanner";
+import { OnboardingFlow } from "@/components/OnboardingFlow";
 import Image from "next/image";
 import Link from "next/link";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -265,10 +266,8 @@ export default function MyStablePage() {
             </p>
           </section>
 
-          {/* KYC Verification Banner */}
-          <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
-            <KycBanner />
-          </div>
+          {/* Onboarding Flow Tracker (replaces KycBanner — includes KYC step) */}
+          <OnboardingFlow hasHoldings={holdings.length > 0} />
 
           {purchaseSuccess && (
             <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
