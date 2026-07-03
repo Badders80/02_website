@@ -27,3 +27,4 @@ Thumbs.db
 .env*.local
 .env.production
 .env.vercel-pulled
+_reference/

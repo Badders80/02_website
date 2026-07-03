@@ -47,38 +47,41 @@ export function KycBanner() {
   const config = STATUS_CONFIG[kycStatus] || STATUS_CONFIG.none;
   if (!config.show && !success) return null;
 
-  const handleRegisterKycInterest = async () => {
+  const handleStartVerification = async () => {
     if (!user) return;
     setIsSubmitting(true);
     setErrorMsg("");
 
     try {
       const token = await user.getIdToken();
-      const res = await fetch("/api/applications/submit", {
+      const res = await fetch("/api/kyc/create-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           user_id: user.uid,
-          hlt_id: "kyc-verification-request",
           email: user.email || "",
-          name: user.displayName || user.email || "Investor",
-          units_requested: 0,
-          message: "Expressed interest in identity verification / KYC from KycBanner dashboard link"
+          return_url: `${window.location.origin}/auth/verify?from=stripe`,
         }),
       });
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: `Failed to submit request: ${res.status}` }));
-        throw new Error(errorData.error || `Failed to submit request: ${res.status}`);
+        const errorData = await res.json().catch(() => ({ error: `Failed to start verification: ${res.status}` }));
+        throw new Error(errorData.error || `Failed to start verification: ${res.status}`);
       }
 
-      setSuccess(true);
+      const data = await res.json();
+      const redirectUrl = data.url || data.session_url;
+      if (!redirectUrl) {
+        throw new Error("No verification URL returned");
+      }
+
+      window.location.href = redirectUrl;
     } catch (err: any) {
-      console.error("KYC request error:", err);
-      setErrorMsg(err.message || "Failed to submit request. Please try again.");
+      console.error("KYC session error:", err);
+      setErrorMsg(err.message || "Failed to start verification. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -112,11 +115,11 @@ export function KycBanner() {
             <div className="flex-shrink-0">
               <button
                 type="button"
-                onClick={handleRegisterKycInterest}
+                onClick={handleStartVerification}
                 disabled={isSubmitting}
                 className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-gold-hover disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Registering..." : config.action} →
+                {isSubmitting ? "Starting..." : config.action} →
               </button>
             </div>
           )}
