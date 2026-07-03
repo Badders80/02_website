@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketplace | Evolution Stables</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500&display=swap" rel="stylesheet">
@@ -128,13 +130,7 @@
             text-align: center;
             max-width: 42rem;
             padding: 0 1.5rem;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-        }
-        .nugget-inner.visible {
-            opacity: 1;
-            transform: translateY(0);
+            /* GSAP handles opacity/transform via fromTo — no CSS transition needed */
         }
         .nugget-label {
             font-size: 11px;
@@ -203,13 +199,12 @@
         }
 
         /* ===== IMAGE CAROUSEL — Horizontal on Vertical Scroll ===== */
+        /* GSAP pin handles the scroll distance — no manual track height needed */
         .carousel-track {
             position: relative;
-            height: 500vh; /* scroll distance drives horizontal translation */
+            height: 100vh;
         }
         .carousel-sticky {
-            position: sticky;
-            top: 0;
             height: 100vh;
             width: 100%;
             overflow: hidden;
@@ -404,74 +399,68 @@
     </footer>
 
     <script>
-        // ===== HERO SCROLL REVEAL =====
-        const heroTrack = document.getElementById('heroTrack');
-        const heroContent = document.querySelector('.hero-content');
+        gsap.registerPlugin(ScrollTrigger);
 
-        // ===== NUGGETS OBSERVER =====
-        const nuggets = document.querySelectorAll('.nugget-inner');
-        const nuggetObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        // ===== NUGGETS — GSAP ScrollTrigger scrub reveal =====
+        // Each nugget-inner fades/translates tied to scroll position, not threshold.
+        // Surgical: only replaces the IntersectionObserver, CSS classes stay compatible.
+        document.querySelectorAll('.nugget-inner').forEach((el) => {
+            gsap.fromTo(el,
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 75%',
+                        end: 'top 40%',
+                        scrub: 1,
+                    },
                 }
-            });
-        }, { threshold: 0.4, rootMargin: '0px 0px -10% 0px' });
+            );
+        });
 
-        nuggets.forEach(n => nuggetObserver.observe(n));
-
-        // ===== IMAGE CAROUSEL — Horizontal Scroll =====
+        // ===== IMAGE CAROUSEL — GSAP ScrollTrigger pin + scrub =====
+        // Replaces manual rAF scroll math. Pinned section, horizontal strip translated
+        // proportionally across the pinned scroll distance.
         const carouselTrack = document.getElementById('carousel');
         const carouselStrip = document.getElementById('carouselStrip');
         const carouselPanels = document.querySelectorAll('.carousel-panel');
+        const panelCount = carouselPanels.length;
+        const stripDistance = (panelCount - 1) * window.innerWidth;
 
-        let ticking = false;
-
-        function updateCarousel() {
-            const trackRect = carouselTrack.getBoundingClientRect();
-            const trackHeight = carouselTrack.offsetHeight;
-            const viewHeight = window.innerHeight;
-
-            const totalScrollable = trackHeight - viewHeight;
-            const currentScroll = -trackRect.top;
-            const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
-
-            const stripWidth = carouselStrip.scrollWidth;
-            const viewWidth = window.innerWidth;
-            const maxDelta = Math.max(0, stripWidth - viewWidth);
-
-            if (maxDelta > 0) {
-                const scrollX = progress * maxDelta;
-                carouselStrip.style.transform = `translateX(-${scrollX}px)`;
-
-                // Activate panel based on which is in centre view
-                const panelWidth = viewWidth;
-                const activeIndex = Math.min(
-                    carouselPanels.length - 1,
-                    Math.floor((scrollX + viewWidth * 0.5) / panelWidth)
-                );
-
-                carouselPanels.forEach((panel, i) => {
-                    if (i === activeIndex) {
-                        panel.classList.add('active');
-                    } else {
-                        panel.classList.remove('active');
-                    }
-                });
-            }
-
-            ticking = false;
-        }
-
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateCarousel);
-                ticking = true;
-            }
+        // Build horizontal tween
+        const horizontalTween = gsap.to(carouselStrip, {
+            x: -stripDistance,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: carouselTrack,
+                start: 'top top',
+                end: () => `+=${stripDistance}`,
+                pin: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+                onUpdate: (self) => {
+                    // Activate panel based on progress
+                    const activeIndex = Math.min(
+                        panelCount - 1,
+                        Math.floor(self.progress * panelCount)
+                    );
+                    carouselPanels.forEach((panel, i) => {
+                        if (i === activeIndex) {
+                            panel.classList.add('active');
+                        } else {
+                            panel.classList.remove('active');
+                        }
+                    });
+                },
+            },
         });
 
-        // Initial call
-        updateCarousel();
+        // ===== HERO — static load, no entrance animation (per brief) =====
+        // Hero stays as-is. No GSAP here. Restraint is the luxury.
     </script>
 
 </body>

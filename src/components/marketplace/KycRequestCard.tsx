@@ -45,6 +45,10 @@ export function KycRequestCard({ horseName }: KycRequestCardProps) {
       }
 
       const data = await response.json();
+      if (data.verified) {
+        window.location.href = '/mystable';
+        return;
+      }
       const redirectUrl = data.url || data.session_url;
       if (!redirectUrl) {
         throw new Error("No verification URL returned");

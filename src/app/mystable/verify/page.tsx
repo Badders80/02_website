@@ -27,10 +27,15 @@ export default function VerificationPage() {
       const token = await user.getIdToken();
       const response = await fetch("/api/kyc/create-session", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({
+          user_id: user.uid,
+          email: user.email || "",
+          return_url: `${window.location.origin}/auth/verify?from=stripe`,
+        }),
       });
 
       if (!response.ok) {
@@ -38,14 +43,18 @@ export default function VerificationPage() {
         throw new Error(data.error || "Failed to create verification session");
       }
 
-      const { url } = await response.json();
+      const data = await response.json();
+      if (data.verified) {
+        window.location.href = '/mystable';
+        return;
+      }
+      const redirectUrl = data.session_url || data.url;
 
-      if (!url) {
+      if (!redirectUrl) {
         throw new Error("No verification URL received");
       }
 
-      // Redirect to Stripe Identity verification page
-      window.location.href = url;
+      window.location.href = redirectUrl;
       setSuccess(true);
     } catch (err) {
       console.error("[KYC] Error:", err);

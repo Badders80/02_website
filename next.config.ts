@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ['firebase-admin'],
   images: {
     remotePatterns: [
       {
@@ -44,10 +45,8 @@ const nextConfig: NextConfig = {
         source: "/api/assets/:path*",
         destination: `${assetsTarget}/:path*`,
       },
-      {
-        source: "/api/kyc/:path*",
-        destination: `${apiBase}/kyc/:path*`,
-      },
+      // KYC is handled by src/app/api/kyc/* (Stripe Identity + Firebase Admin).
+      // Do not proxy /api/kyc to Cloud Functions or localhost.
     ];
   },
   async redirects() {

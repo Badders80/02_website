@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyIdToken, setCustomClaims } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
 
+/**
+ * KYC session creation / resume / sync endpoint.
+ *
+ * Required Vercel env vars for this route to work in production:
+ * - STRIPE_SECRET_KEY
+ * - FIREBASE_SERVICE_ACCOUNT_KEY (JSON; service account must have Firebase Authentication Admin role)
+ * - FIREBASE_PROJECT_ID (must match NEXT_PUBLIC_FIREBASE_CONFIG)
+ * - NEXT_PUBLIC_APP_URL = https://www.evolutionstables.nz (used for return_url)
+ */
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -11,6 +21,7 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization') || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) {
+      console.error('[KYC create-session] Missing Authorization Bearer token');
       return NextResponse.json({ error: 'Missing Authorization Bearer token' }, { status: 401 });
     }
 
@@ -19,66 +30,79 @@ export async function POST(request: NextRequest) {
     try {
       decoded = await verifyIdToken(token);
       verifiedUid = decoded.uid;
+      console.log('[KYC create-session] Token verified for uid:', verifiedUid);
     } catch (e: any) {
+      console.error('[KYC create-session] Invalid or expired token:', e.message);
       return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
     }
 
     const userId = bodyUserId || verifiedUid;
     if (userId !== verifiedUid) {
+      console.error('[KYC create-session] user_id mismatch: body=', bodyUserId, 'token=', verifiedUid);
       return NextResponse.json({ error: 'user_id mismatch with token' }, { status: 403 });
     }
 
-    // Robust resume logic (addresses handoff / "new session every click" loops in Stripe hosted flow):
-    // 1. Fast path: if claims have kyc_session_id from prior create/webhook, try retrieve.
-    // 2. Authoritative fallback: list recent sessions filtered by client_reference_id (Stripe-side index by user).
-    // This works even if custom claims update is delayed or the setCustomClaims call had issues.
-    // We will also set client_reference_id on creation below.
-    let reusedSession: any = null;
-
-    // Fast path from claims
-    const existingSessionId: string | undefined = decoded ? (decoded as any).kyc_session_id : undefined;
-    if (existingSessionId) {
-      try {
-        const existing = await getStripe().identity.verificationSessions.retrieve(existingSessionId);
-        if (existing && (existing.status === 'processing' || existing.status === 'requires_input')) {
-          reusedSession = existing;
-        }
-      } catch (retrieveErr: any) {
-        console.warn('KYC reuse retrieve by id failed (will try list):', retrieveErr.message);
-      }
-    }
-
-    // Robust list-based resume (always authoritative)
-    if (!reusedSession) {
-      try {
-        const listRes = await getStripe().identity.verificationSessions.list({
-          limit: 5,
-          client_reference_id: userId,
-        });
-        const open = listRes.data.find((s: any) => s.status === 'processing' || s.status === 'requires_input');
-        if (open) {
-          reusedSession = open;
-        }
-      } catch (listErr: any) {
-        console.warn('KYC list resume by client_reference_id failed:', listErr.message);
-      }
-    }
-
-    if (reusedSession) {
-      console.log('KYC resuming existing session for user', userId, 'session', reusedSession.id);
-      return NextResponse.json({
-        session_url: reusedSession.url,
-        url: reusedSession.url,
-        session_id: reusedSession.id,
-        reused: true,
-      });
-    }
-
     if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('[KYC create-session] STRIPE_SECRET_KEY not configured');
       return NextResponse.json(
         { error: 'STRIPE_SECRET_KEY not configured' },
         { status: 500 }
       );
+    }
+
+    // Robust list for resume or verified sync (fixes missed webhooks / stale claims)
+    // List recent sessions and filter client-side by metadata.user_id or client_reference_id
+    // (catches both old sessions that only had metadata and new ones with client_reference_id)
+    let listRes: any = { data: [] };
+    try {
+      console.log('[KYC create-session] Listing recent Stripe sessions for uid:', userId);
+      listRes = await getStripe().identity.verificationSessions.list({
+        limit: 10,  // small list, filter client-side to be robust for historical sessions
+      });
+      console.log(`[KYC create-session] Stripe returned ${listRes.data.length} recent session(s)`);
+    } catch (listErr: any) {
+      console.error('[KYC create-session] Stripe list failed:', listErr.message);
+      return NextResponse.json(
+        { error: `Stripe list failed: ${listErr.message}` },
+        { status: 502 }
+      );
+    }
+
+    const matching = listRes.data.filter((s: any) =>
+      (s.metadata && s.metadata.user_id === userId) || s.client_reference_id === userId
+    );
+    console.log(`[KYC create-session] ${matching.length} session(s) matched uid ${userId}`);
+
+    // Resume open session (handoff loop fix) - most recent first from the list
+    const open = matching.find((s: any) => s.status === 'processing' || s.status === 'requires_input');
+    if (open) {
+      console.log('[KYC create-session] Resuming existing session for uid:', userId, 'session:', open.id, 'status:', open.status);
+      return NextResponse.json({
+        session_url: open.url,
+        url: open.url,
+        session_id: open.id,
+        status: open.status,
+        reused: true,
+      });
+    }
+
+    // Sync verified if found (handles past webhook fail due to secret or lag)
+    const verified = matching.find((s: any) => s.status === 'verified');
+    if (verified) {
+      try {
+        await setCustomClaims(userId, { kyc_status: 'verified', role: 'investor' });
+        console.log('[KYC create-session] Synced verified claims from Stripe session for uid:', userId, 'session:', verified.id);
+        return NextResponse.json({
+          verified: true,
+          session_id: verified.id,
+        });
+      } catch (claimErr: any) {
+        console.error('[KYC create-session] Failed to sync verified claims for uid:', userId, 'error:', claimErr.message);
+        return NextResponse.json(
+          { error: `Failed to set verified claims: ${claimErr.message}` },
+          { status: 500 }
+        );
+      }
     }
 
     const appUrl =
@@ -89,6 +113,7 @@ export async function POST(request: NextRequest) {
 
     // Create Stripe Identity verification session directly
     // client_reference_id enables reliable list({client_reference_id}) resume above.
+    console.log('[KYC create-session] Creating new Stripe Identity session for uid:', userId);
     const session = await getStripe().identity.verificationSessions.create({
       type: 'document',
       client_reference_id: userId,
@@ -98,21 +123,24 @@ export async function POST(request: NextRequest) {
       },
       return_url: finalReturnUrl,
     });
+    console.log('[KYC create-session] Created session:', session.id, 'for uid:', userId);
 
     // Immediately set pending + session id in claims (UI shows progress; enables fast resume on next CTA click)
     try {
       await setCustomClaims(userId, { kyc_status: 'pending', kyc_session_id: session.id });
+      console.log('[KYC create-session] Set pending claims for uid:', userId, 'session:', session.id);
     } catch (claimErr: any) {
-      console.warn('KYC create: failed to set pending claim (non-fatal). Verify FIREBASE_SERVICE_ACCOUNT_KEY has identitytoolkit scope + Firebase Auth Admin role:', claimErr.message);
+      console.warn('[KYC create-session] Failed to set pending claim (non-fatal). Verify FIREBASE_SERVICE_ACCOUNT_KEY has identitytoolkit scope + Firebase Auth Admin role:', claimErr.message);
     }
 
     return NextResponse.json({
       session_url: session.url,
       url: session.url,
       session_id: session.id,
+      status: 'pending',
     });
   } catch (error: any) {
-    console.error('KYC session creation error:', error);
+    console.error('[KYC create-session] Unexpected error:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to create KYC session' },
       { status: 500 }

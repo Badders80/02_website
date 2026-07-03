@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -13,7 +13,7 @@ const STATUS_CONFIG: Record<string, { title: string; message: string; color: str
   },
   pending: {
     title: "Verification Pending",
-    message: "Your verification is being reviewed. This usually takes 1-2 minutes in test mode.",
+    message: "Your verification is being reviewed. This can take a few minutes.",
     color: "text-yellow-400",
   },
   requires_input: {
@@ -39,39 +39,103 @@ export default function VerifyPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [polling, setPolling] = useState(false);
+  const [isFromStripe, setIsFromStripe] = useState(false);
+
+  // Use refs to access latest values inside the polling interval without restarting the effect.
+  const kycStatusRef = useRef(kycStatus);
+  kycStatusRef.current = kycStatus;
+  const refreshClaimsRef = useRef(refreshClaims);
+  refreshClaimsRef.current = refreshClaims;
 
   // Poll for status changes after returning from Stripe.
-  // Now always starts on ?from=stripe (even if kycStatus=none, as webhook may be async).
-  // onIdTokenChanged in context + refreshClaims makes kycStatus update live.
+  // Calls the server-side create-session endpoint which performs the authoritative Stripe list + sync,
+  // instead of only refreshing the Firebase token client-side.
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const fromStripe = urlParams.get("from") === "stripe" || document.referrer.includes("stripe.com");
+    setIsFromStripe(fromStripe);
 
-    if (fromStripe && kycStatus !== "verified") {
-      setPolling(true);
-      const interval = setInterval(async () => {
-        try {
-          await refreshClaims();
-        } catch {
-          clearInterval(interval);
-          setPolling(false);
-        }
-      }, 3000);
-
-      // Stop polling after 60 seconds
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
-        setPolling(false);
-      }, 60000);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
+    if (!fromStripe || !user) {
+      setPolling(false);
+      return;
     }
-    // If already verified (or effect re-ran after status change), ensure stopped
-    setPolling(false);
-  }, [user, kycStatus, refreshClaims]);
+
+    if (kycStatusRef.current === "verified") {
+      setPolling(false);
+      return;
+    }
+
+    setPolling(true);
+    console.log("[KYC verify] Starting server-side polling for uid:", user.uid);
+
+    let interval: NodeJS.Timeout | null = null;
+    let timeout: NodeJS.Timeout | null = null;
+
+    const cleanup = () => {
+      if (interval) clearInterval(interval);
+      if (timeout) clearTimeout(timeout);
+      interval = null;
+      timeout = null;
+      setPolling(false);
+    };
+
+    const poll = async () => {
+      if (!user || kycStatusRef.current === "verified") {
+        cleanup();
+        return;
+      }
+
+      try {
+        const token = await user.getIdToken(true);
+        const res = await fetch("/api/kyc/create-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            user_id: user.uid,
+            email: user.email,
+            return_url: `${window.location.origin}/auth/verify?from=stripe`,
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+          console.error("[KYC verify] Poll create-session failed:", err.error || res.status);
+          return;
+        }
+
+        const data = await res.json();
+        console.log("[KYC verify] Poll result:", data);
+
+        if (data.verified) {
+          console.log("[KYC verify] Verified from server-side sync; refreshing claims and redirecting");
+          try { await refreshClaimsRef.current(); } catch {}
+          cleanup();
+          router.push('/mystable');
+          return;
+        }
+
+        // Refresh Firebase token claims in the background so the UI reflects any webhook updates.
+        try { await refreshClaimsRef.current(); } catch {}
+      } catch (err: any) {
+        console.error("[KYC verify] Polling error:", err.message);
+      }
+    };
+
+    // Initial immediate check + interval
+    poll();
+    interval = setInterval(poll, 3000);
+
+    // Stop polling after 60 seconds
+    timeout = setTimeout(() => {
+      console.log("[KYC verify] Polling timeout reached; stopping");
+      cleanup();
+    }, 60000);
+
+    return cleanup;
+  }, [user, router]);
 
   const startKYC = useCallback(async () => {
     if (!user) return;
@@ -98,6 +162,11 @@ export default function VerifyPage() {
         throw new Error(err.error || "Failed to create KYC session");
       }
       const data = await res.json();
+      if (data.verified) {
+        try { await refreshClaims(); } catch {}
+        router.push('/mystable');
+        return;
+      }
       const redirectUrl = data.session_url || data.url;
       if (!redirectUrl) {
         throw new Error("No verification URL returned");
@@ -108,7 +177,7 @@ export default function VerifyPage() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, refreshClaims, router]);
 
   const config = STATUS_CONFIG[kycStatus] || STATUS_CONFIG.none;
   const showStartButton = kycStatus === "none" || kycStatus === "canceled" || kycStatus === "requires_input";
@@ -134,6 +203,27 @@ export default function VerifyPage() {
               <div className="mt-3 flex justify-center">
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-gold border-t-transparent" />
               </div>
+            )}
+            {isFromStripe && kycStatus !== "verified" && (
+              <>
+                <button
+                  onClick={async () => {
+                    setPolling(true);
+                    await refreshClaims();
+                    setTimeout(() => setPolling(false), 3000);
+                  }}
+                  className="mt-2 text-xs text-gold hover:underline"
+                >
+                  Force refresh status
+                </button>
+                <button
+                  onClick={startKYC}
+                  disabled={loading || !user}
+                  className="mt-2 block w-full rounded-full border border-gold/30 px-4 py-1 text-xs font-medium text-gold transition hover:bg-gold/10 disabled:opacity-50"
+                >
+                  {loading ? "Syncing..." : "Sync status from Stripe now (recommended)"}
+                </button>
+              </>
             )}
           </div>
 

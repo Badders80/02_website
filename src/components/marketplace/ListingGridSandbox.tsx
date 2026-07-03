@@ -350,6 +350,7 @@ function InteractiveCard({
           email: user.email || "",
           hlt_id: hltId,
           horse_name: horseName,
+          return_url: `${window.location.origin}/auth/verify?from=stripe`,
         }),
       });
 
@@ -358,9 +359,10 @@ function InteractiveCard({
         throw new Error(err.error || `HTTP ${res.status}`);
       }
 
-      const { url } = await res.json();
-      if (url) {
-        window.location.href = url;
+      const data = await res.json();
+      const redirectUrl = data.session_url || data.url;
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
       } else {
         throw new Error("No verification URL returned");
       }

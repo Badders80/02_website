@@ -12,7 +12,7 @@ const STATUS_CONFIG: Record<string, { title: string; message: string; action: st
   },
   pending: {
     title: "Verification Pending",
-    message: "Your identity verification is being reviewed. This usually takes 1-2 minutes in test mode.",
+    message: "Your identity verification is being reviewed. This usually takes a few minutes.",
     action: "Check Status",
     show: true,
   },
@@ -77,6 +77,10 @@ export function KycBanner() {
       }
 
       const data = await res.json();
+      if (data.verified) {
+        window.location.href = '/mystable';
+        return;
+      }
       const redirectUrl = data.url || data.session_url;
       if (!redirectUrl) {
         throw new Error("No verification URL returned");
@@ -119,4 +123,3 @@ export function KycBanner() {
     </section>
   );
 }
-
