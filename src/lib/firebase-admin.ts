@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin';
-import { getAuth } from 'firebase-admin/auth';
 
 type AdminApp = any;
 
@@ -40,8 +39,9 @@ function getApp(): AdminApp {
 }
 
 export function getAdminAuth() {
-  // firebase-admin v14: use getAuth() from firebase-admin/auth
-  return getAuth(getApp());
+  const a = getApp();
+  // firebase-admin v14: auth() is on the app instance, not the admin namespace
+  return a.auth();
 }
 
 export async function verifyIdToken(idToken: string) {
