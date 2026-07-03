@@ -53,6 +53,7 @@ export function OnboardingFlow({ hasHoldings }: OnboardingFlowProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {STEPS.map((step, idx) => {
           const status = stepStatuses[idx];
+          const hasShimmer = "shimmer" in step && step.shimmer && status !== "complete";
 
           return (
             <div
@@ -99,18 +100,34 @@ export function OnboardingFlow({ hasHoldings }: OnboardingFlowProps) {
                 </p>
               </div>
 
-              {/* CTA button — same font/style as existing marketplace CTA */}
+              {/* CTA button — matches landing page GlowPillButton shimmer style */}
               {status !== "complete" && (
-                <Link
-                  href={step.actionHref}
-                  className={`inline-flex items-center justify-center rounded-full px-6 py-3 text-[11px] font-medium uppercase tracking-widest transition-all duration-200 active:scale-[0.98] ${
-                    "shimmer" in step && step.shimmer
-                      ? "shimmer-cta bg-[#d4a964] text-black hover:bg-[#e0b870]"
-                      : "bg-white text-black hover:bg-white/90"
-                  }`}
-                >
-                  {step.actionLabel} →
-                </Link>
+                <div className={`relative group inline-block ${hasShimmer ? "" : ""}`}>
+                  {/* Breathing glow (same as landing page) */}
+                  {hasShimmer && (
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute -inset-[2px] rounded-full bg-gradient-to-r from-[#d4a964]/10 via-[#d4a964]/25 to-[#d4a964]/10 blur-md opacity-60 transition-opacity duration-500 group-hover:opacity-90"
+                    />
+                  )}
+                  <Link
+                    href={step.actionHref}
+                    className={`relative inline-flex items-center justify-center rounded-full px-6 py-3 text-[11px] font-medium uppercase tracking-widest transition-all duration-300 active:scale-[0.98] overflow-hidden ${
+                      hasShimmer
+                        ? "bg-[#d4a964] text-black hover:scale-105"
+                        : "bg-white text-black hover:bg-white/90"
+                    }`}
+                  >
+                    {/* Shimmer sweep (same as landing page) */}
+                    {hasShimmer && (
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+                      />
+                    )}
+                    <span className="relative z-10">{step.actionLabel} →</span>
+                  </Link>
+                </div>
               )}
             </div>
           );

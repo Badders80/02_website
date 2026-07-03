@@ -299,23 +299,4 @@ body::after {
     mask-composite: exclude;
     pointer-events: none;
   }
-
-  /* Shimmer CTA — catches the eye on the next action step */
-  @keyframes shimmer-slide {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-  .shimmer-cta {
-    background-image: linear-gradient(
-      100deg,
-      #d4a964 0%,
-      #d4a964 38%,
-      #fff8e7 50%,
-      #d4a964 62%,
-      #d4a964 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer-slide 2.5s ease-in-out infinite;
-    box-shadow: 0 0 16px rgba(212, 169, 100, 0.25);
-  }
 }
