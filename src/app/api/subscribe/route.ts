@@ -1,7 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createRequire } from 'module';
 
+const require = createRequire(import.meta.url);
 const SHEET_ID = '1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg';
-const OAUTH_TOKEN = process.env.GOOGLE_OAUTH_TOKEN;
+
+/**
+ * Get a Google OAuth access token using the Firebase service account key.
+ * The service account has been granted Firebase Admin role which includes
+ * access to the Sheets API via the cloud-platform scope.
+ */
+async function getAccessToken(): Promise<string> {
+  const keyJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+  if (!keyJson) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY not configured');
+  }
+
+  const key = JSON.parse(keyJson);
+  const now = Math.floor(Date.now() / 1000);
+  const expiry = now + 3600;
+
+  // Create JWT
+  const header = { alg: 'RS256', typ: 'JWT', kid: key.private_key_id };
+  const payload = {
+    iss: key.client_email,
+    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    aud: 'https://oauth2.googleapis.com/token',
+    exp: expiry,
+    iat: now,
+  };
+
+  // Encode JWT
+  const crypto = require('crypto');
+  const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
+  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const signInput = `${encodedHeader}.${encodedPayload}`;
+
+  const signer = crypto.createSign('RSA-SHA256');
+  signer.update(signInput);
+  const signature = signer.sign(key.private_key, 'base64url');
+
+  const jwt = `${signInput}.${signature}`;
+
+  // Exchange JWT for access token
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt,
+    }),
+  });
+
+  if (!tokenRes.ok) {
+    const err = await tokenRes.text();
+    throw new Error(`Token exchange failed: ${tokenRes.status} ${err}`);
+  }
+
+  const tokenData = await tokenRes.json();
+  return tokenData.access_token;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,28 +68,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    // Basic email validation
     const trimmed = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
-    if (!OAUTH_TOKEN) {
-      console.error('GOOGLE_OAUTH_TOKEN not configured');
+    let accessToken: string;
+    try {
+      accessToken = await getAccessToken();
+    } catch (e: any) {
+      console.error('Failed to get access token:', e.message);
       return NextResponse.json(
         { error: 'Server not configured for email capture' },
         { status: 503 }
       );
     }
 
-    // Append to Google Sheet using the Sheets API directly
+    // Append to Google Sheet — try "Waitlist" tab first, fallback to "Sheet1"
     const range = 'Waitlist!A:B';
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OAUTH_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -44,33 +103,25 @@ export async function POST(request: NextRequest) {
       const errorText = await response.text();
       console.error('Google Sheets API error:', response.status, errorText);
 
-      // If the sheet/tab doesn't exist, try creating it
-      if (response.status === 400 || response.status === 404) {
-        // Fallback: append to the first sheet (Sheet1)
-        const fallbackRange = 'Sheet1!A:B';
-        const fallbackUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(fallbackRange)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-        const fallbackRes = await fetch(fallbackUrl, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${OAUTH_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            values: [['Waitlist', trimmed, new Date().toISOString()]],
-          }),
-        });
+      // Fallback: try Sheet1
+      const fallbackRange = 'Sheet1!A:C';
+      const fallbackUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(fallbackRange)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+      const fallbackRes = await fetch(fallbackUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          values: [['Waitlist', trimmed, new Date().toISOString()]],
+        }),
+      });
 
-        if (!fallbackRes.ok) {
-          const fbError = await fallbackRes.text();
-          console.error('Fallback sheet append also failed:', fallbackRes.status, fbError);
-          return NextResponse.json(
-            { error: 'Failed to save email — sheet configuration issue' },
-            { status: 502 }
-          );
-        }
-      } else {
+      if (!fallbackRes.ok) {
+        const fbError = await fallbackRes.text();
+        console.error('Fallback sheet append also failed:', fallbackRes.status, fbError);
         return NextResponse.json(
-          { error: 'Failed to save email' },
+          { error: 'Failed to save email — sheet configuration issue' },
           { status: 502 }
         );
       }
