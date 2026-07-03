@@ -55,7 +55,10 @@ https://www.evolutionstables.nz/api/auth/callback/google
 ```bash
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
 STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+# Recommended: separate secrets (one per webhook endpoint in Stripe Dashboard)
+STRIPE_KYC_WEBHOOK_SECRET=whsec_...       # for /api/kyc/callback (identity.* events)
+STRIPE_CHECKOUT_WEBHOOK_SECRET=whsec_...  # for /api/checkout/webhook (checkout.* events)
+STRIPE_WEBHOOK_SECRET=whsec_...           # fallback (legacy single secret)
 ```
 
 **Enable Stripe Identity**:
@@ -63,11 +66,15 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 2. Click "Enable Identity"
 3. Complete business verification
 
-**Create Webhook**:
+**Create Webhooks (separate endpoints for KYC vs Checkout)**:
 1. Go to **Developers → Webhooks**
-2. Add endpoint: `https://www.evolutionstables.nz/api/kyc/callback`
-3. Events: `identity.verification_session.*`
-4. Copy signing secret → `STRIPE_WEBHOOK_SECRET`
+2. Add KYC endpoint: `https://www.evolutionstables.nz/api/kyc/callback`
+   - Events: `identity.verification_session.*`
+   - Copy signing secret → Vercel `STRIPE_KYC_WEBHOOK_SECRET`
+3. Add Checkout endpoint: `https://www.evolutionstables.nz/api/checkout/webhook`
+   - Events: `checkout.session.*`
+   - Copy signing secret → Vercel `STRIPE_CHECKOUT_WEBHOOK_SECRET`
+4. (Fallback) If using single secret, set `STRIPE_WEBHOOK_SECRET` (code prefers split names)
 
 ---
 
@@ -133,7 +140,10 @@ GOOGLE_CLIENT_SECRET=<from-google>
 # Stripe
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_<from-stripe>
 STRIPE_SECRET_KEY=sk_live_<from-stripe>
-STRIPE_WEBHOOK_SECRET=whsec_<from-stripe>
+# Separate webhook secrets (create two endpoints in Stripe Dashboard)
+STRIPE_KYC_WEBHOOK_SECRET=whsec_<kyc-from-stripe>
+STRIPE_CHECKOUT_WEBHOOK_SECRET=whsec_<checkout-from-stripe>
+STRIPE_WEBHOOK_SECRET=whsec_<fallback-optional>
 
 # Google Sheets
 GOOGLE_SHEETS_WEB_APP_URL=<from-apps-script>

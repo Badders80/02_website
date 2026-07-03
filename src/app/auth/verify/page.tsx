@@ -35,26 +35,24 @@ const STATUS_CONFIG: Record<string, { title: string; message: string; color: str
 
 export default function VerifyPage() {
   const router = useRouter();
-  const { user, kycStatus, loading: authLoading } = useAuth();
+  const { user, kycStatus, loading: authLoading, refreshClaims } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [polling, setPolling] = useState(false);
 
-  // Poll for status changes after returning from Stripe
+  // Poll for status changes after returning from Stripe.
+  // Now always starts on ?from=stripe (even if kycStatus=none, as webhook may be async).
+  // onIdTokenChanged in context + refreshClaims makes kycStatus update live.
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const fromStripe = urlParams.get("from") === "stripe" || document.referrer.includes("stripe.com");
 
-    if (fromStripe && kycStatus !== "verified" && kycStatus !== "none") {
+    if (fromStripe && kycStatus !== "verified") {
       setPolling(true);
       const interval = setInterval(async () => {
         try {
-          // Force token refresh to get updated claims
-          if (user) {
-            await user.getIdToken(true);
-          }
+          await refreshClaims();
         } catch {
-          // Token refresh failed, stop polling
           clearInterval(interval);
           setPolling(false);
         }
@@ -71,7 +69,9 @@ export default function VerifyPage() {
         clearTimeout(timeout);
       };
     }
-  }, [user, kycStatus]);
+    // If already verified (or effect re-ran after status change), ensure stopped
+    setPolling(false);
+  }, [user, kycStatus, refreshClaims]);
 
   const startKYC = useCallback(async () => {
     if (!user) return;
@@ -86,15 +86,23 @@ export default function VerifyPage() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ user_id: user.uid, email: user.email }),
+        body: JSON.stringify({
+          user_id: user.uid,
+          email: user.email,
+          return_url: `${window.location.origin}/auth/verify?from=stripe`,
+        }),
       });
 
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Failed to create KYC session");
       }
-      const { url } = await res.json();
-      window.location.href = url;
+      const data = await res.json();
+      const redirectUrl = data.session_url || data.url;
+      if (!redirectUrl) {
+        throw new Error("No verification URL returned");
+      }
+      window.location.href = redirectUrl;
     } catch (err: any) {
       setError(err.message);
     } finally {

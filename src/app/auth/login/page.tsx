@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
@@ -12,10 +12,13 @@ import { LOGOS } from "@/lib/assets";
 
 
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signIn, signUp, user } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+
+  const getRedirectTarget = () => searchParams.get("redirect") || "/mystable";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,21 +32,21 @@ export default function LoginPage() {
     getRedirectResult(auth)
       .then((result) => {
         if (result?.user) {
-          router.push("/mystable");
+          router.push(getRedirectTarget());
         }
       })
       .catch((err) => {
         console.error("[Google Redirect Sign-In] Error:", err);
         setError(err.message || "Google sign-in failed.");
       });
-  }, [router]);
+  }, [router, searchParams]);
 
-  // If user is already signed in, push to mystable
+  // If user is already signed in (e.g. persisted), redirect respecting ?redirect (from KYC CTA etc)
   useEffect(() => {
     if (user) {
-      router.push("/mystable");
+      router.push(getRedirectTarget());
     }
-  }, [user, router]);
+  }, [user, router, searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +59,7 @@ export default function LoginPage() {
       } else {
         await signUp(email, password);
       }
-      router.push("/mystable");
+      router.push(getRedirectTarget());
     } catch (err: any) {
       setError(err.message || "Authentication failed");
     } finally {
@@ -78,7 +81,7 @@ export default function LoginPage() {
       try {
         console.log("[Google Sign-In] Attempting popup auth...");
         await signInWithPopup(auth, provider);
-        router.push("/mystable");
+        router.push(getRedirectTarget());
       } catch (popupErr: any) {
         // If popup is blocked, cancelled, or closed, fallback to redirect immediately
         if (
@@ -245,6 +248,15 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
       </div>
     </div>
+  );
+}
+
+// Wrapper required by Next.js for useSearchParams() (avoids prerender bailout / suspense boundary error)
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-black text-white">Loading login...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
 

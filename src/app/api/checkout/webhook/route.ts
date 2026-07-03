@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 
-const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
+const WEBHOOK_SECRET = process.env.STRIPE_CHECKOUT_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '';
 const SHEETS_WEB_APP_URL = process.env.GOOGLE_SHEETS_WEB_APP_URL || '';
 
 export async function POST(request: NextRequest) {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (!WEBHOOK_SECRET) {
       return NextResponse.json(
-        { error: 'STRIPE_WEBHOOK_SECRET not configured' },
+        { error: 'STRIPE_CHECKOUT_WEBHOOK_SECRET (or STRIPE_WEBHOOK_SECRET) not configured' },
         { status: 500 }
       );
     }

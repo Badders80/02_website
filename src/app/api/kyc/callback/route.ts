@@ -3,7 +3,7 @@ import type Stripe from 'stripe';
 import { setCustomClaims } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
 
-const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
+const WEBHOOK_SECRET = process.env.STRIPE_KYC_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (!WEBHOOK_SECRET) {
       return NextResponse.json(
-        { error: 'STRIPE_WEBHOOK_SECRET not configured' },
+        { error: 'STRIPE_KYC_WEBHOOK_SECRET (or STRIPE_WEBHOOK_SECRET) not configured' },
         { status: 500 }
       );
     }
@@ -40,20 +40,24 @@ export async function POST(request: NextRequest) {
           await setCustomClaims(uid, { kyc_status: 'verified', role: 'investor' });
           console.log('KYC verified + claims set for user:', uid);
         } else if (event.type === 'identity.verification_session.requires_input') {
-          await setCustomClaims(uid, { kyc_status: 'requires_input' });
+          await setCustomClaims(uid, { kyc_status: 'requires_input', kyc_session_id: session.id });
           console.log('KYC requires_input + claims set for user:', uid);
         } else if (event.type === 'identity.verification_session.canceled') {
           await setCustomClaims(uid, { kyc_status: 'canceled' });
           console.log('KYC canceled + claims set for user:', uid);
+        } else if (event.type === 'identity.verification_session.processing' || event.type === 'identity.verification_session.created') {
+          await setCustomClaims(uid, { kyc_status: 'pending', kyc_session_id: session.id });
+          console.log(`KYC ${event.type} + claims set for user:`, uid);
         }
       } catch (claimErr: any) {
-        console.error('Failed to set KYC claims (admin key missing?):', claimErr.message);
+        console.error('Failed to set KYC claims. Verify the service account key (FIREBASE_SERVICE_ACCOUNT_KEY) has permission for identitytoolkit.googleapis.com (Firebase Authentication Admin role) and the identitytoolkit API is enabled:', claimErr.message);
       }
     } else {
       console.warn('KYC webhook event missing user_id in metadata');
     }
 
-    if (!['identity.verification_session.verified', 'identity.verification_session.requires_input', 'identity.verification_session.canceled'].includes(event.type)) {
+    const handled = ['identity.verification_session.verified', 'identity.verification_session.requires_input', 'identity.verification_session.canceled', 'identity.verification_session.processing', 'identity.verification_session.created'];
+    if (!handled.includes(event.type)) {
       console.log(`Unhandled KYC event type: ${event.type}`);
     }
 

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   onAuthStateChanged,
+  onIdTokenChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
@@ -19,6 +20,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshClaims: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -68,16 +70,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
       return;
     }
-    const unsub = onAuthStateChanged(auth, async (u) => {
+
+    // onAuthStateChanged for sign-in/out + initial claims
+    const unsubAuth = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
         const token = await u.getIdTokenResult(true);
         setRole((token.claims.role as string) || "viewer");
         setKycStatus((token.claims.kyc_status as string) || "none");
+      } else {
+        setRole("viewer");
+        setKycStatus("none");
       }
       setLoading(false);
     });
-    return () => unsub();
+
+    // onIdTokenChanged: keeps claims (role/kycStatus) reactive on any token refresh
+    // (polling getIdToken(true), background refresh, etc). Critical for post-webhook UX.
+    const unsubToken = onIdTokenChanged(auth, async (u) => {
+      if (u) {
+        const token = await u.getIdTokenResult();
+        setRole((token.claims.role as string) || "viewer");
+        setKycStatus((token.claims.kyc_status as string) || "none");
+      }
+    });
+
+    return () => {
+      unsubAuth();
+      unsubToken();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -160,6 +181,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await firebaseSignOut(auth);
   };
 
+  const refreshClaims = async () => {
+    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    if (isBypass) {
+      // bypass already static; nothing to refresh
+      return;
+    }
+    if (!user || !isAuthInitialized()) return;
+    try {
+      const token = await user.getIdTokenResult(true);
+      setRole((token.claims.role as string) || "viewer");
+      setKycStatus((token.claims.kyc_status as string) || "none");
+    } catch (e) {
+      console.error("refreshClaims error:", e);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -171,6 +208,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn,
         signUp,
         signOut,
+        refreshClaims,
       }}
     >
       {children}
