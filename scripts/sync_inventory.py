@@ -1,367 +1,421 @@
 #!/usr/bin/env python3
 """
-sync_inventory.py — Replay script: reads Google Sheets, writes src/data/*.json
+sync_inventory.py — SSOT → Website JSON sync
+
+Reads canonical data from SSOT_Build/data/ and generates website src/data/*.json.
+Merges with existing website JSON to preserve website-only fields (story, image_path,
+wins, placed, next_up, shares_sold) that aren't in SSOT.
 
 Usage:
-    python scripts/sync_inventory.py                    # sync all sheets
-    python scripts/sync_inventory.py --sheet horses     # sync one sheet
-    python scripts/sync_inventory.py --seed              # seed from existing mock data
+    python3 scripts/sync_inventory.py          # sync from SSOT
+    python3 scripts/sync_inventory.py --seed    # legacy seed (hardcoded mock data)
 
-The script exports each Google Sheet as CSV, transforms to JSON,
-and writes to src/data/. The site reads these at build time.
-
-Sheet IDs are configured in scripts/sheets_config.json.
-If no config exists, use --seed to generate initial JSON from existing mock data.
+Data flow:
+    SSOT_Build/data/horses/*.json   → src/data/horses.json
+    SSOT_Build/data/hlt/LSE-*.json  → src/data/hlts.json (merged with leases/)
+    SSOT_Build/data/trainers/*.json → src/data/trainers.json
+    SSOT_Build/data/owners/*.json   → src/data/owners.json
 """
 
 import argparse
-import csv
 import json
 import os
 import sys
-import urllib.request
 from pathlib import Path
-from datetime import datetime
 
 # Paths
 SCRIPT_DIR = Path(__file__).parent
 WEBSITE_DIR = SCRIPT_DIR.parent
 DATA_DIR = WEBSITE_DIR / "src" / "data"
-CONFIG_FILE = SCRIPT_DIR / "sheets_config.json"
+SSOT_DIR = Path("/home/evo/workspace/projects/SSOT_Build/data")
 
 # Ensure data dir exists
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def load_config():
-    """Load sheet IDs from config file."""
-    if not CONFIG_FILE.exists():
-        return None
-    with open(CONFIG_FILE) as f:
+def load_json(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def fetch_sheet_csv(sheet_id, gid="0"):
-    """Fetch a Google Sheet as CSV."""
-    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
-    response = urllib.request.urlopen(url)
-    data = response.read().decode("utf-8")
-    return data
+def load_json_list(glob_pattern: str, base_dir: Path) -> list[dict]:
+    """Load all JSON files matching glob pattern from base_dir, sorted."""
+    results = []
+    for f in sorted(base_dir.glob(glob_pattern)):
+        results.append(load_json(f))
+    return results
 
 
-def csv_to_json(csv_text):
-    """Convert CSV text to list of dicts."""
-    reader = csv.DictReader(csv_text.splitlines())
-    return list(reader)
-
-
-def write_json(filename, data):
-    """Write JSON to src/data/."""
+def load_existing_website_json(filename: str) -> list[dict]:
+    """Load existing website JSON for merging website-only fields."""
     path = DATA_DIR / filename
-    with open(path, "w") as f:
+    if not path.exists():
+        return []
+    return load_json(path)
+
+
+def write_json(filename: str, data: list[dict]) -> None:
+    path = DATA_DIR / filename
+    with path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     print(f"  ✅ {path.name} — {len(data)} records")
 
 
-def sync_from_sheets(config):
-    """Sync all sheets from Google Sheets."""
-    sheets = config.get("sheets", {})
-    for name, sheet_info in sheets.items():
-        sheet_id = sheet_info["id"]
-        gid = sheet_info.get("gid", "0")
-        print(f"Syncing {name}...")
-        try:
-            csv_text = fetch_sheet_csv(sheet_id, gid)
-            records = csv_to_json(csv_text)
-            write_json(f"{name}.json", records)
-        except Exception as e:
-            print(f"  ❌ {name}: {e}")
+# ─── Horse sync ───────────────────────────────────────────────────────────────
+
+# Slug mapping: SSOT horse_name → website slug (for URL stability)
+HORSE_SLUG_MAP = {
+    "Prudentia": "prudentia",
+    "First Gear": "first-gear",
+    "Hottathanafantasy": "hottathanafantasy",
+    "I Stole A Manolo": "i-stole-a-manolo",
+    "Nellie": "nellie",
+    "TLM x Yearn": "tlm-x-yearn",
+}
 
 
-def seed_horses():
-    """Seed horses.json from existing HORSES.csv + marketplace mock data."""
-    horses = [
-        {
-            "id": "prudentia",
-            "name": "Prudentia",
-            "name_slug": "prudentia",
-            "microchip": "985125000126462",
-            "life_number": "NZ00427416",
-            "loveracing_id": 427416,
-            "foaling_date": "2021-11-01",
-            "sex": "mare",
-            "colour": "Bay",
-            "sire_name": "Proisir (AUS) 2009",
-            "dam_name": "Little Bit Irish (NZ) 2012",
-            "breeder": "Goldeye Trust",
-            "status": "active",
-            "image_path": "/images/content/stables/prudentia-action.png",
-            "story": "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
-            "trainer_name": "Lance O'Sullivan & Andrew Scott",
-            "trainer_stable": "Wexford Stables",
-            "trainer_location": "Matamata, NZ",
-            "stats": {"wins": "2", "placed": "4", "next_up": "23 June"},
-        },
-        {
-            "id": "hottathanafantasy",
-            "name": "Hottathanafantasy",
-            "name_slug": "hottathanafantasy",
-            "microchip": "985125000139165",
-            "life_number": "NZ00452052",
-            "loveracing_id": 452052,
-            "foaling_date": "2022-11-01",
-            "sex": "filly",
-            "colour": "Bay",
-            "sire_name": "Contributer",
-            "dam_name": "Whiffle",
-            "breeder": "Goldeye Trust",
-            "status": "active",
-            "image_path": "/images/content/horses/Hottathan-BG.png",
-            "story": "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
-            "trainer_name": "Lance O'Sullivan & Andrew Scott",
-            "trainer_stable": "Wexford Stables",
-            "trainer_location": "Matamata, NZ",
-            "stats": {"wins": "0", "placed": "0", "next_up": "TBD"},
-        },
-        {
-            "id": "first-gear",
-            "name": "First Gear",
-            "name_slug": "first-gear",
-            "microchip": "985125000126713",
-            "life_number": "NZ00428364",
-            "loveracing_id": 428364,
-            "foaling_date": "2020-11-01",
-            "sex": "gelding",
-            "colour": "Bay",
-            "sire_name": "Derryn",
-            "dam_name": "A'Guin Ace",
-            "breeder": "Stephen Grey Racing",
-            "status": "active",
-            "image_path": "/images/content/horses/FirstGear-BG.png",
-            "story": "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
-            "trainer_name": "Stephen Gray",
-            "trainer_stable": "Stephen Gray Racing",
-            "trainer_location": "Palmerston North, NZ",
-            "stats": {"wins": "0", "placed": "0", "next_up": "TBD"},
-        },
-        {
-            "id": "i-stole-a-manolo",
-            "name": "I Stole A Manolo",
-            "name_slug": "i-stole-a-manolo",
-            "microchip": "985125000139219",
-            "life_number": "NZ00451442",
-            "loveracing_id": 451442,
-            "foaling_date": "2022-11-01",
-            "sex": "filly",
-            "colour": "Grey",
-            "sire_name": "Satono Aladdin",
-            "dam_name": "Canuhandleajandal",
-            "breeder": "Goldeye Trust",
-            "status": "active",
-            "image_path": "/images/content/horses/IStole-BG.png",
-            "story": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
-            "trainer_name": "Lance O'Sullivan & Andrew Scott",
-            "trainer_stable": "Wexford Stables",
-            "trainer_location": "Matamata, NZ",
-            "stats": {"wins": "0", "placed": "0", "next_up": "Trial (Sep)"},
-        },
-    ]
-    write_json("horses.json", horses)
+def sync_horses() -> list[dict]:
+    """Sync horses from SSOT → src/data/horses.json."""
+    print("Syncing horses...")
+    ssot_horses = load_json_list("*.json", SSOT_DIR / "horses")
+    existing = load_existing_website_json("horses.json")
+    existing_map = {h.get("slug") or h.get("name_slug") or h.get("id", ""): h for h in existing}
+
+    # Load trainers for trainer info
+    trainers = load_json_list("*.json", SSOT_DIR / "trainers")
+    trainer_map = {}
+    for t in trainers:
+        slug = t.get("_meta", {}).get("description", "").lower().replace(" ", "-")
+        # Use trainer_id as key
+        tid = t.get("trainer_id", "")
+        if tid:
+            trainer_map[tid] = t
+        # Also map by trainer_slug (filename)
+        trainer_map[t.get("trainer_name", "").lower()] = t
+
+    results = []
+    for ssot_h in ssot_horses:
+        identity = ssot_h.get("identity", {})
+        pedigree = ssot_h.get("pedigree", {})
+        horse_name = identity.get("horse_name", "")
+        slug = HORSE_SLUG_MAP.get(horse_name, horse_name.lower().replace(" ", "-"))
+
+        # Get trainer info from trainer_slug
+        trainer_slug = ssot_h.get("trainer_slug")
+        trainer = None
+        if trainer_slug:
+            trainer_path = SSOT_DIR / "trainers" / f"{trainer_slug}.json"
+            if trainer_path.exists():
+                trainer = load_json(trainer_path)
+
+        # Merge with existing website data for website-only fields
+        existing_h = existing_map.get(slug, {})
+
+        # Determine display name
+        if identity.get("identity_status") == "unregistered":
+            display_name = identity.get("display_name") or identity.get("sire_x_dam") or horse_name
+        else:
+            display_name = horse_name
+
+        # Trainer display: stable_name is public-facing, contact_name is the people
+        trainer_name = ""
+        trainer_stable = ""
+        trainer_location = ""
+        trainer_contact_name = ""
+        if trainer:
+            # For Stephen Gray: public-facing is "Stephen Gray Racing", NOT "Copper Belt Lodge"
+            if "stephen-gray" in (trainer_slug or "").lower():
+                trainer_stable = "Stephen Gray Racing"
+                trainer_name = trainer_stable
+                trainer_location = "Palmerston North NZ"
+            else:
+                trainer_stable = trainer.get("stable_name", trainer.get("trainer_name", ""))
+                trainer_name = trainer_stable
+                trainer_location = trainer.get("location", "").replace(", New Zealand", " NZ").replace(", NZ", " NZ")
+            trainer_contact_name = trainer.get("contact_name", "")
+
+        # Fallback to existing website data if SSOT didn't provide trainer
+        if not trainer_name:
+            trainer_name = existing_h.get("trainer_name", "")
+            trainer_stable = existing_h.get("trainer_stable", "")
+            trainer_location = existing_h.get("trainer_location", "")
+
+        horse = {
+            "name": horse_name,
+            "display_name": display_name,
+            "slug": slug,
+            "microchip": identity.get("microchip_number") or "",
+            "life_number": identity.get("nztr_life_number") or "",
+            "loveracing_id": str(identity.get("loveracing_id") or "") if identity.get("loveracing_id") is not None else "",
+            "foaling_date": identity.get("foaling_date") or "",
+            "sex": (identity.get("sex") or "").lower(),
+            "colour": identity.get("colour") or existing_h.get("colour", ""),
+            "sire_name": pedigree.get("sire_name") or existing_h.get("sire_name", ""),
+            "dam_name": pedigree.get("dam_name") or existing_h.get("dam_name", ""),
+            "breeder": existing_h.get("breeder", ""),
+            "status": "active" if identity.get("horse_status") == "active" else existing_h.get("status", "active"),
+            "image_path": existing_h.get("image_path", f"/images/content/horses/{slug}.png"),
+            "story": existing_h.get("story", ""),
+            "trainer_name": trainer_name or existing_h.get("trainer_name", ""),
+            "trainer_stable": trainer_stable or existing_h.get("trainer_stable", ""),
+            "trainer_location": trainer_location or existing_h.get("trainer_location", ""),
+            "trainer_contact_name": trainer_contact_name or existing_h.get("trainer_contact_name", ""),
+            "wins": existing_h.get("wins", "0"),
+            "placed": existing_h.get("placed", "0"),
+            "next_up": existing_h.get("next_up", "TBD"),
+            "breeding_url": identity.get("breeding_url"),
+            "performance_profile_url": identity.get("performance_profile_url"),
+            "identity_status": identity.get("identity_status", "verified"),
+        }
+        results.append(horse)
+
+    write_json("horses.json", results)
+    return results
 
 
-def seed_hlts():
-    """Seed hlts.json from marketplace mock data."""
-    hlts = [
-        {
-            "id": "hlt-prudentia",
-            "horse_microchip": "985125000126462",
-            "horse_name": "Prudentia",
-            "horse_slug": "prudentia",
-            "owner_name": "B.A.X Bloodstock",
-            "trainer_name": "Lance O'Sullivan & Andrew Scott",
-            "trainer_stable": "Wexford Stables",
-            "trainer_location": "Matamata, NZ",
-            "lease_period_months": 36,
-            "lease_start_date": "2024-12-01",
-            "leasehold_stake_pct": 100,
-            "investor_return_pct": 80,
-            "syndicate_price_nzd": 150000,
-            "shares_total": 100,
-            "shares_sold": 23,
-            "price_per_share_nzd": 1500,
-            "listing_status": "active",
-            "marketplace_visible": True,
-            "image_path": "/images/content/stables/prudentia-action.png",
-            "story": "An exciting filly that has already returned returns to investors. Much more to come from her this winter.",
-            "pedigree": "Mare / Bay / Proisir (AUS) x Little Bit Irish (NZ)",
-            "stats": {"wins": "2", "placed": "4", "next_up": "23 June"},
-        },
-        {
-            "id": "hlt-hottathanafantasy",
-            "horse_microchip": "985125000139165",
-            "horse_name": "Hottathanafantasy",
-            "horse_slug": "hottathanafantasy",
-            "owner_name": "B.A.X Bloodstock",
-            "trainer_name": "Lance O'Sullivan & Andrew Scott",
-            "trainer_stable": "Wexford Stables",
-            "trainer_location": "Matamata, NZ",
-            "lease_period_months": 36,
-            "lease_start_date": "2025-06-01",
-            "leasehold_stake_pct": 100,
-            "investor_return_pct": 80,
-            "syndicate_price_nzd": 150000,
-            "shares_total": 100,
-            "shares_sold": 0,
-            "price_per_share_nzd": 1500,
-            "listing_status": "draft",
-            "marketplace_visible": False,
-            "image_path": "/images/content/horses/Hottathan-BG.png",
-            "story": "An elite international pedigree showing immense maturity in pre-training. A sharp sprinter in the making.",
-            "pedigree": "Filly / Bay / Contributer x Whiffle",
-            "stats": {"wins": "0", "placed": "0", "next_up": "TBD"},
-        },
-        {
-            "id": "hlt-first-gear",
-            "horse_microchip": "985125000126713",
-            "horse_name": "First Gear",
-            "horse_slug": "first-gear",
-            "owner_name": "Stephen Grey Racing",
-            "trainer_name": "Stephen Gray",
-            "trainer_stable": "Stephen Gray Racing",
-            "trainer_location": "Palmerston North, NZ",
-            "lease_period_months": 36,
-            "lease_start_date": "2025-06-01",
-            "leasehold_stake_pct": 100,
-            "investor_return_pct": 80,
-            "syndicate_price_nzd": 150000,
-            "shares_total": 100,
-            "shares_sold": 0,
-            "price_per_share_nzd": 1500,
-            "listing_status": "draft",
-            "marketplace_visible": False,
-            "image_path": "/images/content/horses/FirstGear-BG.png",
-            "story": "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
-            "pedigree": "Gelding / Bay / Derryn x A'Guin Ace",
-            "stats": {"wins": "0", "placed": "0", "next_up": "TBD"},
-        },
-        {
-            "id": "hlt-i-stole-a-manolo",
-            "horse_microchip": "985125000139219",
-            "horse_name": "I Stole A Manolo",
-            "horse_slug": "i-stole-a-manolo",
-            "owner_name": "B.A.X Bloodstock",
-            "trainer_name": "Lance O'Sullivan & Andrew Scott",
-            "trainer_stable": "Wexford Stables",
-            "trainer_location": "Matamata, NZ",
-            "lease_period_months": 36,
-            "lease_start_date": "2025-06-01",
-            "leasehold_stake_pct": 100,
-            "investor_return_pct": 80,
-            "syndicate_price_nzd": 150000,
-            "shares_total": 100,
-            "shares_sold": 0,
-            "price_per_share_nzd": 1500,
-            "listing_status": "draft",
-            "marketplace_visible": False,
-            "image_path": "/images/content/horses/IStole-BG.png",
-            "story": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
-            "pedigree": "Filly / Grey / Satono Aladdin x Canuhandleajandal",
-            "stats": {"wins": "0", "placed": "0", "next_up": "Trial (Sep)"},
-        },
-    ]
-    write_json("hlts.json", hlts)
+# ─── HLT sync ──────────────────────────────────────────────────────────────────
+
+def sync_hlts(horses: list[dict]) -> list[dict]:
+    """Sync HLTs from SSOT → src/data/hlts.json."""
+    print("Syncing HLTs...")
+    ssot_hlts = load_json_list("LSE-*.json", SSOT_DIR / "hlt")
+    ssot_leases = load_json_list("LSE-*.json", SSOT_DIR / "leases")
+    lease_map = {l.get("lease_id"): l for l in ssot_leases}
+
+    existing = load_existing_website_json("hlts.json")
+    existing_map = {}
+    for h in existing:
+        slug = h.get("horse_slug") or h.get("id", "")
+        existing_map[slug] = h
+
+    # Build microchip → horse slug map
+    microchip_to_slug = {}
+    slug_to_horse = {}
+    for h in horses:
+        if h.get("microchip"):
+            microchip_to_slug[h["microchip"]] = h["slug"]
+        slug_to_horse[h["slug"]] = h
+
+    # Load trainers for display mapping
+    trainers = load_json_list("*.json", SSOT_DIR / "trainers")
+    trainer_by_id = {}
+    for t in trainers:
+        tid = t.get("trainer_id", "")
+        if tid:
+            trainer_by_id[tid] = t
+
+    results = []
+    for ssot_hlt in ssot_hlts:
+        lease_id = ssot_hlt.get("lease_id", "")
+        horse_microchip = ssot_hlt.get("horse_microchip", "")
+        horse_slug = microchip_to_slug.get(horse_microchip, "")
+        horse_name = ssot_hlt.get("horse_name", "")
+        horse = slug_to_horse.get(horse_slug, {})
+
+        # Get lease pricing
+        lease = lease_map.get(lease_id, {})
+
+        # Trainer display
+        trainer_id = ssot_hlt.get("trainer_id", "")
+        trainer = trainer_by_id.get(trainer_id, {})
+        if "stephen-gray" in f"{trainer.get('trainer_name', '')} {trainer_id}".lower().replace(" ", "-"):
+            trainer_stable = "Stephen Gray Racing"
+            trainer_location = "Palmerston North NZ"
+            trainer_name = trainer_stable
+        else:
+            trainer_stable = ssot_hlt.get("stable_name", trainer.get("stable_name", ""))
+            trainer_location = horse.get("trainer_location", "")
+            trainer_name = trainer.get("stable_name", ssot_hlt.get("trainer_name", ""))
+
+        # Merge with existing for website-only fields
+        existing_hlt = existing_map.get(horse_slug, {})
+
+        # Determine listing status
+        hlt_status = ssot_hlt.get("status", "draft")
+        listing_status = "active" if hlt_status in ("complete", "published") else "draft"
+        # Override: keep active if existing was active or shares already sold
+        if existing_hlt.get("listing_status") == "active" or int(existing_hlt.get("shares_sold") or 0) > 0:
+            listing_status = "active"
+        marketplace_visible = listing_status == "active"
+
+        # Shares: preserve from existing for website-only fields
+        shares_total = int(ssot_hlt.get("num_tokens") or existing_hlt.get("shares_total") or 100)
+        shares_sold = int(existing_hlt.get("shares_sold") or 0)
+        # Prudentia correction: fully subscribed
+        if horse_slug == "prudentia":
+            shares_sold = shares_total  # Fully sold out
+
+        # Pricing from lease
+        price_per_share = float(lease.get("token_price_nzd") or ssot_hlt.get("token_price_nzd") or existing_hlt.get("price_per_share_nzd") or 0)
+
+        # Lease terms
+        leasehold_stake = float(ssot_hlt.get("percentage_leased") or lease.get("percent_leased") or 0)
+        investor_return = int(ssot_hlt.get("investor_stakes_split") or lease.get("investor_share_percent") or 0)
+        lease_months = int(ssot_hlt.get("lease_length_months") or lease.get("duration_months") or 0)
+        lease_start = ssot_hlt.get("lease_start_date") or lease.get("start_date") or ""
+        lease_end = ssot_hlt.get("lease_end_date") or lease.get("end_date") or ""
+
+        hlt = {
+            "id": f"hlt-{horse_slug}",
+            "horse_slug": horse_slug,
+            "horse_name": horse.get("display_name", horse_name),
+            "horse_microchip": horse_microchip,
+            "owner_name": ssot_hlt.get("owner_name", ""),
+            "owner_id": ssot_hlt.get("owner_id", ""),
+            "trainer_name": horse.get("trainer_name", ""),
+            "trainer_stable": trainer_stable,
+            "trainer_location": trainer_location,
+            "trainer_id": trainer_id,
+            "lease_period_months": lease_months,
+            "lease_start_date": lease_start,
+            "lease_end_date": lease_end,
+            "leasehold_stake_pct": leasehold_stake,
+            "investor_return_pct": investor_return,
+            "shares_total": shares_total,
+            "shares_sold": shares_sold,
+            "price_per_share_nzd": price_per_share,
+            "listing_status": listing_status,
+            "marketplace_visible": marketplace_visible,
+            "image_path": horse.get("image_path", existing_hlt.get("image_path", "")),
+            "story": horse.get("story", existing_hlt.get("story", "")),
+            "pedigree": existing_hlt.get("pedigree", f"{horse.get('sex', '')} / {horse.get('colour', '')} / {horse.get('sire_name', '')} x {horse.get('dam_name', '')}"),
+            "wins": horse.get("wins", "0"),
+            "placed": horse.get("placed", "0"),
+            "next_up": horse.get("next_up", "TBD"),
+        }
+        results.append(hlt)
+
+    # Add unregistered horses (Nellie, TLM x Yearn) as draft HLTs from existing data
+    for slug, existing_hlt in existing_map.items():
+        if slug not in [r["horse_slug"] for r in results]:
+            # Preserve existing entry for horses without SSOT HLT records
+            hlt = dict(existing_hlt)
+            hlt["id"] = hlt.get("id") or f"hlt-{slug}"
+            hlt["horse_name"] = (slug_to_horse.get(slug, {}) or {}).get("display_name", hlt.get("horse_name", ""))
+            hlt["horse_microchip"] = (slug_to_horse.get(slug, {}) or {}).get("microchip", hlt.get("horse_microchip", ""))
+            hlt["trainer_name"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_name", hlt.get("trainer_name", ""))
+            hlt["trainer_stable"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_stable", hlt.get("trainer_stable", ""))
+            hlt["trainer_location"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_location", hlt.get("trainer_location", ""))
+            # Coerce number fields
+            for num_field in ["lease_period_months", "leasehold_stake_pct", "investor_return_pct", "shares_total", "shares_sold", "price_per_share_nzd"]:
+                val = hlt.get(num_field)
+                if val is not None:
+                    try:
+                        hlt[num_field] = float(val)
+                    except (ValueError, TypeError):
+                        hlt[num_field] = 0
+            hlt.pop("syndicate_price_nzd", None)
+            hlt["listing_status"] = "draft"
+            hlt["marketplace_visible"] = False
+            results.append(hlt)
+
+    write_json("hlts.json", results)
+    return results
 
 
-def seed_trainers():
-    """Seed trainers.json."""
-    trainers = [
-        {
-            "id": "trainer-sam-spratt",
-            "name": "Lance O'Sullivan & Andrew Scott",
-            "stable_name": "Wexford Stables",
-            "location": "Matamata, NZ",
-            "email": "",
-        },
-        {
-            "id": "trainer-stephen-gray",
-            "name": "Stephen Gray",
-            "stable_name": "Stephen Gray Racing",
-            "location": "Palmerston North, NZ",
-            "email": "",
-        },
-    ]
-    write_json("trainers.json", trainers)
+# ─── Trainer sync ──────────────────────────────────────────────────────────────
+
+def sync_trainers() -> list[dict]:
+    """Sync trainers from SSOT → src/data/trainers.json."""
+    print("Syncing trainers...")
+    ssot_trainers = load_json_list("*.json", SSOT_DIR / "trainers")
+
+    results = []
+    for t in ssot_trainers:
+        social = t.get("social_links", {})
+
+        # Public-facing stable name: Stephen Gray Racing, NOT Copper Belt Lodge
+        stable_name = t.get("stable_name", "")
+        if "copper belt" in stable_name.lower():
+            stable_name = "Stephen Gray Racing"
+
+        location = t.get("location", "").replace(", New Zealand", " NZ").replace(", NZ", " NZ")
+        if "copper belt" in (t.get("stable_name", "") + t.get("trainer_name", "")).lower():
+            location = "Palmerston North NZ"
+
+        trainer = {
+            "id": t.get("trainer_id", ""),
+            "name": t.get("trainer_name", ""),
+            "stable_name": stable_name,
+            "contact_name": t.get("contact_name", ""),
+            "location": location,
+            "bio": t.get("bio", ""),
+            "website": t.get("website", ""),
+            "x_url": social.get("x_url", ""),
+            "instagram_url": social.get("instagram_url", ""),
+            "facebook_url": social.get("facebook_url", ""),
+            "notable_wins": t.get("notable_wins", []),
+            "email": t.get("email", ""),
+            "phone": t.get("phone", ""),
+        }
+        results.append(trainer)
+
+    write_json("trainers.json", results)
+    return results
 
 
-def seed_owners():
-    """Seed owners.json."""
-    owners = [
-        {
-            "id": "owner-goldeye-trust",
-            "name": "B.A.X Bloodstock",
-            "email": "",
-            "type": "syndicate",
-        },
-        {
-            "id": "owner-mw-rose",
-            "name": "Stephen Grey Racing",
-            "email": "",
-            "type": "individual",
-        },
-    ]
-    write_json("owners.json", owners)
+# ─── Owner sync ────────────────────────────────────────────────────────────────
+
+def sync_owners() -> list[dict]:
+    """Sync owners from SSOT → src/data/owners.json."""
+    print("Syncing owners...")
+    ssot_owners = load_json_list("OWN-*.json", SSOT_DIR / "owners")
+
+    results = []
+    for o in ssot_owners:
+        owner = {
+            "id": o.get("owner_id", ""),
+            "name": o.get("owner_name", ""),
+            "entity_type": o.get("entity_type", ""),
+            "contact_name": o.get("contact_name", ""),
+            "email": o.get("email", ""),
+            "phone": o.get("phone", ""),
+            "website": o.get("website", ""),
+            "x_url": o.get("x_url", ""),
+            "instagram_url": o.get("instagram_url", ""),
+            "facebook_url": o.get("facebook_url", ""),
+        }
+        results.append(owner)
+
+    write_json("owners.json", results)
+    return results
 
 
-def seed_holdings():
-    """Seed holdings.json — empty for now (no active investors in sheet yet)."""
-    holdings = []
-    write_json("holdings.json", holdings)
+# ─── Main ──────────────────────────────────────────────────────────────────────
+
+def sync_all():
+    """Sync all data from SSOT → website."""
+    print("🔄 Syncing from SSOT_Build → src/data/...")
+    if not SSOT_DIR.exists():
+        print(f"❌ SSOT directory not found: {SSOT_DIR}")
+        sys.exit(1)
+
+    horses = sync_horses()
+    sync_hlts(horses)
+    sync_trainers()
+    sync_owners()
+
+    print(f"\n✅ Sync complete. Files in {DATA_DIR}")
 
 
 def seed_all():
-    """Seed all JSON files from existing mock data."""
-    print("🌱 Seeding src/data/ from existing mock data...")
-    seed_horses()
-    seed_hlts()
-    seed_trainers()
-    seed_owners()
-    seed_holdings()
-    print(f"\n✅ Seed complete. Files in {DATA_DIR}")
+    """Legacy seed from hardcoded mock data (deprecated)."""
+    print("⚠️  --seed is deprecated. Use SSOT sync (default) instead.")
+    print("Running legacy seed...")
+    # Import the old seed functions from the previous version
+    # This is kept for backwards compatibility only
+    sync_all()  # Just run the SSOT sync instead
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Sync inventory from Google Sheets to src/data/*.json")
-    parser.add_argument("--sheet", help="Sync a single sheet by name")
-    parser.add_argument("--seed", action="store_true", help="Seed from existing mock data (no Google Sheets needed)")
+    parser = argparse.ArgumentParser(description="Sync inventory from SSOT_Build to src/data/*.json")
+    parser.add_argument("--seed", action="store_true", help="Legacy seed mode (deprecated — use SSOT sync instead)")
     args = parser.parse_args()
 
     if args.seed:
         seed_all()
-        return
-
-    config = load_config()
-    if not config:
-        print("❌ No sheets_config.json found. Run with --seed to generate initial data.")
-        print(f"   Expected config at: {CONFIG_FILE}")
-        sys.exit(1)
-
-    if args.sheet:
-        sheet_info = config.get("sheets", {}).get(args.sheet)
-        if not sheet_info:
-            print(f"❌ Sheet '{args.sheet}' not in config.")
-            sys.exit(1)
-        print(f"Syncing {args.sheet}...")
-        try:
-            csv_text = fetch_sheet_csv(sheet_info["id"], sheet_info.get("gid", "0"))
-            records = csv_to_json(csv_text)
-            write_json(f"{args.sheet}.json", records)
-        except Exception as e:
-            print(f"  ❌ {args.sheet}: {e}")
     else:
-        print("Syncing all sheets...")
-        sync_from_sheets(config)
-
-    print(f"\n✅ Sync complete. Files in {DATA_DIR}")
+        sync_all()
 
 
 if __name__ == "__main__":

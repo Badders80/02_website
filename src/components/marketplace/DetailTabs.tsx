@@ -21,9 +21,12 @@ interface DetailTabsProps {
   wins: string;
   placed: string;
   loveracingId?: string;
+  breedingUrl?: string | null;
+  performanceProfileUrl?: string | null;
   trainer: {
     name: string;
     stable_name: string;
+    contact_name?: string;
     location: string;
     nztr_license_number?: string;
   };
@@ -49,6 +52,8 @@ export function DetailTabs({
   wins,
   placed,
   loveracingId,
+  breedingUrl,
+  performanceProfileUrl,
   trainer,
   horseSlug,
 }: DetailTabsProps) {
@@ -126,9 +131,14 @@ export function DetailTabs({
             <h4 className="text-md font-medium text-white">Trainer Profile</h4>
             <div className="space-y-4 font-light text-sm leading-[1.8] text-white/60">
               <p>
-                <span className="text-white font-normal">{trainer.name}</span> manages <span className="text-white font-normal">{trainer.stable_name || "—"}</span> out of {trainer.location || "—"}. 
+                <span className="text-white font-normal">{trainer.stable_name || trainer.name || "—"}</span> out of {trainer.location || "—"}. 
                 Renowned for training top-tier middle-distance stayers, Wexford Stables utilizes world-class preparation environments, equine swimming resources, and patience-first horse education structures.
               </p>
+              {trainer.contact_name && (
+                <p className="text-xs text-white/40">
+                  Contact: <span className="text-white/60">{trainer.contact_name}</span>
+                </p>
+              )}
               {trainer.nztr_license_number && (
                 <p className="text-xs text-white/30">
                   NZTR License Number: <span className="font-mono text-white/50">{trainer.nztr_license_number}</span>
@@ -146,15 +156,29 @@ export function DetailTabs({
                 <h4 className="text-md font-medium text-white">Race Timeline & Starts</h4>
                 <p className="text-xs text-white/40 mt-1">Summary: {wins || "0"} Win{Number(wins) !== 1 ? "s" : ""} · {placed || "0"} Place{Number(placed) !== 1 ? "s" : ""}</p>
               </div>
-              {loveracingId && (
-                <a
-                  href={`https://loveracing.nz/breeding-and-racing/horse-profile?id=${loveracingId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs uppercase tracking-widest font-mono text-[#d4a964] hover:underline"
-                >
-                  Full NZTR Record ↗
-                </a>
+              {(breedingUrl || performanceProfileUrl) && (
+                <div className="flex gap-4">
+                  {breedingUrl && (
+                    <a
+                      href={breedingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs uppercase tracking-widest font-mono text-[#d4a964] hover:underline"
+                    >
+                      Breeding Record ↗
+                    </a>
+                  )}
+                  {performanceProfileUrl && (
+                    <a
+                      href={performanceProfileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs uppercase tracking-widest font-mono text-[#d4a964] hover:underline"
+                    >
+                      Full NZTR Record ↗
+                    </a>
+                  )}
+                </div>
               )}
             </div>
 
