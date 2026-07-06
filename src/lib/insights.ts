@@ -1187,11 +1187,27 @@ export const insightArticles: InsightArticle[] = [
     body: [
       {
         type: 'paragraph',
-        text: 'Evolution Stables is an authorised syndicator with New Zealand Thoroughbred Racing (NZTR). Authorised syndicators are approved by NZTR to publicly offer and manage shares in thoroughbred racehorses for the general public. This status requires compliance with the Bloodstock Syndicator Code of Practice, rigorous disclosure statements, and oversight to ensure transparency, investor protection, and proper management of syndicates.',
+        text: 'Evolution Stables is an authorised syndicator with New Zealand Thoroughbred Racing (NZTR). We specialise in digital-syndication — offering transparent, fractional ownership of thoroughbred racehorses to everyday investors and enthusiasts.',
+      },
+      {
+        type: 'heading',
+        text: 'What is an Authorised Syndicator?',
       },
       {
         type: 'paragraph',
-        text: 'By operating as a digital-first authorised syndicator, Evolution Stables combines traditional racing expertise with modern digital-syndication ownership. This model lowers barriers to entry, enhances liquidity through regulated secondary markets, and provides investors with transparent performance tracking, compliance, and shared ownership in high-quality thoroughbreds.',
+        text: 'An authorised syndicator is a person or entity formally approved by New Zealand Thoroughbred Racing (NZTR) to publicly advertise and manage shares in thoroughbred racehorses on behalf of the public.',
+      },
+      {
+        type: 'paragraph',
+        text: 'To achieve this status, syndicators must comply with the Bloodstock Syndicator Code of Practice, submit detailed disclosure statements for NZTR approval before any public offer, and adhere to strict standards around transparency, investor protection, financial management, and ongoing reporting.',
+      },
+      {
+        type: 'paragraph',
+        text: 'This framework was established because selling shares in racehorses to the public is regulated under New Zealand law (Financial Markets Conduct Act). Becoming an authorised syndicator provides a streamlined exemption pathway while ensuring high standards of governance. It gives investors confidence that the syndicate is properly structured, managed, and overseen by the industry body.',
+      },
+      {
+        type: 'paragraph',
+        text: 'As a digital-first authorised syndicator, Evolution Stables builds on this foundation by combining traditional racing expertise with modern digital-syndication. This delivers greater liquidity, accessibility, real-time performance tracking, and global reach — all while maintaining full regulatory compliance.',
       },
       {
         type: 'heading',

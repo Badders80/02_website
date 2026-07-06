@@ -1,6 +1,7 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { InvestmentTermsModal } from "@/components/marketplace/InvestmentTermsModal";
+import { DetailTabs } from "@/components/marketplace/DetailTabs";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -248,60 +249,26 @@ export default async function CampaignDetailPage({ params }: Props) {
                 </div>
               </section>
 
-              {/* Section D: Trainer Profile */}
-              {trainer && (
-                <section className="border-t border-white/[0.06] pt-12 space-y-6">
-                  <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[18px] text-white font-medium select-none">
-                      {trainerInitials}
-                    </div>
-                    <div>
-                      <h4 className="text-[16px] font-medium text-white">{trainer.name}</h4>
-                      <p className="text-[11px] text-white/40 mt-0.5">
-                        {trainer.stable_name} · {trainer.location}
-                      </p>
-                      {trainer.nztr_license_number && (
-                        <p className="text-[10px] font-medium tracking-wider uppercase text-white/30 mt-1">
-                          NZTR Licensed (#{trainer.nztr_license_number})
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  {trainer.bio && (
-                    <p className="text-[14px] leading-[1.85] font-light text-white/60 max-w-2xl">
-                      {trainer.bio}
-                    </p>
-                  )}
-                </section>
-              )}
-
-              {/* Section E: Registry Information */}
-              <section className="border-t border-white/[0.06] pt-12 space-y-6">
-                <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">
-                  Registry
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-[12px] font-light text-white/50">
-                  <div className="flex justify-between border-b border-white/[0.04] pb-3">
-                    <span>Microchip (15-digit)</span>
-                    <span className="font-mono text-white/70">{horse?.microchip || "—"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/[0.04] pb-3">
-                    <span>Life Number</span>
-                    <span className="font-mono text-white/70">{horse?.life_number || "—"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/[0.04] pb-3">
-                    <span>Left Shoulder Brand</span>
-                    <span className="text-white/70">{horse?.left_shoulder_brand || "—"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/[0.04] pb-3">
-                    <span>Right Shoulder Brand</span>
-                    <span className="text-white/70">{horse?.right_shoulder_brand || "—"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/[0.04] pb-3 md:col-span-2">
-                    <span>Breeder</span>
-                    <span className="text-white/70">{horse?.breeder || "—"}</span>
-                  </div>
-                </div>
+              {/* Section D: Dynamic Tabs (Details, Trainer, Record, Documents) */}
+              <section className="border-t border-white/[0.06] pt-12">
+                <DetailTabs
+                  horseName={horse?.name || "Racehorse"}
+                  sireName={horse?.sire_name || ""}
+                  damName={horse?.dam_name || ""}
+                  sex={horse?.sex || ""}
+                  colour={horse?.colour || ""}
+                  age={horse?.age}
+                  wins={hlt.wins || "0"}
+                  placed={hlt.placed || "0"}
+                  loveracingId={horseData?.loveracing_id}
+                  trainer={{
+                    name: trainer.name,
+                    stable_name: trainer.stable_name,
+                    location: trainer.location,
+                    nztr_license_number: trainer.nztr_license_number || "",
+                  }}
+                  horseSlug={hltRecord.id}
+                />
               </section>
             </div>
 
