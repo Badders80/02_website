@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { ListingGrid } from "@/components/marketplace/ListingGrid";
@@ -6,10 +7,37 @@ import hltsData from "@/data/hlts.json";
 // SSG: data comes from local JSON, no runtime API calls.
 export const runtime = "nodejs";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Marketplace | Evolution Stables",
   description:
     "Discover and explore native digital-syndication opportunities within the Evolution ecosystem. Browse active offerings, ownership positions, and live data.",
+  alternates: {
+    canonical: "/marketplace",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_NZ",
+    url: "https://evolutionstables.nz/marketplace",
+    siteName: "Evolution Stables",
+    title: "Marketplace | Evolution Stables",
+    description:
+      "Discover and explore native digital-syndication opportunities within the Evolution ecosystem.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Evolution Stables",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Marketplace | Evolution Stables",
+    description:
+      "Discover and explore native digital-syndication opportunities within the Evolution ecosystem.",
+    images: ["/opengraph-image"],
+  },
 };
 
 interface Campaign {

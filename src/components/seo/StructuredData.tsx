@@ -31,8 +31,8 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
     foundingDate: "2024",
     sameAs: [
       "https://x.com/EvolutionStables",
+      "https://www.linkedin.com/company/evolution-stables",
       "https://instagram.com/evostables",
-      "https://www.linkedin.com/in/alex-baddeley/",
     ],
     contactPoint: {
       "@type": "ContactPoint",

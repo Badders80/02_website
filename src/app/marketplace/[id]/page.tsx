@@ -10,6 +10,46 @@ import { notFound } from "next/navigation";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 
+function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
+  const horse = hltRecord.horse;
+  const sharePrice = hltRecord.share_price_cents / 100;
+  const sharesAvailable = hltRecord.shares_total - hltRecord.shares_sold;
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: horse?.name || "Racehorse",
+    description: horse?.story || `Racehorse ownership opportunity for ${horse?.name || "Racehorse"}.`,
+    image: horse?.image_url?.startsWith("http")
+      ? horse.image_url
+      : `https://evolutionstables.nz${horse?.image_url || ""}`,
+    brand: {
+      "@type": "Brand",
+      name: "Evolution Stables",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://evolutionstables.nz/marketplace/${hltRecord.id}`,
+      priceCurrency: "NZD",
+      price: sharePrice.toFixed(2),
+      availability: sharesAvailable > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0],
+    },
+    aggregateOffer: {
+      "@type": "AggregateOffer",
+      lowPrice: sharePrice.toFixed(2),
+      highPrice: sharePrice.toFixed(2),
+      priceCurrency: "NZD",
+      offerCount: sharesAvailable,
+    },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 // SSG: data comes from local JSON, no runtime API calls.
 export const runtime = "nodejs";
 // Pre-render known campaign IDs at build time; allow on-demand generation for new ones.
@@ -90,6 +130,7 @@ export default async function CampaignDetailPage({ params }: Props) {
 
   return (
     <>
+      <ProductJsonLd hltRecord={hltRecord} />
       <NavBar />
       <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-12">

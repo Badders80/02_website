@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 import { isMarketplaceProductionStage } from "@/lib/marketplace-release-stage";
+import { insightArticles } from "@/lib/insights";
+import hltsData from "@/data/hlts.json";
 
 /**
  * Sitemap Configuration
@@ -22,21 +24,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/press`,
       lastModified: now,
       changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/brand-guidelines`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/mystable`,
+      lastModified: now,
+      changeFrequency: "monthly",
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/demo`,
+      url: `${baseUrl}/privacy`,
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
     {
-      url: `${baseUrl}/updates`,
+      url: `${baseUrl}/terms`,
       lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.4,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
   ];
+
+  // Insight article pages
+  insightArticles.forEach((article) => {
+    routes.push({
+      url: `${baseUrl}/insights/${article.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
+  });
 
   if (isMarketplaceProductionStage()) {
     routes.push({
@@ -45,8 +69,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 0.8,
     });
-    // Dynamic listing detail pages — deferred to Token migration
-    // Add after new marketplace launches with stable URLs
+
+    // Dynamic marketplace listing detail pages
+    (hltsData as any[]).forEach((hlt) => {
+      const slug = hlt.horse_slug || hlt.id;
+      if (slug) {
+        routes.push({
+          url: `${baseUrl}/marketplace/${slug}`,
+          lastModified: now,
+          changeFrequency: "daily",
+          priority: 0.6,
+        });
+      }
+    });
   }
 
   return routes;

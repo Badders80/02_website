@@ -48,10 +48,10 @@ export const metadata: Metadata = {
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid through blockchain innovation.",
     images: [
       {
-        url: "/images/brand/legacy/legacy-logo-gold-favicon.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Evolution Stables Logo",
+        alt: "Evolution Stables",
       },
     ],
   },
@@ -62,6 +62,7 @@ export const metadata: Metadata = {
     title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
     description:
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
+    images: ["/opengraph-image"],
   },
   icons: {
     icon: "/images/brand/legacy/legacy-logo-gold-favicon.png",
