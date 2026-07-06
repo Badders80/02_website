@@ -1,15 +1,13 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import { PurchaseForm } from "@/components/marketplace/PurchaseForm";
-import { ApplyForm } from "@/components/marketplace/ApplyForm";
-import { KycRequestCard } from "@/components/marketplace/KycRequestCard";
-import { ComingSoonOverlay } from "@/components/ui/ComingSoonOverlay";
+import { InvestmentTermsModal } from "@/components/marketplace/InvestmentTermsModal";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
+import { getCampaignStatus, STATUS_INFO } from "@/lib/campaign-status";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -153,6 +151,11 @@ export default async function CampaignDetailPage({ params }: Props) {
   const trainer = hltRecord.trainer;
   const sharesAvailable = hltRecord.shares_total - hltRecord.shares_sold;
   const totalLeasePercent = hltRecord.leasehold_stake_percentage || 100;
+  const status = getCampaignStatus({
+    listing_status: hlt.listing_status,
+    shares_total: hltRecord.shares_total,
+    shares_sold: hltRecord.shares_sold,
+  });
 
   // Initials for avatar fallback
   const trainerInitials = trainer?.name
@@ -302,44 +305,56 @@ export default async function CampaignDetailPage({ params }: Props) {
               </section>
             </div>
 
-            {/* RIGHT COLUMN — Transaction Layer (The Acquisition) */}
+            {/* RIGHT COLUMN — Action Layer */}
             <div className="space-y-8 lg:sticky lg:top-28">
-              <ComingSoonOverlay>
-                <div className="space-y-8">
-                  {/* Section F: Campaign Specifications */}
-                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
-                    <h3 className="text-[16px] font-light text-white tracking-tight">Campaign</h3>
-                    
-                    <div className="space-y-4 text-[13px] font-light">
-                      <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                        <span className="text-white/40">Total Lease Percentage</span>
-                        <span className="text-white font-medium">{totalLeasePercent}%</span>
-                      </div>
-                      <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                        <span className="text-white/40">Lease Period</span>
-                        <span className="text-white font-medium">{hltRecord.lease_period_months} Months</span>
-                      </div>
-                      <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                        <span className="text-white/40">Lease Start Date</span>
-                        <span className="text-white font-medium">{hltRecord.lease_start_date}</span>
-                      </div>
-                      <div className="flex justify-between pb-1">
-                        <span className="text-white/40">Investor Returns</span>
-                        <span className="text-[#34D399] font-medium">{hltRecord.investor_return_percentage}% of prize money</span>
-                      </div>
-                    </div>
+              {/* Status badge + shares */}
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${STATUS_INFO[status].badgeClass}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${STATUS_INFO[status].dotClass}`} />
+                    <span className="text-[9px] uppercase tracking-widest font-medium">
+                      {STATUS_INFO[status].label}
+                    </span>
                   </div>
-
-                  {/* Section G: The Purchase Widget */}
-                  <PurchaseForm hlt={hltRecord} horseName={horse?.name || "Racehorse"} />
+                  {status === "become-an-owner" && (
+                    <span className="text-[12px] font-light text-white/40">
+                      {sharesAvailable} / {hltRecord.shares_total} shares
+                    </span>
+                  )}
                 </div>
-              </ComingSoonOverlay>
 
-              {/* Section H: Apply for Ownership (Simple Application) */}
-              <ApplyForm hltId={hltRecord.id} horseName={horse?.name || "Racehorse"} />
+                {status === "become-an-owner" && (
+                  <InvestmentTermsModal
+                    horseName={horse?.name || "Racehorse"}
+                    horseSlug={hltRecord.id}
+                    pricePerShareNzd={hltRecord.share_price_cents / 100}
+                    totalLeasePercent={totalLeasePercent}
+                    leasePeriodMonths={hltRecord.lease_period_months}
+                    leaseStartDate={hltRecord.lease_start_date}
+                    investorReturnPct={hltRecord.investor_return_percentage}
+                    sharesTotal={hltRecord.shares_total}
+                    sharesAvailable={sharesAvailable}
+                  />
+                )}
 
-              {/* Section I: KYC Verification */}
-              <KycRequestCard horseName={horse?.name || "Racehorse"} />
+                {status === "coming-soon" && (
+                  <p className="text-[13px] font-light text-white/40 leading-relaxed">
+                    This offering is being prepared. Check back soon for details.
+                  </p>
+                )}
+
+                {status === "fully-subscribed" && (
+                  <p className="text-[13px] font-light text-white/40 leading-relaxed">
+                    All shares have been acquired. This horse is in active campaign.
+                  </p>
+                )}
+
+                {status === "term-completed" && (
+                  <p className="text-[13px] font-light text-white/40 leading-relaxed">
+                    The lease period for this horse has concluded.
+                  </p>
+                )}
+              </div>
             </div>
 
           </div>

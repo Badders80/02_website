@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { ListingGrid } from "@/components/marketplace/ListingGrid";
+import { getCampaignStatus, CampaignStatus } from "@/lib/campaign-status";
 import hltsData from "@/data/hlts.json";
 
 // SSG: data comes from local JSON, no runtime API calls.
@@ -47,6 +48,7 @@ interface Campaign {
   price: string;
   availability: string;
   is_active: boolean;
+  status: CampaignStatus;
   horse: {
     name: string;
     image_url: string;
@@ -77,6 +79,7 @@ export default async function MarketplacePage() {
         price: `$${Number(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
         availability: `${Number(hlt.shares_total) - Number(hlt.shares_sold)} / ${Number(hlt.shares_total)} Left`,
         is_active: hlt.listing_status === "active",
+        status: getCampaignStatus(hlt),
         horse: {
           name: hlt.horse_name || hlt.id,
           image_url: hlt.image_path || "/images/content/horses/placeholder.png",

@@ -8,6 +8,7 @@ export interface InsightArticle {
   excerpt: string;
   heroImage: string;
   linkedinUrl?: string;
+  category?: 'Guide' | 'Press' | 'Race Report' | 'Team';
   body: {
     type: 'paragraph' | 'heading' | 'quote' | 'list' | 'subheading' | 'image';
     text?: string;
@@ -25,6 +26,7 @@ export const insightArticles: InsightArticle[] = [
     author: 'Alex Baddeley',
     authorTitle: 'Founder, Evolution Stables',
     date: '2026-07-06',
+    category: 'Guide',
     excerpt:
       'The real-world asset conversation has been running for years. What has been largely absent is the part that actually matters: returns from the asset, calculated under regulation, and settled directly to investor wallets. This month, Evolution Stables shipped investor reporting.',
     heroImage: '/images/content/horses/prudentia-action.png',
