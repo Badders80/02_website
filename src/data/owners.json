@@ -1,15 +1,12 @@
 [
   {
-    "id": "owner-goldeye-trust",
-    "name": "B.A.X Bloodstock",
+    "name": "Goldeye Trust",
     "email": "",
-    "contact_name": "Kylie Bax",
-    "type": "company"
+    "type": "syndicate"
   },
   {
-    "id": "owner-stephen-grey-racing",
-    "name": "Stephen Grey Racing",
+    "name": "M & W Rose",
     "email": "",
-    "type": "company"
+    "type": "individual"
   }
 ]

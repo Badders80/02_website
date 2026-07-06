@@ -47,12 +47,9 @@ export function DetailTabsSandbox({ hlt, races }: DetailTabsSandboxProps) {
   const [activeTab, setActiveTab] = useState<"details" | "trainer" | "race-record" | "documents">("details");
 
   const getDocUrl = (docType: "pds" | "sa" | "term_sheet") => {
-    const gcsUrl = hlt.documents?.[docType]?.gcs_url;
-    if (!gcsUrl) return "#";
-    if (gcsUrl.startsWith("gs://")) {
-      return `https://storage.googleapis.com/${gcsUrl.substring(5)}`;
-    }
-    return gcsUrl;
+    // GCS backend retired — documents now served via local paths or external links
+    const docUrl = hlt.documents?.[docType]?.gcs_url;
+    return docUrl || "#";
   };
 
   const hasDoc = (docType: "pds" | "sa" | "term_sheet") => {

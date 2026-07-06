@@ -9,6 +9,15 @@ export interface PressArticle {
 
 export const pressArticles: PressArticle[] = [
   {
+    title: "Everyone's been talking about RWAs. We deliver them.",
+    url: '/insights/everyone-talking-rwas-we-deliver-them',
+    publisher: 'Evolution Stables',
+    date: '2026-07-06',
+    excerpt:
+      'The real-world asset conversation has been running for years. What has been largely absent is the part that actually matters: returns from the asset, calculated under regulation, and settled directly to investor wallets. This month, Evolution Stables shipped investor reporting.',
+    imageUrl: '/images/content/horses/prudentia-action.png',
+  },
+  {
     title: 'Tauranga Target: Prudentia Pivots Campaign',
     url: '/updates/prudentia_update_10june2026_email.html',
     publisher: 'Evolution Stables',

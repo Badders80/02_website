@@ -1,201 +1,83 @@
 /**
- * API Client for Evolution Stables Backend
- * 
- * Backend URLs:
- * - SSOT API: https://australia-southeast1-evolution-engine.cloudfunctions.net/ssot
- * - Assets API: https://australia-southeast1-evolution-engine.cloudfunctions.net/assets
- * - KYC API: https://australia-southeast1-evolution-engine.cloudfunctions.net/kyc
- * - Applications API: https://australia-southeast1-evolution-engine.cloudfunctions.net/applications
- * 
- * All API calls include a Firebase ID token in the Authorization header.
- * The token is obtained from anonymous sign-in (public browsing) or the
- * current authenticated user.
- * 
- * When targeting Cloud Functions (production), calls are routed through
- * the Next.js API proxy (/api/proxy/...) which forwards to the Cloud Run proxy,
- * since Cloud Functions have org-policy restrictions on direct public access.
- * The Cloud Run proxy authenticates as the website-api@ service account.
+ * LEGACY / DORMANT — GCP Cloud Functions retired (billing delinquent).
+ *
+ * This module used to call the Evolution Stables GCP Cloud Functions backend
+ * (cloudfunctions.net endpoints) via the /api/proxy route and Vercel OIDC/WIF.
+ * The GCP backend is permanently gone.
+ *
+ * The exported function signatures remain only so that dormant admin pages
+ * (which still have commented-out references to this module) do not break at
+ * import time. Active routes no longer import this file.
+ *
+ * Do not add new calls here. All live data now comes from local JSON in src/data/.
  */
 
-import { getAuthToken } from "./auth-token";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";
-const IS_CLOUD_FUNCTION = API_BASE.includes("cloudfunctions.net");
-
-async function apiCall(endpoint: string, options?: RequestInit) {
-  // Get auth token (anonymous sign-in if no user)
-  const token = await getAuthToken();
-
-  // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
-  // Server-side calls need an absolute URL (relative fetches fail on the server)
-  const host = typeof window === "undefined"
-    ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
-    : "";
-  const url = IS_CLOUD_FUNCTION
-    ? `${host}/api/proxy${endpoint}`
-    : `${API_BASE}${endpoint}`;
-
-  const res = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { "x-firebase-token": token } : {}),
-      ...options?.headers,
-    },
-    ...options,
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: `API error: ${res.status}` }));
-    throw new Error(error.error || `API error: ${res.status}`);
-  }
-
-  return res.json();
-}
-
-// ─── SSOT API ──────────────────────────────────────────────────────────────────
-
 export async function getHorses() {
-  return apiCall("/ssot/horses");
+  throw new Error("GCP backend retired");
 }
 
-export async function getHorseByMicrochip(microchip: string) {
-  return apiCall(`/ssot/horses/${microchip}`);
+export async function getHorseByMicrochip(_microchip: string) {
+  throw new Error("GCP backend retired");
 }
 
-export async function createHorse(data: HorseCreatePayload) {
-  return apiCall("/ssot/horses", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export async function createHorse(_data: HorseCreatePayload) {
+  throw new Error("GCP backend retired");
 }
 
-export async function extractFromLoveracing(url: string) {
-  return apiCall("/ssot/extract", {
-    method: "POST",
-    body: JSON.stringify({ url }),
-  });
+export async function extractFromLoveracing(_url: string) {
+  throw new Error("GCP backend retired");
 }
 
 export async function getOwners() {
-  return apiCall("/ssot/owners");
+  throw new Error("GCP backend retired");
 }
 
-export async function createOwner(data: any) {
-  return apiCall("/ssot/owners", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export async function createOwner(_data: any) {
+  throw new Error("GCP backend retired");
 }
 
 export async function getTrainers() {
-  return apiCall("/ssot/trainers");
+  throw new Error("GCP backend retired");
 }
 
-export async function createTrainer(data: any) {
-  return apiCall("/ssot/trainers", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export async function createTrainer(_data: any) {
+  throw new Error("GCP backend retired");
 }
 
-export async function getHlts(params?: { status?: string; horse_microchip?: string; resolve?: boolean }) {
-  const query = new URLSearchParams();
-  if (params?.status) query.set("status", params.status);
-  if (params?.horse_microchip) query.set("horse_microchip", params.horse_microchip);
-  if (params?.resolve) query.set("resolve", "true");
-  
-  const queryString = query.toString();
-  return apiCall(`/ssot/hlts${queryString ? `?${queryString}` : ""}`);
+export async function getHlts(_params?: { status?: string; horse_microchip?: string; resolve?: boolean }) {
+  throw new Error("GCP backend retired");
 }
 
-export async function getHltById(id: string, resolve = false) {
-  return apiCall(`/ssot/hlts/${id}${resolve ? "?resolve=true" : ""}`);
+export async function getHltById(_id: string, _resolve = false) {
+  throw new Error("GCP backend retired");
 }
 
-export async function createHlt(data: any) {
-  return apiCall("/ssot/hlts", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export async function createHlt(_data: any) {
+  throw new Error("GCP backend retired");
 }
 
-export async function getHoldings(userId: string) {
-  return apiCall(`/ssot/holdings?user_id=${userId}`);
+export async function getHoldings(_userId: string) {
+  throw new Error("GCP backend retired");
 }
 
-export async function getContent(params?: { horse_microchip?: string; content_type?: string; status?: string }) {
-  const query = new URLSearchParams();
-  if (params?.horse_microchip) query.set("horse_microchip", params.horse_microchip);
-  if (params?.content_type) query.set("content_type", params.content_type);
-  if (params?.status) query.set("status", params.status);
-  
-  const queryString = query.toString();
-  return apiCall(`/ssot/content${queryString ? `?${queryString}` : ""}`);
+export async function getContent(_params?: { horse_microchip?: string; content_type?: string; status?: string }) {
+  throw new Error("GCP backend retired");
 }
 
-
-// ─── Assets API ────────────────────────────────────────────────────────────────
-
-export async function uploadAsset(formData: FormData) {
-  const token = await getAuthToken();
-
-  // Route through Next.js proxy when targeting Cloud Functions (handles IAM auth)
-  const host = typeof window === "undefined"
-    ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
-    : "";
-  const url = IS_CLOUD_FUNCTION
-    ? `${host}/api/proxy/assets/upload`
-    : `${API_BASE}/assets/upload`;
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      // Don't set Content-Type for FormData — browser sets multipart boundary
-      ...(token ? { "x-firebase-token": token } : {}),
-    },
-    body: formData,
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: `Upload error: ${res.status}` }));
-    throw new Error(error.error || `Upload error: ${res.status}`);
-  }
-
-  return res.json();
+export async function uploadAsset(_formData: FormData) {
+  throw new Error("GCP backend retired");
 }
 
-export async function retrieveAssets(entityType?: string, entityId?: string) {
-  const params = new URLSearchParams();
-  if (entityType) params.set("entity_type", entityType);
-  if (entityId) params.set("entity_id", entityId);
-  return apiCall(`/assets/retrieve?${params.toString()}`);
+export async function retrieveAssets(_entityType?: string, _entityId?: string) {
+  throw new Error("GCP backend retired");
 }
 
-// ─── KYC API ──────────────────────────────────────────────────────────────────
-
-export async function createKYCSession(userId: string, email?: string) {
-  const token = await getAuthToken();
-  const res = await fetch("/api/kyc/create-session", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify({ user_id: userId, email }),
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: `KYC error: ${res.status}` }));
-    throw new Error(error.error || `KYC error: ${res.status}`);
-  }
-
-  return res.json();
+export async function createKYCSession(_userId: string, _email?: string) {
+  throw new Error("GCP backend retired");
 }
 
-export async function deleteAsset(assetId: string) {
-  return apiCall(`/assets/delete?asset_id=${assetId}`, {
-    method: "DELETE",
-  });
+export async function deleteAsset(_assetId: string) {
+  throw new Error("GCP backend retired");
 }
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -216,7 +98,7 @@ export interface HorseCreatePayload {
   status?: "active" | "retired" | "deceased";
   loveracing_ref?: {
     loveracing_id: number;
-    name_slug: string;
+    slug: string;
     source_url: string;
   };
 }

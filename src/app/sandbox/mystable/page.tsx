@@ -4,10 +4,12 @@ import { useAuth } from "@/lib/auth-context";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { KycBanner } from "@/components/KycBanner";
-import { getHoldings, getHlts, getContent } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import holdingsData from "@/data/holdings.json";
+import hltsData from "@/data/hlts.json";
+import horsesData from "@/data/horses.json";
 
 interface HoldingRecord {
   id: string;
@@ -62,7 +64,7 @@ function MyStableDashboardContent() {
   const [updates, setUpdates] = useState<ContentUpdate[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  
+
   // Latency settlement state (Stripe webhook helper)
   const [isSettling, setIsSettling] = useState(false);
   const [settlingAttempts, setSettlingAttempts] = useState(0);
@@ -70,7 +72,7 @@ function MyStableDashboardContent() {
   const MOCK_HOLDING: HoldingRecord = {
     id: "mock-holding-1",
     hlt_id: "prudentia",
-    horse_microchip: "982000123456789",
+    horse_microchip: "985125000126462",
     shares_owned: 1,
     percentage_owned: 1.0,
     purchase_price_cents: 150000,
@@ -82,7 +84,7 @@ function MyStableDashboardContent() {
     id: "prudentia",
     shares_total: 100,
     share_price_cents: 150000,
-    horse_microchip: "982000123456789",
+    horse_microchip: "985125000126462",
     horse: {
       name: "Prudentia",
       age: 4,
@@ -90,88 +92,98 @@ function MyStableDashboardContent() {
       colour: "Bay",
       sire_name: "Proisir (AUS)",
       dam_name: "Little Bit Irish (NZ)",
-      image_url: "/updates/prudentia_te_rapa_may30.jpg"
+      image_url: "/images/content/stables/prudentia-action.png",
     },
     trainer: {
-      name: "Lance O'Sullivan",
+      name: "Lance O'Sullivan & Andrew Scott",
       stable_name: "Wexford Stables",
-      location: "Matamata, NZ"
-    }
+      location: "Matamata, NZ",
+    },
   };
 
   const MOCK_UPDATE: ContentUpdate = {
     id: "mock-update-1",
     content_type: "text",
-    horse_microchip: "982000123456789",
+    horse_microchip: "985125000126462",
     title: "Morning gallop on the sand",
     content_date: "2026-06-08",
-    full_text: "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Wexford Stables reported she was relaxed and hit the line with plenty in reserve.",
+    full_text:
+      "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Wexford Stables reported she was relaxed and hit the line with plenty in reserve.",
     status: "published",
-    horse_name: "Prudentia"
+    horse_name: "Prudentia",
   };
 
-  const loadDashboardData = async (showLoadingIndicator = true) => {
+  const buildCampaignMap = (): Record<string, Campaign> => {
+    const map: Record<string, Campaign> = {};
+    (hltsData as any[]).forEach((hlt: any) => {
+      const key = hlt.horse_slug || hlt.id;
+      const horse = (horsesData as any[]).find((h: any) => h.slug === key);
+      map[key] = {
+        id: key,
+        shares_total: Number(hlt.shares_total),
+        share_price_cents: Number(hlt.price_per_share_nzd || 1500) * 100,
+        horse_microchip: hlt.horse_microchip,
+        horse: {
+          name: hlt.horse_name || horse?.name || "Racehorse",
+          sex: horse?.sex || "",
+          colour: horse?.colour || "",
+          sire_name: horse?.sire_name || "",
+          dam_name: horse?.dam_name || "",
+          image_url: hlt.image_path || horse?.image_path || "",
+        },
+        trainer: {
+          name: hlt.trainer_name || "",
+          stable_name: hlt.trainer_stable || "",
+          location: hlt.trainer_location || "",
+        },
+      };
+    });
+    return map;
+  };
+
+  const loadDashboardData = (showLoadingIndicator = true) => {
     if (showLoadingIndicator) {
       setLoadingData(true);
     }
     setErrorMsg("");
-    try {
-      let activeHoldings: HoldingRecord[] = [];
-      const hltMap: Record<string, Campaign> = {};
-      const allUpdates: ContentUpdate[] = [];
 
-      const isBypass = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" || process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    try {
+      const isBypass =
+        process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true" ||
+        process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+
+      let activeHoldings: HoldingRecord[] = [];
+      const hltMap = buildCampaignMap();
+      const allUpdates: ContentUpdate[] = [];
 
       if (isBypass) {
         activeHoldings = [MOCK_HOLDING];
         hltMap["prudentia"] = MOCK_CAMPAIGN;
         allUpdates.push(MOCK_UPDATE);
+      } else if (!user) {
+        activeHoldings = [MOCK_HOLDING];
+        hltMap["prudentia"] = MOCK_CAMPAIGN;
+        allUpdates.push(MOCK_UPDATE);
       } else {
-        try {
-          // 1. Fetch user's holdings
-          const holdingsData = await getHoldings(user!.uid);
-          activeHoldings = (holdingsData || []).filter((h: any) => h.status === "paid");
-        } catch (err) {
-          console.error("Failed to fetch live holdings:", err);
-          throw err;
-        }
+        // Load real holdings from local JSON by user email
+        activeHoldings = (holdingsData as any[])
+          .filter((h: any) => h.user_email === user.email)
+          .map((h: any) => ({
+            id: `${h.hlt_id}-${h.user_email}`,
+            hlt_id: h.hlt_id,
+            horse_microchip: hltMap[h.hlt_id]?.horse_microchip || "",
+            shares_owned: Number(h.shares_owned),
+            percentage_owned: (Number(h.shares_owned) / (hltMap[h.hlt_id]?.shares_total || 100)) * 100,
+            purchase_price_cents:
+              (hltMap[h.hlt_id]?.share_price_cents || 150000) * Number(h.shares_owned),
+            status: "paid",
+            created_at: h.purchase_date || new Date().toISOString(),
+          }));
+      }
 
-        // 2. Fetch all campaigns to resolve info
-        try {
-          const hltList = await getHlts({ resolve: true });
-          (hltList || []).forEach((hlt: Campaign) => {
-            hltMap[hlt.id] = hlt;
-          });
-        } catch (err) {
-          console.error("Failed to fetch live HLTs:", err);
-          throw err;
-        }
-
-        // 3. Fetch updates for holdings
-        if (activeHoldings.length > 0) {
-          for (const holding of activeHoldings) {
-            const horseHlt = hltMap[holding.hlt_id];
-            const horseName = horseHlt?.horse?.name || "Racehorse";
-            
-            try {
-              const horseUpdates = await getContent({
-                horse_microchip: holding.horse_microchip,
-                status: "published",
-              });
-              
-              if (horseUpdates && horseUpdates.length > 0) {
-                horseUpdates.forEach((up: any) => {
-                  allUpdates.push({
-                    ...up,
-                    horse_name: horseName,
-                  });
-                });
-              }
-            } catch (err) {
-              console.warn(`Failed to fetch updates for horse ${holding.horse_microchip}:`, err);
-            }
-          }
-        }
+      // Static mock update fallback when no live content file exists
+      if (activeHoldings.length > 0) {
+        allUpdates.push(MOCK_UPDATE);
       }
 
       setHoldings(activeHoldings);
@@ -179,7 +191,6 @@ function MyStableDashboardContent() {
       allUpdates.sort((a, b) => new Date(b.content_date).getTime() - new Date(a.content_date).getTime());
       setUpdates(allUpdates);
 
-      // If holdings are successfully loaded, turn off settling latency flag
       if (activeHoldings.length > 0) {
         setIsSettling(false);
       }
@@ -201,13 +212,12 @@ function MyStableDashboardContent() {
   // Webhook polling latency recovery loop
   useEffect(() => {
     if (authLoading || !user) return;
-    
-    // If the user redirected with ?success=true but the holdings query returned empty, trigger settlement state
+
     if (isSuccessRedirect && holdings.length === 0 && !loadingData && settlingAttempts < 5) {
       setIsSettling(true);
       const timer = setTimeout(() => {
-        setSettlingAttempts(prev => prev + 1);
-        loadDashboardData(false); // poll silently without full loading spinner
+        setSettlingAttempts((prev) => prev + 1);
+        loadDashboardData(false);
       }, 3000);
       return () => clearTimeout(timer);
     } else if (holdings.length > 0 || settlingAttempts >= 5) {
@@ -271,7 +281,9 @@ function MyStableDashboardContent() {
             MyStable
           </h1>
           <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
-            Welcome, <span className="text-white font-normal">{user.email}</span>. This is your personal dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking morning preparations.
+            Welcome, <span className="text-white font-normal">{user.email}</span>. This is your personal
+            dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking
+            morning preparations.
           </p>
         </section>
 
@@ -287,7 +299,8 @@ function MyStableDashboardContent() {
               <div>
                 <h4 className="text-xs font-semibold text-white/95 uppercase tracking-wider">Settling Transaction</h4>
                 <p className="text-xs font-light text-white/50 mt-1">
-                  We are registering your ownership stake on the digital ledger. This dashboard will update automatically.
+                  We are registering your ownership stake on the digital ledger. This dashboard will
+                  update automatically.
                 </p>
               </div>
               <div className="flex-shrink-0 flex items-center gap-2">
@@ -314,7 +327,8 @@ function MyStableDashboardContent() {
             <div className="rounded-2xl border border-white/[0.04] bg-white/[0.01] p-16 text-center space-y-6">
               <p className="text-md font-light text-white/60">No active ownership stakes found</p>
               <p className="text-xs font-light text-white/40 max-w-md mx-auto leading-relaxed">
-                You haven't acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey.
+                You haven't acquired any racehorse units yet. Head over to our marketplace to browse open
+                syndicates and start your ownership journey.
               </p>
               <Link
                 href="/sandbox/marketplace"
@@ -327,7 +341,6 @@ function MyStableDashboardContent() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
               {/* Left Column: Holdings & Stable Feed */}
               <div className="lg:col-span-2 space-y-12">
-                
                 {/* Active Horses List */}
                 <div className="space-y-6">
                   <div>
@@ -340,7 +353,7 @@ function MyStableDashboardContent() {
                       const hlt = campaigns[holding.hlt_id];
                       const horse = hlt?.horse;
                       const trainer = hlt?.trainer;
-                      
+
                       return (
                         <div
                           key={holding.id}
@@ -407,15 +420,13 @@ function MyStableDashboardContent() {
                         <div key={update.id} className="relative space-y-3">
                           {/* Timeline Dot (Gold Restrained Highlight) */}
                           <span className="absolute -left-[31px] top-1.5 w-2 h-2 rounded-full bg-[#d4a964] ring-4 ring-black" />
-                          
+
                           <div className="flex justify-between items-start gap-4">
                             <div>
                               <span className="text-[9px] font-medium uppercase tracking-wider text-[#d4a964]">
                                 {update.horse_name}
                               </span>
-                              <h4 className="text-xs font-medium text-white mt-1">
-                                {update.title}
-                              </h4>
+                              <h4 className="text-xs font-medium text-white mt-1">{update.title}</h4>
                             </div>
                             <span className="text-[10px] font-light text-white/30 whitespace-nowrap">
                               {update.content_date}
@@ -437,14 +448,18 @@ function MyStableDashboardContent() {
                 {/* Total Value */}
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-2">
                   <p className="text-[10px] font-light tracking-wider uppercase text-white/30">Total Valuation</p>
-                  <p className="text-2xl font-light text-white">${totalValueNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
+                  <p className="text-2xl font-light text-white">
+                    ${totalValueNzd.toLocaleString(undefined, { maximumFractionDigits: 0 })} NZD
+                  </p>
                   <p className="text-[10px] text-emerald-400 font-light">+8.2% ROI (indicative)</p>
                 </div>
- 
+
                 {/* Total Returns */}
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-2">
                   <p className="text-[10px] font-light tracking-wider uppercase text-white/30">Stakes Earnings</p>
-                  <p className="text-2xl font-light text-emerald-400">${indicativeReturnsNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
+                  <p className="text-2xl font-light text-emerald-400">
+                    ${indicativeReturnsNzd.toLocaleString(undefined, { maximumFractionDigits: 0 })} NZD
+                  </p>
                   <p className="text-[10px] text-white/30 font-light">Accumulating prize dividends</p>
                 </div>
 

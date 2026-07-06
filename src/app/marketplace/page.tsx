@@ -46,8 +46,8 @@ export default async function MarketplacePage() {
         id: hlt.horse_slug || hlt.id,
         location,
         pedigree: hlt.pedigree || pedigreeParts.join(" / "),
-        price: `$${(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
-        availability: `${hlt.shares_total - hlt.shares_sold} / ${hlt.shares_total} Left`,
+        price: `$${Number(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
+        availability: `${Number(hlt.shares_total) - Number(hlt.shares_sold)} / ${Number(hlt.shares_total)} Left`,
         is_active: hlt.listing_status === "active",
         horse: {
           name: hlt.horse_name || hlt.id,
@@ -55,9 +55,9 @@ export default async function MarketplacePage() {
           story: hlt.story || "",
         },
         stats: {
-          wins: hlt.stats?.wins || "0",
-          placed: hlt.stats?.placed || "0",
-          nextUp: hlt.stats?.next_up || "TBD",
+          wins: hlt.wins || hlt.stats?.wins || "0",
+          placed: hlt.placed || hlt.stats?.placed || "0",
+          nextUp: hlt.next_up || hlt.stats?.next_up || "TBD",
         },
       };
     });
@@ -76,7 +76,7 @@ export default async function MarketplacePage() {
           </h1>
           <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
             Explore native digital syndications currently open for ownership. 
-            Acquire a fraction of elite bloodstock, backed by legally binding leases, and track your stable's performance directly on-site.
+            Acquire a fraction of elite bloodstock, backed by legally binding leases, and track your stable&apos;s performance directly on-site.
           </p>
         </section>
 

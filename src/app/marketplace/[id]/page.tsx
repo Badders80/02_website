@@ -36,15 +36,15 @@ export default async function CampaignDetailPage({ params }: Props) {
   }
 
   // Find horse data from local JSON
-  const horseData = (horsesData as any[]).find((h) => h.id === id || h.name_slug === id);
+  const horseData = (horsesData as any[]).find((h) => h.slug === id || h.name === hlt.horse_name);
 
   // Build the HLT object in the shape the page expects
   const hltRecord = {
     id: hlt.horse_slug || hlt.id,
     status: hlt.listing_status === "active" ? "published" : "draft",
-    shares_total: hlt.shares_total,
-    shares_sold: hlt.shares_sold,
-    share_price_cents: (hlt.price_per_share_nzd || 1500) * 100,
+    shares_total: Number(hlt.shares_total),
+    shares_sold: Number(hlt.shares_sold),
+    share_price_cents: Number(hlt.price_per_share_nzd || 1500) * 100,
     fractional_interest_per_share: 1.0,
     leasehold_stake_percentage: hlt.leasehold_stake_pct || 100,
     lease_period_months: hlt.lease_period_months || 36,

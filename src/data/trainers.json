@@ -1,16 +1,14 @@
 [
   {
-    "id": "trainer-sam-spratt",
     "name": "Lance O'Sullivan & Andrew Scott",
     "stable_name": "Wexford Stables",
-    "location": "Matamata, NZ",
+    "location": "Matamata NZ",
     "email": ""
   },
   {
-    "id": "trainer-stephen-gray",
     "name": "Stephen Gray",
     "stable_name": "Stephen Gray Racing",
-    "location": "Palmerston North, NZ",
+    "location": "Palmerston North NZ",
     "email": ""
   }
 ]

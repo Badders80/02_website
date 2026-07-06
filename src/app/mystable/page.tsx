@@ -12,6 +12,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, isAuthInitialized } from "@/lib/firebase";
 import holdingsData from "@/data/holdings.json";
 import hltsData from "@/data/hlts.json";
+import horsesData from "@/data/horses.json";
 
 interface HoldingRecord {
   id: string;
@@ -56,6 +57,28 @@ interface ContentUpdate {
   horse_name?: string;
 }
 
+const MOCK_HOLDING: HoldingRecord = {
+  id: "mock-holding-1",
+  hlt_id: "hlt-prudentia",
+  horse_microchip: "985125000126462",
+  shares_owned: 1,
+  percentage_owned: 1.0,
+  purchase_price_cents: 150000,
+  status: "paid",
+  created_at: new Date().toISOString(),
+};
+
+const MOCK_UPDATE: ContentUpdate = {
+  id: "mock-update-1",
+  content_type: "text",
+  horse_microchip: "985125000126462",
+  title: "Morning gallop on the sand",
+  content_date: "2026-06-08",
+  full_text: "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Mark Walker reported she was relaxed and hit the line with plenty in reserve.",
+  status: "published",
+  horse_name: "Prudentia"
+};
+
 export default function MyStablePage() {
   const { user, loading: authLoading, kycStatus } = useAuth();
 
@@ -84,28 +107,6 @@ export default function MyStablePage() {
     }
   };
 
-  const MOCK_HOLDING: HoldingRecord = {
-    id: "mock-holding-1",
-    hlt_id: "hlt-prudentia",
-    horse_microchip: "985125000126462",
-    shares_owned: 1,
-    percentage_owned: 1.0,
-    purchase_price_cents: 150000,
-    status: "paid",
-    created_at: new Date().toISOString(),
-  };
-
-  const MOCK_UPDATE: ContentUpdate = {
-    id: "mock-update-1",
-    content_type: "text",
-    horse_microchip: "985125000126462",
-    title: "Morning gallop on the sand",
-    content_date: "2026-06-08",
-    full_text: "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Mark Walker reported she was relaxed and hit the line with plenty in reserve.",
-    status: "published",
-    horse_name: "Prudentia"
-  };
-
   useEffect(() => {
     if (authLoading) return;
 
@@ -113,7 +114,7 @@ export default function MyStablePage() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       if (params.get('success') === 'true') {
-        setPurchaseSuccess(true);
+        setTimeout(() => setPurchaseSuccess(true), 0);
         // Clean url (optional)
         window.history.replaceState({}, '', '/mystable');
       }
@@ -121,7 +122,6 @@ export default function MyStablePage() {
 
     if (!user) {
       // Load mock dashboard data for the gated preview
-      setHoldings([MOCK_HOLDING]);
       const previewCampaign: Campaign = {
         id: "hlt-prudentia",
         shares_total: 100,
@@ -142,9 +142,12 @@ export default function MyStablePage() {
           location: "Matamata, NZ"
         }
       };
-      setCampaigns({ "hlt-prudentia": previewCampaign });
-      setUpdates([MOCK_UPDATE]);
-      setLoadingData(false);
+      setTimeout(() => {
+        setHoldings([MOCK_HOLDING]);
+        setCampaigns({ "hlt-prudentia": previewCampaign });
+        setUpdates([MOCK_UPDATE]);
+        setLoadingData(false);
+      }, 0);
       return;
     }
 
@@ -157,18 +160,20 @@ export default function MyStablePage() {
         // Build campaign map from local JSON
         const hltMap: Record<string, Campaign> = {};
         (hltsData as any[]).forEach((hlt: any) => {
-          hltMap[hlt.id] = {
-            id: hlt.id,
-            shares_total: hlt.shares_total,
-            share_price_cents: (hlt.price_per_share_nzd || 1500) * 100,
+          const key = hlt.horse_slug || hlt.id;
+          const horse = (horsesData as any[]).find((h: any) => h.slug === key);
+          hltMap[key] = {
+            id: key,
+            shares_total: Number(hlt.shares_total),
+            share_price_cents: Number(hlt.price_per_share_nzd || 1500) * 100,
             horse_microchip: hlt.horse_microchip,
             horse: {
-              name: hlt.horse_name,
-              sex: hlt.sex || "",
-              colour: hlt.colour || "",
-              sire_name: hlt.sire_name || "",
-              dam_name: hlt.dam_name || "",
-              image_url: hlt.image_path || "",
+              name: hlt.horse_name || horse?.name || "Racehorse",
+              sex: horse?.sex || "",
+              colour: horse?.colour || "",
+              sire_name: horse?.sire_name || "",
+              dam_name: horse?.dam_name || "",
+              image_url: hlt.image_path || horse?.image_path || "",
             },
             trainer: {
               name: hlt.trainer_name || "",
@@ -185,9 +190,9 @@ export default function MyStablePage() {
             id: `${h.hlt_id}-${h.user_email}`,
             hlt_id: h.hlt_id,
             horse_microchip: hltMap[h.hlt_id]?.horse_microchip || "",
-            shares_owned: h.shares_owned,
-            percentage_owned: (h.shares_owned / (hltMap[h.hlt_id]?.shares_total || 100)) * 100,
-            purchase_price_cents: (hltMap[h.hlt_id]?.share_price_cents || 150000) * h.shares_owned,
+            shares_owned: Number(h.shares_owned),
+            percentage_owned: (Number(h.shares_owned) / (hltMap[h.hlt_id]?.shares_total || 100)) * 100,
+            purchase_price_cents: (hltMap[h.hlt_id]?.share_price_cents || 150000) * Number(h.shares_owned),
             status: "paid",
             created_at: h.purchase_date || new Date().toISOString(),
           }));
@@ -291,7 +296,7 @@ export default function MyStablePage() {
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-16 text-center space-y-6">
               <p className="text-lg font-light text-white/60">No active ownership stakes found</p>
               <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
-                You haven't acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey.
+                You haven&apos;t acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey.
               </p>
               <Link
                 href="/marketplace"

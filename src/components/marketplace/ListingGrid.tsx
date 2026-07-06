@@ -173,9 +173,9 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                     
                     {/* Status Badge */}
                     <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 select-none">
-                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                      <span className={`w-1.5 h-1.5 rounded-full ${camp.is_active ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" : "bg-zinc-500"}`} />
                       <span className="text-[8px] uppercase tracking-widest font-medium text-white/80">
-                        Subscribed
+                        {camp.is_active ? "Open Stakes" : "Subscribed"}
                       </span>
                     </div>
                   </div>
