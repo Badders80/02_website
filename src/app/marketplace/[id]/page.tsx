@@ -7,8 +7,39 @@ import { ComingSoonOverlay } from "@/components/ui/ComingSoonOverlay";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const hlt = (hltsData as any[]).find((h) => h.horse_slug === id);
+  if (!hlt) return {};
+  const horseName = hlt.horse_name || "Racehorse";
+  const story = hlt.story || `Digital-syndication opportunity for ${horseName}.`;
+  return {
+    title: `${horseName} | Marketplace`,
+    description: story.substring(0, 160),
+    alternates: {
+      canonical: `/marketplace/${id}`,
+    },
+    openGraph: {
+      title: `${horseName} | Evolution Stables Marketplace`,
+      description: story.substring(0, 160),
+      url: `https://evolutionstables.nz/marketplace/${id}`,
+      type: "website",
+      images: hlt.image_path
+        ? [{ url: hlt.image_path, width: 1200, height: 630, alt: horseName }]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${horseName} | Evolution Stables`,
+      description: story.substring(0, 160),
+      images: hlt.image_path ? [hlt.image_path] : undefined,
+    },
+  };
+}
 
 function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
   const horse = hltRecord.horse;
@@ -200,9 +231,9 @@ export default async function CampaignDetailPage({ params }: Props) {
                 <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">
                   The story
                 </p>
-                <h3 className="text-[24px] font-light text-white tracking-tight leading-tight">
+                <h1 className="text-[24px] font-light text-white tracking-tight leading-tight">
                   {horse?.name ? `${horse.name}.` : "Athlete Profile."}
-                </h3>
+                </h1>
                 <div className="text-[14px] leading-[1.85] font-light text-white/70 space-y-4">
                   {horse?.story ? (
                     horse.story.split("\n\n").map((para: string, idx: number) => (

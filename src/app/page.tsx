@@ -16,7 +16,7 @@ export default function HomePage() {
       <NavBar />
       <main className="text-foreground">
         <h1 className="sr-only">
-          Evolution Stables - Digital Racehorse Ownership & Tokenized RWA Platform
+          Evolution Stables — Digital Racehorse Ownership
         </h1>
 
         <div className="w-full bg-black px-0 shadow-[0_0_80px_RGBA(0,0,0,0.35)] m-0 p-0 border-none max-w-none">

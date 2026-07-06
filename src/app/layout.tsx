@@ -15,23 +15,20 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 export const metadata: Metadata = {
   metadataBase: new URL("https://evolutionstables.nz"),
   title: {
-    default: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
+    default: "Evolution Stables — Digital Racehorse Ownership",
     template: "%s | Evolution Stables",
   },
   description:
-    "Own racehorses through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset (RWA) investing powered by Tokinvest and blockchain technology.",
+    "Own racehorses through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset investing powered by Tokinvest.",
   keywords: [
     "racehorse ownership",
     "digital syndication",
-    "tokenized assets",
     "real world assets",
     "RWA",
-    "blockchain racing",
     "fractional ownership",
     "New Zealand racing",
     "NZTR",
     "Tokinvest",
-    "Singularry",
     "regulated investment",
     "horse racing investment",
   ],
@@ -43,9 +40,9 @@ export const metadata: Metadata = {
     locale: "en_NZ",
     url: "https://evolutionstables.nz",
     siteName: "Evolution Stables",
-    title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
+    title: "Evolution Stables — Digital Racehorse Ownership",
     description:
-      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid through blockchain innovation.",
+      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
     images: [
       {
         url: "/opengraph-image",
@@ -59,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@EvolutionStables",
     creator: "@EvolutionStables",
-    title: "Evolution Stables - Digital Racehorse Ownership | Tokenized RWA Platform",
+    title: "Evolution Stables — Digital Racehorse Ownership",
     description:
       "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
     images: ["/opengraph-image"],
