@@ -125,13 +125,13 @@ def sync_horses() -> list[dict]:
         if trainer:
             # For Stephen Gray: public-facing is "Stephen Gray Racing", NOT "Copper Belt Lodge"
             if "stephen-gray" in (trainer_slug or "").lower():
-                trainer_name = "Stephen Gray"
                 trainer_stable = "Stephen Gray Racing"
+                trainer_name = trainer_stable
                 trainer_location = "Palmerston North NZ"
             else:
-                trainer_name = trainer.get("trainer_name", "")
-                trainer_stable = trainer.get("stable_name", trainer_name)
-                trainer_location = trainer.get("location", "").replace(", New Zealand", " NZ").replace("Matamata", "Matamata NZ")
+                trainer_stable = trainer.get("stable_name", trainer.get("trainer_name", ""))
+                trainer_name = trainer_stable
+                trainer_location = trainer.get("location", "").replace(", New Zealand", " NZ").replace(", NZ", " NZ")
             trainer_contact_name = trainer.get("contact_name", "")
 
         # Fallback to existing website data if SSOT didn't provide trainer
@@ -146,7 +146,7 @@ def sync_horses() -> list[dict]:
             "slug": slug,
             "microchip": identity.get("microchip_number") or "",
             "life_number": identity.get("nztr_life_number") or "",
-            "loveracing_id": str(identity.get("loveracing_id") or "") if identity.get("loveracing_id") else "",
+            "loveracing_id": str(identity.get("loveracing_id") or "") if identity.get("loveracing_id") is not None else "",
             "foaling_date": identity.get("foaling_date") or "",
             "sex": (identity.get("sex") or "").lower(),
             "colour": identity.get("colour") or existing_h.get("colour", ""),
@@ -156,10 +156,10 @@ def sync_horses() -> list[dict]:
             "status": "active" if identity.get("horse_status") == "active" else existing_h.get("status", "active"),
             "image_path": existing_h.get("image_path", f"/images/content/horses/{slug}.png"),
             "story": existing_h.get("story", ""),
-            "trainer_name": trainer_name,
-            "trainer_stable": trainer_stable,
-            "trainer_location": trainer_location,
-            "trainer_contact_name": trainer_contact_name,
+            "trainer_name": trainer_name or existing_h.get("trainer_name", ""),
+            "trainer_stable": trainer_stable or existing_h.get("trainer_stable", ""),
+            "trainer_location": trainer_location or existing_h.get("trainer_location", ""),
+            "trainer_contact_name": trainer_contact_name or existing_h.get("trainer_contact_name", ""),
             "wins": existing_h.get("wins", "0"),
             "placed": existing_h.get("placed", "0"),
             "next_up": existing_h.get("next_up", "TBD"),
@@ -218,30 +218,28 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
         # Trainer display
         trainer_id = ssot_hlt.get("trainer_id", "")
         trainer = trainer_by_id.get(trainer_id, {})
-        if "stephen-gray" in (trainer.get("trainer_name", "") + trainer_id).lower():
+        if "stephen-gray" in f"{trainer.get('trainer_name', '')} {trainer_id}".lower().replace(" ", "-"):
             trainer_stable = "Stephen Gray Racing"
             trainer_location = "Palmerston North NZ"
+            trainer_name = trainer_stable
         else:
-            trainer_stable = ssot_hlt.get("trainer_name", trainer.get("stable_name", ""))
+            trainer_stable = ssot_hlt.get("stable_name", trainer.get("stable_name", ""))
             trainer_location = horse.get("trainer_location", "")
+            trainer_name = trainer.get("stable_name", ssot_hlt.get("trainer_name", ""))
 
         # Merge with existing for website-only fields
         existing_hlt = existing_map.get(horse_slug, {})
 
         # Determine listing status
-        # SSOT "status" reflects document workflow, not marketplace visibility
-        # Horses with sold shares should be active on the marketplace
-        # (getCampaignStatus will show "Fully Subscribed" when shares_sold >= shares_total)
         hlt_status = ssot_hlt.get("status", "draft")
-        listing_status = existing_hlt.get("listing_status") or ("active" if hlt_status in ("complete", "published") else "draft")
-        # Override: if this horse has been sold before (shares_sold > 0 in existing), keep it active
-        if int(existing_hlt.get("shares_sold") or 0) > 0:
+        listing_status = "active" if hlt_status in ("complete", "published") else "draft"
+        # Override: keep active if existing was active or shares already sold
+        if existing_hlt.get("listing_status") == "active" or int(existing_hlt.get("shares_sold") or 0) > 0:
             listing_status = "active"
         marketplace_visible = listing_status == "active"
 
         # Shares: preserve from existing for website-only fields
-        # SSOT num_tokens is the token count, but website may use a different share count
-        shares_total = int(existing_hlt.get("shares_total") or ssot_hlt.get("num_tokens") or 100)
+        shares_total = int(ssot_hlt.get("num_tokens") or existing_hlt.get("shares_total") or 100)
         shares_sold = int(existing_hlt.get("shares_sold") or 0)
         # Prudentia correction: fully subscribed
         if horse_slug == "prudentia":
@@ -260,7 +258,7 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
         hlt = {
             "id": f"hlt-{horse_slug}",
             "horse_slug": horse_slug,
-            "horse_name": horse_name,
+            "horse_name": horse.get("display_name", horse_name),
             "horse_microchip": horse_microchip,
             "owner_name": ssot_hlt.get("owner_name", ""),
             "owner_id": ssot_hlt.get("owner_id", ""),
@@ -292,6 +290,21 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
         if slug not in [r["horse_slug"] for r in results]:
             # Preserve existing entry for horses without SSOT HLT records
             hlt = dict(existing_hlt)
+            hlt["id"] = hlt.get("id") or f"hlt-{slug}"
+            hlt["horse_name"] = (slug_to_horse.get(slug, {}) or {}).get("display_name", hlt.get("horse_name", ""))
+            hlt["horse_microchip"] = (slug_to_horse.get(slug, {}) or {}).get("microchip", hlt.get("horse_microchip", ""))
+            hlt["trainer_name"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_name", hlt.get("trainer_name", ""))
+            hlt["trainer_stable"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_stable", hlt.get("trainer_stable", ""))
+            hlt["trainer_location"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_location", hlt.get("trainer_location", ""))
+            # Coerce number fields
+            for num_field in ["lease_period_months", "leasehold_stake_pct", "investor_return_pct", "shares_total", "shares_sold", "price_per_share_nzd"]:
+                val = hlt.get(num_field)
+                if val is not None:
+                    try:
+                        hlt[num_field] = float(val)
+                    except (ValueError, TypeError):
+                        hlt[num_field] = 0
+            hlt.pop("syndicate_price_nzd", None)
             hlt["listing_status"] = "draft"
             hlt["marketplace_visible"] = False
             results.append(hlt)
@@ -316,12 +329,16 @@ def sync_trainers() -> list[dict]:
         if "copper belt" in stable_name.lower():
             stable_name = "Stephen Gray Racing"
 
+        location = t.get("location", "").replace(", New Zealand", " NZ").replace(", NZ", " NZ")
+        if "copper belt" in (t.get("stable_name", "") + t.get("trainer_name", "")).lower():
+            location = "Palmerston North NZ"
+
         trainer = {
             "id": t.get("trainer_id", ""),
             "name": t.get("trainer_name", ""),
             "stable_name": stable_name,
             "contact_name": t.get("contact_name", ""),
-            "location": t.get("location", "").replace(", New Zealand", " NZ"),
+            "location": location,
             "bio": t.get("bio", ""),
             "website": t.get("website", ""),
             "x_url": social.get("x_url", ""),

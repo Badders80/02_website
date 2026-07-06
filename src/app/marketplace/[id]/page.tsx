@@ -340,6 +340,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                   trainer={{
                     name: trainer.name,
                     stable_name: trainer.stable_name,
+                    contact_name: horseData?.trainer_contact_name || "",
                     location: trainer.location,
                     nztr_license_number: trainer.nztr_license_number || "",
                   }}

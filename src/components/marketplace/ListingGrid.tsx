@@ -8,6 +8,7 @@ import { CampaignStatus, STATUS_INFO } from "@/lib/campaign-status";
 interface Campaign {
   id: string;
   location: string;
+  trainerContact?: string;
   pedigree: string;
   price: string;
   availability: string;
@@ -211,9 +212,12 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                       </p>
                     )}
                     {camp.status !== "become-an-owner" && (
-                      <p className="text-[11px] font-light text-white/30">
-                        {camp.location}
-                      </p>
+                      <div className="space-y-0.5">
+                        <p className="text-[11px] font-light text-white/30">{camp.location}</p>
+                        {camp.trainerContact && (
+                          <p className="text-[10px] font-light text-white/20">{camp.trainerContact}</p>
+                        )}
+                      </div>
                     )}
                   </div>
 

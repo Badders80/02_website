@@ -44,6 +44,7 @@ export const metadata: Metadata = {
 interface Campaign {
   id: string;
   location: string;
+  trainerContact?: string;
   pedigree: string;
   price: string;
   availability: string;
@@ -67,6 +68,7 @@ export default async function MarketplacePage() {
     .filter((hlt) => hlt.marketplace_visible === true || hlt.marketplace_visible === "TRUE")
     .map((hlt) => {
       const location = `${(hlt.trainer_location || "Matamata NZ").toUpperCase().replace(/,?\s*NZ$/, "")} · ${(hlt.trainer_stable || "Wexford Stables").toUpperCase()}`;
+      const trainerContact = hlt.trainer_contact_name || "";
       const sex = hlt.sex || (hlt as any).horse_sex || "";
       const colour = hlt.colour || (hlt as any).horse_colour || "";
       const sire = hlt.sire_name || (hlt as any).horse_sire_name || "";
@@ -75,6 +77,7 @@ export default async function MarketplacePage() {
       return {
         id: hlt.horse_slug || hlt.id,
         location,
+        trainerContact,
         pedigree: hlt.pedigree || pedigreeParts.join(" / "),
         price: `$${Number(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
         availability: `${Number(hlt.shares_total) - Number(hlt.shares_sold)} / ${Number(hlt.shares_total)} Left`,
