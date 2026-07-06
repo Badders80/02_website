@@ -10,15 +10,52 @@ import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 import { getCampaignStatus, STATUS_INFO } from "@/lib/campaign-status";
 
+// Racing freshness calculator (NZTR Love Racing records)
+const getRacingFreshness = (slug: string) => {
+  const currentDate = new Date();
+  const lastRaceDates: Record<string, string> = {
+    "prudentia": "2026-06-27",
+    "first-gear": "2026-01-02",
+  };
+  
+  if (slug in lastRaceDates) {
+    const lastRaceDate = new Date(lastRaceDates[slug]);
+    const diffTime = Math.abs(currentDate.getTime() - lastRaceDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return {
+      label: "Days Since Last Race",
+      value: `${diffDays} Days`,
+      subtext: `Last raced: ${lastRaceDates[slug]} (Love Racing Record)`,
+    };
+  } else {
+    const targetDate = new Date("2026-09-04");
+    const diffTime = targetDate.getTime() - currentDate.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const displayDays = diffDays > 0 ? diffDays : 0;
+    return {
+      label: "Countdown to Debut",
+      value: `${displayDays} Days`,
+      subtext: "Estimated preparation cycle remaining",
+    };
+  }
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const hlt = (hltsData as any[]).find((h) => h.horse_slug === id);
   if (!hlt) return {};
   const horseName = hlt.horse_name || "Racehorse";
   const story = hlt.story || `Digital-syndication opportunity for ${horseName}.`;
+  const freshness = getRacingFreshness(id || hlt.id);
+  
   return {
     title: `${horseName} | Marketplace`,
     description: story.substring(0, 160),
+    other: {
+      "racing-freshness-label": freshness.label,
+      "racing-freshness-value": freshness.value,
+      "racing-freshness-subtext": freshness.subtext,
+    },
     alternates: {
       canonical: `/marketplace/${id}`,
     },
@@ -42,8 +79,17 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
   const horse = hltRecord.horse;
+  const trainer = hltRecord.trainer;
   const sharePrice = hltRecord.share_price_cents / 100;
   const sharesAvailable = hltRecord.shares_total - hltRecord.shares_sold;
+
+  // Wikidata and Wikipedia entity linkage for Wexford and Stephen Gray
+  const trainerSameAs = trainer?.stable_name === "Wexford Stables"
+    ? ["https://en.wikipedia.org/wiki/Lance_O%27Sullivan", "https://www.wikidata.org/wiki/Q6483515"]
+    : trainer?.stable_name === "Stephen Gray Racing"
+      ? ["https://www.wikidata.org/wiki/Q110823377"]
+      : [];
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -56,6 +102,20 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
       "@type": "Brand",
       name: "Evolution Stables",
     },
+    provider: trainer?.stable_name ? {
+      "@type": "SportsOrganization",
+      name: trainer.stable_name,
+      sameAs: trainerSameAs.length > 0 ? trainerSameAs : undefined,
+    } : undefined,
+    // Injecting freshness indicator inside the structured data
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "racing-freshness-status",
+        value: getRacingFreshness(hltRecord.id).value,
+        description: getRacingFreshness(hltRecord.id).label
+      }
+    ],
     offers: {
       "@type": "Offer",
       url: `https://evolutionstables.nz/marketplace/${hltRecord.id}`,
@@ -230,6 +290,20 @@ export default async function CampaignDetailPage({ params }: Props) {
                 </div>
               </div>
 
+              {/* Section B2: Gallery (mock placeholders) */}
+              <div className="grid grid-cols-3 gap-3">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="relative aspect-[4/3] rounded-xl border border-white/[0.04] bg-white/[0.01] flex items-center justify-center overflow-hidden"
+                  >
+                    <div className="text-[10px] font-light text-white/15 uppercase tracking-wider">
+                      Gallery
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               {/* Section C: The Story */}
               <section className="space-y-4">
                 <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">
@@ -261,6 +335,8 @@ export default async function CampaignDetailPage({ params }: Props) {
                   wins={hlt.wins || "0"}
                   placed={hlt.placed || "0"}
                   loveracingId={horseData?.loveracing_id}
+                  breedingUrl={horseData?.breeding_url}
+                  performanceProfileUrl={horseData?.performance_profile_url}
                   trainer={{
                     name: trainer.name,
                     stable_name: trainer.stable_name,

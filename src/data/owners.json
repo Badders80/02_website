@@ -1,12 +1,50 @@
 [
   {
-    "name": "Goldeye Trust",
-    "email": "",
-    "type": "syndicate"
+    "id": "OWN-001",
+    "name": "B.A.X Bloodstock Achieving Xcellence Limited",
+    "entity_type": "company",
+    "contact_name": "Kylie Bax",
+    "email": "baxltd@yahoo.com",
+    "phone": "+64 21 557 045",
+    "website": "https://www.baxltd.com",
+    "x_url": "https://x.com/baxkylie",
+    "instagram_url": "https://instagram.com/b.a.x_syndications",
+    "facebook_url": "https://facebook.com/bloodstockachievingxcellence"
   },
   {
-    "name": "M & W Rose",
-    "email": "",
-    "type": "individual"
+    "id": "OWN-002",
+    "name": "Stephen Gray Racing",
+    "entity_type": "company",
+    "contact_name": "Stephen Gray",
+    "email": "stephen@stephengrayracing.com",
+    "phone": "+64 21 933 183",
+    "website": "https://www.stephengrayracing.com",
+    "x_url": "https://x.com/copperbelt_stc",
+    "instagram_url": "https://instagram.com/stephengrayracing",
+    "facebook_url": "https://facebook.com/stephengrayracing"
+  },
+  {
+    "id": "OWN-003",
+    "name": "Inspire Racing",
+    "entity_type": "syndicator",
+    "contact_name": "Sam Mynott",
+    "email": "info@inspireracing.co.nz",
+    "phone": "+64 27 410 5844",
+    "website": "https://inspireracing.co.nz",
+    "x_url": "",
+    "instagram_url": "",
+    "facebook_url": ""
+  },
+  {
+    "id": "OWN-004",
+    "name": "Mynott Racing",
+    "entity_type": "syndicator",
+    "contact_name": "Sam Mynott",
+    "email": "sam@mynottracing.com",
+    "phone": "+64 21 050 4427",
+    "website": "https://mynottracing.com",
+    "x_url": "",
+    "instagram_url": "",
+    "facebook_url": ""
   }
 ]
