@@ -214,9 +214,6 @@ export default function MyStablePage() {
   // Aggregate stats
   const totalInvestmentCents = holdings.reduce((sum, h) => sum + h.purchase_price_cents, 0);
   const totalInvestmentNzd = totalInvestmentCents / 100;
-  // Mock indicative returns (e.g. 8.2% ROI placeholder for premium look)
-  const indicativeReturnsNzd = totalInvestmentNzd > 0 ? totalInvestmentNzd * 0.082 : 0;
-  const totalValueNzd = totalInvestmentNzd + indicativeReturnsNzd;
 
   return (
     <>
@@ -415,18 +412,11 @@ export default function MyStablePage() {
 
               {/* Right Column: Financial Overview & Actions */}
               <div className="space-y-8">
-                {/* Total Value */}
+                {/* Total Investment */}
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-1">
-                  <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Total Valuation</p>
-                  <p className="text-[28px] font-light text-white">${totalValueNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
-                  <p className="text-xs text-[#21B981] font-light">+8.2% ROI (indicative)</p>
-                </div>
- 
-                {/* Total Returns */}
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-1">
-                  <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Stakes Earnings</p>
-                  <p className="text-[28px] font-light text-[#21B981]">${indicativeReturnsNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
-                  <p className="text-xs text-white/30 font-light">Accumulating prize dividends</p>
+                  <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Total Investment</p>
+                  <p className="text-[28px] font-light text-white">${totalInvestmentNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
+                  <p className="text-xs text-white/30 font-light">Acquisition value across {holdings.length} {holdings.length === 1 ? "holding" : "holdings"}</p>
                 </div>
 
                 {/* Quick Links */}
