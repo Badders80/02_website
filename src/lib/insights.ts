@@ -1187,43 +1187,67 @@ export const insightArticles: InsightArticle[] = [
     body: [
       {
         type: 'paragraph',
-        text: 'Evolution Stables does not train thoroughbreds directly. The model relies on a network of specialist partners who bring expertise in training, bloodstock selection, and regulated marketplace infrastructure. Each partner plays a distinct role in converting racing assets into a structured, transparent ownership experience.',
+        text: 'Evolution Stables is an authorised syndicator with New Zealand Thoroughbred Racing (NZTR). Authorised syndicators are approved by NZTR to publicly offer and manage shares in thoroughbred racehorses for the general public. This status requires compliance with the Bloodstock Syndicator Code of Practice, rigorous disclosure statements, and oversight to ensure transparency, investor protection, and proper management of syndicates.',
+      },
+      {
+        type: 'paragraph',
+        text: 'By operating as a digital-first authorised syndicator, Evolution Stables combines traditional racing expertise with modern digital-syndication ownership. This model lowers barriers to entry, enhances liquidity through regulated secondary markets, and provides investors with transparent performance tracking, compliance, and shared ownership in high-quality thoroughbreds.',
       },
       {
         type: 'heading',
-        text: 'Wexford Stables',
+        text: 'Wexford Stables — Lance O\'Sullivan ONZM and Andrew Scott, Matamata',
       },
       {
         type: 'paragraph',
-        text: 'Wexford Stables is based in Matamata and is run by Lance O\'Sullivan ONZM and Andrew Scott. Lance O\'Sullivan is a 12-time champion jockey who rode 2,479 career winners, including the 1989 Japan Cup aboard Horlicks. The training partnership has produced more than 600 wins. Together, they manage Prudentia and provide the campaign planning, trackwork, and raceday preparation that underpin her progression through the grades.',
+        text: 'Wexford Stables is a world-class training facility in Matamata, the heart of New Zealand\'s thoroughbred industry. Led by 12-time champion jockey Lance O\'Sullivan ONZM and experienced trainer Andrew Scott, the partnership has delivered over 600 wins together, including multiple Group and Listed race victories. Lance enjoyed a stellar riding career with 2,479 wins, highlighted by his 1989 Japan Cup triumph aboard Horlicks. Andrew Scott has trained over 1,000 winners and previously worked under prominent trainers before forming the partnership in 2006.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Wexford Stables manages the training, trackwork, and raceday preparation for Evolution Stables\' thoroughbreds, including campaign planning for athletes like Prudentia. Their deep local knowledge, state-of-the-art facilities, and proven record in producing top performers make them a cornerstone of our racing operations.',
       },
       {
         type: 'heading',
-        text: 'Stephen Gray Racing',
+        text: 'Stephen Gray Racing — Copper Belt Lodge, Palmerston North',
       },
       {
         type: 'paragraph',
-        text: 'Stephen Gray Racing operates from Copper Belt Lodge in Palmerston North, where Stephen Gray and Kevin Gray prepare thoroughbreds for the New Zealand circuit. Stephen Gray spent 24 years training in Singapore and is known for developing stayers and late-maturing types. His approach suits thoroughbreds that need time to find their best distance, which informed the decision to step First Gear up in trip after his sprint campaign.',
+        text: 'Stephen Gray Racing operates from Copper Belt Lodge in Awahuri, near Palmerston North. Stephen, in partnership with his father Kevin, brings 24 years of international success from Singapore, where he developed a reputation for patience with stayers and late-maturing types. The family returned to New Zealand in 2024 to base operations at the lodge they acquired in 2006.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Known for strategic development of thoroughbreds suited to longer trips, Stephen Gray Racing informed key decisions such as stepping up First Gear in distance. Their expertise in building staying power and international perspective complements our portfolio, delivering thoughtful, long-term racing strategies.',
       },
       {
         type: 'heading',
-        text: 'B.A.X Bloodstock',
+        text: 'B.A.X Bloodstock — Kylie Bax, Owner-Manager',
       },
       {
         type: 'paragraph',
-        text: 'B.A.X Bloodstock, formally B.A.X Bloodstock Achieving Xcellence Limited, is owner-managed by Kylie Bax. The business advises on bloodstock acquisition and sale, helping Evolution Stables source thoroughbreds that fit the campaign strategy and ownership structure. B.A.X Bloodstock\'s involvement extends from purchase through to raceday, with a focus on aligning each horse\'s commercial profile with its racing programme.',
+        text: 'B.A.X Bloodstock Achieving Xcellence Limited, led by owner-manager Kylie Bax, provides specialist bloodstock advisory services. Kylie transitioned from an international modelling career to become a respected figure in New Zealand thoroughbred breeding and syndication. Through B.A.X, she sources high-quality thoroughbreds, manages syndication teams, and races her own string with a focus on attitude, pedigree, and athletic potential.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kylie advises Evolution Stables on bloodstock acquisition and sales strategy, ensuring our syndicates feature thoroughbreds aligned with targeted racing campaigns. Her hands-on experience as both buyer and syndicator adds a sharp commercial and breeding eye to the team.',
       },
       {
         type: 'heading',
-        text: 'Tokinvest',
+        text: 'Tokinvest — VARA-Licensed Marketplace Partner',
       },
       {
         type: 'paragraph',
-        text: 'Tokinvest FZCO is the regulated marketplace partner that hosts Evolution Stables\' digital-syndication offerings. Licensed by the Dubai Virtual Assets Regulatory Authority (VARA), Tokinvest handles onboarding, ownership records, and settlement infrastructure. Its role is to provide the compliance, technology, and cross-border distribution rails that allow fractional ownership in racehorse leases to operate under a recognised regulatory framework.',
+        text: 'Tokinvest is a pioneering, VARA-regulated real-world asset marketplace based in Dubai. It holds one of the first full multi-asset issuance licences from the Dubai Virtual Assets Regulatory Authority (VARA), enabling compliant digital-syndication, brokerage, and global distribution of assets. Tokinvest provides the technology backbone for Evolution Stables\' digital-syndication, handling investor onboarding, ownership records, KYC/AML compliance, settlements, and secondary market liquidity.',
       },
       {
         type: 'paragraph',
-        text: 'Combined, these partners allow Evolution Stables to focus on asset selection, owner experience, and reporting standards while leaving training, bloodstock judgement, and regulated distribution to the specialists.',
+        text: 'This partnership delivers regulated, financial-grade infrastructure that bridges traditional racing with accessible, digital-syndication ownership — making high-calibre racehorse investment available to a broader audience while maintaining full compliance.',
+      },
+      {
+        type: 'heading',
+        text: 'Working Together',
+      },
+      {
+        type: 'paragraph',
+        text: 'At Evolution Stables, these partners form a complete ecosystem: elite bloodstock sourcing (B.A.X), world-class training across regions (Wexford Stables and Stephen Gray Racing), and regulated digital infrastructure (Tokinvest). Together with our role as an NZTR-authorised syndicator, this team delivers transparent, high-integrity syndication that honours racing tradition while embracing modern ownership. Whether you\'re a first-time investor or seasoned owner, our collective expertise ensures every syndicate is built for performance, compliance, and shared enjoyment.',
       },
     ],
   },
