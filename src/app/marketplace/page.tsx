@@ -80,7 +80,7 @@ export default async function MarketplacePage() {
         trainerContact,
         pedigree: hlt.pedigree || pedigreeParts.join(" / "),
         price: `$${Number(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
-        availability: `${Number(hlt.shares_total) - Number(hlt.shares_sold)} / ${Number(hlt.shares_total)} Left`,
+        availability: `${Math.round((Number(hlt.shares_sold) / Number(hlt.shares_total)) * 100)}% subscribed`,
         is_active: hlt.listing_status === "active",
         status: getCampaignStatus(hlt),
         horse: {

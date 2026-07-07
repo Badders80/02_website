@@ -362,7 +362,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                   </div>
                   {status === "become-an-owner" && (
                     <span className="text-[12px] font-light text-white/40">
-                      {sharesAvailable} / {hltRecord.shares_total} shares
+                      {Math.round((hltRecord.shares_sold / hltRecord.shares_total) * 100)}% subscribed
                     </span>
                   )}
                 </div>

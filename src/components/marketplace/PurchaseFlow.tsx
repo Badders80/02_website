@@ -154,7 +154,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                 <div>
                   <p className="text-[11px] uppercase tracking-wider text-white/30 mb-1">Quantity</p>
                   <p className="text-[12px] font-light text-white/50">
-                    {percentStake}% total stake
+                    {percentStake}% of the horse
                   </p>
                 </div>
                 <div className="flex items-center gap-4">

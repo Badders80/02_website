@@ -304,9 +304,13 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
                         hlt[num_field] = float(val)
                     except (ValueError, TypeError):
                         hlt[num_field] = 0
-            # Unregistered horses: 20 shares, 0 sold → shows as "Coming Soon"
+            # Unregistered horses: no pricing, no lease terms yet
             hlt["shares_total"] = 20
             hlt["shares_sold"] = 0
+            hlt["price_per_share_nzd"] = 0
+            hlt["leasehold_stake_pct"] = 0
+            hlt["investor_return_pct"] = 0
+            hlt["lease_period_months"] = 0
             hlt.pop("syndicate_price_nzd", None)
             hlt["listing_status"] = "draft"
             hlt["marketplace_visible"] = False
