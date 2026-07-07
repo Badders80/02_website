@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { NavBar } from "@/components/NavBar";
@@ -42,6 +42,9 @@ export default function PurchasePage(props: PurchasePageProps) {
   const [errorMsg, setErrorMsg] = useState("");
   const [inventory, setInventory] = useState<LiveInventory | null>(null);
   const [inventoryLoading, setInventoryLoading] = useState(true);
+
+  const pdsScrollRef = useRef<HTMLDivElement>(null);
+  const saScrollRef = useRef<HTMLDivElement>(null);
 
   const signatureName = user?.displayName || user?.email?.split("@")[0] || "Verified Investor";
 
@@ -326,6 +329,7 @@ export default function PurchasePage(props: PurchasePageProps) {
 
                     {props.hasPds ? (
                       <div
+                        ref={pdsScrollRef}
                         onScroll={(e) => {
                           const target = e.currentTarget;
                           if (target.scrollHeight - target.scrollTop - target.clientHeight < 50) {
@@ -340,6 +344,23 @@ export default function PurchasePage(props: PurchasePageProps) {
                       <div className="h-32 flex items-center justify-center text-[12px] font-light text-white/30 bg-black/40 rounded-lg border border-white/[0.04]">
                         Document being prepared — purchasing will be available once disclosures are published.
                       </div>
+                    )}
+
+                    {/* Skip to End shortcut */}
+                    {props.hasPds && !pdsScrolled && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const el = pdsScrollRef.current;
+                          if (el) {
+                            el.scrollTop = el.scrollHeight;
+                            setPdsScrolled(true);
+                          }
+                        }}
+                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
+                      >
+                        Skip to End ↓
+                      </button>
                     )}
 
                     {/* Pre-populated Signature block */}
@@ -413,6 +434,7 @@ export default function PurchasePage(props: PurchasePageProps) {
 
                     {props.hasSa ? (
                       <div
+                        ref={saScrollRef}
                         onScroll={(e) => {
                           const target = e.currentTarget;
                           if (target.scrollHeight - target.scrollTop - target.clientHeight < 50) {
@@ -427,6 +449,23 @@ export default function PurchasePage(props: PurchasePageProps) {
                       <div className="h-32 flex items-center justify-center text-[12px] font-light text-white/30 bg-black/40 rounded-lg border border-white/[0.04]">
                         Document being prepared — purchasing will be available once disclosures are published.
                       </div>
+                    )}
+
+                    {/* Skip to End shortcut */}
+                    {props.hasSa && !saScrolled && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const el = saScrollRef.current;
+                          if (el) {
+                            el.scrollTop = el.scrollHeight;
+                            setSaScrolled(true);
+                          }
+                        }}
+                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
+                      >
+                        Skip to End ↓
+                      </button>
                     )}
 
                     {/* Pre-populated Signature block */}

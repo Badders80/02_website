@@ -6,9 +6,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import fs from "fs";
+import path from "path";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 import { getCampaignStatus, STATUS_INFO } from "@/lib/campaign-status";
+
+// Scan a horse's gallery directory for images (excluding the cover image already used)
+function getGalleryImages(slug: string, coverUrl?: string): string[] {
+  const dir = path.join(process.cwd(), "public", "images", "content", "horses", slug);
+  if (!fs.existsSync(dir)) return [];
+  const validExts = [".png", ".jpg", ".jpeg", ".webp", ".avif"];
+  const coverBasename = coverUrl ? path.basename(coverUrl) : null;
+  return fs
+    .readdirSync(dir)
+    .filter((f) => validExts.includes(path.extname(f).toLowerCase()))
+    .filter((f) => f !== coverBasename) // exclude the cover image from gallery
+    .sort()
+    .map((f) => `/images/content/horses/${slug}/${f}`)
+    .slice(0, 6);
+}
 
 // Racing freshness calculator (NZTR Love Racing records)
 const getRacingFreshness = (slug: string) => {
@@ -298,19 +315,29 @@ export default async function CampaignDetailPage({ params }: Props) {
                 </div>
               </div>
 
-              {/* Section B2: Gallery (mock placeholders) */}
-              <div className="grid grid-cols-3 gap-3">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="relative aspect-[4/3] rounded-xl border border-white/[0.04] bg-white/[0.01] flex items-center justify-center overflow-hidden"
-                  >
-                    <div className="text-[10px] font-light text-white/15 uppercase tracking-wider">
-                      Gallery
-                    </div>
+              {/* Section B2: Gallery (auto-rendered from /public/images/content/horses/[slug]/) */}
+              {(() => {
+                const galleryImages = getGalleryImages(id, horse?.image_url);
+                if (galleryImages.length === 0) return null;
+                return (
+                  <div className="grid grid-cols-3 gap-3">
+                    {galleryImages.map((src, i) => (
+                      <div
+                        key={src}
+                        className="relative aspect-[4/3] rounded-xl border border-white/[0.04] bg-white/[0.01] overflow-hidden group"
+                      >
+                        <Image
+                          src={src}
+                          alt={`${horse?.name || "Horse"} — photo ${i + 1}`}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+                          sizes="(max-width: 768px) 33vw, 20vw"
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                );
+              })()}
 
               {/* Section C: The Story */}
               <section className="space-y-4">
