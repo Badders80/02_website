@@ -211,6 +211,38 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
     // Non-fatal — holding + inventory already processed
   }
 
+  // Step 5b: Send admin notification email
+  try {
+    const adminEmail = process.env.ADMIN_NOTIFY_EMAIL || process.env.SMTP_FROM;
+    if (adminEmail) {
+      const adminHtml = `
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6;">
+  <div style="border-bottom: 2px solid #0a0a0a; padding-bottom: 16px; margin-bottom: 24px;">
+    <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Evolution Stables — New Acquisition</h1>
+  </div>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+    <tr><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; font-weight: 600;">Investor</td><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">${userEmail}</td></tr>
+    <tr><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; font-weight: 600;">Horse</td><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">${horseDisplayName}</td></tr>
+    <tr><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; font-weight: 600;">Shares</td><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">${sharesToBuy}</td></tr>
+    <tr><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; font-weight: 600;">Total</td><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">NZ$${purchasePriceTotalNzd.toFixed(2)}</td></tr>
+    <tr><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; font-weight: 600;">Session ID</td><td style="padding: 8px 0; border-bottom: 1px solid #e5e5e5; text-align: right; font-family: monospace; font-size: 12px;">${sessionId}</td></tr>
+  </table>
+  <p style="font-size: 14px; color: #666;">Verify holding in Google Sheets and confirm signed PDF delivery.</p>
+</body></html>`.trim();
+      await sendEmail({
+        to: adminEmail,
+        subject: `[Acquisition] ${sharesToBuy} share${sharesToBuy > 1 ? 's' : ''} in ${horseDisplayName} — ${userEmail}`,
+        html: adminHtml,
+      });
+      console.log(`[webhook] ✅ Admin notification sent to ${adminEmail}`);
+    }
+  } catch (err: any) {
+    console.error(`[webhook] Failed to send admin notification:`, err.message);
+    // Non-fatal
+  }
+
   // Step 6: Log communication to Google Sheets
   // -------------------------------------------------------------------------
   try {
