@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     try {
       const decoded = await verifyIdToken(token);
       verifiedUid = decoded.uid;
-      verifiedEmail = decoded.email || body.user_email;
+      verifiedEmail = decoded.email || '';
     } catch (e: any) {
       return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
     }
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
           quantity: shares_to_buy,
           price_data: {
             currency: 'nzd',
-            unit_amount: pricePerShareNzd * 100, // per share in cents
+            unit_amount: Math.round(pricePerShareNzd * 100), // per share in cents (Math.round prevents float errors)
             product_data: {
               name: `${horseName} — Share${shares_to_buy > 1 ? 's' : ''}`,
               description: `Syndication share${shares_to_buy > 1 ? 's' : ''} in ${horseName}. ${leasePeriodMonths}-month lease, ${investorReturnPct}% return to investors.`,
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       ],
       metadata: {
         user_id: userId,
-        user_email: user_email || verifiedEmail || '',
+        user_email: verifiedEmail || user_email || '',
         hlt_id,
         shares_to_buy: String(shares_to_buy),
         price_per_share_nzd: String(pricePerShareNzd),

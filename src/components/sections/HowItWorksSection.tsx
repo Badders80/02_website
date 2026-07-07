@@ -61,17 +61,17 @@ export function HowItWorksSection() {
         );
       }
 
-      // Cards stagger in from left
+      // Cards stagger up from below
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(':scope > div');
         gsap.fromTo(
           cards,
-          { x: -100, opacity: 0 },
+          { y: 60, opacity: 0 },
           {
-            x: 0,
+            y: 0,
             opacity: 1,
             duration: 0.8,
-            stagger: 0.2,
+            stagger: 0.15,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: gridRef.current,

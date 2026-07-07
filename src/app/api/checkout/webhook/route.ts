@@ -42,8 +42,8 @@ export async function POST(request: NextRequest) {
 
     switch (event.type) {
       case 'checkout.session.completed': {
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
-        break;
+        const result = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        return NextResponse.json({ received: true, ...result });
       }
 
       case 'checkout.session.expired':
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 // Main handler: checkout.session.completed
 // ---------------------------------------------------------------------------
 
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<void> {
+async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<{ duplicate?: boolean }> {
   const meta = session.metadata || {};
   const sessionId = session.id;
   const userEmail = meta.user_email || '';
@@ -88,7 +88,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
     const alreadyExists = await checkHoldingExists(sessionId);
     if (alreadyExists) {
       console.log(`[webhook] Duplicate webhook delivery for ${sessionId} — skipping (idempotent)`);
-      return;
+      return { duplicate: true };
     }
   } catch (err: any) {
     console.error(`[webhook] Idempotency check failed for ${sessionId}:`, err.message);
@@ -100,12 +100,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
   let amountMismatch = false;
   let expectedTotalCents = 0;
   let pricePerShareNzd = pricePerShareFromMeta;
+  let horseDisplayName = hltId; // fallback to slug, upgraded to display name if inventory read succeeds
 
   try {
     // Read authoritative price from Inventory sheet
     const inventory = await readInventoryBySlug(hltId);
     if (inventory) {
       pricePerShareNzd = inventory.price_per_share_nzd;
+      if (inventory.name) {
+        horseDisplayName = inventory.name;
+      }
     } else {
       console.warn(`[webhook] Could not read inventory for ${hltId} — using metadata price`);
     }
@@ -148,8 +152,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
     console.log(`[webhook] ✅ Holding recorded for ${sessionId}`);
   } catch (err: any) {
     console.error(`[webhook] CRITICAL: Failed to record holding for ${sessionId}:`, err.message);
-    // This is the most critical step — if it fails, payment data is at risk
-    // Log prominently but continue to try remaining steps
+    // The holding is the canonical payment record. If we can't record it,
+    // do not update inventory or send email — that would create orphaned state.
+    // Re-throw to halt processing. Stripe will retry the webhook.
+    throw new Error(`Holding record failed for ${sessionId}: ${err.message}`);
   }
 
   // Step 4: Update inventory shares_sold
@@ -185,10 +191,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
   let emailSnippet = '';
 
   try {
-    emailSubject = `Welcome to the ${hltId} Syndicate!`;
-    emailSnippet = `Your ${sharesToBuy} share${sharesToBuy > 1 ? 's' : ''} in ${hltId} ${sharesToBuy > 1 ? 'have' : 'has'} been confirmed.`;
+    emailSubject = `Welcome to the ${horseDisplayName} Syndicate!`;
+    emailSnippet = `Your ${sharesToBuy} share${sharesToBuy > 1 ? 's' : ''} in ${horseDisplayName} ${sharesToBuy > 1 ? 'have' : 'has'} been confirmed.`;
     emailHtml = buildWelcomeEmailHtml({
-      horseName: hltId,
+      horseName: horseDisplayName,
       sharesOwned: sharesToBuy,
       purchasePriceTotalNzd,
     });
@@ -211,7 +217,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
     await appendCommunication({
       timestamp,
       recipient_email: userEmail,
-      subject: emailSubject || `Welcome to the ${hltId} Syndicate!`,
+      subject: emailSubject || `Welcome to the ${horseDisplayName} Syndicate!`,
       snippet: emailSnippet || 'Syndication share purchase confirmed.',
       body_html: emailHtml || '',
       category: 'welcome',
@@ -229,6 +235,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
     );
   }
   console.log(`[webhook] Processing complete for ${sessionId}`);
+  return {};
 }
 
 // ---------------------------------------------------------------------------

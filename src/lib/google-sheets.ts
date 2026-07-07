@@ -3,7 +3,10 @@ import path from "path";
 import fs from "fs";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg";
-const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "hlts";
+const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "Inventory";
+const HOLDINGS_TAB = process.env.GOOGLE_SHEETS_HOLDINGS_TAB || "Holdings";
+const LEADS_TAB = process.env.GOOGLE_SHEETS_LEADS_TAB || "Leads";
+const COMMUNICATIONS_TAB = process.env.GOOGLE_SHEETS_COMMUNICATIONS_TAB || "Communications";
 
 // In-memory cache for inventory reads (60s TTL)
 const inventoryCache: Record<string, { data: any; expiry: number }> = {};
@@ -279,7 +282,7 @@ export async function appendHolding(row: HoldingRow): Promise<void> {
   try {
     await withRetry(async () => {
       const sheets = getSheets();
-      await ensureSheetExists(sheets, "holdings", HOLDINGS_HEADERS);
+      await ensureSheetExists(sheets, HOLDINGS_TAB, HOLDINGS_HEADERS);
       const values = [[
         row.purchase_id, row.timestamp, row.user_email, row.horse_slug,
         row.shares_owned, row.purchase_price_total_nzd,
@@ -288,7 +291,7 @@ export async function appendHolding(row: HoldingRow): Promise<void> {
       ]];
       await sheets.spreadsheets.values.append({
         spreadsheetId: SPREADSHEET_ID,
-        range: "holdings!A:K",
+        range: `${HOLDINGS_TAB}!A:K`,
         valueInputOption: "RAW",
         requestBody: { values },
       });
@@ -305,7 +308,7 @@ export async function checkHoldingExists(purchaseId: string): Promise<boolean> {
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: "holdings!A:K",
+        range: `${HOLDINGS_TAB}!A:K`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) return false;
@@ -328,7 +331,7 @@ export async function readHoldingsByEmail(email: string): Promise<HoldingRow[]> 
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: "holdings!A:K",
+        range: `${HOLDINGS_TAB}!A:K`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) return [];
@@ -369,7 +372,7 @@ export async function appendLead(row: LeadRow): Promise<void> {
   try {
     await withRetry(async () => {
       const sheets = getSheets();
-      await ensureSheetExists(sheets, "leads", LEADS_HEADERS);
+      await ensureSheetExists(sheets, LEADS_TAB, LEADS_HEADERS);
       const values = [[
         row.timestamp, row.user_email, row.user_name, row.horse_slug,
         row.action_type, row.utm_source, row.utm_campaign,
@@ -377,7 +380,7 @@ export async function appendLead(row: LeadRow): Promise<void> {
       ]];
       await sheets.spreadsheets.values.append({
         spreadsheetId: SPREADSHEET_ID,
-        range: "leads!A:I",
+        range: `${LEADS_TAB}!A:I`,
         valueInputOption: "RAW",
         requestBody: { values },
       });
@@ -398,14 +401,14 @@ export async function appendCommunication(row: CommunicationRow): Promise<void> 
   try {
     await withRetry(async () => {
       const sheets = getSheets();
-      await ensureSheetExists(sheets, "communications", COMMUNICATIONS_HEADERS);
+      await ensureSheetExists(sheets, COMMUNICATIONS_TAB, COMMUNICATIONS_HEADERS);
       const values = [[
         row.timestamp, row.recipient_email, row.subject,
         row.snippet, row.body_html, row.category,
       ]];
       await sheets.spreadsheets.values.append({
         spreadsheetId: SPREADSHEET_ID,
-        range: "communications!A:F",
+        range: `${COMMUNICATIONS_TAB}!A:F`,
         valueInputOption: "RAW",
         requestBody: { values },
       });
@@ -422,7 +425,7 @@ export async function readCommunicationsByEmail(email: string): Promise<Communic
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: "communications!A:F",
+        range: `${COMMUNICATIONS_TAB}!A:F`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) return [];

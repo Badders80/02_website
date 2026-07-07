@@ -34,14 +34,14 @@ export function MarketplaceSection() {
         );
       }
 
-      // Cards stagger in from left
+      // Cards stagger up from below
       if (cardsRef.current) {
         const cards = cardsRef.current.querySelectorAll(':scope > div');
         gsap.fromTo(
           cards,
-          { x: -100, opacity: 0 },
+          { y: 60, opacity: 0 },
           {
-            x: 0,
+            y: 0,
             opacity: 1,
             duration: 0.8,
             stagger: 0.15,

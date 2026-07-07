@@ -63,18 +63,19 @@ export function DigitalSyndicationSection() {
         );
       }
 
-      // Right column benefits slide in from right, staggered
+      // Right column benefits stagger up from below, delayed after left column finishes
       if (rightColRef.current) {
         const items = rightColRef.current.querySelectorAll(':scope > div > div > div');
         gsap.fromTo(
           items,
-          { x: 80, opacity: 0 },
+          { y: 40, opacity: 0 },
           {
-            x: 0,
+            y: 0,
             opacity: 1,
-            duration: 0.8,
-            stagger: 0.15,
+            duration: 0.7,
+            stagger: 0.12,
             ease: 'power3.out',
+            delay: 0.5,
             scrollTrigger: {
               trigger: rightColRef.current,
               start: 'top 85%',
