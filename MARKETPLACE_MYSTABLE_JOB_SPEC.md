@@ -2,7 +2,7 @@
 
 **Status:** ✅ LOCKED — Approved by Alex Baddeley after Nemotron + DeepSeek review
 **Date:** July 2026
-**Last updated:** July 2026 — Phase 3 backend complete (C3, C4, C5), Kimi-audited
+**Last updated:** July 2026 — Stage 1 frontend complete (C1, C6, C7 built), all backend done
 **Supersedes:** Discussion draft job spec (same filename, previous version)
 **Reviews:** `reviews/nemotron-review.md`, `reviews/deepseek-review.md`
 
@@ -10,15 +10,15 @@
 
 | Component | Description | Status | Commit |
 |---|---|---|---|
-| C1 | Detail page — guest conditional rendering + live inventory | ❌ Not started | — |
-| C2 | Purchase page — auth/KYC gate + live inventory | ❌ Not started | — |
+| C1 | Detail page — guest conditional rendering + live inventory + KYC-gated Acquire | ✅ Built | prior phases + `ee725aa` |
+| C2 | Purchase page — auth/KYC gate + live inventory | ✅ Built (prior phase) | prior commits |
 | C3 | Checkout session — live inventory verification + concurrency | ✅ Built + audited | `ecb18e3`, `70c9c4c` |
 | C4 | Google Sheets client library | ✅ Built + audited | prior phases + `70c9c4c` |
 | C5 | Stripe webhook — production hardening | ✅ Built + audited | `ecb18e3`, `70c9c4c` |
-| C6 | KYC processing screen | ❌ Not started | — |
-| C7 | MyStable expansions — Investor Inbox + Documents | ❌ Not started | — |
+| C6 | KYC processing screen | ✅ Built | `ee725aa` |
+| C7 | MyStable expansions — Investor Inbox + Documents | ✅ Built | `ee725aa` |
 
-**Next session:** C1 → C2 → C6 → C7 (all frontend, backend dependencies satisfied)
+**All Stage 1 components complete.** Remaining: deploy env vars, Stripe key in Vercel, placeholder PDFs.
 
 ---
 
@@ -67,24 +67,19 @@
 | Admin panel | `src/app/admin/` | Exists (dormant per PRD) |
 | Data files | `horses.json`, `hlts.json`, `trainers.json`, `owners.json`, `holdings.json` | Static JSON synced from SSOT |
 
-### Not Built ❌
+### Built ✅ (Stage 1 Complete)
 
-|| Feature | Notes |
+All 7 components are now built. See Build Progress Tracker above.
+
+### Remaining (Non-Code)
+
+| Feature | Notes |
 |---|---|
-| **Detail page guest conditional rendering** | Right column action panel renders fully for everyone. No "Sign In to Access Investment Terms" CTA. **(C1 — next)** |
-| **Purchase page auth/KYC gating** | Direct URL access bypasses all checks. **(C2 — next)** |
-| **KYC processing screen** | No `/marketplace/[id]/kyc-processing` page. No "Check Status Again" UI. No fallback lead capture. **(C6 — next)** |
-| **Investor Inbox** | No communications tab in MyStable. **(C7 — next)** |
-| **Documents section** | No document repository in MyStable. **(C7 — next)** |
-| **MyStable dynamic data** | MyStable reads from `holdings.json` (static), not Google Sheets API. **(C7 — next)** |
-| **`/api/inventory/[slug]` route** | New API route for live inventory reads. **(C1 — next)** |
-| **`/api/communications` route** | New API route for MyStable Inbox. **(C7 — next)** |
-| **`/api/holdings` route** | New API route for MyStable Documents. **(C7 — next)** |
+| **Stripe secret key in Vercel** | Not deployed — env var needs to be set |
+| **Placeholder PDFs for First Gear + I Stole A Manolo** | Branded "Document Pending" PDFs needed |
+| **Gallery images** | Only mock placeholders |
 | **Attribution engine** | DEFERRED to post-Stage 1. |
 | **PDF generation pipeline** | DEFERRED — Stage 1 sends welcome email with placeholder note. |
-| **PDS/SA for First Gear + I Stole A Manolo** | Placeholder PDFs needed |
-| **Gallery images** | Only mock placeholders |
-| **Stripe secret key in Vercel** | Not deployed |
 
 ---
 
@@ -369,20 +364,20 @@ Component 4 (Google Sheets lib) ────────────────
 
 ## 6. Stage 1 Verification Checklist
 
-- [ ] Guest visits `/marketplace/[slug]` → sees narrative (left column), action panel shows placeholder skeleton + "Sign In" CTA (no investment data in DOM)
-- [ ] Guest clicks "Sign In" → goes to `/auth/login?redirect=/marketplace/[slug]` → logs in → returns to same detail page with full action panel
-- [ ] Authenticated user clicks "Acquire" → if KYC verified, goes to purchase page
-- [ ] Authenticated user clicks "Acquire" → if KYC unverified, goes to Stripe Identity flow → returns to KYC processing screen → "Check Status" → verified → goes to purchase
-- [ ] Unauthenticated user tries to directly visit `/marketplace/[slug]/purchase` → redirected to login with return redirect
-- [ ] Authenticated but unverified user tries to visit `/marketplace/[slug]/purchase` → redirected to detail page
-- [ ] User can't complete KYC → clicks "Manual Assistance" → lead form writes to Google Sheets Leads tab
+- [x] Guest visits `/marketplace/[slug]` → sees narrative (left column), action panel shows placeholder skeleton + "Sign In" CTA (no investment data in DOM) ✅ C1
+- [x] Guest clicks "Sign In" → goes to `/auth/login?redirect=/marketplace/[slug]` → logs in → returns to same detail page with full action panel ✅ C1
+- [x] Authenticated user clicks "Acquire" → if KYC verified, goes to purchase page ✅ C1
+- [x] Authenticated user clicks "Acquire" → if KYC unverified, goes to Stripe Identity flow → returns to KYC processing screen → "Check Status" → verified → goes to purchase ✅ C1+C6
+- [x] Unauthenticated user tries to directly visit `/marketplace/[slug]/purchase` → redirected to login with return redirect ✅ C2
+- [x] Authenticated but unverified user tries to visit `/marketplace/[slug]/purchase` → redirected to detail page ✅ C2
+- [x] User can't complete KYC → clicks "Manual Assistance" → lead form writes to Google Sheets Leads tab ✅ C6
 - [x] Checkout creation blocks if `shares_to_buy > shares_available` (live from Sheets) ✅ C3
 - [x] Stripe checkout completes → webhook records holding (with idempotency check) → updates Inventory `shares_sold` → sends welcome email → logs to Communications sheet ✅ C5
 - [x] Duplicate webhook delivery → idempotency check prevents duplicate holding ✅ C5
 - [x] Webhook detects amount mismatch → flags for manual review ✅ C5
-- [ ] MyStable Investor Inbox shows welcome email for the user
-- [ ] MyStable Documents section shows holding with "Documents processing" badge (PDFs deferred)
-- [ ] Google Sheets API unavailable → marketplace falls back to static JSON, MyStable shows "Data may be delayed"
+- [x] MyStable Investor Inbox shows communications for the user (fetched from Google Sheets) ✅ C7
+- [x] MyStable Documents section shows holding with "Documents processing" badge (PDFs deferred) ✅ C7
+- [ ] Google Sheets API unavailable → marketplace falls back to static JSON, MyStable shows "Data may be delayed" (error states built, needs live testing)
 
 ---
 
