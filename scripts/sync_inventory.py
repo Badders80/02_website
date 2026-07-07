@@ -241,9 +241,25 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
         # Shares: preserve from existing for website-only fields
         shares_total = int(ssot_hlt.get("num_tokens") or existing_hlt.get("shares_total") or 100)
         shares_sold = int(existing_hlt.get("shares_sold") or 0)
-        # Prudentia correction: fully subscribed
-        if horse_slug == "prudentia":
-            shares_sold = shares_total  # Fully sold out
+
+        # Horse-specific overrides (canonical marketplace state)
+        # First Gear: sold out + retired → Term Completed
+        if horse_slug == "first-gear":
+            shares_sold = shares_total
+            listing_status = "retired"
+            marketplace_visible = False
+        # Prudentia: fully subscribed
+        elif horse_slug == "prudentia":
+            shares_sold = shares_total
+        # Hottathanafantasy: fully subscribed
+        elif horse_slug == "hottathanafantasy":
+            shares_sold = shares_total
+        # I Stole A Manolo: not yet launched → Coming Soon
+        elif horse_slug == "i-stole-a-manolo":
+            shares_sold = 0
+            listing_status = "draft"
+            marketplace_visible = False
+        # Nellie + TLM x Yearn: unregistered → Coming Soon (handled in unregistered block)
 
         # Pricing from lease
         price_per_share = float(lease.get("token_price_nzd") or ssot_hlt.get("token_price_nzd") or existing_hlt.get("price_per_share_nzd") or 0)
