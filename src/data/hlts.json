@@ -19,7 +19,7 @@
     "shares_sold": 20,
     "price_per_share_nzd": 240.0,
     "listing_status": "retired",
-    "marketplace_visible": false,
+    "marketplace_visible": true,
     "image_path": "/images/content/horses/FirstGear-BG.png",
     "story": "An impressive pedigree showing great progress in early education. Currently in pre-training under Stephen Gray.",
     "pedigree": "Gelding / Bay / Derryn x A'Guin Ace",

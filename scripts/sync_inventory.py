@@ -247,7 +247,7 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
         if horse_slug == "first-gear":
             shares_sold = shares_total
             listing_status = "retired"
-            marketplace_visible = False
+            marketplace_visible = True
         # Prudentia: fully subscribed
         elif horse_slug == "prudentia":
             shares_sold = shares_total
