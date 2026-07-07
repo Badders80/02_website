@@ -28,3 +28,8 @@ Thumbs.db
 .env.production
 .env.vercel-pulled
 _reference/
+
+# Google credentials — never commit
+scripts/firebase-service-account.json
+scripts/client-secret.json
+scripts/token.json
