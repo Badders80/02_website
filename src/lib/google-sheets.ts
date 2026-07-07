@@ -41,6 +41,16 @@ function getSheets() {
   return google.sheets({ version: "v4", auth: getAuth() });
 }
 
+function columnToLetter(column: number): string {
+  let temp = column;
+  let letter = "";
+  while (temp >= 0) {
+    letter = String.fromCharCode((temp % 26) + 65) + letter;
+    temp = Math.floor(temp / 26) - 1;
+  }
+  return letter;
+}
+
 // --- Types ---
 
 export interface InventoryRow {
@@ -181,10 +191,10 @@ export async function getLiveInventory(horseSlug: string) {
     shares_available: Math.max(0, row.shares_total - row.shares_sold),
     listing_status: row.listing_status,
     price_per_share_nzd: row.price_per_share_nzd,
-    totalLeasePercent: row.leasehold_stake_pct,
-    leasePeriodMonths: row.lease_period_months,
-    leaseStartDate: row.lease_start_date,
-    investorReturnPct: row.investor_return_pct,
+    totalLeasePercent: row.leasehold_stake_pct || 100,
+    leasePeriodMonths: row.lease_period_months || 36,
+    leaseStartDate: row.lease_start_date || "",
+    investorReturnPct: row.investor_return_pct || 80,
   };
 }
 
@@ -217,7 +227,7 @@ export async function updateInventorySharesSold(slug: string, newSharesSold: num
       }
 
       const sheetRow = rowIndex + 2; // 1-indexed + header row
-      const soldColumn = String.fromCharCode(65 + soldIndex); // Convert 0-indexed to letter
+      const soldColumn = columnToLetter(soldIndex); // Convert 0-indexed to letter
 
       await sheets.spreadsheets.values.update({
         spreadsheetId: SPREADSHEET_ID,

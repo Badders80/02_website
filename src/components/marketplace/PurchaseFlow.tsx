@@ -51,7 +51,7 @@ export default function PurchasePage(props: PurchasePageProps) {
       if (!user) {
         router.push(`/auth/login?redirect=/marketplace/${props.horseSlug}/purchase`);
       } else if (kycStatus !== "verified") {
-        router.push(`/mystable/verify`);
+        router.push(`/marketplace/${props.horseSlug}`);
       }
     }
   }, [authLoading, user, kycStatus, router, props.horseSlug]);
