@@ -35,8 +35,10 @@ export default function PurchasePage(props: PurchasePageProps) {
   const [sharesToBuy, setSharesToBuy] = useState(1);
   const [pdsAgreed, setPdsAgreed] = useState(false);
   const [pdsScrolled, setPdsScrolled] = useState(false);
+  const [pdsScrollable, setPdsScrollable] = useState(false);
   const [saAgreed, setSaAgreed] = useState(false);
   const [saScrolled, setSaScrolled] = useState(false);
+  const [saScrollable, setSaScrollable] = useState(false);
   const [agreementSubStep, setAgreementSubStep] = useState<1 | 2>(1);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -45,6 +47,33 @@ export default function PurchasePage(props: PurchasePageProps) {
 
   const pdsScrollRef = useRef<HTMLDivElement>(null);
   const saScrollRef = useRef<HTMLDivElement>(null);
+
+  // Track when PDS/SA containers become scrollable (PDF load / layout shifts)
+  useEffect(() => {
+    function isScrollable(el: HTMLElement) {
+      return el.scrollHeight > el.clientHeight + 1;
+    }
+
+    function updateScrollable() {
+      setPdsScrollable(!!(pdsScrollRef.current && isScrollable(pdsScrollRef.current)));
+      setSaScrollable(!!(saScrollRef.current && isScrollable(saScrollRef.current)));
+    }
+
+    updateScrollable();
+
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateScrollable);
+      if (pdsScrollRef.current) observer.observe(pdsScrollRef.current);
+      if (saScrollRef.current) observer.observe(saScrollRef.current);
+    }
+
+    window.addEventListener("resize", updateScrollable);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateScrollable);
+    };
+  }, [props.hasPds, props.hasSa, agreementSubStep]);
 
   const signatureName = user?.displayName || user?.email?.split("@")[0] || "Verified Investor";
 
@@ -350,14 +379,15 @@ export default function PurchasePage(props: PurchasePageProps) {
                     {props.hasPds && !pdsScrolled && (
                       <button
                         type="button"
+                        disabled={!pdsScrollable}
                         onClick={() => {
                           const el = pdsScrollRef.current;
-                          if (el) {
+                          if (el && el.scrollHeight > el.clientHeight) {
                             el.scrollTop = el.scrollHeight;
                             setPdsScrolled(true);
                           }
                         }}
-                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
+                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition py-1"
                       >
                         Skip to End ↓
                       </button>
@@ -455,14 +485,15 @@ export default function PurchasePage(props: PurchasePageProps) {
                     {props.hasSa && !saScrolled && (
                       <button
                         type="button"
+                        disabled={!saScrollable}
                         onClick={() => {
                           const el = saScrollRef.current;
-                          if (el) {
+                          if (el && el.scrollHeight > el.clientHeight) {
                             el.scrollTop = el.scrollHeight;
                             setSaScrolled(true);
                           }
                         }}
-                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
+                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition py-1"
                       >
                         Skip to End ↓
                       </button>
