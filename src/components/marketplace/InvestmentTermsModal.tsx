@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 
 interface InvestmentTermsModalProps {
   horseName: string;
@@ -27,10 +28,53 @@ export function InvestmentTermsModal({
   sharesAvailable,
 }: InvestmentTermsModalProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [kycLoading, setKycLoading] = useState(false);
+  const [kycError, setKycError] = useState("");
+  const { user, kycStatus } = useAuth();
   const router = useRouter();
 
-  const handleAcquire = () => {
-    router.push(`/marketplace/${horseSlug}/purchase`);
+  const handleAcquire = async () => {
+    // KYC gate: verified → purchase, pending → processing screen, none → trigger KYC
+    if (kycStatus === "verified") {
+      router.push(`/marketplace/${horseSlug}/purchase`);
+    } else if (kycStatus === "pending") {
+      router.push(`/marketplace/${horseSlug}/kyc-processing`);
+    } else {
+      // Trigger Stripe Identity KYC flow
+      if (!user) return;
+      setKycLoading(true);
+      setKycError("");
+      try {
+        const token = await user.getIdToken(true);
+        const res = await fetch("/api/kyc/create-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            user_id: user.uid,
+            email: user.email,
+            return_url: `${window.location.origin}/marketplace/${horseSlug}/kyc-processing`,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: "Failed to start KYC" }));
+          throw new Error(err.error || "Failed to start KYC");
+        }
+        const data = await res.json();
+        if (data.verified) {
+          // Already verified server-side — go to purchase
+          router.push(`/marketplace/${horseSlug}/purchase`);
+        } else if (data.session_url || data.url) {
+          window.location.href = data.session_url || data.url;
+        }
+      } catch (err: any) {
+        setKycError(err.message || "Failed to start verification");
+      } finally {
+        setKycLoading(false);
+      }
+    }
   };
 
   return (
@@ -114,13 +158,29 @@ export function InvestmentTermsModal({
               Race-day costs — jockey, trainer, nominations — are handled within the ownership framework. Investors are not asked to fund operating expenses.
             </p>
 
+            {/* KYC status hint */}
+            {kycStatus !== "verified" && (
+              <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
+                {kycStatus === "pending"
+                  ? "Your identity verification is in progress. Click Acquire to check status."
+                  : "Identity verification is required before acquiring shares."}
+              </p>
+            )}
+
+            {kycError && (
+              <p className="text-xs font-light text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                {kycError}
+              </p>
+            )}
+
             {/* Acquire CTA */}
             <button
               type="button"
               onClick={handleAcquire}
-              className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 transition-all duration-300 active:scale-[0.98]"
+              disabled={kycLoading}
+              className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Acquire
+              {kycLoading ? "Starting verification..." : "Acquire"}
             </button>
 
             <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">

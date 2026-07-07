@@ -228,3 +228,92 @@ PAYMENTS_API_BASE=...           # GCP Payments API
 - **[BLOCKERS.md](BLOCKERS.md)** — Current blockers
 - **[01_evolution/AGENTS.md](../01_evolution/AGENTS.md)** — Backend agent rules (dormant)
 - **[_assets/WHATS_LEFT.md](../_assets/WHATS_LEFT.md)** — Asset consolidation status
+
+---
+
+## Scroll Animation Rules (GSAP + ScrollTrigger)
+
+All scroll-triggered animations use **GSAP ScrollTrigger** wired to **Lenis** smooth scroll via `SmoothScrollProvider`. These rules are mandatory for any section component on the landing page.
+
+### Hierarchy Pattern
+
+Every section has two layers of animation. The layer type depends on what the content IS, not where it sits:
+
+| Content type | Animation | Direction |
+|---|---|---|
+| **Section headers** (label, heading, accompanying paragraph text) | Horizontal slide | `x: -60 → 0`, opacity `0 → 1` |
+| **Cards / items / boxes / lists** | Vertical rise | `y: 60 → 0`, opacity `0 → 1`, staggered |
+
+### Delay Rules
+
+| Layout | Delay? | Why |
+|---|---|---|
+| **Stacked** (header above cards) | No delay | Natural scroll order handles sequencing |
+| **Side-by-side** (columns next to each other) | `delay: 0.5s` on the second column | Prevents both firing at once, creates a two-stage reveal |
+
+### GSAP Parameters (standardised)
+
+```
+Duration:   1.0s for headers, 0.8s for cards
+Stagger:    0.15s between cards
+Ease:       'power3.out'
+Trigger:    'top 85%' for headers, 'top 90%' for cards
+Toggle:     'play none none reverse' (animates in on scroll down, reverses on scroll up)
+Scrub:      Only on hero scrub exits (start: 'top top', end: 'bottom top', scrub: 1)
+```
+
+### Implementation Pattern
+
+Every animated section component follows this structure:
+
+```tsx
+'use client';
+
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+export function SomeSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Header — horizontal from left
+      gsap.fromTo(headerRef.current, { x: -60, opacity: 0 }, {
+        x: 0, opacity: 1, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: headerRef.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+      });
+
+      // Cards — vertical from below, staggered
+      if (cardsRef.current) {
+        const cards = cardsRef.current.querySelectorAll(':scope > div');
+        gsap.fromTo(cards, { y: 60, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+          scrollTrigger: { trigger: cardsRef.current, start: 'top 90%', toggleActions: 'play none none reverse' },
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // ... JSX with refs attached
+}
+```
+
+### Rules Summary
+
+1. **Headers → horizontal** (`x: -60`). Always.
+2. **Cards/items → vertical** (`y: 60`). Always. (FAQ items are the current exception — horizontal, pending review.)
+3. **Side-by-side columns → delay second column** by `0.5s`.
+4. **Stacked content → no delay**. Natural scroll order is enough.
+5. **All animations reverse on scroll up** (`toggleActions: 'play none none reverse'`).
+6. **Hero is the only scrub** — content drifts up + fades as you scroll through it.
+7. **Never animate content or layout** — only animate entrance. Copy, spacing, structure stays untouched.
+8. **`gsap.context()` + `ctx.revert()`** in every `useEffect` for cleanup. No leaks.

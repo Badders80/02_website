@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -13,6 +13,8 @@ import { auth, isAuthInitialized } from "@/lib/firebase";
 import holdingsData from "@/data/holdings.json";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
+
+type DashboardTab = "overview" | "inbox" | "documents";
 
 interface HoldingRecord {
   id: string;
@@ -57,6 +59,27 @@ interface ContentUpdate {
   horse_name?: string;
 }
 
+interface LiveHolding {
+  purchase_id: string;
+  timestamp: string;
+  user_email: string;
+  horse_slug: string;
+  shares_owned: number;
+  purchase_price_total_nzd: number;
+  signed_pds_url: string;
+  signed_sa_url: string;
+  kyc_status: string;
+}
+
+interface Communication {
+  timestamp: string;
+  recipient_email: string;
+  subject: string;
+  snippet: string;
+  body_html: string;
+  category: string;
+}
+
 const MOCK_HOLDING: HoldingRecord = {
   id: "mock-holding-1",
   hlt_id: "hlt-prudentia",
@@ -90,6 +113,75 @@ export default function MyStablePage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
+
+  // C7: Tab state
+  const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
+
+  // C7: Live holdings from Google Sheets
+  const [liveHoldings, setLiveHoldings] = useState<LiveHolding[]>([]);
+  const [liveHoldingsLoading, setLiveHoldingsLoading] = useState(false);
+  const [liveHoldingsError, setLiveHoldingsError] = useState(false);
+
+  // C7: Communications from Google Sheets
+  const [communications, setCommunications] = useState<Communication[]>([]);
+  const [communicationsLoading, setCommunicationsLoading] = useState(false);
+  const [communicationsError, setCommunicationsError] = useState(false);
+  const [expandedComm, setExpandedComm] = useState<string | null>(null);
+
+  // C7: Fetch live holdings
+  const fetchLiveHoldings = useCallback(async () => {
+    if (!user) return;
+    setLiveHoldingsLoading(true);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch("/api/holdings", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLiveHoldings(data.holdings || []);
+      } else {
+        setLiveHoldingsError(true);
+      }
+    } catch (err) {
+      setLiveHoldingsError(true);
+    } finally {
+      setLiveHoldingsLoading(false);
+    }
+  }, [user]);
+
+  // C7: Fetch communications
+  const fetchCommunications = useCallback(async () => {
+    if (!user) return;
+    setCommunicationsLoading(true);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch("/api/communications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCommunications(data.communications || []);
+      } else {
+        setCommunicationsError(true);
+      }
+    } catch (err) {
+      setCommunicationsError(true);
+    } finally {
+      setCommunicationsLoading(false);
+    }
+  }, [user]);
+
+  // C7: Fetch live data when tab changes
+  useEffect(() => {
+    if (!user) return;
+    if (activeTab === "documents" && liveHoldings.length === 0 && !liveHoldingsError && !liveHoldingsLoading) {
+      fetchLiveHoldings();
+    }
+    if (activeTab === "inbox" && communications.length === 0 && !communicationsError && !communicationsLoading) {
+      fetchCommunications();
+    }
+  }, [activeTab, user, liveHoldings.length, communications.length, liveHoldingsError, communicationsError, liveHoldingsLoading, communicationsLoading, fetchLiveHoldings, fetchCommunications]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
@@ -279,7 +371,197 @@ export default function MyStablePage() {
             </div>
           )}
 
-        {/* Dashboard Grid */}
+          {/* C7: Tab Navigation */}
+          <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
+            <div className="flex gap-1 border-b border-white/[0.06]">
+              {([
+                { key: "overview", label: "Overview" },
+                { key: "inbox", label: "Investor Inbox" },
+                { key: "documents", label: "Documents" },
+              ] as { key: DashboardTab; label: string }[]).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`px-5 py-3 text-[12px] font-medium uppercase tracking-widest border-b-2 transition-all ${
+                    activeTab === tab.key
+                      ? "border-[#d4a964] text-white"
+                      : "border-transparent text-white/40 hover:text-white/60"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+        {/* C7: Investor Inbox Tab */}
+        {activeTab === "inbox" && (
+          <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-[20px] font-light text-white mb-1">Investor Inbox</h2>
+                <p className="text-xs font-light text-white/40">Communications from Evolution Stables — welcome messages, syndicate notices, and monthly updates</p>
+              </div>
+
+              {communicationsLoading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
+                </div>
+              ) : communicationsError ? (
+                <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                  Unable to load communications. Please check back later.
+                </div>
+              ) : communications.length === 0 ? (
+                <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                  No communications yet. You will receive a welcome message here after your first acquisition.
+                </div>
+              ) : (
+                <div className="space-y-8 relative border-l border-white/[0.08] pl-6 ml-3">
+                  {communications.map((comm, idx) => {
+                    const key = `${comm.timestamp}-${idx}`;
+                    const isExpanded = expandedComm === key;
+                    return (
+                      <div key={key} className="relative space-y-3">
+                        <span className="absolute -left-[31px] top-1.5 w-2 h-2 rounded-full bg-[#d4a964] ring-4 ring-black" />
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-[#d4a964]">
+                                {comm.category || "notice"}
+                              </span>
+                              <span className="text-xs font-light text-white/30">
+                                {new Date(comm.timestamp).toLocaleDateString("en-NZ", { year: "numeric", month: "short", day: "numeric" })}
+                              </span>
+                            </div>
+                            <h4 className="text-md font-medium text-white mt-1">{comm.subject}</h4>
+                            {!isExpanded && comm.snippet && (
+                              <p className="text-xs font-light text-white/50 mt-1">{comm.snippet}</p>
+                            )}
+                          </div>
+                        </div>
+                        {comm.body_html && (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedComm(isExpanded ? null : key)}
+                            className="text-[11px] uppercase tracking-wider text-white/40 hover:text-white/60 transition"
+                          >
+                            {isExpanded ? "Collapse" : "Read more"}
+                          </button>
+                        )}
+                        {isExpanded && comm.body_html && (
+                          <div
+                            className="rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 text-xs font-light text-white/60 leading-relaxed max-w-xl prose prose-invert"
+                            dangerouslySetInnerHTML={{ __html: comm.body_html }}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* C7: Documents Tab */}
+        {activeTab === "documents" && (
+          <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-[20px] font-light text-white mb-1">Documents</h2>
+                <p className="text-xs font-light text-white/40">Your signed agreements and disclosure documents</p>
+              </div>
+
+              {liveHoldingsLoading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
+                </div>
+              ) : liveHoldingsError ? (
+                <div className="rounded-xl border border-white/[0.06] p-8 text-center space-y-4">
+                  <p className="text-xs font-light text-white/40">Unable to load live holdings data. Data may be delayed.</p>
+                  <button
+                    type="button"
+                    onClick={fetchLiveHoldings}
+                    className="text-[11px] uppercase tracking-wider text-[#d4a964] hover:text-white transition"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : liveHoldings.length === 0 ? (
+                <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                  No holdings found. Your documents will appear here after your first acquisition.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {liveHoldings.map((h) => {
+                    const hlt = (hltsData as any[]).find((x) => (x.horse_slug || x.id) === h.horse_slug);
+                    const horseName = hlt?.horse_name || h.horse_slug;
+                    const hasDocs = h.signed_pds_url || h.signed_sa_url;
+                    return (
+                      <div
+                        key={h.purchase_id}
+                        className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-md font-medium text-white">{horseName}</h3>
+                            <p className="text-xs text-white/40 mt-0.5">
+                              {h.shares_owned} shares · ${(h.purchase_price_total_nzd || 0).toLocaleString()} NZD
+                            </p>
+                          </div>
+                          {!hasDocs && (
+                            <span className="text-[10px] uppercase tracking-wider text-white/30 border border-white/10 rounded-full px-3 py-1">
+                              Documents processing
+                            </span>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <p className="text-[10px] uppercase tracking-wider text-white/30">Product Disclosure Statement</p>
+                            {h.signed_pds_url ? (
+                              <a
+                                href={h.signed_pds_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs text-[#d4a964] hover:underline"
+                              >
+                                View PDS ↗
+                              </a>
+                            ) : (
+                              <p className="text-xs text-white/30">Pending</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-[10px] uppercase tracking-wider text-white/30">Syndicate Agreement</p>
+                            {h.signed_sa_url ? (
+                              <a
+                                href={h.signed_sa_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs text-[#d4a964] hover:underline"
+                              >
+                                View SA ↗
+                              </a>
+                            ) : (
+                              <p className="text-xs text-white/30">Pending</p>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-[10px] font-light text-white/30 leading-relaxed pt-2 border-t border-white/[0.04]">
+                          Acquired {new Date(h.timestamp).toLocaleDateString("en-NZ", { year: "numeric", month: "long", day: "numeric" })}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Dashboard Grid — Overview tab only */}
+        {activeTab === "overview" && (
         <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
           {errorMsg && (
             <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-6 mb-8 text-center text-sm font-light text-red-400">
@@ -438,6 +720,7 @@ export default function MyStablePage() {
             </div>
           )}
         </section>
+        )}
         </div>
       </main>
       <Footer />
