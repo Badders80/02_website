@@ -26,6 +26,7 @@ export function FAQSection() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
+      // Header animation
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
@@ -44,6 +45,26 @@ export function FAQSection() {
         );
       }
 
+      // Body paragraph animation
+      if (bodyRef.current) {
+        gsap.fromTo(
+          bodyRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: bodyRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // FAQ items animation
       if (faqListRef.current) {
         const faqItems = faqListRef.current.querySelectorAll(':scope > div');
         gsap.fromTo(

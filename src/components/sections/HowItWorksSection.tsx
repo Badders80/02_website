@@ -43,7 +43,7 @@ export function HowItWorksSection() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Headline + description slide in from left
+      // Header animation
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
@@ -55,6 +55,25 @@ export function HowItWorksSection() {
             ease: 'power3.out',
             scrollTrigger: {
               trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // Body paragraph animation
+      if (bodyRef.current) {
+        gsap.fromTo(
+          bodyRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: bodyRef.current,
               start: 'top 85%',
               toggleActions: 'play none none reverse',
             },
