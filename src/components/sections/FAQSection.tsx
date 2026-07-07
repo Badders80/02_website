@@ -19,6 +19,7 @@ export function FAQSection() {
 
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const faqListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -90,7 +91,9 @@ export function FAQSection() {
             <br />
             Digital-Syndication
           </h2>
+        </div>
 
+        <div ref={bodyRef}>
           {/* Description */}
           <p className="text-[18px] leading-[1.7] font-light text-white/50 mb-24 max-w-xl">
             A considered guide to the essentials — how digital-syndication works, what it means for ownership, and where Evolution Stables fits in.

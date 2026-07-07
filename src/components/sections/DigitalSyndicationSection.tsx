@@ -37,52 +37,46 @@ const benefits: BenefitItem[] = [
 
 export function DigitalSyndicationSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const leftColRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const body1Ref = useRef<HTMLDivElement>(null);
+  const body2Ref = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Left column (headline + description) slides in from left
-      if (leftColRef.current) {
-        gsap.fromTo(
-          leftColRef.current,
-          { x: -60, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: leftColRef.current,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
+      // Header animation
+      if (headerRef.current) {
+        gsap.fromTo(headerRef.current, { x: -60, opacity: 0 }, {
+          x: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: headerRef.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+        });
       }
 
-      // Right column benefits slide in from left, staggered, delayed after left column
+      // First body paragraph animation
+      if (body1Ref.current) {
+        gsap.fromTo(body1Ref.current, { x: -60, opacity: 0 }, {
+          x: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: body1Ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+        });
+      }
+
+      // Second body paragraph animation
+      if (body2Ref.current) {
+        gsap.fromTo(body2Ref.current, { x: -60, opacity: 0 }, {
+          x: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: body2Ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+        });
+      }
+
+      // Right column features animation
       if (rightColRef.current) {
-        const items = rightColRef.current.querySelectorAll(':scope > div > div > div');
-        gsap.fromTo(
-          items,
-          { x: -60, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.12,
-            ease: 'power3.out',
-            delay: 0.5,
-            scrollTrigger: {
-              trigger: rightColRef.current,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
+        const features = rightColRef.current.querySelectorAll(':scope > div > div');
+        gsap.fromTo(features, { y: 60, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+          scrollTrigger: { trigger: rightColRef.current, start: 'top 90%', toggleActions: 'play none none reverse' },
+        });
       }
     }, sectionRef);
 
@@ -100,17 +94,19 @@ export function DigitalSyndicationSection() {
         {/* Two Column Layout */}
         <div className="grid gap-16 lg:grid-cols-[1fr,1fr] lg:gap-48 xl:gap-56">
           {/* LEFT COLUMN */}
-          <div ref={leftColRef} className="space-y-8">
+          <div className="space-y-8">
             {/* Headline */}
-            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight">
+            <h2 ref={headerRef} className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight">
               Digital Syndication
             </h2>
 
-            {/* Lead Paragraph */}
-            <p className="text-[16px] leading-[1.7] font-light text-white/65">
+            {/* Lead Paragraph 1 */}
+            <p ref={body1Ref} className="text-[16px] leading-[1.7] font-light text-white/65">
               Syndication has always been the heartbeat of racehorse ownership — sharing risk, reward, and the thrill of the sport. But the way people participate has changed.
             </p>
-            <p className="text-[16px] leading-[1.7] font-light text-white/65">
+
+            {/* Lead Paragraph 2 */}
+            <p ref={body2Ref} className="text-[16px] leading-[1.7] font-light text-white/65">
               Our digital-syndication model builds on that legacy — lowering barriers, increasing transparency, and unlocking new ways for owners, investors, and fans to participate — without replacing what works.
             </p>
           </div>

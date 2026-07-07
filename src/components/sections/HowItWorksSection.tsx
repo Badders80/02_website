@@ -36,6 +36,7 @@ const cards: StakeholderCard[] = [
 export function HowItWorksSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -98,6 +99,8 @@ export function HowItWorksSection() {
             <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-8">
               How It Works
             </h2>
+          </div>
+          <div ref={bodyRef}>
             <p className="text-[16px] leading-[1.7] font-light text-white/65">
               At Evolution Stables, we understand that ownership is the lifeblood of racing — and strengthening it benefits every part of the industry.
             </p>

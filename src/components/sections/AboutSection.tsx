@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 export const AboutSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const ctaAnchorRef = useRef<HTMLDivElement>(null);
   const [ctaHeight, setCtaHeight] = useState<number | null>(null);
   const [isSticky, setIsSticky] = useState(false);
@@ -91,7 +91,7 @@ export const AboutSection = () => {
   }, [isSticky, shouldShowCta]);
 
   useEffect(() => {
-    if (!sectionRef.current || !headerRef.current || !contentRef.current) return;
+    if (!sectionRef.current || !headerRef.current || !bodyRef.current) return;
 
     const ctx = gsap.context(() => {
       // Headline slides in from left
@@ -113,7 +113,7 @@ export const AboutSection = () => {
 
       // Content slides in from left, slightly delayed
       gsap.fromTo(
-        contentRef.current,
+        bodyRef.current,
         { x: -40, opacity: 0 },
         {
           x: 0,
@@ -122,7 +122,7 @@ export const AboutSection = () => {
           ease: 'power3.out',
           delay: 0.15,
           scrollTrigger: {
-            trigger: contentRef.current,
+            trigger: bodyRef.current,
             start: 'top 85%',
             toggleActions: 'play none none reverse',
           },
@@ -191,7 +191,7 @@ export const AboutSection = () => {
           </div>
         </div>
 
-        <div ref={contentRef} className={`mt-6 ${shouldShowCta ? 'space-y-20' : 'space-y-8'}`}>
+        <div ref={bodyRef} className={`mt-6 ${shouldShowCta ? 'space-y-20' : 'space-y-8'}`}>
           <p className="text-[16px] leading-[1.7] font-light text-white/65">
             Racehorse ownership has changed. Evolution Stables removes the barriers that once made it
             complex and inaccessible — opening the door for first-timers and seasoned fans alike to not

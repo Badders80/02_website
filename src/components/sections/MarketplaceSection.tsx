@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 export function MarketplaceSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -83,7 +84,9 @@ export function MarketplaceSection() {
                 Tokinvest
               </a>
             </h2>
+          </div>
 
+          <div ref={bodyRef}>
             {/* Description */}
             <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
               Behind our integrated marketplace, Tokinvest delivers the raw
