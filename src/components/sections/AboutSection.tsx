@@ -94,7 +94,7 @@ export const AboutSection = () => {
     if (!sectionRef.current || !headerRef.current || !contentRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Header slides in from left
+      // Headline slides in from left
       gsap.fromTo(
         headerRef.current,
         { x: -60, opacity: 0 },
@@ -174,23 +174,25 @@ export const AboutSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="bg-black py-64 text-foreground"
+      className="bg-black py-56 text-foreground"
       id="about"
       data-cta-overlay="off"
     >
-      <div className="mx-auto max-w-6xl px-12 md:px-16 lg:px-20">
-        <div ref={headerRef}>
-          <p className="mb-16 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
+      <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
+        <div>
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
             ABOUT
           </p>
 
-          <h2 className="mb-8 text-[36px] font-light tracking-tight text-white md:text-[48px]">
-            Own the Experience
-          </h2>
+          <div ref={headerRef}>
+            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-8">
+              Own the Experience
+            </h2>
+          </div>
         </div>
 
         <div ref={contentRef} className={`mt-6 ${shouldShowCta ? 'space-y-20' : 'space-y-8'}`}>
-          <p className="text-[18px] font-light leading-[1.85] text-white/65">
+          <p className="text-[16px] leading-[1.7] font-light text-white/65">
             Racehorse ownership has changed. Evolution Stables removes the barriers that once made it
             complex and inaccessible — opening the door for first-timers and seasoned fans alike to not
             just watch, but own the experience.
@@ -273,7 +275,7 @@ export const AboutSection = () => {
               </div>
             </div>
           ) : (
-            <p className="text-[18px] font-light leading-[1.85] text-white/65">
+            <p className="text-[16px] leading-[1.7] font-light text-white/65">
               {ctaCopy}
             </p>
           )}

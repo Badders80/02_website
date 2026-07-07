@@ -44,7 +44,7 @@ export function DigitalSyndicationSection() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Left column slides in from left
+      // Left column (headline + description) slides in from left
       if (leftColRef.current) {
         gsap.fromTo(
           leftColRef.current,
@@ -63,16 +63,16 @@ export function DigitalSyndicationSection() {
         );
       }
 
-      // Right column benefits stagger up from below, delayed after left column finishes
+      // Right column benefits slide in from left, staggered, delayed after left column
       if (rightColRef.current) {
         const items = rightColRef.current.querySelectorAll(':scope > div > div > div');
         gsap.fromTo(
           items,
-          { y: 40, opacity: 0 },
+          { x: -60, opacity: 0 },
           {
-            y: 0,
+            x: 0,
             opacity: 1,
-            duration: 0.7,
+            duration: 0.8,
             stagger: 0.12,
             ease: 'power3.out',
             delay: 0.5,
@@ -116,13 +116,13 @@ export function DigitalSyndicationSection() {
           </div>
 
           {/* RIGHT COLUMN */}
-          <div ref={rightColRef} className="space-y-8">
+          <div ref={rightColRef} className="space-y-8 flex flex-col justify-end">
             {/* Features List */}
-            <div className="space-y-12">
+            <div className="space-y-6">
               {benefits.map((benefit, index) => (
                 <div
                   key={index}
-                  className="group py-2 transition-transform duration-500 hover:scale-[1.02]"
+                  className="group py-2 transition-transform duration-500 hover:scale-[1.05]"
                 >
                   <div className="flex items-center gap-6">
                     <div className="flex-shrink-0 w-12 h-12 relative flex items-center justify-center transition-all duration-500">

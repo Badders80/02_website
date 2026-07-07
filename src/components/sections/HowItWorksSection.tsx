@@ -42,7 +42,7 @@ export function HowItWorksSection() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Header slides in from left
+      // Headline + description slide in from left
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
@@ -87,50 +87,65 @@ export function HowItWorksSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="mission" className="py-24 bg-black text-foreground">
+    <section ref={sectionRef} id="mission" className="py-56 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         {/* Heading & Description */}
-        <div ref={headerRef} className="mb-16">
-          <p className="mb-16 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
+        <div className="mb-16">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
             OUR MISSION
           </p>
-          <h2 className="mb-8 text-[36px] font-light tracking-tight text-white md:text-[48px]">
-            How It Works
-          </h2>
-          <p className="text-[18px] font-light leading-[1.85] text-white/65">
-            At Evolution Stables, we understand that ownership is the lifeblood of racing — and strengthening it benefits every part of the industry.
-          </p>
+          <div ref={headerRef}>
+            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-8">
+              How It Works
+            </h2>
+            <p className="text-[16px] leading-[1.7] font-light text-white/65">
+              At Evolution Stables, we understand that ownership is the lifeblood of racing — and strengthening it benefits every part of the industry.
+            </p>
+          </div>
         </div>
 
-        {/* 3 Cards — title above body, vertical stack below lg */}
-        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* 3 Cards — Sprint-style: header at top, description below */}
+        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {cards.map((card, index) => (
             <div
               key={index}
-              className="group relative bg-white/[0.02] border border-white/[0.08] masked-border glass-streak rounded-lg p-10 transition-all duration-700 ease-out hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer overflow-hidden"
+              className="group relative border border-white/[0.08] rounded-xl flex flex-col cursor-pointer transition-all duration-500 hover:border-white/[0.15] hover:scale-[1.05] h-auto lg:h-[340px]"
+              style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
             >
-              {/* Soft linear gradient sweep on hover */}
-              <div
-                className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                style={{
-                  background:
-                    "linear-gradient(140deg, rgba(255,255,255,0.06), rgba(67,129,255,0.08) 40%, transparent 70%)",
-                }}
-              />
-              <div className="relative space-y-6">
-                {/* Title — full width, above subtitle */}
-                <p className="text-[11px] font-light uppercase tracking-[0.25em] text-white/40">
-                  {card.title}
-                </p>
-                {/* Subtitle + description */}
-                <div className="space-y-4">
-                  <h4 className="text-[21px] font-light text-white leading-tight">
-                    {card.subtitle}
-                  </h4>
-                  <p className="text-[15px] leading-[1.9] font-light text-white/60">
-                    {card.description}
-                  </p>
+              {/* Top — header (fixed height, lighter tone) */}
+              <div className="p-6 border-b border-white/[0.06] h-[112px] flex flex-col justify-center" style={{ backgroundColor: "rgba(255,255,255,0.015)" }}>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-2">
+                      {card.title}
+                    </p>
+                    <p className="text-[16px] font-light text-white leading-snug relative overflow-hidden">
+                      <span className="relative inline-block">
+                        {card.subtitle}
+                        {/* Text sweep on hover */}
+                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
+                      </span>
+                    </p>
+                  </div>
+                  {/* Arrow icon */}
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full border border-white/[0.1] flex items-center justify-center text-white/40 group-hover:text-white/70 group-hover:border-white/30 transition-colors duration-300">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+                    </svg>
+                  </div>
                 </div>
+              </div>
+
+              {/* Bottom — description (darker tone) */}
+              <div className="p-6 relative overflow-hidden lg:flex-1 bg-black/40">
+                <p className="text-[14px] leading-[1.8] font-light text-white/50 group-hover:text-white/85 transition-colors duration-500">
+                  {card.description}
+                </p>
+                {/* Fade overlay at bottom — only on desktop fixed height */}
+                <div
+                  className="hidden lg:block absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
+                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)" }}
+                />
               </div>
             </div>
           ))}

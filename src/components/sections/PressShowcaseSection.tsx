@@ -24,7 +24,6 @@ export function PressShowcaseSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const newsHeaderRef = useRef<HTMLDivElement>(null);
   const featuredHeaderRef = useRef<HTMLDivElement>(null);
-  const logosRef = useRef<HTMLDivElement>(null);
   
   const leadArticle =
     articles.find(
@@ -209,25 +208,7 @@ export function PressShowcaseSection() {
       }
 
       if (featuredHeaderRef.current) {
-        gsap.fromTo(
-          featuredHeaderRef.current,
-          { x: -60, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: featuredHeaderRef.current,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-      }
-
-      if (logosRef.current) {
-        const logos = logosRef.current.querySelectorAll('.partner-logo-wrapper');
+        const logos = featuredHeaderRef.current.querySelectorAll('.partner-logo-wrapper');
         gsap.fromTo(
           logos,
           { y: 40, opacity: 0 },
@@ -238,7 +219,7 @@ export function PressShowcaseSection() {
             stagger: 0.08,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: logosRef.current,
+              trigger: featuredHeaderRef.current,
               start: 'top 90%',
               toggleActions: 'play none none reverse',
             },
@@ -259,12 +240,10 @@ export function PressShowcaseSection() {
       <div className="max-w-5xl mx-auto px-12 md:px-16 lg:px-20 w-full space-y-24">
         {/* News and Updates Section - On Top */}
         <div>
-          <div ref={newsHeaderRef}>
-            <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
-              NEWS AND UPDATES
-            </p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-[6fr,4fr] gap-0">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+            NEWS AND UPDATES
+          </p>
+          <div ref={newsHeaderRef} className="grid grid-cols-1 lg:grid-cols-[6fr,4fr] gap-0">
             <a
               href={leadArticle.url}
               target="_blank"
@@ -467,12 +446,10 @@ export function PressShowcaseSection() {
 
         {/* As Featured In Section - On Bottom */}
         <div>
-          <div ref={featuredHeaderRef}>
-            <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
-              AS FEATURED IN
-            </p>
-          </div>
-          <div ref={logosRef} className="pb-6">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
+            AS FEATURED IN
+          </p>
+          <div ref={featuredHeaderRef} className="pb-6">
             <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 lg:grid lg:grid-cols-6 lg:gap-x-16 lg:gap-y-12 lg:justify-items-center">
               {partners.map((partner, index) => {
                 const colSpanClass = index >= 6 ? 'lg:col-span-3' : 'lg:col-span-2';

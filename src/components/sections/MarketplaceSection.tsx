@@ -15,7 +15,7 @@ export function MarketplaceSection() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Header slides in from left
+      // Headline + description slide in from left
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
@@ -61,35 +61,37 @@ export function MarketplaceSection() {
 
   return (
     <section ref={sectionRef} id="marketplace" className="py-56 bg-black text-foreground">
-      <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
-        <div ref={headerRef}>
+      <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
+        <div>
           {/* Original Regulated Marketplace Label */}
           <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
             REGULATED MARKETPLACE
           </p>
 
-          {/* Headline */}
-          <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
-            Transformation Powered
-            <br />
-            by{" "}
-            <a
-              href="https://tokinvest.capital/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#21B981] hover:!text-[#2dd4a4] hover:font-normal hover:tracking-[-0.02em] transition-all"
-            >
-              Tokinvest
-            </a>
-          </h2>
+          <div ref={headerRef}>
+            {/* Headline */}
+            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
+              Transformation Powered
+              <br />
+              by{" "}
+              <a
+                href="https://tokinvest.capital/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#21B981] hover:!text-[#2dd4a4] hover:font-normal hover:tracking-[-0.02em] transition-all"
+              >
+                Tokinvest
+              </a>
+            </h2>
 
-          {/* Description */}
-          <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
-            Behind our integrated marketplace, Tokinvest delivers the raw
-            horsepower that powers digital-syndication — built on regulated,
-            financial-grade infrastructure, tailored from institutional
-            finance and adapted to meet the demands of modern owners.
-          </p>
+            {/* Description */}
+            <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
+              Behind our integrated marketplace, Tokinvest delivers the raw
+              horsepower that powers digital-syndication — built on regulated,
+              financial-grade infrastructure, tailored from institutional
+              finance and adapted to meet the demands of modern owners.
+            </p>
+          </div>
         </div>
 
         {/* Features */}

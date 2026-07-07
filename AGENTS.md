@@ -309,11 +309,12 @@ export function SomeSection() {
 
 ### Rules Summary
 
-1. **Headers → horizontal** (`x: -60`). Always.
-2. **Cards/items → vertical** (`y: 60`). Always. (FAQ items are the current exception — horizontal, pending review.)
-3. **Side-by-side columns → delay second column** by `0.5s`.
-4. **Stacked content → no delay**. Natural scroll order is enough.
-5. **All animations reverse on scroll up** (`toggleActions: 'play none none reverse'`).
-6. **Hero is the only scrub** — content drifts up + fades as you scroll through it.
-7. **Never animate content or layout** — only animate entrance. Copy, spacing, structure stays untouched.
-8. **`gsap.context()` + `ctx.revert()`** in every `useEffect` for cleanup. No leaks.
+1. **Section labels** (small uppercase: "ABOUT", "OUR MISSION", "OUR MODEL", "REGULATED MARKETPLACE") → **static, no scroll effect**. Always.
+2. **Headlines + description text** (below the label) → **horizontal slide** (`x: -60`). Always.
+3. **Cards/items → vertical** (`y: 60`). Always. (FAQ items are the current exception — horizontal, pending review.)
+4. **Side-by-side columns → delay second column** by `0.5s`.
+5. **Stacked content → no delay**. Natural scroll order is enough.
+6. **All animations reverse on scroll up** (`toggleActions: 'play none none reverse'`).
+7. **Hero is the only scrub** — content drifts up + fades as you scroll through it.
+8. **Never animate content or layout** — only animate entrance. Copy, spacing, structure stays untouched.
+9. **`gsap.context()` + `ctx.revert()`** in every `useEffect` for cleanup. No leaks.
