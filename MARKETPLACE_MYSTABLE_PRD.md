@@ -6,44 +6,63 @@ Two pages that turn site visitors into token holders and give holders a dashboar
 
 ---
 
-## Data Flow (Built)
+## Data Flow (Hybrid Static & Dynamic)
 
 ```
-SSOT_Build/data/horses/*.json   → horses.json (identity, URLs, pedigree)
-SSOT_Build/data/hlt/LSE-*.json  → hlts.json (pricing, lease terms, shares)
-SSOT_Build/data/leases/LSE-*.json → (lease pricing cross-ref)
-SSOT_Build/data/trainers/*.json → trainers.json (bios, social, contact)
-SSOT_Build/data/owners/OWN-*.json → owners.json (contact, email)
+[STATIC SYNC (SSOT)]
+SSOT_Build/data/horses/*.json     → horses.json (pedigree, metadata)
+SSOT_Build/data/trainers/*.json   → trainers.json (rich biography)
+SSOT_Build/data/owners/*.json     → owners.json (contact info)
       │
       │  python3 scripts/sync_inventory.py
       ▼
-src/data/*.json (local static data)
-      │
-      ▼  Next.js build (SSG)
-/marketplace reads hlts.json + horses.json
-/marketplace/[slug] reads hlts.json + horses.json (+ image folder for gallery)
-/marketplace/[slug]/purchase reads hlts.json + horses.json + local PDFs
-      │
-      ▼  Stripe Checkout
-      ▼  webhook writes to holdings
-sync_inventory.py → rebuild → holding appears in /mystable
+src/data/*.json (local static data) ──► Builds static SEO-friendly pages
+
+[DYNAMIC DATABASE (Google Sheets API)]
+1. Inventory Sheet       ──► Live shares sold, listing status, active prices (runtime fetch)
+2. Holdings Sheet        ──► Logs dynamic customer holdings & e-signed PDF Drive URLs
+3. Leads Sheet           ──► Logs interest forms, waitlists, and manual KYC capture
+4. Communications Sheet  ──► Logs outbound email history for MyStable Inbox feed
+
+[BACKEND PIPELINE]
+Stripe Checkout Success ──► Serverless webhook stamps e-Sign PDS/SA PDFs
+                                ├──► Uploads signed PDFs to Google Drive
+                                └──► Writes records to Holdings, Leads, and Communications Sheets
 ```
 
-No Google Sheet middleman. One source of truth: SSOT_Build JSON → sync → website JSON → build.
+* **Hybrid Model**: Structural data (pedigrees, biography) is baked statically from SSOT at build time. Transactional data (available inventory, waitlists, purchases, email history) is updated in real time via Google Sheets API.
+* **No Database Middleware**: Google Sheets serves as the secure system of record for v1.
+
 
 ---
 
 ## User Journey
 
 ```
-/marketplace → grid of horses with status badges (publicly browseable)
-  ↓ click horse (triggers authentication redirect if not logged in)
-/marketplace/[slug] → horse detail (story, pedigree, trainer, recent starts, gallery)
-  ↓ "View Investment Terms" → popup/modal (price, lease terms, returns, length)
-  ↓ "Acquire" CTA in popup → check KYC status
-      ├─► KYC Verified ────► /marketplace/[slug]/purchase (purchase workflow)
-      └─► KYC Unverified ──► Stripe Identity Flow (with fallback lead capture)
+Guest User ────> Browses /marketplace (Grid only)
+                    │
+                    └──> Clicks Horse Card ────> Views /marketplace/[slug] (Detail Page)
+                                                    │
+                                                    ├──> Left Column (Pedigree/Story) ──► Fully Public (SEO)
+                                                    └──> Right Column (Action Panel) ───► Blurred/Hidden for Guest
+                                                                                           │
+                                                                                           └── Clicks "Sign In" ──► Auth Redirect (saves page)
+                                                                                                                      │
+                                                                                                                      └── Returns Post-Auth (unblurred)
+                                                                                                                            │
+                                                                                                                            └── Clicks "Acquire" ──► KYC Check
+                                                                                                                                                       ├─► Verified ─────► /purchase
+                                                                                                                                                       └─► Unverified ───► Stripe KYC Flow
 ```
+
+* **SEO-Friendly Details Page**: Gating `/marketplace/[slug]` is avoided. The details page is fully crawlable by search engines.
+* **Context Preservation**: Logging in from the details page Action Panel redirect must save the horse URL and return the user directly to the same page post-authentication.
+* **Back Navigation**: Details page has a prominent `← Back to Marketplace` link.
+* **KYC Checking on Acquire**:
+  * **Verified**: Unlocks the `/marketplace/[slug]/purchase` page.
+  * **Unverified / Not Started**: Redirects to Stripe Identity verification.
+  * **KYC Pending (Delay)**: Show a processing screen ("KYC Processing") with a manual refresh button and a fallback lead capture option if Stripe verification fails or takes too long.
+
 
 Purchase workflow:
 ```
@@ -176,11 +195,15 @@ Two columns. Left = narrative. Right = action panel.
 
 Multi-step form on one page.
 
-1. **Amount selector** — stepper 1 to shares_available. Shows total price + "X% of the horse"
-2. **Summary** — shares, total NZD, % stake, return %, lease duration
-3. **T&C agreement** — PDS + SA in scrollable modals, scroll-to-bottom enables checkbox, both must be checked
-4. **Stripe Checkout** — redirect with client_reference_id
-5. **Confirmation page** — "You're now an owner" + what happens next + link to MyStable
+1. **Amount selector** — stepper 1 to shares_available. Shows total price + "X% of the horse".
+2. **Summary (Term Sheet)** — shares, total NZD, % of horse, return %, lease duration. User reviews and hits "Accept".
+3. **T&C Agreement (E-Sign)** — Sequential PDS and SA signature pages:
+   * Documents are loaded one at a time (PDS first, then SA).
+   * User can scroll page-by-page or click a "Skip to End" button to jump to the signature block.
+   * **Signature Verification**: The signature text input is pre-populated with the user's KYC-verified name. An inline warning notes: *"Signature must match your verified legal name."* The input is read-only or validated strictly.
+   * After signing both, a notice states: *"Your signed agreements will be stamped and sent via email."*
+4. **Stripe Checkout** — Redirect with client_reference_id.
+5. **Confirmation page** — "You're now an owner" + what happens next + link to MyStable.
 
 ---
 
