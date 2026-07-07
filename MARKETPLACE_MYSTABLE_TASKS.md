@@ -21,7 +21,7 @@ All `[x]` items confirmed by reading code + `tsc --noEmit` clean + `npm run buil
   - [x] Pre-populate signature input with user's KYC-verified name (read-only)
   - [x] Render inline legal warning guidelines and restrict edit accessibility
   - [x] Render compliance notice ("signed documents will be emailed to you")
-  - [ ] **Add "Skip to End" shortcut buttons** — scroll handler exists, no skip button yet
+  - [x] **Add "Skip to End" shortcut buttons** — `PurchaseFlow.tsx` useRef + scroll-to-bottom, guarded by ResizeObserver scrollability check (RELAY: GLM→Kimi, commit 41c3692)
 
 ---
 
@@ -68,9 +68,11 @@ All `[x]` items confirmed by reading code + `tsc --noEmit` clean + `npm run buil
 
 | # | Task | Status | Notes |
 |---|---|---|---|
-| 1 | **"Skip to End" button** in PurchaseFlow e-sign | 🔴 Not built | Scroll handler exists, needs skip button to jump to bottom + unlock checkbox |
-| 2 | **Welcome email HTML template** | 🟡 Partial | Webhook sends text email, no branded HTML template |
-| 3 | **Admin notification email** | 🔴 Not built | Email ops team on purchase |
+| ~~1~~ | ~~"Skip to End" button~~ | ✅ **Built** | RELAY GLM→Kimi, commit 41c3692. ResizeObserver guards against unloaded PDFs |
+| ~~2~~ | ~~Welcome email HTML template~~ | ✅ **Built** | `buildWelcomeEmailHtml()` in webhook/route.ts lines 283-345 — branded HTML, horse name, shares table, MyStable CTA |
+| ~~3~~ | ~~Admin notification email~~ | ✅ **Built** | webhook/route.ts Step 5b (lines 214-244) — sends to `ADMIN_NOTIFY_EMAIL`, investor/horse/shares/total/session table |
+
+**No code gaps remain.** All three items previously listed were already built (2+3) or are now built (1).
 
 ### Deferred by locked decisions (not Stage 1)
 
