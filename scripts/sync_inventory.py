@@ -296,14 +296,17 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
             hlt["trainer_name"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_name", hlt.get("trainer_name", ""))
             hlt["trainer_stable"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_stable", hlt.get("trainer_stable", ""))
             hlt["trainer_location"] = (slug_to_horse.get(slug, {}) or {}).get("trainer_location", hlt.get("trainer_location", ""))
-            # Coerce number fields
-            for num_field in ["lease_period_months", "leasehold_stake_pct", "investor_return_pct", "shares_total", "shares_sold", "price_per_share_nzd"]:
+            # Coerce number fields (not shares — those are normalized below)
+            for num_field in ["lease_period_months", "leasehold_stake_pct", "investor_return_pct", "price_per_share_nzd"]:
                 val = hlt.get(num_field)
                 if val is not None:
                     try:
                         hlt[num_field] = float(val)
                     except (ValueError, TypeError):
                         hlt[num_field] = 0
+            # Unregistered horses: 20 shares, 0 sold → shows as "Coming Soon"
+            hlt["shares_total"] = 20
+            hlt["shares_sold"] = 0
             hlt.pop("syndicate_price_nzd", None)
             hlt["listing_status"] = "draft"
             hlt["marketplace_visible"] = False
