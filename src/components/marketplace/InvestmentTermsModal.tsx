@@ -89,11 +89,11 @@ export function InvestmentTermsModal({
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md px-4"
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative max-w-lg w-full rounded-3xl border border-white/[0.08] bg-[#0A0A0F] p-8 space-y-6 shadow-[0_0_50px_rgba(0,0,0,0.85)]"
+            className="relative max-w-lg w-full rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close */}

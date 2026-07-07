@@ -81,7 +81,15 @@ export function RightColumnActionPanel({
   }
 
   // Guest view: Render a premium skeleton overlay — NO investment data in DOM
+  // For coming-soon horses, show the notification card directly (no blur needed)
   if (!user) {
+    if (status === "coming-soon") {
+      return (
+        <div className="space-y-4">
+          <ComingSoonCard horseName={horseName} horseSlug={horseSlug} />
+        </div>
+      );
+    }
     return (
       <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
         {/* Visual Skeleton placeholders */}
@@ -160,9 +168,7 @@ export function RightColumnActionPanel({
       )}
 
       {status === "coming-soon" && (
-        <p className="text-[13px] font-light text-white/40 leading-relaxed">
-          This offering is being prepared. Check back soon for details.
-        </p>
+        <ComingSoonCard horseName={horseName} horseSlug={horseSlug} />
       )}
 
       {status === "fully-subscribed" && (
@@ -175,6 +181,91 @@ export function RightColumnActionPanel({
         <p className="text-[13px] font-light text-white/40 leading-relaxed">
           The lease period for this horse has concluded.
         </p>
+      )}
+    </div>
+  );
+}
+
+// --- Coming Soon notification card ---
+function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug: string }) {
+  const { user } = useAuth();
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Pre-fill email if logged in
+  useEffect(() => {
+    if (user?.email) setEmail(user.email);
+  }, [user]);
+
+  const handleSubmit = async () => {
+    if (!email.trim()) return;
+    setLoading(true);
+    try {
+      if (user) {
+        const token = await user.getIdToken();
+        await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            horse_slug: horseSlug,
+            action_type: "waitlist",
+            user_email: email.trim(),
+          }),
+        });
+      } else {
+        // Guest — use the subscribe endpoint which doesn't require auth
+        await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+      }
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Lead capture failed:", err);
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 space-y-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-2">Coming Soon</p>
+        <h4 className="text-[16px] font-light text-white leading-snug">
+          Be the first to know when {horseName} goes live.
+        </h4>
+      </div>
+
+      {submitted ? (
+        <div className="py-3 text-center">
+          <p className="text-[12px] font-light text-white/60 leading-relaxed">
+            You&apos;re on the list. We&apos;ll contact you when {horseName} opens for acquisition.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-[13px] text-white placeholder:text-white/25 focus:outline-none focus:border-white/20 transition"
+          />
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading || !email.trim()}
+            className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
+          >
+            {loading ? "Submitting..." : "Notify Me"}
+          </button>
+        </div>
       )}
     </div>
   );
