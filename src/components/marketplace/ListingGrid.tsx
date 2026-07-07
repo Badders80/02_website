@@ -64,13 +64,13 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
             onClick={() => setFilter(tab.key)}
             className={`text-[10px] uppercase tracking-[0.2em] font-medium transition-all duration-300 relative py-1 cursor-pointer ${
               filter === tab.key
-                ? "text-[#d4a964]"
+                ? "text-white"
                 : "text-white/40 hover:text-white/70"
             }`}
           >
             {tab.label}
             {filter === tab.key && (
-              <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#d4a964] animate-fade-in" />
+              <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-white animate-fade-in" />
             )}
           </button>
         ))}
@@ -102,7 +102,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
             return (
               <article
                 key={camp.id}
-                className="group flex flex-col md:flex-row gap-8 md:gap-12 items-stretch bg-white/[0.01] backdrop-blur-md border border-white/[0.04] hover:border-white/[0.08] rounded-3xl p-6 md:p-8 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:bg-white/[0.02] hover:shadow-[0_0_50px_rgba(212,169,100,0.02),0_20px_40px_rgba(0,0,0,0.5)]"
+                className="group flex flex-col md:flex-row gap-8 md:gap-12 items-stretch bg-white/[0.01] backdrop-blur-md border border-white/[0.04] hover:border-white/[0.08] rounded-3xl p-6 md:p-8 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:bg-white/[0.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
               >
                 {/* Media Column */}
                 <Link
@@ -148,7 +148,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                           <p className="text-[15px] font-medium text-white">{camp.stats.placed}</p>
                         </div>
                         <div>
-                          <p className="text-[9px] uppercase tracking-[0.2em] text-[#d4a964] mb-0.5">next up</p>
+                          <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 mb-0.5">next up</p>
                           <p className="text-[13px] font-light text-zinc-300">{camp.stats.nextUp}</p>
                         </div>
                       </div>
@@ -158,7 +158,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                   <div className="pt-6">
                     <Link
                       href={getDetailPath(camp.id)}
-                      className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a964] group-hover:text-white transition-colors duration-300"
+                      className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.2em] uppercase text-white/60 group-hover:text-white transition-colors duration-300"
                     >
                       <span>Explore Offering</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -208,7 +208,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                     {/* Show availability for active listings */}
                     {camp.status === "become-an-owner" && (
                       <p className="text-[11px] font-light text-white/40">
-                        {camp.availability} · {camp.location}
+                        {camp.location}
                       </p>
                     )}
                     {camp.status !== "become-an-owner" && (
@@ -224,7 +224,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                   <div className="pt-6">
                     <Link
                       href={getDetailPath(camp.id)}
-                      className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase text-[#d4a964] group-hover:text-white transition-colors duration-300"
+                      className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase text-white/60 group-hover:text-white transition-colors duration-300"
                     >
                       <span>Explore Offering</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
