@@ -250,17 +250,27 @@ PDFs at `/public/documents/[slug]/pds.pdf` and `/public/documents/[slug]/syndica
 - ✅ Trainer display (stable name + contact names, Copper Belt Lodge hidden)
 - ✅ 6 SSOT horse files (4 registered + 2 unregistered)
 - ✅ PDS + SA for Prudentia and Hottathanafantasy
+- ✅ Placeholder PDS + SA for First Gear and I Stole A Manolo
 - ✅ JSON data files (horses, hlts, trainers, owners — synced from SSOT)
+- ✅ Guest Gating & Right Column Action Panel (blurred skeleton with Sign In CTA)
+- ✅ Auth & KYC Gate on `/purchase` route (enforces signed-in + KYC-verified)
+- ✅ Sequential E-Sign Step-by-Step UI (PDS first, then SA) with KYC signature autofill
+- ✅ Google Sheets API client library (`src/lib/google-sheets.ts`) with sheet auto-healer
+- ✅ Live Inventory API endpoint (`/api/inventory/[slug]`) and real-time frontend bindings
+- ✅ Stripe webhook: concurrency check, idempotency, price validation, inventory update, welcome email
+- ✅ MyStable Investor Inbox tab (fetches from `/api/communications`)
+- ✅ MyStable Documents tab (fetches from `/api/holdings`, "Documents processing" badge)
+- ✅ API routes: `/api/leads`, `/api/communications`, `/api/holdings` (all auth-required)
 
 ## What's Not Built ❌
 
-- ❌ PDS + SA for First Gear and I Stole A Manolo (placeholder PDFs needed)
+- ❌ "Skip to End" shortcut button on e-sign documents (scroll-to-bottom ack exists, no skip button)
 - ❌ Gallery images (3-4 per horse) — only mock placeholders
-- ❌ Welcome email template + admin notification
+- ❌ Welcome email HTML template (webhook sends text email, no branded template)
+- ❌ Admin notification email on purchase
 - ❌ Holdings seeded with real investor data
-- ❌ Stripe secret key in Vercel env vars
-- ❌ Investor Inbox / communications tab
-- ❌ Documents section in MyStable
+- ❌ Stripe secret key in Vercel env vars (blocked on Alex)
+- ❌ Live end-to-end testing against Google Sheets API (blocked on env vars)
 
 ## Out of Scope (Phase 1)
 
