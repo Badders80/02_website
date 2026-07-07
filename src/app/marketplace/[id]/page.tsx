@@ -1,6 +1,6 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import { InvestmentTermsModal } from "@/components/marketplace/InvestmentTermsModal";
+import { RightColumnActionPanel } from "@/components/marketplace/RightColumnActionPanel";
 import { DetailTabs } from "@/components/marketplace/DetailTabs";
 import Image from "next/image";
 import Link from "next/link";
@@ -231,12 +231,20 @@ export default async function CampaignDetailPage({ params }: Props) {
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-12">
           
           {/* Breadcrumb Navigation */}
-          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
-            <Link href="/marketplace" className="hover:text-white/60 transition duration-300">
-              Marketplace
+          <div className="mb-10 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-white/30">
+            <div className="flex items-center gap-2">
+              <Link href="/marketplace" className="hover:text-white/60 transition duration-300">
+                Marketplace
+              </Link>
+              <span>/</span>
+              <span className="text-white/60">{horse?.name || "Campaign"}</span>
+            </div>
+            <Link 
+              href="/marketplace" 
+              className="flex items-center gap-1.5 text-[#d4a964] hover:text-white/80 transition duration-300 normal-case tracking-normal text-[12px] font-medium"
+            >
+              <span>←</span> Back to Marketplace
             </Link>
-            <span>/</span>
-            <span className="text-white/60">{horse?.name || "Campaign"}</span>
           </div>
 
           {/* Two-Column Layout */}
@@ -351,54 +359,10 @@ export default async function CampaignDetailPage({ params }: Props) {
 
             {/* RIGHT COLUMN — Action Layer */}
             <div className="space-y-8 lg:sticky lg:top-28">
-              {/* Status badge + shares */}
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${STATUS_INFO[status].badgeClass}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${STATUS_INFO[status].dotClass}`} />
-                    <span className="text-[9px] uppercase tracking-widest font-medium">
-                      {STATUS_INFO[status].label}
-                    </span>
-                  </div>
-                  {status === "become-an-owner" && (
-                    <span className="text-[12px] font-light text-white/40">
-                      {Math.round((hltRecord.shares_sold / hltRecord.shares_total) * 100)}% subscribed
-                    </span>
-                  )}
-                </div>
-
-                {status === "become-an-owner" && (
-                  <InvestmentTermsModal
-                    horseName={horse?.name || "Racehorse"}
-                    horseSlug={hltRecord.id}
-                    pricePerShareNzd={hltRecord.share_price_cents / 100}
-                    totalLeasePercent={totalLeasePercent}
-                    leasePeriodMonths={hltRecord.lease_period_months}
-                    leaseStartDate={hltRecord.lease_start_date}
-                    investorReturnPct={hltRecord.investor_return_percentage}
-                    sharesTotal={hltRecord.shares_total}
-                    sharesAvailable={sharesAvailable}
-                  />
-                )}
-
-                {status === "coming-soon" && (
-                  <p className="text-[13px] font-light text-white/40 leading-relaxed">
-                    This offering is being prepared. Check back soon for details.
-                  </p>
-                )}
-
-                {status === "fully-subscribed" && (
-                  <p className="text-[13px] font-light text-white/40 leading-relaxed">
-                    All shares have been acquired. This horse is in active campaign.
-                  </p>
-                )}
-
-                {status === "term-completed" && (
-                  <p className="text-[13px] font-light text-white/40 leading-relaxed">
-                    The lease period for this horse has concluded.
-                  </p>
-                )}
-              </div>
+              <RightColumnActionPanel
+                horseName={horse?.name || "Racehorse"}
+                horseSlug={hltRecord.id}
+              />
             </div>
 
           </div>
