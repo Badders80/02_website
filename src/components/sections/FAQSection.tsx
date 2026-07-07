@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import faqData from '@/dna/content/faq.json';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface FAQItem {
   question: string;
@@ -13,6 +17,56 @@ export function FAQSection() {
   const items: FAQItem[] = faqData.items;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const faqListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      if (faqListRef.current) {
+        const faqItems = faqListRef.current.querySelectorAll(':scope > div');
+        gsap.fromTo(
+          faqItems,
+          { x: -80, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: faqListRef.current,
+              start: 'top 90%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const toggleQuestion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -22,28 +76,31 @@ export function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="faq" className="py-56 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
-        {/* Section Label */}
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
-          FAQ
-        </p>
+        <div ref={headerRef}>
+          {/* Section Label */}
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+            FAQ
+          </p>
 
-        {/* Headline */}
-        <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
-          Understanding
-          <br />
-          Digital-Syndication
-        </h2>
+          {/* Headline */}
+          <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
+            Understanding
+            <br />
+            Digital-Syndication
+          </h2>
 
-        {/* Description */}
-        <p className="text-[18px] leading-[1.7] font-light text-white/50 mb-24 max-w-xl">
-          A considered guide to the essentials — how digital-syndication works, what it means for ownership, and where Evolution Stables fits in.
-        </p>
+          {/* Description */}
+          <p className="text-[18px] leading-[1.7] font-light text-white/50 mb-24 max-w-xl">
+            A considered guide to the essentials — how digital-syndication works, what it means for ownership, and where Evolution Stables fits in.
+          </p>
+        </div>
 
         {/* FAQ Container with Auto-Collapse on Mouse Leave */}
-        <div 
-          className="max-w-3xl mx-auto" 
+        <div
+          ref={faqListRef}
+          className="max-w-3xl mx-auto"
           onMouseLeave={handleMouseLeave}
         >
           {items.map((item, index) => {

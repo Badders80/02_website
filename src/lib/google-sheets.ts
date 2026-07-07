@@ -206,6 +206,8 @@ export async function getLiveInventory(horseSlug: string) {
   const row = await readInventoryBySlug(horseSlug);
   if (!row) return null;
   return {
+    slug: row.slug,
+    name: row.name,
     shares_sold: row.shares_sold,
     shares_total: row.shares_total,
     shares_available: Math.max(0, row.shares_total - row.shares_sold),
@@ -294,6 +296,29 @@ export async function appendHolding(row: HoldingRow): Promise<void> {
   } catch (err: any) {
     console.error("[Google Sheets] Failed to append holding:", err.message);
     throw err;
+  }
+}
+
+export async function checkHoldingExists(purchaseId: string): Promise<boolean> {
+  try {
+    return await withRetry(async () => {
+      const sheets = getSheets();
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: "holdings!A:K",
+      });
+      const rows = response.data.values;
+      if (!rows || rows.length <= 1) return false;
+
+      const headers = rows[0].map((h: string) => h.toLowerCase().trim());
+      const purchaseIdIndex = headers.indexOf("purchase_id");
+      if (purchaseIdIndex === -1) return false;
+
+      return rows.slice(1).some((row: string[]) => row[purchaseIdIndex] === purchaseId);
+    });
+  } catch (err: any) {
+    console.error(`[Google Sheets] Failed to check holding existence for ${purchaseId}:`, err.message);
+    return false; // Fail safe — if we can't check, don't block processing (may create duplicate, but better than losing payment data)
   }
 }
 

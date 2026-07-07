@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyIdToken } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
+import { getLiveInventory } from '@/lib/google-sheets';
 
-// Load HLT data statically (baked at build for api route)
+// Load HLT data statically (baked at build for api route) — used as fallback only
 import hltsModule from '@/data/hlts.json';
 
 const hlts = (hltsModule as any).default || (hltsModule as any);
@@ -49,16 +50,51 @@ export async function POST(request: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const hlt = hlts.find((h: any) => (h.horse_slug || h.id) === hlt_id);
 
-    if (!hlt) {
-      return NextResponse.json({ error: 'HLT not found' }, { status: 404 });
+    // --- Live inventory check (Phase 3: concurrency control) ---
+    // Attempt live read from Google Sheets; fall back to static JSON if Sheets unavailable
+    let pricePerShareNzd: number;
+    let sharesAvailable: number | null = null;
+    let horseName: string;
+    let leasePeriodMonths: number;
+    let investorReturnPct: number;
+
+    const liveInventory = await getLiveInventory(hlt_id);
+
+    if (liveInventory) {
+      // Price from Sheets (authoritative — prevents client-side price tampering)
+      pricePerShareNzd = liveInventory.price_per_share_nzd;
+      sharesAvailable = liveInventory.shares_available;
+      horseName = liveInventory.name || hlt_id;
+      leasePeriodMonths = liveInventory.leasePeriodMonths || 36;
+      investorReturnPct = liveInventory.investorReturnPct || 80;
+
+      // Concurrency check: reject if not enough shares
+      if (sharesAvailable !== null && shares_to_buy > sharesAvailable) {
+        return NextResponse.json(
+          {
+            error: 'Insufficient shares available',
+            shares_available: sharesAvailable,
+            shares_requested: shares_to_buy,
+          },
+          { status: 409 }
+        );
+      }
+    } else {
+      // Fallback: static JSON (Sheets unavailable)
+      console.warn(`[checkout] Google Sheets unavailable, falling back to static JSON for ${hlt_id}`);
+      const hlt = hlts.find((h: any) => (h.horse_slug || h.id) === hlt_id);
+      if (!hlt) {
+        return NextResponse.json({ error: 'HLT not found' }, { status: 404 });
+      }
+      pricePerShareNzd = hlt.price_per_share_nzd || 1500;
+      horseName = hlt.horse_name || hlt_id;
+      leasePeriodMonths = hlt.lease_period_months || 36;
+      investorReturnPct = hlt.investor_return_pct || 80;
+      // No live shares_available — skip concurrency check (Sheets is down)
     }
 
-    const pricePerShareNzd = hlt.price_per_share_nzd || 1500;
-    const totalNzdCents = pricePerShareNzd * shares_to_buy * 100;
-
-    // Create Stripe Checkout session directly
+    // Create Stripe Checkout session with authoritative price from Sheets
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
       line_items: [
@@ -68,8 +104,8 @@ export async function POST(request: NextRequest) {
             currency: 'nzd',
             unit_amount: pricePerShareNzd * 100, // per share in cents
             product_data: {
-              name: `${hlt.horse_name || hlt_id} — Share${shares_to_buy > 1 ? 's' : ''}`,
-              description: `Syndication share${shares_to_buy > 1 ? 's' : ''} in ${hlt.horse_name || hlt_id}. ${hlt.lease_period_months || 36}-month lease, ${(hlt.investor_return_pct || 80)}% return to investors.`,
+              name: `${horseName} — Share${shares_to_buy > 1 ? 's' : ''}`,
+              description: `Syndication share${shares_to_buy > 1 ? 's' : ''} in ${horseName}. ${leasePeriodMonths}-month lease, ${investorReturnPct}% return to investors.`,
             },
           },
         },
@@ -79,7 +115,8 @@ export async function POST(request: NextRequest) {
         user_email: user_email || verifiedEmail || '',
         hlt_id,
         shares_to_buy: String(shares_to_buy),
-        horse_microchip: hlt.horse_microchip || '',
+        price_per_share_nzd: String(pricePerShareNzd),
+        horse_microchip: body.horse_microchip || '',
         bypass_kyc: String(bypass_kyc || false),
       },
       success_url: `${appUrl}/mystable?success=true`,
