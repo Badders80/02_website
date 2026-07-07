@@ -137,7 +137,7 @@ const INVENTORY_HEADERS = [
   "slug", "name", "listing_status", "price_per_share_nzd", "shares_total",
   "shares_sold", "leasehold_stake_pct", "lease_period_months", "lease_start_date",
   "investor_return_pct", "trainer_name", "trainer_stable", "trainer_location",
-  "wins", "placed", "next_up", "loveracing_id",
+  "wins", "placed", "next_up", "loveracing_id", "image_path", "story", "pedigree",
 ];
 
 export async function readInventory(): Promise<InventoryRow[]> {
@@ -146,7 +146,7 @@ export async function readInventory(): Promise<InventoryRow[]> {
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${INVENTORY_TAB}!A:Q`,
+        range: `${INVENTORY_TAB}!A:W`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) return [];
@@ -232,7 +232,7 @@ export async function updateInventorySharesSold(slug: string, newSharesSold: num
       // Read current data to find the row for this slug
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${INVENTORY_TAB}!A:Q`,
+        range: `${INVENTORY_TAB}!A:W`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) throw new Error("No inventory data");
