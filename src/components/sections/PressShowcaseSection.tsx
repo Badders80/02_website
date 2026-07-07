@@ -3,7 +3,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import pressData from "@/dna/content/press.json";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface PressArticle {
   title: string;
@@ -16,6 +20,11 @@ interface PressArticle {
 
 export function PressShowcaseSection() {
   const articles: PressArticle[] = pressData.articles;
+  
+  const sectionRef = useRef<HTMLElement>(null);
+  const newsHeaderRef = useRef<HTMLDivElement>(null);
+  const featuredHeaderRef = useRef<HTMLDivElement>(null);
+  const logosRef = useRef<HTMLDivElement>(null);
   
   const leadArticle =
     articles.find(
@@ -176,18 +185,85 @@ export function PressShowcaseSection() {
     return `${parts[2]}-${parts[1]}-${parts[0]}`;
   };
 
+  // GSAP scroll reveals
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      if (newsHeaderRef.current) {
+        gsap.fromTo(
+          newsHeaderRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: newsHeaderRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      if (featuredHeaderRef.current) {
+        gsap.fromTo(
+          featuredHeaderRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: featuredHeaderRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      if (logosRef.current) {
+        const logos = logosRef.current.querySelectorAll('.partner-logo-wrapper');
+        gsap.fromTo(
+          logos,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: logosRef.current,
+              start: 'top 90%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   if (!articles || articles.length === 0) {
     return null;
   }
 
   return (
-    <section className="relative bg-black text-white overflow-hidden py-24 bloomberg-showcase">
+    <section ref={sectionRef} className="relative bg-black text-white overflow-hidden py-24 bloomberg-showcase">
       <div className="max-w-5xl mx-auto px-12 md:px-16 lg:px-20 w-full space-y-24">
         {/* News and Updates Section - On Top */}
         <div>
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
-            NEWS AND UPDATES
-          </p>
+          <div ref={newsHeaderRef}>
+            <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+              NEWS AND UPDATES
+            </p>
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-[6fr,4fr] gap-0">
             <a
               href={leadArticle.url}
@@ -391,10 +467,12 @@ export function PressShowcaseSection() {
 
         {/* As Featured In Section - On Bottom */}
         <div>
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
-            AS FEATURED IN
-          </p>
-          <div className="pb-6">
+          <div ref={featuredHeaderRef}>
+            <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
+              AS FEATURED IN
+            </p>
+          </div>
+          <div ref={logosRef} className="pb-6">
             <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 lg:grid lg:grid-cols-6 lg:gap-x-16 lg:gap-y-12 lg:justify-items-center">
               {partners.map((partner, index) => {
                 const colSpanClass = index >= 6 ? 'lg:col-span-3' : 'lg:col-span-2';

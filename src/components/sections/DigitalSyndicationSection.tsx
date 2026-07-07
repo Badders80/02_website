@@ -1,6 +1,11 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface BenefitItem {
   iconSrc: string;
@@ -31,8 +36,60 @@ const benefits: BenefitItem[] = [
 ];
 
 export function DigitalSyndicationSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Left column slides in from left
+      if (leftColRef.current) {
+        gsap.fromTo(
+          leftColRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: leftColRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // Right column benefits slide in from right, staggered
+      if (rightColRef.current) {
+        const items = rightColRef.current.querySelectorAll(':scope > div > div > div');
+        gsap.fromTo(
+          items,
+          { x: 80, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: rightColRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="digital-syndication" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="digital-syndication" className="py-56 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         {/* Section Label */}
         <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
@@ -42,7 +99,7 @@ export function DigitalSyndicationSection() {
         {/* Two Column Layout */}
         <div className="grid gap-16 lg:grid-cols-[1fr,1fr] lg:gap-48 xl:gap-56">
           {/* LEFT COLUMN */}
-          <div className="space-y-8">
+          <div ref={leftColRef} className="space-y-8">
             {/* Headline */}
             <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight">
               Digital Syndication
@@ -58,7 +115,7 @@ export function DigitalSyndicationSection() {
           </div>
 
           {/* RIGHT COLUMN */}
-          <div className="space-y-8">
+          <div ref={rightColRef} className="space-y-8">
             {/* Features List */}
             <div className="space-y-12">
               {benefits.map((benefit, index) => (

@@ -1,40 +1,100 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
 export function MarketplaceSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Header slides in from left
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // Cards stagger in from left
+      if (cardsRef.current) {
+        const cards = cardsRef.current.querySelectorAll(':scope > div');
+        gsap.fromTo(
+          cards,
+          { x: -100, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 90%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="marketplace" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="marketplace" className="py-56 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
-        {/* Original Regulated Marketplace Label */}
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
-          REGULATED MARKETPLACE
-        </p>
+        <div ref={headerRef}>
+          {/* Original Regulated Marketplace Label */}
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+            REGULATED MARKETPLACE
+          </p>
 
-        {/* Headline */}
-        <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
-          Transformation Powered
-          <br />
-          by{" "}
-          <a
-            href="https://tokinvest.capital/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#21B981] hover:!text-[#2dd4a4] hover:font-normal hover:tracking-[-0.02em] transition-all"
-          >
-            Tokinvest
-          </a>
-        </h2>
+          {/* Headline */}
+          <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
+            Transformation Powered
+            <br />
+            by{" "}
+            <a
+              href="https://tokinvest.capital/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#21B981] hover:!text-[#2dd4a4] hover:font-normal hover:tracking-[-0.02em] transition-all"
+            >
+              Tokinvest
+            </a>
+          </h2>
 
-        {/* Description */}
-        <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
-          Behind our integrated marketplace, Tokinvest delivers the raw
-          horsepower that powers digital-syndication — built on regulated,
-          financial-grade infrastructure, tailored from institutional
-          finance and adapted to meet the demands of modern owners.
-        </p>
+          {/* Description */}
+          <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
+            Behind our integrated marketplace, Tokinvest delivers the raw
+            horsepower that powers digital-syndication — built on regulated,
+            financial-grade infrastructure, tailored from institutional
+            finance and adapted to meet the demands of modern owners.
+          </p>
+        </div>
 
         {/* Features */}
         <div className="mt-32 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3">
+          <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3">
             {/* Card 1 - Discover Opportunities */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}

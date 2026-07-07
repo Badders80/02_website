@@ -1,4 +1,6 @@
 import { google } from "googleapis";
+import path from "path";
+import fs from "fs";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg";
 const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "hlts";
@@ -25,16 +27,34 @@ async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3): Promise<T> {
 }
 
 function getAuth() {
+  // Production: service account
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-  if (!keyJson) {
-    throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY not configured");
+  if (keyJson) {
+    const creds = JSON.parse(keyJson);
+    return new google.auth.JWT({
+      email: creds.client_email,
+      key: creds.private_key,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
   }
-  const creds = JSON.parse(keyJson);
-  return new google.auth.JWT({
-    email: creds.client_email,
-    key: creds.private_key,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
+
+  // Dev fallback: OAuth2 token.json
+  const tokenPath = path.join(process.cwd(), "scripts", "token.json");
+  if (fs.existsSync(tokenPath)) {
+    const creds = JSON.parse(fs.readFileSync(tokenPath, "utf8"));
+    const oauth2Client = new google.auth.OAuth2(
+      creds.client_id,
+      creds.client_secret,
+      creds.token_uri
+    );
+    oauth2Client.setCredentials({
+      refresh_token: creds.refresh_token,
+      access_token: creds.token,
+    });
+    return oauth2Client;
+  }
+
+  throw new Error("Google Sheets auth not configured — set GOOGLE_SERVICE_ACCOUNT_KEY env var or provide scripts/token.json");
 }
 
 function getSheets() {

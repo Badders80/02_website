@@ -1,5 +1,11 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
 interface StakeholderCard {
   title: string;
   subtitle: string;
@@ -28,11 +34,63 @@ const cards: StakeholderCard[] = [
 ];
 
 export function HowItWorksSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Header slides in from left
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // Cards stagger in from left
+      if (gridRef.current) {
+        const cards = gridRef.current.querySelectorAll(':scope > div');
+        gsap.fromTo(
+          cards,
+          { x: -100, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: 'top 90%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="mission" className="py-24 bg-black text-foreground">
+    <section ref={sectionRef} id="mission" className="py-24 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         {/* Heading & Description */}
-        <div className="mb-16">
+        <div ref={headerRef} className="mb-16">
           <p className="mb-16 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
             OUR MISSION
           </p>
@@ -45,7 +103,7 @@ export function HowItWorksSection() {
         </div>
 
         {/* 3 Cards — title above body, vertical stack below lg */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {cards.map((card, index) => (
             <div
               key={index}

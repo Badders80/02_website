@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const AboutSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const ctaAnchorRef = useRef<HTMLDivElement>(null);
   const [ctaHeight, setCtaHeight] = useState<number | null>(null);
   const [isSticky, setIsSticky] = useState(false);
@@ -83,6 +90,49 @@ export const AboutSection = () => {
     };
   }, [isSticky, shouldShowCta]);
 
+  useEffect(() => {
+    if (!sectionRef.current || !headerRef.current || !contentRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Header slides in from left
+      gsap.fromTo(
+        headerRef.current,
+        { x: -60, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Content slides in from left, slightly delayed
+      gsap.fromTo(
+        contentRef.current,
+        { x: -40, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          delay: 0.15,
+          scrollTrigger: {
+            trigger: contentRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
@@ -123,20 +173,23 @@ export const AboutSection = () => {
 
   return (
     <section
+      ref={sectionRef}
       className="bg-black py-64 text-foreground"
       id="about"
       data-cta-overlay="off"
     >
       <div className="mx-auto max-w-6xl px-12 md:px-16 lg:px-20">
-        <p className="mb-16 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
-          ABOUT
-        </p>
+        <div ref={headerRef}>
+          <p className="mb-16 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
+            ABOUT
+          </p>
 
-        <h2 className="mb-8 text-[36px] font-light tracking-tight text-white md:text-[48px]">
-          Own the Experience
-        </h2>
+          <h2 className="mb-8 text-[36px] font-light tracking-tight text-white md:text-[48px]">
+            Own the Experience
+          </h2>
+        </div>
 
-        <div className={`mt-6 ${shouldShowCta ? 'space-y-20' : 'space-y-8'}`}>
+        <div ref={contentRef} className={`mt-6 ${shouldShowCta ? 'space-y-20' : 'space-y-8'}`}>
           <p className="text-[18px] font-light leading-[1.85] text-white/65">
             Racehorse ownership has changed. Evolution Stables removes the barriers that once made it
             complex and inaccessible — opening the door for first-timers and seasoned fans alike to not
