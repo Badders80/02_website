@@ -2,8 +2,23 @@
 
 **Status:** ✅ LOCKED — Approved by Alex Baddeley after Nemotron + DeepSeek review
 **Date:** July 2026
+**Last updated:** July 2026 — Phase 3 backend complete (C3, C4, C5), Kimi-audited
 **Supersedes:** Discussion draft job spec (same filename, previous version)
 **Reviews:** `reviews/nemotron-review.md`, `reviews/deepseek-review.md`
+
+### Build Progress Tracker
+
+| Component | Description | Status | Commit |
+|---|---|---|---|
+| C1 | Detail page — guest conditional rendering + live inventory | ❌ Not started | — |
+| C2 | Purchase page — auth/KYC gate + live inventory | ❌ Not started | — |
+| C3 | Checkout session — live inventory verification + concurrency | ✅ Built + audited | `ecb18e3`, `70c9c4c` |
+| C4 | Google Sheets client library | ✅ Built + audited | prior phases + `70c9c4c` |
+| C5 | Stripe webhook — production hardening | ✅ Built + audited | `ecb18e3`, `70c9c4c` |
+| C6 | KYC processing screen | ❌ Not started | — |
+| C7 | MyStable expansions — Investor Inbox + Documents | ❌ Not started | — |
+
+**Next session:** C1 → C2 → C6 → C7 (all frontend, backend dependencies satisfied)
 
 ---
 
@@ -40,8 +55,10 @@
 | KYC: status check | `/api/kyc/status/route.ts` | Queries Stripe Identity API, syncs verified status to Firebase custom claims |
 | KYC: callback | `/api/kyc/callback/route.ts` | Exists |
 | KYC: verify pages | `/auth/verify/page.tsx`, `/mystable/verify/page.tsx` | Exists |
-| Stripe Checkout: create session | `/api/checkout/create-session/route.ts` | Creates checkout session with metadata (user_id, hlt_id, shares, microchip). **No live inventory check.** |
-| Stripe Checkout: webhook | `/api/checkout/webhook/route.ts` | Handles `checkout.session.completed`. Writes holding to Google Sheets via web app bridge. **Does NOT update Inventory, no idempotency, no amount validation, no email, no PDFs.** |
+|| Stripe Checkout: create session | `/api/checkout/create-session/route.ts` | ✅ **Updated (C3)** — reads live inventory via `getLiveInventory()`, 409 on insufficient shares, price from Sheets (not static JSON), `Math.round` on unit_amount, verified email preferred over client-provided. Falls back to static JSON if Sheets down. |
+|| Stripe Checkout: webhook | `/api/checkout/webhook/route.ts` | ✅ **Rewritten (C5)** — 6-step pipeline: idempotency (`checkHoldingExists`), amount validation (Sheets price vs `amount_total`), `appendHolding` (11-col schema), `updateInventorySharesSold` (oversell alert), welcome email (nodemailer/SMTP, horse display name), `appendCommunication`. Holding failure halts processing (Stripe retries). |
+|| Google Sheets client lib | `src/lib/google-sheets.ts` | ✅ **Built (C4)** — `readInventory`, `readInventoryBySlug`, `getLiveInventory`, `readHoldingsByEmail`, `readCommunicationsByEmail`, `appendHolding`, `appendLead`, `appendCommunication`, `updateInventorySharesSold`, `checkHoldingExists`. Spec TitleCase tab names. 60s cache. Retry with backoff. Dev fallback to `token.json`. |
+|| Nodemailer | `package.json` | ✅ Installed (`nodemailer` + `@types/nodemailer`). Dynamic import in webhook — no bundle impact when SMTP unset. |
 | MyStable dashboard | `src/app/mystable/page.tsx` | Auth-gated (blurred overlay for guests). Reads from `holdings.json` (local static). Shows holdings list, onboarding tracker, stable logs feed (mock). |
 | OnboardingFlow | `OnboardingFlow.tsx` | 3-step tracker: Create Account → Verify Identity → Acquire First Horse |
 | SSOT sync pipeline | `scripts/sync_inventory.py` | Syncs SSOT JSON → website `src/data/*.json` |
@@ -52,18 +69,19 @@
 
 ### Not Built ❌
 
-| Feature | Notes |
+|| Feature | Notes |
 |---|---|
-| **Detail page guest conditional rendering** | Right column action panel renders fully for everyone. No "Sign In to Access Investment Terms" CTA. |
-| **Purchase page auth/KYC gating** | Direct URL access bypasses all checks. |
-| **KYC processing screen** | No `/marketplace/[id]/kyc-processing` page. No "Check Status Again" UI. No fallback lead capture. |
-| **Google Sheets client lib** | No `src/lib/google-sheets.ts`. Webhook uses Google Apps Script web app bridge for holdings writes only. No read functions for Inventory. No `updateInventorySharesSold`. |
+| **Detail page guest conditional rendering** | Right column action panel renders fully for everyone. No "Sign In to Access Investment Terms" CTA. **(C1 — next)** |
+| **Purchase page auth/KYC gating** | Direct URL access bypasses all checks. **(C2 — next)** |
+| **KYC processing screen** | No `/marketplace/[id]/kyc-processing` page. No "Check Status Again" UI. No fallback lead capture. **(C6 — next)** |
+| **Investor Inbox** | No communications tab in MyStable. **(C7 — next)** |
+| **Documents section** | No document repository in MyStable. **(C7 — next)** |
+| **MyStable dynamic data** | MyStable reads from `holdings.json` (static), not Google Sheets API. **(C7 — next)** |
+| **`/api/inventory/[slug]` route** | New API route for live inventory reads. **(C1 — next)** |
+| **`/api/communications` route** | New API route for MyStable Inbox. **(C7 — next)** |
+| **`/api/holdings` route** | New API route for MyStable Documents. **(C7 — next)** |
 | **Attribution engine** | DEFERRED to post-Stage 1. |
 | **PDF generation pipeline** | DEFERRED — Stage 1 sends welcome email with placeholder note. |
-| **Welcome email** | No email template, no SMTP/nodemailer. |
-| **Investor Inbox** | No communications tab in MyStable. |
-| **Documents section** | No document repository in MyStable. |
-| **MyStable dynamic data** | MyStable reads from `holdings.json` (static), not Google Sheets API. |
 | **PDS/SA for First Gear + I Stole A Manolo** | Placeholder PDFs needed |
 | **Gallery images** | Only mock placeholders |
 | **Stripe secret key in Vercel** | Not deployed |
@@ -112,9 +130,10 @@
 
 ---
 
-### Component 3: Checkout Session — Live Inventory Verification + Concurrency Control
+### Component 3: Checkout Session — Live Inventory Verification + Concurrency Control ✅ BUILT
 
-**Files:** `src/app/api/checkout/create-session/route.ts` (MODIFY)
+**Files:** `src/app/api/checkout/create-session/route.ts` (MODIFIED)
+**Commits:** `ecb18e3`, `70c9c4c` (Kimi audit)
 
 **What it does:**
 - Before creating the Stripe Checkout session, read live `shares_sold` and `shares_total` from Google Sheets Inventory
@@ -127,9 +146,10 @@
 
 ---
 
-### Component 4: Google Sheets Client Library
+### Component 4: Google Sheets Client Library ✅ BUILT
 
 **Files:** `src/lib/google-sheets.ts` (NEW)
+**Commits:** prior phases + `70c9c4c` (Kimi audit — tab names fixed to spec TitleCase)
 
 **Auth:** Google Service Account with Sheets API scope. Credentials in `GOOGLE_SERVICE_ACCOUNT_KEY` env var (JSON). Use `googleapis` npm package (import `@googleapis/sheets` individually to reduce bundle).
 
@@ -153,9 +173,10 @@
 
 ---
 
-### Component 5: Stripe Webhook — Production Hardening
+### Component 5: Stripe Webhook — Production Hardening ✅ BUILT
 
-**Files:** `src/app/api/checkout/webhook/route.ts` (MODIFY)
+**Files:** `src/app/api/checkout/webhook/route.ts` (MODIFIED)
+**Commits:** `ecb18e3`, `70c9c4c` (Kimi audit)
 
 **Enhanced flow on `checkout.session.completed`:**
 
@@ -355,10 +376,10 @@ Component 4 (Google Sheets lib) ────────────────
 - [ ] Unauthenticated user tries to directly visit `/marketplace/[slug]/purchase` → redirected to login with return redirect
 - [ ] Authenticated but unverified user tries to visit `/marketplace/[slug]/purchase` → redirected to detail page
 - [ ] User can't complete KYC → clicks "Manual Assistance" → lead form writes to Google Sheets Leads tab
-- [ ] Checkout creation blocks if `shares_to_buy > shares_available` (live from Sheets)
-- [ ] Stripe checkout completes → webhook records holding (with idempotency check) → updates Inventory `shares_sold` → sends welcome email → logs to Communications sheet
-- [ ] Duplicate webhook delivery → idempotency check prevents duplicate holding
-- [ ] Webhook detects amount mismatch → flags for manual review
+- [x] Checkout creation blocks if `shares_to_buy > shares_available` (live from Sheets) ✅ C3
+- [x] Stripe checkout completes → webhook records holding (with idempotency check) → updates Inventory `shares_sold` → sends welcome email → logs to Communications sheet ✅ C5
+- [x] Duplicate webhook delivery → idempotency check prevents duplicate holding ✅ C5
+- [x] Webhook detects amount mismatch → flags for manual review ✅ C5
 - [ ] MyStable Investor Inbox shows welcome email for the user
 - [ ] MyStable Documents section shows holding with "Documents processing" badge (PDFs deferred)
 - [ ] Google Sheets API unavailable → marketplace falls back to static JSON, MyStable shows "Data may be delayed"
