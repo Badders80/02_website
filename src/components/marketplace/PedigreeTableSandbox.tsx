@@ -38,18 +38,21 @@ function formatFoalingDate(dateStr?: string): string | null {
 function parseHorseName(fullName: string): { name: string; country: string; year: string } {
   if (!fullName || fullName === "—") return { name: "—", country: "", year: "" };
   
+  // Strip " (by ...)" from the name
+  let cleanName = fullName.replace(/\s*\(by\s+[^)]+\)/i, "");
+  
   // Match name, country in parentheses, and optional year + optional suffix (like nsb)
-  const match = fullName.match(/^(.+?)\s*\(([A-Z]{2,4})\)(?:\s+(\d{4})(?:\s+[a-zA-Z]+)?)?$/i);
+  const match = cleanName.match(/^(.+?)\s*\(([A-Z]{2,4})\)(?:\s+(\d{4})(?:\s+[a-zA-Z]+)?)?$/i);
   if (match) {
     return { name: match[1].trim(), country: match[2], year: match[3] || "" };
   }
   
-  const match2 = fullName.match(/^(.+?)\s+(\d{4})(?:\s+[a-zA-Z]+)?$/i);
+  const match2 = cleanName.match(/^(.+?)\s+(\d{4})(?:\s+[a-zA-Z]+)?$/i);
   if (match2) {
     return { name: match2[1].trim(), country: "", year: match2[2] };
   }
   
-  return { name: fullName.trim(), country: "", year: "" };
+  return { name: cleanName.trim(), country: "", year: "" };
 }
 
 function PedigreePill({
