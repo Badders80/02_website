@@ -24,36 +24,29 @@ interface PedigreeTableProps {
   pedigreeData?: PedigreeData | null;
 }
 
-// Clean horse name: "Derryn (AUS) 2013" → "Derryn"
 function shortName(fullName: string): string {
   if (!fullName || fullName === "—") return "—";
-  // Strip country code and year: "Derryn (AUS) 2013" → "Derryn"
   return fullName.replace(/\s*\([^)]+\)\s*\d*$/, "").trim() || fullName;
 }
 
-function PedigreeBox({ name, label, sublabel }: { name: string; label?: string; sublabel?: string }) {
+function PedigreeBox({ name, label }: { name: string; label?: string }) {
   const display = shortName(name);
   return (
-    <div className="flex flex-col items-center justify-center text-center px-3 py-2.5 rounded-lg border border-white/[0.06] bg-white/[0.02] min-w-[110px] max-w-[140px]">
+    <div className="flex flex-col items-center justify-center text-center px-2 py-2 rounded-lg border border-white/[0.06] bg-white/[0.02] min-w-[90px] max-w-[130px]">
       {label && (
-        <span className="text-[8px] uppercase tracking-widest text-white/25 mb-1">{label}</span>
+        <span className="text-[7px] uppercase tracking-widest text-white/25 mb-0.5">{label}</span>
       )}
-      <span className="text-[11px] font-light text-white/80 leading-tight">{display}</span>
-      {sublabel && (
-        <span className="text-[8px] text-white/30 mt-0.5">{sublabel}</span>
-      )}
+      <span className="text-[10px] font-light text-white/80 leading-tight">{display}</span>
     </div>
   );
 }
 
-// Vertical connector line
-function VLine({ className = "" }: { className?: string }) {
-  return <div className={`w-px bg-white/10 ${className}`} />;
-}
-
-// Horizontal connector line
 function HLine({ className = "" }: { className?: string }) {
   return <div className={`h-px bg-white/10 ${className}`} />;
+}
+
+function VLine({ className = "" }: { className?: string }) {
+  return <div className={`w-px bg-white/10 ${className}`} />;
 }
 
 export function PedigreeTable({
@@ -68,18 +61,29 @@ export function PedigreeTable({
 }: PedigreeTableProps) {
   const [view, setView] = useState<"tree" | "dam-line" | "sire-line">("tree");
 
-  const damLine = pedigreeData?.dam_line || [];
-  const sireLine = pedigreeData?.sire_line || [];
+  const damLine = (pedigreeData?.dam_line || []).slice(0, 10);
+  const sireLine = (pedigreeData?.sire_line || []).slice(0, 10);
   const hasFullPedigree = damLine.length > 0 || sireLine.length > 0;
 
-  // Build 3-generation tree data
-  // Gen 1: Horse
-  // Gen 2: Sire (top) / Dam (bottom)
-  // Gen 3: Sire's Sire, Sire's Dam / Dam's Sire, Dam's Dam
-  const gen2SireSire = sireLine[0]?.sire || "—";
-  const gen2SireDam = sireLine[0]?.dam || "—";
-  const gen2DamSire = damLine[0]?.sire || "—";
-  const gen2DamDam = damLine[0]?.mare || "—";
+  // Gen 2: sire and dam
+  const gen2Sire = sireName;
+  const gen2Dam = damName;
+
+  // Gen 3: from sire_line and dam_line
+  const gen3SireSire = sireLine[1]?.sire || "—";  // sire's sire
+  const gen3SireDam = sireLine[0]?.dam || "—";    // sire's dam
+  const gen3DamSire = damLine[0]?.sire || "—";    // dam's sire
+  const gen3DamDam = damLine[0]?.mare || "—";     // dam's dam
+
+  // Gen 4: from sire_line[2,3] and dam_line[1,2]
+  const gen4SSS = sireLine[2]?.sire || "—";  // sire's sire's sire
+  const gen4SSD = sireLine[1]?.dam || "—";   // sire's sire's dam
+  const gen4SDS = sireLine[2]?.sire || "—";  // (same as above for now)
+  const gen4SDD = sireLine[1]?.dam || "—";
+  const gen4DSS = damLine[1]?.sire || "—";   // dam's dam's sire
+  const gen4DSD = damLine[0]?.mare || "—";   // (dam's dam - already gen3)
+  const gen4DDS = damLine[1]?.sire || "—";   
+  const gen4DDD = damLine[1]?.mare || "—";   // dam's dam's dam
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -97,73 +101,114 @@ export function PedigreeTable({
                   : "border-white/[0.06] text-white/40 hover:text-white/60"
               }`}
             >
-              {v.replace("-", " ")}
+              {v === "tree" ? "Pedigree" : v.replace("-", " ")}
             </button>
           ))}
         </div>
       )}
 
-      {/* Tree View — 3-generation fan-out chart */}
+      {/* === TREE VIEW — 4-generation pedigree === */}
       {view === "tree" && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6 md:p-8 overflow-x-auto">
-          <div className="flex items-center gap-6 md:gap-8 min-w-fit">
-            {/* Gen 1 — Subject horse */}
-            <div className="flex flex-col items-center gap-4">
+          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-6">4-Generation Pedigree</h5>
+          <div className="flex items-stretch min-w-fit">
+            {/* Gen 1 — Subject */}
+            <div className="flex items-center">
               <PedigreeBox name={horseName} label="Subject" />
             </div>
 
-            {/* Connector + Gen 2 */}
+            {/* Connector to Gen 2 */}
             <div className="flex items-center">
-              {/* Horizontal line from horse to split */}
-              <HLine className="w-6" />
-              {/* Vertical split */}
-              <div className="flex flex-col items-center h-[120px] justify-between">
-                <VLine className="h-[60px]" />
-                <VLine className="h-[60px]" />
-              </div>
               <HLine className="w-4" />
-              {/* Gen 2 boxes */}
-              <div className="flex flex-col gap-[60px]">
-                <PedigreeBox name={sireName} label="Sire" />
-                <PedigreeBox name={damName} label="Dam" />
+              <div className="flex flex-col h-[100px] justify-between">
+                <VLine className="h-[50px]" />
+                <VLine className="h-[50px]" />
               </div>
+              <HLine className="w-3" />
             </div>
 
-            {/* Connector + Gen 3 (only if we have data) */}
+            {/* Gen 2 — Sire (top) / Dam (bottom) */}
+            <div className="flex flex-col gap-[50px]">
+              <PedigreeBox name={gen2Sire} label="Sire" />
+              <PedigreeBox name={gen2Dam} label="Dam" />
+            </div>
+
+            {/* Connector to Gen 3 (only if data) */}
             {hasFullPedigree && (
               <>
-                {/* Sire side connectors */}
+                {/* Sire side */}
                 <div className="flex items-center">
-                  <HLine className="w-4" />
-                  <div className="flex flex-col items-center h-[100px] justify-between">
-                    <VLine className="h-[50px]" />
-                    <VLine className="h-[50px]" />
-                  </div>
                   <HLine className="w-3" />
-                  <div className="flex flex-col gap-[50px]">
-                    <PedigreeBox name={gen2SireSire} label="Sire's Sire" />
-                    <PedigreeBox name={gen2SireDam} label="Sire's Dam" />
+                  <div className="flex flex-col h-[90px] justify-between">
+                    <VLine className="h-[45px]" />
+                    <VLine className="h-[45px]" />
+                  </div>
+                  <HLine className="w-2" />
+                </div>
+                <div className="flex flex-col gap-[45px]">
+                  <div className="flex flex-col gap-[40px]">
+                    <PedigreeBox name={gen3SireSire} label="Sire's Sire" />
+                    <PedigreeBox name={gen3SireDam} label="Sire's Dam" />
                   </div>
                 </div>
 
-                {/* Dam side connectors */}
+                {/* Dam side */}
                 <div className="flex items-center">
-                  <HLine className="w-4" />
-                  <div className="flex flex-col items-center h-[100px] justify-between">
-                    <VLine className="h-[50px]" />
-                    <VLine className="h-[50px]" />
-                  </div>
                   <HLine className="w-3" />
-                  <div className="flex flex-col gap-[50px]">
-                    <PedigreeBox name={gen2DamSire} label="Dam's Sire" />
-                    <PedigreeBox name={gen2DamDam} label="Dam's Dam" />
+                  <div className="flex flex-col h-[90px] justify-between">
+                    <VLine className="h-[45px]" />
+                    <VLine className="h-[45px]" />
+                  </div>
+                  <HLine className="w-2" />
+                </div>
+                <div className="flex flex-col gap-[45px]">
+                  <div className="flex flex-col gap-[40px]">
+                    <PedigreeBox name={gen3DamSire} label="Dam's Sire" />
+                    <PedigreeBox name={gen3DamDam} label="Dam's Dam" />
                   </div>
                 </div>
+
+                {/* Gen 4 — only if we have deeper data */}
+                {sireLine.length > 2 && (
+                  <>
+                    {/* Sire's Sire side */}
+                    <div className="flex items-center">
+                      <HLine className="w-2" />
+                      <div className="flex flex-col h-[80px] justify-between">
+                        <VLine className="h-[40px]" />
+                        <VLine className="h-[40px]" />
+                      </div>
+                      <HLine className="w-2" />
+                    </div>
+                    <div className="flex flex-col gap-[40px]">
+                      <PedigreeBox name={sireLine[2]?.sire || "—"} />
+                      <PedigreeBox name={sireLine[1]?.dam || "—"} />
+                    </div>
+                  </>
+                )}
+
+                {damLine.length > 1 && (
+                  <>
+                    {/* Dam's Dam side */}
+                    <div className="flex items-center">
+                      <HLine className="w-2" />
+                      <div className="flex flex-col h-[80px] justify-between">
+                        <VLine className="h-[40px]" />
+                        <VLine className="h-[40px]" />
+                      </div>
+                      <HLine className="w-2" />
+                    </div>
+                    <div className="flex flex-col gap-[40px]">
+                      <PedigreeBox name={damLine[1]?.sire || "—"} />
+                      <PedigreeBox name={damLine[1]?.mare || "—"} />
+                    </div>
+                  </>
+                )}
               </>
             )}
           </div>
 
-          {/* Specs row below the tree */}
+          {/* Specs row */}
           <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
             <span className="text-white/40">Sex: <span className="text-white/80 capitalize">{sex || "—"}</span></span>
             <span className="text-white/40">Colour: <span className="text-white/80 capitalize">{colour || "—"}</span></span>
@@ -182,56 +227,55 @@ export function PedigreeTable({
         </div>
       )}
 
-      {/* Dam Line View */}
+      {/* === DAM LINE VIEW — max 10 generations === */}
       {view === "dam-line" && hasFullPedigree && damLine.length > 0 && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
-          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-4">Dam Line</h5>
-          <div className="space-y-1">
+          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-4">Dam Line ({damLine.length} generations)</h5>
+          <div className="space-y-0">
             {damLine.map((entry, i) => (
               <div
                 key={i}
-                className={`flex items-center gap-3 text-xs font-light py-2 ${
+                className={`flex items-center gap-3 text-xs font-light py-2.5 ${
                   i < damLine.length - 1 ? "border-b border-white/[0.03]" : ""
                 }`}
               >
                 <span className="text-white/30 w-6 text-right">{i + 1}.</span>
-                <span className="text-white/70 flex-1">{entry.mare}</span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-white/70 truncate block">{entry.mare}</span>
+                </div>
                 <span className="text-white/30 text-[10px]">by</span>
-                <span className="text-white/50 flex-1">{entry.sire}</span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-white/50 truncate block">{entry.sire}</span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Sire Line View */}
+      {/* === SIRE LINE VIEW — max 10 generations === */}
       {view === "sire-line" && hasFullPedigree && sireLine.length > 0 && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
-          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-4">Sire Line</h5>
-          <div className="space-y-1">
+          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-4">Sire Line ({sireLine.length} generations)</h5>
+          <div className="space-y-0">
             {sireLine.map((entry, i) => (
               <div
                 key={i}
-                className={`flex items-center gap-3 text-xs font-light py-2 ${
+                className={`flex items-center gap-3 text-xs font-light py-2.5 ${
                   i < sireLine.length - 1 ? "border-b border-white/[0.03]" : ""
                 }`}
               >
                 <span className="text-white/30 w-6 text-right">{i + 1}.</span>
-                <span className="text-white/70 flex-1">{entry.sire}</span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-white/70 truncate block">{entry.sire}</span>
+                </div>
                 <span className="text-white/30 text-[10px]">from</span>
-                <span className="text-white/50 flex-1">{entry.dam}</span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-white/50 truncate block">{entry.dam}</span>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* No full pedigree — show basic tree only */}
-      {view === "tree" && !hasFullPedigree && (
-        <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
-          <p className="text-xs text-white/30 font-light leading-relaxed">
-            Full multi-generational pedigree will be available when this horse is registered with the NZTR Stud Book.
-          </p>
         </div>
       )}
     </div>

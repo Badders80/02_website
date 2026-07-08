@@ -1,31 +1,5 @@
 {
   "first-gear": {
-    "dam_line": [
-      {
-        "mare": "A'Guin Ace (NZ) 2007",
-        "sire": "O'Reilly (NZ) 1993"
-      },
-      {
-        "mare": "Guinness Affair (NZ) 1996",
-        "sire": "Kaapstad (NZ) 1984"
-      },
-      {
-        "mare": "Threadneedle (NZ) 1987",
-        "sire": "Famous Star (GB) 1979"
-      },
-      {
-        "mare": "Military Madness (NZ) 1980",
-        "sire": "War Hawk II (GB) 1968"
-      },
-      {
-        "mare": "Chatty Girl (NZ) 1963",
-        "sire": "Chatsworth II (GB) 1950"
-      },
-      {
-        "mare": "Glamin (NZ) 1952",
-        "sire": "Instinct (GB) 1941"
-      }
-    ],
     "sire_line": [
       {
         "sire": "Derryn (AUS) 2013",
@@ -50,36 +24,68 @@
       {
         "sire": "Northern Dancer (CAN) 1961",
         "dam": "Natalma (USA) 1957"
+      },
+      {
+        "sire": "Nearctic (USA) 1954",
+        "dam": "Lady Angela (GB) 1944"
+      },
+      {
+        "sire": "Nearco (ITY) 1935",
+        "dam": "Nogara (ITY) 1928"
+      },
+      {
+        "sire": "Pharos (GB) 1920",
+        "dam": "Scapa Flow (GB) 1914"
+      },
+      {
+        "sire": "Phalaris (GB) 1913",
+        "dam": "Bromus (GB) 1905"
+      }
+    ],
+    "dam_line": [
+      {
+        "mare": "A'Guin Ace (NZ) 2007",
+        "sire": "O'Reilly (NZ) 1993"
+      },
+      {
+        "mare": "Guinness Affair (NZ) 1996",
+        "sire": "Kaapstad (NZ) 1984"
+      },
+      {
+        "mare": "Threadneedle (NZ) 1987",
+        "sire": "Famous Star (GB) 1979"
+      },
+      {
+        "mare": "Military Madness (NZ) 1980",
+        "sire": "War Hawk II (GB) 1968"
+      },
+      {
+        "mare": "Chatty Girl (NZ) 1963",
+        "sire": "Chatsworth II (GB) 1950"
+      },
+      {
+        "mare": "Glamin (NZ) 1952",
+        "sire": "Instinct (GB) 1941"
+      },
+      {
+        "mare": "Glamor Girl (NZ) 1942",
+        "sire": "Coronach (GB) 1923"
+      },
+      {
+        "mare": "Kriemhild (NZ) 1936",
+        "sire": "Siegfried (GB) 1925"
+      },
+      {
+        "mare": "Left (NZ) 1918",
+        "sire": "Martian (NZ) 1901"
+      },
+      {
+        "mare": "Lovelorn (NZ) 1906",
+        "sire": "Melton (GB)"
       }
     ]
   },
   "hottathanafantasy": {
-    "dam_line": [
-      {
-        "mare": "Whiffle (USA) 2004",
-        "sire": "Red Ransom (USA) 1987"
-      },
-      {
-        "mare": "Whist (GB) 1994",
-        "sire": "Mr. Prospector (USA) 1970"
-      },
-      {
-        "mare": "Wajd (USA) 1987",
-        "sire": "Northern Dancer (CAN) 1961"
-      },
-      {
-        "mare": "Dahlia (USA) 1970",
-        "sire": "Vaguely Noble (IRE) 1965"
-      },
-      {
-        "mare": "Charming Alibi (USA) 1963",
-        "sire": "Honeys Alibi (USA) 1952"
-      },
-      {
-        "mare": "Adorada II (ARG) 1947",
-        "sire": "Hierocles (FR) 1939"
-      }
-    ],
     "sire_line": [
       {
         "sire": "Contributer (IRE) 2010",
@@ -104,36 +110,60 @@
       {
         "sire": "Nearco (ITY) 1935",
         "dam": "Nogara (ITY) 1928"
+      },
+      {
+        "sire": "Pharos (GB) 1920",
+        "dam": "Scapa Flow (GB) 1914"
+      },
+      {
+        "sire": "Phalaris (GB) 1913",
+        "dam": "Bromus (GB) 1905"
+      },
+      {
+        "sire": "Polymelus (GB) 1902",
+        "dam": "Maid Marian (GB) 1886"
+      },
+      {
+        "sire": "Cyllene (GB) 1895",
+        "dam": "Arcadia (GB) 1887"
+      }
+    ],
+    "dam_line": [
+      {
+        "mare": "Whiffle (USA) 2004",
+        "sire": "Red Ransom (USA) 1987"
+      },
+      {
+        "mare": "Whist (GB) 1994",
+        "sire": "Mr. Prospector (USA) 1970"
+      },
+      {
+        "mare": "Wajd (USA) 1987",
+        "sire": "Northern Dancer (CAN) 1961"
+      },
+      {
+        "mare": "Dahlia (USA) 1970",
+        "sire": "Vaguely Noble (IRE) 1965"
+      },
+      {
+        "mare": "Charming Alibi (USA) 1963",
+        "sire": "Honeys Alibi (USA) 1952"
+      },
+      {
+        "mare": "Adorada II (ARG) 1947",
+        "sire": "Hierocles (FR) 1939"
+      },
+      {
+        "mare": "Gilded Wave (USA) 1938",
+        "sire": "Gallant Fox (USA) 1927"
+      },
+      {
+        "mare": "Ondulation (FR) 1920",
+        "sire": "Sweeper (USA) 1901"
       }
     ]
   },
   "i-stole-a-manolo": {
-    "dam_line": [
-      {
-        "mare": "Canuhandleajandal (NZ) 2017",
-        "sire": "Jimmy Choux (NZ) 2007"
-      },
-      {
-        "mare": "Ouzo (NZ) 2012",
-        "sire": "Mastercraftsman (IRE) 2006"
-      },
-      {
-        "mare": "Za Star (NZ) 2006",
-        "sire": "Zabeel (NZ) 1986"
-      },
-      {
-        "mare": "Soleil Etoile (NZ) 1993",
-        "sire": "Star Way (GB) 1977"
-      },
-      {
-        "mare": "Polly Soleil (GB) 1977",
-        "sire": "Roi Soleil (GB) 1967"
-      },
-      {
-        "mare": "Polairia (GB) 1962",
-        "sire": "Polic (FR) 1953"
-      }
-    ],
     "sire_line": [
       {
         "sire": "Satono Aladdin (JPN) 2011",
@@ -158,36 +188,64 @@
       {
         "sire": "Turn-to (IRE) 1951",
         "dam": "Source Sucree (FR) 1940"
+      },
+      {
+        "sire": "Royal Charger (GB) 1942",
+        "dam": "Sun Princess (GB) 1937"
+      },
+      {
+        "sire": "Nearco (ITY) 1935",
+        "dam": "Nogara (ITY) 1928"
+      },
+      {
+        "sire": "Pharos (GB) 1920",
+        "dam": "Scapa Flow (GB) 1914"
+      },
+      {
+        "sire": "Phalaris (GB) 1913",
+        "dam": "Bromus (GB) 1905"
+      }
+    ],
+    "dam_line": [
+      {
+        "mare": "Canuhandleajandal (NZ) 2017",
+        "sire": "Jimmy Choux (NZ) 2007"
+      },
+      {
+        "mare": "Ouzo (NZ) 2012",
+        "sire": "Mastercraftsman (IRE) 2006"
+      },
+      {
+        "mare": "Za Star (NZ) 2006",
+        "sire": "Zabeel (NZ) 1986"
+      },
+      {
+        "mare": "Soleil Etoile (NZ) 1993",
+        "sire": "Star Way (GB) 1977"
+      },
+      {
+        "mare": "Polly Soleil (GB) 1977",
+        "sire": "Roi Soleil (GB) 1967"
+      },
+      {
+        "mare": "Polairia (GB) 1962",
+        "sire": "Polic (FR) 1953"
+      },
+      {
+        "mare": "Queen's Rock (GB) 1951",
+        "sire": "Souverain (FR) 1943"
+      },
+      {
+        "mare": "Three Rock (GB) 1943",
+        "sire": "His Highness (GB) 1936"
+      },
+      {
+        "mare": "Mabrouka (GB) 1938",
+        "sire": "Mahmoud (FR) 1933"
       }
     ]
   },
   "prudentia": {
-    "dam_line": [
-      {
-        "mare": "Little Bit Irish (NZ) 2012",
-        "sire": "O'Reilly (NZ) 1993"
-      },
-      {
-        "mare": "Whiffle (USA) 2004",
-        "sire": "Red Ransom (USA) 1987"
-      },
-      {
-        "mare": "Whist (GB) 1994",
-        "sire": "Mr. Prospector (USA) 1970"
-      },
-      {
-        "mare": "Wajd (USA) 1987",
-        "sire": "Northern Dancer (CAN) 1961"
-      },
-      {
-        "mare": "Dahlia (USA) 1970",
-        "sire": "Vaguely Noble (IRE) 1965"
-      },
-      {
-        "mare": "Charming Alibi (USA) 1963",
-        "sire": "Honeys Alibi (USA) 1952"
-      }
-    ],
     "sire_line": [
       {
         "sire": "Proisir (AUS) 2009",
@@ -212,32 +270,60 @@
       {
         "sire": "Northern Dancer (CAN) 1961",
         "dam": "Natalma (USA) 1957"
-      }
-    ]
-  },
-  "nellie": {
-    "sire_line": [
-      {
-        "sire": "Almanzor (FR) 2013",
-        "dam": "Darkova (USA) 2008"
       },
       {
-        "sire": "Wootton Bassett (GB) 2008",
-        "dam": "Beauty Is Truth (USA) 2003"
+        "sire": "Nearctic (USA) 1954",
+        "dam": "Lady Angela (GB) 1944"
+      },
+      {
+        "sire": "Nearco (ITY) 1935",
+        "dam": "Nogara (ITY) 1928"
+      },
+      {
+        "sire": "Pharos (GB) 1920",
+        "dam": "Scapa Flow (GB) 1914"
+      },
+      {
+        "sire": "Phalaris (GB) 1913",
+        "dam": "Bromus (GB) 1905"
       }
     ],
     "dam_line": [
       {
-        "mare": "Night Danza (AUS) 2006",
-        "sire": "Danzero (AUS) 1991"
+        "mare": "Little Bit Irish (NZ) 2012",
+        "sire": "O'Reilly (NZ) 1993"
       },
       {
-        "mare": "Gretchen (NZ) 2000",
-        "sire": "Bahhare (USA) 1994"
+        "mare": "Whiffle (USA) 2004",
+        "sire": "Red Ransom (USA) 1987"
       },
       {
-        "mare": "Soleil Etoile (NZ) 1993",
-        "sire": "Star Way (GB) 1977"
+        "mare": "Whist (GB) 1994",
+        "sire": "Mr. Prospector (USA) 1970"
+      },
+      {
+        "mare": "Wajd (USA) 1987",
+        "sire": "Northern Dancer (CAN) 1961"
+      },
+      {
+        "mare": "Dahlia (USA) 1970",
+        "sire": "Vaguely Noble (IRE) 1965"
+      },
+      {
+        "mare": "Charming Alibi (USA) 1963",
+        "sire": "Honeys Alibi (USA) 1952"
+      },
+      {
+        "mare": "Adorada II (ARG) 1947",
+        "sire": "Hierocles (FR) 1939"
+      },
+      {
+        "mare": "Gilded Wave (USA) 1938",
+        "sire": "Gallant Fox (USA) 1927"
+      },
+      {
+        "mare": "Ondulation (FR) 1920",
+        "sire": "Sweeper (USA) 1901"
       }
     ]
   },
@@ -245,11 +331,35 @@
     "sire_line": [
       {
         "sire": "Turn Me Loose (NZ) 2011",
-        "dam": "Indomitable (NZ) 2003"
+        "dam": "INDOMITABLE (NZ) 2003"
       },
       {
         "sire": "Iffraaj (GB) 2001",
-        "dam": "Past Excuses (NZ) 1997"
+        "dam": "Pastorale (GB) 1988"
+      },
+      {
+        "sire": "Zafonic (USA) 1990",
+        "dam": "Zaizafon (USA) 1982"
+      },
+      {
+        "sire": "Gone West (USA) 1984",
+        "dam": "Secrettame (USA) 1978"
+      },
+      {
+        "sire": "Mr. Prospector (USA) 1970",
+        "dam": "Gold Digger (USA) 1962"
+      },
+      {
+        "sire": "Raise a Native (USA) 1961",
+        "dam": "Raise You (USA) 1946"
+      },
+      {
+        "sire": "Native Dancer (USA) 1950",
+        "dam": "Geisha (USA) 1943"
+      },
+      {
+        "sire": "Polynesian (USA) 1942",
+        "dam": "Black Polly (USA) 1936"
       }
     ],
     "dam_line": [
@@ -266,8 +376,102 @@
         "sire": "Private Account (USA) 1976"
       },
       {
-        "mare": "Numero (USA) 1979",
-        "sire": "Northern Dancer (CAN) 1961"
+        "mare": "Quixotic Lady (USA) 1980",
+        "sire": "Quadratic (USA) 1975"
+      },
+      {
+        "mare": "Lady Dulcinea (USA) 1963",
+        "sire": "Nantallah (USA) 1953"
+      },
+      {
+        "mare": "Shy Dancer (USA) 1955",
+        "sire": "Bolero (USA) 1946"
+      },
+      {
+        "mare": "Shy Bim (USA) 1948",
+        "sire": "Bimelech (USA) 1937"
+      },
+      {
+        "mare": "Bashful (USA) 1940",
+        "sire": "Man o' War (USA) 1917"
+      },
+      {
+        "mare": "Mock Modesty (USA) 1934",
+        "sire": "Royal Minstrel (GB) 1925"
+      }
+    ]
+  },
+  "nellie": {
+    "sire_line": [
+      {
+        "sire": "Almanzor (FR) 2013",
+        "dam": "DARKOVA (USA) 2008"
+      },
+      {
+        "sire": "Wootton Bassett (GB) 2008",
+        "dam": "Balladonia (GB) 1996"
+      },
+      {
+        "sire": "Iffraaj (GB) 2001",
+        "dam": "Pastorale (GB) 1988"
+      },
+      {
+        "sire": "Zafonic (USA) 1990",
+        "dam": "Zaizafon (USA) 1982"
+      },
+      {
+        "sire": "Gone West (USA) 1984",
+        "dam": "Secrettame (USA) 1978"
+      },
+      {
+        "sire": "Mr. Prospector (USA) 1970",
+        "dam": "Gold Digger (USA) 1962"
+      },
+      {
+        "sire": "Raise a Native (USA) 1961",
+        "dam": "Raise You (USA) 1946"
+      },
+      {
+        "sire": "Native Dancer (USA) 1950",
+        "dam": "Geisha (USA) 1943"
+      },
+      {
+        "sire": "Polynesian (USA) 1942",
+        "dam": "Black Polly (USA) 1936"
+      }
+    ],
+    "dam_line": [
+      {
+        "mare": "Night Danza (AUS) 2006",
+        "sire": "DANZERO (AUS) 1991"
+      },
+      {
+        "mare": "Gretchen (NZ) 2000",
+        "sire": "Bahhare (USA) 1994"
+      },
+      {
+        "mare": "Soleil Etoile (NZ) 1993",
+        "sire": "Star Way (GB) 1977"
+      },
+      {
+        "mare": "Polly Soleil (GB) 1977",
+        "sire": "Roi Soleil (GB) 1967"
+      },
+      {
+        "mare": "Polairia (GB) 1962",
+        "sire": "Polic (FR) 1953"
+      },
+      {
+        "mare": "Queen's Rock (GB) 1951",
+        "sire": "Souverain (FR) 1943"
+      },
+      {
+        "mare": "Three Rock (GB) 1943",
+        "sire": "His Highness (GB) 1936"
+      },
+      {
+        "mare": "Mabrouka (GB) 1938",
+        "sire": "Mahmoud (FR) 1933"
       }
     ]
   }
