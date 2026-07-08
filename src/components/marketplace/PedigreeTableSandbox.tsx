@@ -37,14 +37,18 @@ function formatFoalingDate(dateStr?: string): string | null {
 
 function parseHorseName(fullName: string): { name: string; country: string; year: string } {
   if (!fullName || fullName === "—") return { name: "—", country: "", year: "" };
-  const match = fullName.match(/^(.+?)\s*\(([A-Z]{2,4})\)\s*(\d{4})?$/);
+  
+  // Match name, country in parentheses, and optional year + optional suffix (like nsb)
+  const match = fullName.match(/^(.+?)\s*\(([A-Z]{2,4})\)(?:\s+(\d{4})(?:\s+[a-zA-Z]+)?)?$/i);
   if (match) {
     return { name: match[1].trim(), country: match[2], year: match[3] || "" };
   }
-  const match2 = fullName.match(/^(.+?)\s+(\d{4})$/);
+  
+  const match2 = fullName.match(/^(.+?)\s+(\d{4})(?:\s+[a-zA-Z]+)?$/i);
   if (match2) {
     return { name: match2[1].trim(), country: "", year: match2[2] };
   }
+  
   return { name: fullName.trim(), country: "", year: "" };
 }
 
@@ -63,16 +67,16 @@ function PedigreePill({
   const isEmpty = parsed.name === "—";
 
   return (
-    <div className="relative flex flex-col items-center">
+    <div className="relative flex flex-col items-center justify-center shrink-0">
       <div
         className={`rounded-full border text-center transition duration-300 flex flex-col justify-center items-center ${
           highlight
-            ? "border-[#d4a964]/35 bg-[#d4a964]/10 shadow-[0_0_20px_rgba(212,169,100,0.08)] px-4 py-2 min-w-[110px] max-w-[155px]"
+            ? "border-[#d4a964]/35 bg-[#d4a964]/10 shadow-[0_0_20px_rgba(212,169,100,0.08)] px-4 h-[46px] min-w-[110px] max-w-[155px]"
             : isEmpty
-              ? "border-white/[0.03] bg-white/[0.01] opacity-35 px-3 py-1.5 min-w-[100px]"
+              ? "border-white/[0.03] bg-white/[0.01] opacity-35 h-[38px] px-3 min-w-[100px]"
               : muted
-                ? "border-white/[0.06] bg-white/[0.02] opacity-65 hover:border-white/[0.12] hover:opacity-85 px-2.5 py-1 min-w-[95px] max-w-[135px]"
-                : "border-white/[0.1] bg-white/[0.04] hover:border-white/[0.16] hover:bg-white/[0.06] px-3.5 py-1.5 min-w-[110px] max-w-[150px]"
+                ? "border-white/[0.06] bg-white/[0.02] opacity-65 hover:border-white/[0.12] hover:opacity-85 px-2.5 h-[36px] min-w-[95px] max-w-[135px]"
+                : "border-white/[0.1] bg-white/[0.04] hover:border-white/[0.16] hover:bg-white/[0.06] px-3.5 h-[40px] min-w-[110px] max-w-[150px]"
         }`}
       >
         <div 
@@ -176,7 +180,7 @@ export function PedigreeTableSandbox({
 
       {view === "tree" && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
-          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-6">4-Generation Pedigree</h5>
+          {/* Title removed per user instruction */}
 
           {/* Pedigree tree: goes Left (Gen 1: Horse) to Right (Gen 4: Great-Grandparents) */}
           <div className="flex items-center justify-start min-w-fit py-6">
@@ -188,22 +192,22 @@ export function PedigreeTableSandbox({
             </div>
 
             {/* Connecting Horse (Gen 1) to Sire/Dam (Gen 2) */}
-            <Connector width={20} height={252} />
+            <Connector width={20} height={240} />
 
             {/* Gen 2, Gen 3, Gen 4 nested structure */}
-            <div className="flex flex-col gap-14 shrink-0">
+            <div className="flex flex-col gap-10 shrink-0">
               
               {/* SIRE side */}
               <div className="flex items-center gap-2">
                 <PedigreePill fullName={tree.sire} label="Sire" />
-                <Connector width={16} height={126} />
+                <Connector width={16} height={116} />
                 
                 <div className="flex flex-col gap-8">
                   {/* Sire's Sire branch */}
                   <div className="flex items-center gap-2">
                     <PedigreePill fullName={tree.sireSire} label="Sire's Sire" />
-                    <Connector width={12} height={46} />
-                    <div className="flex flex-col gap-4">
+                    <Connector width={12} height={48} />
+                    <div className="flex flex-col gap-3">
                       <PedigreePill fullName={tree.sireSireSire} muted />
                       <PedigreePill fullName={tree.sireSireDam} muted />
                     </div>
@@ -212,8 +216,8 @@ export function PedigreeTableSandbox({
                   {/* Sire's Dam branch */}
                   <div className="flex items-center gap-2">
                     <PedigreePill fullName={tree.sireDam} label="Sire's Dam" />
-                    <Connector width={12} height={46} />
-                    <div className="flex flex-col gap-4">
+                    <Connector width={12} height={48} />
+                    <div className="flex flex-col gap-3">
                       <PedigreePill fullName={tree.sireDamSire} muted />
                       <PedigreePill fullName={tree.sireDamDam} muted />
                     </div>
@@ -225,14 +229,14 @@ export function PedigreeTableSandbox({
               {/* DAM side */}
               <div className="flex items-center gap-2">
                 <PedigreePill fullName={tree.dam} label="Dam" />
-                <Connector width={16} height={126} />
+                <Connector width={16} height={116} />
                 
                 <div className="flex flex-col gap-8">
                   {/* Dam's Sire branch */}
                   <div className="flex items-center gap-2">
                     <PedigreePill fullName={tree.damSire} label="Dam's Sire" />
-                    <Connector width={12} height={46} />
-                    <div className="flex flex-col gap-4">
+                    <Connector width={12} height={48} />
+                    <div className="flex flex-col gap-3">
                       <PedigreePill fullName={tree.damSireSire} muted />
                       <PedigreePill fullName={tree.damSireDam} muted />
                     </div>
@@ -241,8 +245,8 @@ export function PedigreeTableSandbox({
                   {/* Dam's Dam branch */}
                   <div className="flex items-center gap-2">
                     <PedigreePill fullName={tree.damDam} label="Dam's Dam" />
-                    <Connector width={12} height={46} />
-                    <div className="flex flex-col gap-4">
+                    <Connector width={12} height={48} />
+                    <div className="flex flex-col gap-3">
                       <PedigreePill fullName={tree.damDamSire} muted />
                       <PedigreePill fullName={tree.damDamDam} muted />
                     </div>
