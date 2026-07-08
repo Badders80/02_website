@@ -45,7 +45,7 @@ export function FAQSection() {
         );
       }
 
-      // Body paragraph animation
+      // Body paragraph — triggers after header
       if (bodyRef.current) {
         gsap.fromTo(
           bodyRef.current,
@@ -57,7 +57,7 @@ export function FAQSection() {
             ease: 'power3.out',
             scrollTrigger: {
               trigger: bodyRef.current,
-              start: 'top 85%',
+              start: 'top 78%',
               toggleActions: 'play none none reverse',
             },
           }

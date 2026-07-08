@@ -35,6 +35,25 @@ export function MarketplaceSection() {
         );
       }
 
+      // Body — triggers after header
+      if (bodyRef.current) {
+        gsap.fromTo(
+          bodyRef.current,
+          { x: -60, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: bodyRef.current,
+              start: 'top 78%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
       // Cards stagger up from below
       if (cardsRef.current) {
         const cards = cardsRef.current.querySelectorAll(':scope > div');

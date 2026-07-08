@@ -94,7 +94,7 @@ export const AboutSection = () => {
     if (!sectionRef.current || !headerRef.current || !bodyRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Headline slides in from left
+      // Header slides in from left — triggers first
       gsap.fromTo(
         headerRef.current,
         { x: -60, opacity: 0 },
@@ -111,19 +111,18 @@ export const AboutSection = () => {
         }
       );
 
-      // Content slides in from left, slightly delayed
+      // Body slides in from left — triggers after header
       gsap.fromTo(
         bodyRef.current,
-        { x: -40, opacity: 0 },
+        { x: -60, opacity: 0 },
         {
           x: 0,
           opacity: 1,
           duration: 1,
           ease: 'power3.out',
-          delay: 0.15,
           scrollTrigger: {
             trigger: bodyRef.current,
-            start: 'top 85%',
+            start: 'top 78%',
             toggleActions: 'play none none reverse',
           },
         }

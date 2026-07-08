@@ -14,6 +14,7 @@ interface Campaign {
   availability: string;
   is_active: boolean;
   status: CampaignStatus;
+  imageScale: string;
   horse: {
     name: string;
     image_url: string;
@@ -87,9 +88,9 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
           const isFeatured = featuredCampaign && camp.id === featuredCampaign.id;
           const statusInfo = STATUS_INFO[camp.status];
 
-          // Shared badge component
+          // Shared badge component — bottom-center overlay on the image
           const StatusBadge = () => (
-            <div className={`absolute top-4 right-4 z-10 flex items-center gap-1.5 backdrop-blur-md border rounded-full px-3 py-1 select-none ${statusInfo.badgeClass}`}>
+            <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 backdrop-blur-md border rounded-full px-3 py-1 select-none ${statusInfo.badgeClass}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
               <span className="text-[8px] uppercase tracking-widest font-medium">
                 {statusInfo.label}
@@ -115,7 +116,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                       alt={camp.horse.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 60vw"
-                      className="object-contain opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100"
+                      className={`object-contain ${camp.imageScale} opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100`}
                       priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
@@ -185,7 +186,8 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                       alt={camp.horse.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 40vw"
-                      className="object-contain opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100"
+                      className={`object-contain ${camp.imageScale} opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100`}
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                     <StatusBadge />
@@ -205,20 +207,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                       {camp.horse.story}
                     </p>
 
-                    {/* Show availability for active listings */}
-                    {camp.status === "become-an-owner" && (
-                      <p className="text-[11px] font-light text-white/40">
-                        {camp.location}
-                      </p>
-                    )}
-                    {camp.status !== "become-an-owner" && (
-                      <div className="space-y-0.5">
-                        <p className="text-[11px] font-light text-white/30">{camp.location}</p>
-                        {camp.trainerContact && (
-                          <p className="text-[10px] font-light text-white/20">{camp.trainerContact}</p>
-                        )}
-                      </div>
-                    )}
+                    {/* Location removed — less is more on cards */}
                   </div>
 
                   <div className="pt-6">

@@ -25,29 +25,29 @@ export function getCampaignStatus(hlt: {
 export const STATUS_INFO: Record<CampaignStatus, StatusInfo> = {
   "coming-soon": {
     label: "Coming Soon",
-    badgeClass: "bg-amber-500/10 border-amber-500/20 text-amber-300/80",
-    dotClass: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.4)]",
+    badgeClass: "bg-emerald-500/15 border-emerald-400/30 text-emerald-200",
+    dotClass: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
     canPurchase: false,
     showPrice: false,
   },
   "become-an-owner": {
     label: "Become An Owner",
-    badgeClass: "bg-emerald-500/10 border-emerald-500/20 text-emerald-300/80",
-    dotClass: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]",
+    badgeClass: "bg-emerald-500/15 border-emerald-400/30 text-emerald-200",
+    dotClass: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
     canPurchase: true,
     showPrice: false, // No price on the card — emotional entry
   },
   "fully-subscribed": {
     label: "Fully Subscribed",
-    badgeClass: "bg-zinc-500/10 border-zinc-500/20 text-zinc-300/60",
-    dotClass: "bg-zinc-500",
+    badgeClass: "bg-zinc-900/60 border-zinc-100/40 text-zinc-100",
+    dotClass: "bg-white shadow-[0_0_8px_rgba(255,255,255,0.4)]",
     canPurchase: false,
     showPrice: false,
   },
   "term-completed": {
     label: "Term Completed",
-    badgeClass: "bg-blue-500/10 border-blue-500/20 text-blue-300/60",
-    dotClass: "bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.3)]",
+    badgeClass: "bg-blue-600/20 border-blue-400/40 text-blue-200",
+    dotClass: "bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]",
     canPurchase: false,
     showPrice: false,
   },

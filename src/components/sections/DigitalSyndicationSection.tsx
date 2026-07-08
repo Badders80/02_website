@@ -54,19 +54,19 @@ export function DigitalSyndicationSection() {
         });
       }
 
-      // First body paragraph animation
+      // Body 1 — triggers after header
       if (body1Ref.current) {
         gsap.fromTo(body1Ref.current, { x: -60, opacity: 0 }, {
           x: 0, opacity: 1, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: body1Ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+          scrollTrigger: { trigger: body1Ref.current, start: 'top 78%', toggleActions: 'play none none reverse' },
         });
       }
 
-      // Second body paragraph animation
+      // Body 2 — triggers after body 1
       if (body2Ref.current) {
         gsap.fromTo(body2Ref.current, { x: -60, opacity: 0 }, {
           x: 0, opacity: 1, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: body2Ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+          scrollTrigger: { trigger: body2Ref.current, start: 'top 71%', toggleActions: 'play none none reverse' },
         });
       }
 

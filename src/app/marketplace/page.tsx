@@ -50,6 +50,7 @@ interface Campaign {
   availability: string;
   is_active: boolean;
   status: CampaignStatus;
+  imageScale: string;
   horse: {
     name: string;
     image_url: string;
@@ -74,6 +75,9 @@ export default async function MarketplacePage() {
       const sire = hlt.sire_name || (hlt as any).horse_sire_name || "";
       const dam = hlt.dam_name || (hlt as any).horse_dam_name || "";
       const pedigreeParts = [sex, colour, sire && dam ? `${sire} x ${dam}` : sire || dam].filter(Boolean);
+      // Standing portrait images need more scale to fill the card
+      const portraitSlugs = ["hottathanafantasy", "i-stole-a-manolo"];
+      const imageScale = portraitSlugs.includes(hlt.horse_slug) ? "scale-110" : "scale-100";
       return {
         id: hlt.horse_slug || hlt.id,
         location,
@@ -83,6 +87,7 @@ export default async function MarketplacePage() {
         availability: `${Math.round((Number(hlt.shares_sold) / Number(hlt.shares_total)) * 100)}% subscribed`,
         is_active: hlt.listing_status === "active",
         status: getCampaignStatus(hlt),
+        imageScale,
         horse: {
           name: hlt.horse_name || hlt.id,
           image_url: hlt.image_path || "/images/content/horses/placeholder.png",
