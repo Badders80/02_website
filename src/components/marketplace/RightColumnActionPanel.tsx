@@ -81,12 +81,12 @@ export function RightColumnActionPanel({
   }
 
   // Guest view: Render a premium skeleton overlay — NO investment data in DOM
-  // For coming-soon horses, show the notification card directly (no blur needed)
+  // For coming-soon horses, show "View Investment Terms" button → glassmorphic modal
   if (!user) {
     if (status === "coming-soon") {
       return (
         <div className="space-y-4">
-          <ComingSoonCard horseName={horseName} horseSlug={horseSlug} />
+          <ComingSoonTermsModal horseName={horseName} horseSlug={horseSlug} />
         </div>
       );
     }
@@ -168,7 +168,7 @@ export function RightColumnActionPanel({
       )}
 
       {status === "coming-soon" && (
-        <ComingSoonCard horseName={horseName} horseSlug={horseSlug} />
+        <ComingSoonTermsModal horseName={horseName} horseSlug={horseSlug} />
       )}
 
       {status === "fully-subscribed" && (
@@ -183,6 +183,87 @@ export function RightColumnActionPanel({
         </p>
       )}
     </div>
+  );
+}
+
+// --- Coming Soon Terms Modal — "View Investment Terms" button + glassmorphic modal ---
+function ComingSoonTermsModal({ horseName, horseSlug }: { horseName: string; horseSlug: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98]"
+      >
+        View Investment Terms
+      </button>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md px-4"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="relative max-w-lg w-full rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close */}
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 text-white/40 hover:text-white/80 transition text-xl"
+            >
+              ✕
+            </button>
+
+            {/* Title */}
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-2">
+                Digital-Syndication Terms
+              </p>
+              <h3 className="text-[22px] font-light text-white tracking-tight">
+                {horseName}
+              </h3>
+            </div>
+
+            {/* Blurred investment terms — visible but locked */}
+            <div className="space-y-4 text-[13px] font-light select-none pointer-events-none" aria-hidden="true">
+              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                <span className="text-white/40">Price per share</span>
+                <span className="text-white/50 blur-sm">— NZD</span>
+              </div>
+              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                <span className="text-white/40">Total lease percentage</span>
+                <span className="text-white/50 blur-sm">—%</span>
+              </div>
+              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                <span className="text-white/40">Lease period</span>
+                <span className="text-white/50 blur-sm">— months</span>
+              </div>
+              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                <span className="text-white/40">Lease start date</span>
+                <span className="text-white/50 blur-sm">—</span>
+              </div>
+              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
+                <span className="text-white/40">Investor returns</span>
+                <span className="text-white/50 blur-sm">—% of stakes won</span>
+              </div>
+              <div className="flex justify-between pb-1">
+                <span className="text-white/40">Capital calls</span>
+                <span className="text-white/50 blur-sm">None</span>
+              </div>
+            </div>
+
+            {/* Coming Soon notification card inside the modal */}
+            <div className="border-t border-white/[0.06] pt-6">
+              <ComingSoonCard horseName={horseName} horseSlug={horseSlug} />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
