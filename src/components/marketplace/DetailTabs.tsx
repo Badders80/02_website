@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { PedigreeTable } from "./PedigreeTable";
@@ -79,21 +79,11 @@ function TabAccessOverlay({
   );
 }
 
-function DocumentsGateOverlay({
-  label,
-  title,
-}: {
-  label: string;
-  title: string;
-}) {
+function DocumentsAccessOverlay({ children }: { children: ReactNode }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="relative z-10 w-full max-w-sm px-4">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 space-y-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/30">{label}</p>
-          <h4 className="text-[16px] font-light text-white leading-snug">{title}</h4>
-        </div>
-      </div>
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-[8px] rounded-xl border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
+      <div className="relative z-10 text-center px-6 max-w-sm">{children}</div>
     </div>
   );
 }
@@ -438,30 +428,40 @@ export function DetailTabs({
               Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the HLT parameters prior to committing stakes.
             </p>
 
-            <div className="relative pt-2">
+            <div className="relative pt-2 min-h-[200px]">
               <LegalDocumentCards horseSlug={horseSlug} interactive={canAccessDocs} />
               {!canAccessDocs && (
-                isComingSoon ? (
-                  <DocumentsGateOverlay
-                    label="Coming Soon"
-                    title="Documents will be available when this offering goes live."
-                  />
-                ) : tier === "guest" ? (
-                  <DocumentsGateOverlay
-                    label="Register to Access"
-                    title="Create an account and complete verification to view legal documents."
-                  />
-                ) : tier === "auth" ? (
-                  <DocumentsGateOverlay
-                    label="Verification Required"
-                    title="Complete identity verification to access legal disclosures and documents."
-                  />
-                ) : (
-                  <DocumentsGateOverlay
-                    label="Restricted: Investors Only"
-                    title="Documents for this campaign are restricted to verified investors."
-                  />
-                )
+                <DocumentsAccessOverlay>
+                  {isComingSoon ? (
+                    <>
+                      <p className="text-[18px] font-light tracking-tight text-white/80">Coming Soon</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Documents will be available when this offering goes live.
+                      </p>
+                    </>
+                  ) : tier === "guest" ? (
+                    <>
+                      <p className="text-[15px] font-medium tracking-tight text-white/80">Register to Access</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Create an account and complete verification to view legal documents.
+                      </p>
+                    </>
+                  ) : tier === "auth" ? (
+                    <>
+                      <p className="text-[15px] font-medium tracking-tight text-white/80">Verification Required</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Complete identity verification to access legal disclosures and documents.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-[15px] font-medium tracking-tight text-white/80">Restricted: Investors Only</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Documents for this campaign are restricted to verified investors.
+                      </p>
+                    </>
+                  )}
+                </DocumentsAccessOverlay>
               )}
             </div>
           </div>
