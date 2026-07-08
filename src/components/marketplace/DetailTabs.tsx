@@ -224,16 +224,15 @@ export function DetailTabs({
               Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the HLT parameters prior to committing stakes.
             </p>
 
-            <div className="space-y-3 pt-2">
-              {/* Product Disclosure Statement */}
-              <div className={`relative flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4 ${isComingSoon ? "overflow-hidden" : ""}`}>
-                <div>
-                  <p className="text-xs font-medium text-white/95">Product Disclosure Statement (PDS)</p>
-                  <p className="text-[10px] text-white/35 mt-0.5">PDF · Financial Disclosures</p>
-                </div>
-                {isComingSoon ? (
-                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/30">Coming Soon</span>
-                ) : (
+            <div className="relative pt-2">
+              {/* Document cards — dimmed when coming soon */}
+              <div className={`space-y-3 ${isComingSoon ? "opacity-30 pointer-events-none select-none" : ""}`}>
+                {/* Product Disclosure Statement */}
+                <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
+                  <div>
+                    <p className="text-xs font-medium text-white/95">Product Disclosure Statement (PDS)</p>
+                    <p className="text-[10px] text-white/35 mt-0.5">PDF · Financial Disclosures</p>
+                  </div>
                   <a
                     href={`/documents/${horseSlug}/pds.pdf`}
                     target="_blank"
@@ -242,23 +241,14 @@ export function DetailTabs({
                   >
                     Download
                   </a>
-                )}
-                {isComingSoon && (
-                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[3px] flex items-center justify-center pointer-events-none">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/30">Coming Soon</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Syndicate Agreement */}
-              <div className={`relative flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4 ${isComingSoon ? "overflow-hidden" : ""}`}>
-                <div>
-                  <p className="text-xs font-medium text-white/95">Syndicate Agreement</p>
-                  <p className="text-[10px] text-white/35 mt-0.5">PDF · Operational Syndicate Structure</p>
                 </div>
-                {isComingSoon ? (
-                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/30">Coming Soon</span>
-                ) : (
+
+                {/* Syndicate Agreement */}
+                <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
+                  <div>
+                    <p className="text-xs font-medium text-white/95">Syndicate Agreement</p>
+                    <p className="text-[10px] text-white/35 mt-0.5">PDF · Operational Syndicate Structure</p>
+                  </div>
                   <a
                     href={`/documents/${horseSlug}/syndicate-agreement.pdf`}
                     target="_blank"
@@ -267,13 +257,19 @@ export function DetailTabs({
                   >
                     Download
                   </a>
-                )}
-                {isComingSoon && (
-                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[3px] flex items-center justify-center pointer-events-none">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/30">Coming Soon</span>
-                  </div>
-                )}
+                </div>
               </div>
+
+              {/* Glassmorphic Coming Soon overlay — covers document cards only */}
+              {isComingSoon && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[4px] rounded-xl border border-white/[0.04]" />
+                  <div className="relative z-10 text-center px-6">
+                    <p className="text-[18px] font-light tracking-tight text-white/70">Coming Soon</p>
+                    <p className="mt-2 text-[11px] font-light text-white/40 max-w-xs">Documents will be available when this offering goes live.</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
