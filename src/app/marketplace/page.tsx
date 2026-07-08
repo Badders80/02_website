@@ -77,7 +77,8 @@ export default async function MarketplacePage() {
       const pedigreeParts = [sex, colour, sire && dam ? `${sire} x ${dam}` : sire || dam].filter(Boolean);
       // Standing portrait images need more scale to fill the card
       const portraitSlugs = ["hottathanafantasy", "i-stole-a-manolo"];
-      const imageScale = portraitSlugs.includes(hlt.horse_slug) ? "scale-110" : "scale-100";
+      const smallSlugs = ["prudentia"];
+      const imageScale = portraitSlugs.includes(hlt.horse_slug) ? "scale-110" : smallSlugs.includes(hlt.horse_slug) ? "scale-90" : "scale-100";
       return {
         id: hlt.horse_slug || hlt.id,
         location,
