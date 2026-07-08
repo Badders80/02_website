@@ -88,14 +88,14 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
           const isFeatured = featuredCampaign && camp.id === featuredCampaign.id;
           const statusInfo = STATUS_INFO[camp.status];
 
-          // Shared badge component — bottom-center overlay on the image
-          const StatusBadge = () => (
-            <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 backdrop-blur-md border rounded-full px-3 py-1 select-none ${statusInfo.badgeClass}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
-              <span className="text-[8px] uppercase tracking-widest font-medium">
+          // Shared badge component — inline beside horse name
+          const StatusBadge = ({ size = "sm" }: { size?: "sm" | "lg" }) => (
+            <span className={`inline-flex items-center gap-1.5 border rounded-full select-none ${statusInfo.badgeClass} ${size === "lg" ? "px-2.5 py-0.5" : "px-2 py-0.5"}`}>
+              <span className={`w-1 h-1 rounded-full ${statusInfo.dotClass}`} />
+              <span className={`${size === "lg" ? "text-[8px]" : "text-[7px]"} uppercase tracking-widest font-medium`}>
                 {statusInfo.label}
               </span>
-            </div>
+            </span>
           );
 
           if (isFeatured) {
@@ -120,17 +120,17 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                       priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                    <StatusBadge />
                   </div>
                 </Link>
 
                 {/* Text Column */}
                 <div className="flex flex-col justify-end w-full md:w-[40%] py-2 pr-0 md:pr-6 md:order-first">
                   <div className="space-y-4 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
-                    <div>
+                    <div className="flex items-center gap-3">
                       <h3 className="text-[32px] md:text-[36px] font-light tracking-tight text-white leading-none transition-colors duration-300">
                         {camp.horse.name}
                       </h3>
+                      <StatusBadge size="lg" />
                     </div>
 
                     <p className="text-[14px] leading-[1.85] font-light text-zinc-400">
@@ -190,17 +190,17 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                    <StatusBadge />
                   </div>
                 </Link>
 
                 {/* Text Column */}
                 <div className="flex flex-col justify-end w-full md:w-[60%] py-2 pr-0 md:pr-6 md:order-first">
                   <div className="space-y-3 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
-                    <div>
+                    <div className="flex items-center gap-2.5">
                       <h3 className="text-[26px] font-light tracking-tight text-white/90 leading-none transition-colors duration-300 group-hover:text-white">
                         {camp.horse.name}
                       </h3>
+                      <StatusBadge />
                     </div>
 
                     <p className="text-[13px] leading-[1.8] font-light text-zinc-400">
