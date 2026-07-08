@@ -6,7 +6,7 @@
         "microchip": "985125000126713",
         "life_number": "NZ00428364",
         "loveracing_id": "428364",
-        "foaling_date": "2021-09-15",
+        "foaling_date": "2021-10-02",
         "sex": "gelding",
         "colour": "Bay",
         "sire_name": "Derryn",
@@ -33,7 +33,7 @@
         "microchip": "985125000139165",
         "life_number": "NZ00452052",
         "loveracing_id": "452052",
-        "foaling_date": "2023-08-30",
+        "foaling_date": "2023-10-24",
         "sex": "filly",
         "colour": "Bay",
         "sire_name": "Contributer (IRE)",
@@ -50,7 +50,7 @@
         "placed": "0",
         "next_up": "TBD",
         "breeding_url": "https://loveracing.nz/Breeding/452052/Hottathanafantasy-NZ-2023.aspx",
-        "performance_profile_url": null,
+        "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=452052",
         "identity_status": "verified"
     },
     {

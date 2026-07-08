@@ -2,6 +2,8 @@ import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { RightColumnActionPanel } from "@/components/marketplace/RightColumnActionPanel";
 import { DetailTabs } from "@/components/marketplace/DetailTabs";
+import { GuestProfileGate } from "@/components/marketplace/GuestProfileGate";
+import { CampaignStatusBadge } from "@/components/marketplace/CampaignStatusBadge";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,7 +13,7 @@ import path from "path";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 import pedigreesData from "@/data/pedigrees.json";
-import { getCampaignStatus, STATUS_INFO } from "@/lib/campaign-status";
+import { getCampaignStatus } from "@/lib/campaign-status";
 
 // Scan a horse's gallery directory for images (excluding the cover image already used)
 function getGalleryImages(slug: string, coverUrl?: string): string[] {
@@ -234,6 +236,7 @@ export default async function CampaignDetailPage({ params }: Props) {
     listing_status: hlt.listing_status,
     shares_total: hltRecord.shares_total,
     shares_sold: hltRecord.shares_sold,
+    has_terms_sheet: hlt.has_terms_sheet,
   });
 
   // Initials for avatar fallback
@@ -269,6 +272,7 @@ export default async function CampaignDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.6fr,1fr] items-start">
             
             {/* LEFT COLUMN — Narrative Layer (The Athlete) */}
+            <GuestProfileGate horseName={horse?.name || "Racehorse"} horseSlug={hltRecord.id}>
             <div className="space-y-12">
               
               {/* Section A: Cover Media */}
@@ -342,9 +346,12 @@ export default async function CampaignDetailPage({ params }: Props) {
 
               {/* Section C: The Story */}
               <section className="space-y-4">
-                <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">
-                  The story
-                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">
+                    The story
+                  </p>
+                  <CampaignStatusBadge status={status} />
+                </div>
                 <h1 className="text-[24px] font-light text-white tracking-tight leading-tight">
                   {horse?.name ? `${horse.name}.` : "Athlete Profile."}
                 </h1>
@@ -382,10 +389,15 @@ export default async function CampaignDetailPage({ params }: Props) {
                   }}
                   horseSlug={hltRecord.id}
                   listingStatus={hlt.listing_status}
+                  hasTermsSheet={hlt.has_terms_sheet}
+                  sharesTotal={hltRecord.shares_total}
+                  sharesSold={hltRecord.shares_sold}
+                  foalingDate={horseData?.foaling_date}
                   pedigreeData={(pedigreesData as any)[hltRecord.id] || null}
                 />
               </section>
             </div>
+            </GuestProfileGate>
 
             {/* RIGHT COLUMN — Action Layer */}
             <div className="space-y-8 lg:sticky lg:top-28">
@@ -393,6 +405,16 @@ export default async function CampaignDetailPage({ params }: Props) {
                 horseName={horse?.name || "Racehorse"}
                 horseSlug={hltRecord.id}
                 initialListingStatus={hlt.listing_status}
+                hasTermsSheet={hlt.has_terms_sheet}
+                staticTerms={{
+                  price_per_share_nzd: Number(hlt.price_per_share_nzd || 0),
+                  totalLeasePercent: hlt.leasehold_stake_pct || totalLeasePercent,
+                  leasePeriodMonths: hlt.lease_period_months || hltRecord.lease_period_months,
+                  leaseStartDate: hlt.lease_start_date || hltRecord.lease_start_date,
+                  investorReturnPct: hlt.investor_return_pct || hltRecord.investor_return_percentage,
+                  shares_total: hltRecord.shares_total,
+                  shares_sold: hltRecord.shares_sold,
+                }}
               />
             </div>
 

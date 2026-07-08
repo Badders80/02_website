@@ -36,7 +36,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
   const [filter, setFilter] = useState<"all" | "available" | "subscribed" | "completed">("all");
 
   const filteredCampaigns = initialCampaigns.filter((camp) => {
-    if (filter === "available") return camp.status === "become-an-owner" || camp.status === "coming-soon";
+    if (filter === "available") return camp.status === "become-an-owner" || camp.status === "coming-soon" || camp.status === "coming-soon-with-details";
     if (filter === "subscribed") return camp.status === "fully-subscribed";
     if (filter === "completed") return camp.status === "term-completed";
     return true;

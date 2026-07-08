@@ -1,4 +1,4 @@
-export type CampaignStatus = "coming-soon" | "become-an-owner" | "fully-subscribed" | "term-completed";
+export type CampaignStatus = "coming-soon" | "coming-soon-with-details" | "become-an-owner" | "fully-subscribed" | "term-completed";
 
 export interface StatusInfo {
   label: string;
@@ -12,6 +12,7 @@ export function getCampaignStatus(hlt: {
   listing_status?: string;
   shares_total?: number | string;
   shares_sold?: number | string;
+  has_terms_sheet?: boolean;
 }): CampaignStatus {
   const sharesTotal = Number(hlt.shares_total || 0);
   const sharesSold = Number(hlt.shares_sold || 0);
@@ -19,11 +20,19 @@ export function getCampaignStatus(hlt: {
   if (hlt.listing_status === "retired") return "term-completed";
   if (sharesSold >= sharesTotal && sharesTotal > 0) return "fully-subscribed";
   if (hlt.listing_status === "active" && sharesSold < sharesTotal) return "become-an-owner";
-  return "coming-soon";
+  // draft = coming-soon; split based on whether terms sheet exists
+  return hlt.has_terms_sheet ? "coming-soon-with-details" : "coming-soon";
 }
 
 export const STATUS_INFO: Record<CampaignStatus, StatusInfo> = {
   "coming-soon": {
+    label: "Coming Soon",
+    badgeClass: "bg-emerald-500/15 border-emerald-400/30 text-emerald-200",
+    dotClass: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
+    canPurchase: false,
+    showPrice: false,
+  },
+  "coming-soon-with-details": {
     label: "Coming Soon",
     badgeClass: "bg-emerald-500/15 border-emerald-400/30 text-emerald-200",
     dotClass: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",

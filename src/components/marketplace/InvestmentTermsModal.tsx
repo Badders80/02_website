@@ -14,6 +14,8 @@ interface InvestmentTermsModalProps {
   investorReturnPct: number | string;
   sharesTotal: number;
   sharesAvailable: number;
+  /** Preview mode: show real terms without purchase CTA (coming-soon-with-details) */
+  readOnly?: boolean;
 }
 
 export function InvestmentTermsModal({
@@ -26,6 +28,7 @@ export function InvestmentTermsModal({
   investorReturnPct,
   sharesTotal,
   sharesAvailable,
+  readOnly = false,
 }: InvestmentTermsModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [kycLoading, setKycLoading] = useState(false);
@@ -158,34 +161,42 @@ export function InvestmentTermsModal({
               Race-day costs — jockey, trainer, nominations — are handled within the ownership framework. Investors are not asked to fund operating expenses.
             </p>
 
-            {/* KYC status hint */}
-            {kycStatus !== "verified" && (
+            {readOnly ? (
               <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
-                {kycStatus === "pending"
-                  ? "Your identity verification is in progress. Click Acquire to check status."
-                  : "Identity verification is required before acquiring shares."}
+                Terms preview — this offering is not yet open for acquisition.
               </p>
+            ) : (
+              <>
+                {/* KYC status hint */}
+                {kycStatus !== "verified" && (
+                  <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
+                    {kycStatus === "pending"
+                      ? "Your identity verification is in progress. Click Acquire to check status."
+                      : "Identity verification is required before acquiring shares."}
+                  </p>
+                )}
+
+                {kycError && (
+                  <p className="text-xs font-light text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                    {kycError}
+                  </p>
+                )}
+
+                {/* Acquire CTA */}
+                <button
+                  type="button"
+                  onClick={handleAcquire}
+                  disabled={kycLoading}
+                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {kycLoading ? "Starting verification..." : "Acquire"}
+                </button>
+
+                <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
+                  All acquisitions are subject to NZTR syndication rules and FMA equine exemptions.
+                </p>
+              </>
             )}
-
-            {kycError && (
-              <p className="text-xs font-light text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg p-3">
-                {kycError}
-              </p>
-            )}
-
-            {/* Acquire CTA */}
-            <button
-              type="button"
-              onClick={handleAcquire}
-              disabled={kycLoading}
-              className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {kycLoading ? "Starting verification..." : "Acquire"}
-            </button>
-
-            <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
-              All acquisitions are subject to NZTR syndication rules and FMA equine exemptions.
-            </p>
           </div>
         </div>
       )}

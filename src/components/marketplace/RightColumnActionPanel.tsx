@@ -4,12 +4,26 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { InvestmentTermsModal } from "./InvestmentTermsModal";
+import { RegistrationGate } from "./RegistrationGate";
+import { CampaignStatusBadge } from "./CampaignStatusBadge";
 import { STATUS_INFO, getCampaignStatus, type CampaignStatus } from "@/lib/campaign-status";
+
+interface StaticTerms {
+  price_per_share_nzd: number;
+  totalLeasePercent: number | string;
+  leasePeriodMonths: number | string;
+  leaseStartDate: string;
+  investorReturnPct: number | string;
+  shares_total: number;
+  shares_sold: number;
+}
 
 interface RightColumnActionPanelProps {
   horseSlug: string;
   horseName: string;
   initialListingStatus?: string;
+  hasTermsSheet?: boolean;
+  staticTerms?: StaticTerms;
 }
 
 interface LiveInventory {
@@ -24,12 +38,23 @@ interface LiveInventory {
   investorReturnPct: number | string;
 }
 
+// Helper: determine if user tier can see real terms
+type UserTier = "guest" | "auth" | "kyc";
+
+function getUserTier(user: any, kycStatus: string): UserTier {
+  if (!user) return "guest";
+  if (kycStatus === "verified") return "kyc";
+  return "auth";
+}
+
 export function RightColumnActionPanel({
   horseSlug,
   horseName,
   initialListingStatus,
+  hasTermsSheet,
+  staticTerms,
 }: RightColumnActionPanelProps) {
-  const { user, loading } = useAuth();
+  const { user, loading, kycStatus } = useAuth();
   const router = useRouter();
 
   const [inventory, setInventory] = useState<LiveInventory | null>(null);
@@ -56,22 +81,45 @@ export function RightColumnActionPanel({
   const sharesSold = inventory ? inventory.shares_sold : 0;
   const status: CampaignStatus = inventory
     ? (initialListingStatus === "draft"
-      ? "coming-soon"
+      ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
       : getCampaignStatus({
           listing_status: inventory.listing_status,
           shares_total: inventory.shares_total,
           shares_sold: inventory.shares_sold,
+          has_terms_sheet: hasTermsSheet,
         }))
-    : (initialListingStatus === "draft" ? "coming-soon" : getCampaignStatus({
-        listing_status: initialListingStatus || "draft",
-        shares_total: 0,
-        shares_sold: 0,
-      }));
+    : (initialListingStatus === "draft"
+      ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
+      : getCampaignStatus({
+          listing_status: initialListingStatus || "draft",
+          shares_total: 0,
+          shares_sold: 0,
+          has_terms_sheet: hasTermsSheet,
+        }));
+
+  const tier: UserTier = getUserTier(user, kycStatus);
 
   const handleSignInRedirect = () => {
     const targetUrl = `/marketplace/${horseSlug}`;
     router.push(`/auth/login?redirect=${encodeURIComponent(targetUrl)}`);
   };
+
+  const handleVerifyRedirect = () => {
+    router.push(`/auth/verify?redirect=${encodeURIComponent(`/marketplace/${horseSlug}`)}`);
+  };
+
+  const termsSource = inventory ?? (staticTerms
+    ? {
+        price_per_share_nzd: staticTerms.price_per_share_nzd,
+        totalLeasePercent: staticTerms.totalLeasePercent,
+        leasePeriodMonths: staticTerms.leasePeriodMonths,
+        leaseStartDate: staticTerms.leaseStartDate,
+        investorReturnPct: staticTerms.investorReturnPct,
+        shares_total: staticTerms.shares_total,
+        shares_sold: staticTerms.shares_sold,
+        shares_available: staticTerms.shares_total - staticTerms.shares_sold,
+      }
+    : null);
 
   // While loading auth state, show a subtle loading skeleton
   if (loading) {
@@ -88,9 +136,28 @@ export function RightColumnActionPanel({
     );
   }
 
-  // Guest view: Render a premium skeleton overlay — NO investment data in DOM
-  // For coming-soon horses, show "View Investment Terms" button → glassmorphic modal
-  if (!user) {
+  // ─── GUEST: Show registration gate popup ───
+  if (tier === "guest") {
+    return (
+      <>
+        <RegistrationGate horseName={horseName} onSignIn={handleSignInRedirect} />
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
+          <CampaignStatusBadge status={status} />
+          {status === "become-an-owner" && sharesTotal > 0 && (
+            <span className="text-[12px] font-light text-white/40">
+              {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
+            </span>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // ─── AUTH (not KYC'd) ───
+  if (tier === "auth") {
+    const statusInfo = STATUS_INFO[status];
+
+    // Coming Soon (no details) — even auth users see the Notify Me card
     if (status === "coming-soon") {
       return (
         <div className="space-y-4">
@@ -98,51 +165,126 @@ export function RightColumnActionPanel({
         </div>
       );
     }
-    return (
-      <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
-        {/* Visual Skeleton placeholders */}
-        <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
-          <div className="h-5 bg-white/10 rounded w-24" />
-          <div className="h-4 bg-white/5 rounded w-16" />
-        </div>
 
-        <div className="space-y-4 py-2">
-          <div className="flex justify-between border-b border-white/[0.04] pb-3">
-            <div className="h-4 bg-white/5 rounded w-28" />
-            <div className="h-4 bg-white/10 rounded w-20" />
+    // Coming Soon (with details) — show blurred terms + verify CTA
+    if (status === "coming-soon-with-details") {
+      return (
+        <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+          <div className="flex items-center justify-between">
+            <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${statusInfo.badgeClass}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
+              <span className="text-[9px] uppercase tracking-widest font-medium">
+                {statusInfo.label}
+              </span>
+            </div>
           </div>
-          <div className="flex justify-between border-b border-white/[0.04] pb-3">
-            <div className="h-4 bg-white/5 rounded w-36" />
-            <div className="h-4 bg-white/10 rounded w-12" />
+          {/* Blurred terms skeleton */}
+          <div className="space-y-4 select-none pointer-events-none" aria-hidden="true">
+            {["Price per share", "Total lease percentage", "Lease period", "Lease start date", "Investor returns", "Capital calls"].map((label) => (
+              <div key={label} className="flex justify-between border-b border-white/[0.04] pb-3">
+                <span className="text-[12px] font-light text-white/40">{label}</span>
+                <span className="h-4 bg-white/10 rounded w-20 blur-sm" />
+              </div>
+            ))}
           </div>
-          <div className="flex justify-between border-b border-white/[0.04] pb-3">
-            <div className="h-4 bg-white/5 rounded w-24" />
-            <div className="h-4 bg-white/10 rounded w-16" />
+          {/* Verify overlay */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10">
+            <div className="space-y-4 max-w-xs">
+              <h4 className="text-[15px] font-medium tracking-wide text-white">
+                Complete Verification
+              </h4>
+              <p className="text-[11px] leading-relaxed text-white/60 font-light">
+                Verify your identity to view pricing, lease structures, and returns for {horseName}.
+              </p>
+              <button
+                onClick={handleVerifyRedirect}
+                className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
+              >
+                Start Verification
+              </button>
+            </div>
           </div>
         </div>
+      );
+    }
 
-        {/* Premium Blur Overlay + CTA */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10 transition-all duration-300">
-          <div className="space-y-4 max-w-xs">
-            <h4 className="text-[15px] font-medium tracking-wide text-white">
-              Investment Terms Locked
-            </h4>
-            <p className="text-[11px] leading-relaxed text-white/60 font-light">
-              Sign in with your verified investor profile to view pricing, lease structures, and returns.
-            </p>
-            <button
-              onClick={handleSignInRedirect}
-              className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
-            >
-              Sign In to View Terms
-            </button>
+    // Become An Owner — same verify overlay, no terms visible
+    if (status === "become-an-owner") {
+      return (
+        <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+          <div className="flex items-center justify-between">
+            <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${statusInfo.badgeClass}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
+              <span className="text-[9px] uppercase tracking-widest font-medium">
+                {statusInfo.label}
+              </span>
+            </div>
+            {sharesTotal > 0 && (
+              <span className="text-[12px] font-light text-white/40">
+                {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
+              </span>
+            )}
+          </div>
+          {/* Blurred terms skeleton */}
+          <div className="space-y-4 select-none pointer-events-none" aria-hidden="true">
+            {["Price per share", "Total lease percentage", "Lease period", "Lease start date", "Investor returns", "Capital calls"].map((label) => (
+              <div key={label} className="flex justify-between border-b border-white/[0.04] pb-3">
+                <span className="text-[12px] font-light text-white/40">{label}</span>
+                <span className="h-4 bg-white/10 rounded w-20 blur-sm" />
+              </div>
+            ))}
+          </div>
+          {/* Verify overlay */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10">
+            <div className="space-y-4 max-w-xs">
+              <h4 className="text-[15px] font-medium tracking-wide text-white">
+                Complete Verification
+              </h4>
+              <p className="text-[11px] leading-relaxed text-white/60 font-light">
+                Verify your identity to view investment terms and acquire shares in {horseName}.
+              </p>
+              <button
+                onClick={handleVerifyRedirect}
+                className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
+              >
+                Start Verification
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    // Fully Subscribed — closed campaign, register interest
+    if (status === "fully-subscribed") {
+      return (
+        <ClosedCampaignPanel
+          status={status}
+          horseName={horseName}
+          heading="Campaign Fully Subscribed"
+          message={`All shares in ${horseName} have been acquired. This horse is in active campaign.`}
+          ctaLabel="Register Interest for Similar Horses"
+          horseSlug={horseSlug}
+        />
+      );
+    }
+
+    // Term Completed — lease concluded, register interest
+    if (status === "term-completed") {
+      return (
+        <ClosedCampaignPanel
+          status={status}
+          horseName={horseName}
+          heading="Term Complete"
+          message={`The lease period for ${horseName} has concluded. Register your interest for future campaigns.`}
+          ctaLabel="Register Interest for Similar Horses"
+          horseSlug={horseSlug}
+        />
+      );
+    }
   }
 
-  // Authenticated User view: Render the real data from live inventory
+  // ─── KYC'D USER — full access to eligible horses ───
   const statusInfo = STATUS_INFO[status];
 
   return (
@@ -161,22 +303,37 @@ export function RightColumnActionPanel({
         )}
       </div>
 
-      {status === "become-an-owner" && inventory && (
+      {status === "become-an-owner" && termsSource && (
         <InvestmentTermsModal
           horseName={horseName}
           horseSlug={horseSlug}
-          pricePerShareNzd={inventory.price_per_share_nzd}
-          totalLeasePercent={inventory.totalLeasePercent}
-          leasePeriodMonths={inventory.leasePeriodMonths}
-          leaseStartDate={inventory.leaseStartDate}
-          investorReturnPct={inventory.investorReturnPct}
-          sharesTotal={sharesTotal}
-          sharesAvailable={sharesAvailable}
+          pricePerShareNzd={termsSource.price_per_share_nzd}
+          totalLeasePercent={termsSource.totalLeasePercent}
+          leasePeriodMonths={termsSource.leasePeriodMonths}
+          leaseStartDate={termsSource.leaseStartDate}
+          investorReturnPct={termsSource.investorReturnPct}
+          sharesTotal={termsSource.shares_total}
+          sharesAvailable={termsSource.shares_available}
         />
       )}
 
       {status === "coming-soon" && (
         <ComingSoonTermsModal horseName={horseName} horseSlug={horseSlug} />
+      )}
+
+      {status === "coming-soon-with-details" && termsSource && (
+        <InvestmentTermsModal
+          horseName={horseName}
+          horseSlug={horseSlug}
+          pricePerShareNzd={termsSource.price_per_share_nzd}
+          totalLeasePercent={termsSource.totalLeasePercent}
+          leasePeriodMonths={termsSource.leasePeriodMonths}
+          leaseStartDate={termsSource.leaseStartDate}
+          investorReturnPct={termsSource.investorReturnPct}
+          sharesTotal={termsSource.shares_total}
+          sharesAvailable={termsSource.shares_available}
+          readOnly
+        />
       )}
 
       {status === "fully-subscribed" && (
@@ -194,7 +351,83 @@ export function RightColumnActionPanel({
   );
 }
 
-// --- Coming Soon Terms Modal — "View Investment Terms" button + glassmorphic modal ---
+// ─── Closed Campaign Panel (fully-subscribed / term-completed) ───
+function ClosedCampaignPanel({
+  status,
+  horseName,
+  horseSlug,
+  heading,
+  message,
+  ctaLabel,
+}: {
+  status: CampaignStatus;
+  horseName: string;
+  horseSlug: string;
+  heading: string;
+  message: string;
+  ctaLabel: string;
+}) {
+  const { user } = useAuth();
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleRegisterInterest = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const token = await user.getIdToken();
+      await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          horse_slug: horseSlug,
+          horse_name: horseName,
+          action_type: "similar_horses",
+          user_email: user.email,
+        }),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Register interest failed:", err);
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+      <CampaignStatusBadge status={status} />
+      <div className="space-y-3">
+        <h4 className="text-[15px] font-medium tracking-wide text-white">
+          {heading}
+        </h4>
+        <p className="text-[12px] font-light text-white/50 leading-relaxed">
+          {message}
+        </p>
+      </div>
+      {submitted ? (
+        <p className="text-[12px] font-light text-white/50 text-center py-2">
+          You&apos;re registered. We&apos;ll notify you about similar opportunities.
+        </p>
+      ) : (
+        <button
+          type="button"
+          onClick={handleRegisterInterest}
+          disabled={loading}
+          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white/[0.04] border border-white/[0.08] text-white hover:bg-white/[0.08] transition-all duration-300 active:scale-[0.98] disabled:opacity-50"
+        >
+          {loading ? "Submitting..." : ctaLabel}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Coming Soon Terms Modal — "View Investment Terms" button + glassmorphic modal ───
 function ComingSoonTermsModal({ horseName, horseSlug }: { horseName: string; horseSlug: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -275,7 +508,7 @@ function ComingSoonTermsModal({ horseName, horseSlug }: { horseName: string; hor
   );
 }
 
-// --- Coming Soon notification card ---
+// ─── Coming Soon notification card ───
 function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug: string }) {
   const { user } = useAuth();
   const [email, setEmail] = useState("");
