@@ -1,0 +1,234 @@
+{
+  "first-gear": {
+    "dam_line": [
+      {
+        "mare": "A'Guin Ace (NZ) 2007",
+        "sire": "O'Reilly (NZ) 1993"
+      },
+      {
+        "mare": "Guinness Affair (NZ) 1996",
+        "sire": "Kaapstad (NZ) 1984"
+      },
+      {
+        "mare": "Threadneedle (NZ) 1987",
+        "sire": "Famous Star (GB) 1979"
+      },
+      {
+        "mare": "Military Madness (NZ) 1980",
+        "sire": "War Hawk II (GB) 1968"
+      },
+      {
+        "mare": "Chatty Girl (NZ) 1963",
+        "sire": "Chatsworth II (GB) 1950"
+      },
+      {
+        "mare": "Glamin (NZ) 1952",
+        "sire": "Instinct (GB) 1941"
+      }
+    ],
+    "sire_line": [
+      {
+        "sire": "Derryn (AUS) 2013",
+        "dam": "Munhro (AUS) 2005"
+      },
+      {
+        "sire": "Hinchinbrook (AUS) 2007",
+        "dam": "Snippets' Lass (AUS) 1993"
+      },
+      {
+        "sire": "Fastnet Rock (AUS) 2001",
+        "dam": "Piccadilly Circus (AUS) 1995"
+      },
+      {
+        "sire": "Danehill (USA) 1986",
+        "dam": "Razyana (USA) 1981"
+      },
+      {
+        "sire": "Danzig (USA) 1977",
+        "dam": "Pas de Nom (USA) 1968"
+      },
+      {
+        "sire": "Northern Dancer (CAN) 1961",
+        "dam": "Natalma (USA) 1957"
+      }
+    ]
+  },
+  "hottathanafantasy": {
+    "dam_line": [
+      {
+        "mare": "Whiffle (USA) 2004",
+        "sire": "Red Ransom (USA) 1987"
+      },
+      {
+        "mare": "Whist (GB) 1994",
+        "sire": "Mr. Prospector (USA) 1970"
+      },
+      {
+        "mare": "Wajd (USA) 1987",
+        "sire": "Northern Dancer (CAN) 1961"
+      },
+      {
+        "mare": "Dahlia (USA) 1970",
+        "sire": "Vaguely Noble (IRE) 1965"
+      },
+      {
+        "mare": "Charming Alibi (USA) 1963",
+        "sire": "Honeys Alibi (USA) 1952"
+      },
+      {
+        "mare": "Adorada II (ARG) 1947",
+        "sire": "Hierocles (FR) 1939"
+      }
+    ],
+    "sire_line": [
+      {
+        "sire": "Contributer (IRE) 2010",
+        "dam": "Serisia (FR) 1999"
+      },
+      {
+        "sire": "High Chaparral (IRE) 1999",
+        "dam": "Kasora (IRE) 1993"
+      },
+      {
+        "sire": "Sadler's Wells (USA) 1981",
+        "dam": "Fairy Bridge (USA) 1975"
+      },
+      {
+        "sire": "Northern Dancer (CAN) 1961",
+        "dam": "Natalma (USA) 1957"
+      },
+      {
+        "sire": "Nearctic (USA) 1954",
+        "dam": "Lady Angela (GB) 1944"
+      },
+      {
+        "sire": "Nearco (ITY) 1935",
+        "dam": "Nogara (ITY) 1928"
+      }
+    ]
+  },
+  "i-stole-a-manolo": {
+    "dam_line": [
+      {
+        "mare": "Canuhandleajandal (NZ) 2017",
+        "sire": "Jimmy Choux (NZ) 2007"
+      },
+      {
+        "mare": "Ouzo (NZ) 2012",
+        "sire": "Mastercraftsman (IRE) 2006"
+      },
+      {
+        "mare": "Za Star (NZ) 2006",
+        "sire": "Zabeel (NZ) 1986"
+      },
+      {
+        "mare": "Soleil Etoile (NZ) 1993",
+        "sire": "Star Way (GB) 1977"
+      },
+      {
+        "mare": "Polly Soleil (GB) 1977",
+        "sire": "Roi Soleil (GB) 1967"
+      },
+      {
+        "mare": "Polairia (GB) 1962",
+        "sire": "Polic (FR) 1953"
+      }
+    ],
+    "sire_line": [
+      {
+        "sire": "Satono Aladdin (JPN) 2011",
+        "dam": "Magic Storm (USA) 1999"
+      },
+      {
+        "sire": "Deep Impact (JPN) 2002",
+        "dam": "Wind In Her Hair (IRE) 1991"
+      },
+      {
+        "sire": "Sunday Silence (USA) 1986",
+        "dam": "Wishing Well (USA) 1975"
+      },
+      {
+        "sire": "Halo (USA) 1969",
+        "dam": "Cosmah (USA) 1953"
+      },
+      {
+        "sire": "Hail to Reason (USA) 1958",
+        "dam": "Nothirdchance (USA) 1948"
+      },
+      {
+        "sire": "Turn-to (IRE) 1951",
+        "dam": "Source Sucree (FR) 1940"
+      }
+    ]
+  },
+  "prudentia": {
+    "dam_line": [
+      {
+        "mare": "Little Bit Irish (NZ) 2012",
+        "sire": "O'Reilly (NZ) 1993"
+      },
+      {
+        "mare": "Whiffle (USA) 2004",
+        "sire": "Red Ransom (USA) 1987"
+      },
+      {
+        "mare": "Whist (GB) 1994",
+        "sire": "Mr. Prospector (USA) 1970"
+      },
+      {
+        "mare": "Wajd (USA) 1987",
+        "sire": "Northern Dancer (CAN) 1961"
+      },
+      {
+        "mare": "Dahlia (USA) 1970",
+        "sire": "Vaguely Noble (IRE) 1965"
+      },
+      {
+        "mare": "Charming Alibi (USA) 1963",
+        "sire": "Honeys Alibi (USA) 1952"
+      }
+    ],
+    "sire_line": [
+      {
+        "sire": "Proisir (AUS) 2009",
+        "dam": "Prophet Jewel (AUS) 1999"
+      },
+      {
+        "sire": "Choisir (AUS) 1999",
+        "dam": "Great Selection (AUS) 1990 nsb"
+      },
+      {
+        "sire": "Danehill Dancer (IRE) 1993",
+        "dam": "Mira Adonde (USA) 1986"
+      },
+      {
+        "sire": "Danehill (USA) 1986",
+        "dam": "Razyana (USA) 1981"
+      },
+      {
+        "sire": "Danzig (USA) 1977",
+        "dam": "Pas de Nom (USA) 1968"
+      },
+      {
+        "sire": "Northern Dancer (CAN) 1961",
+        "dam": "Natalma (USA) 1957"
+      }
+    ]
+  },
+  "nellie": {
+    "dam_line": [],
+    "sire_line": [],
+    "basic": {
+      "sire": "Almanzor (FR)",
+      "dam": "Night Danza (by Danzero)"
+    }
+  },
+  "tlm-x-yearn": {
+    "dam_line": [],
+    "sire_line": [],
+    "basic": {
+      "sire": "Turn Me Loose",
+      "dam": "Yearn"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PedigreeTable } from "./PedigreeTable";
 
 interface Race {
   date: string;
@@ -32,6 +33,7 @@ interface DetailTabsProps {
   };
   horseSlug: string;
   listingStatus?: string;
+  pedigreeData?: any;
 }
 
 // Hardcoded historical races for Prudentia since she has them in the prototype.
@@ -58,6 +60,7 @@ export function DetailTabs({
   trainer,
   horseSlug,
   listingStatus,
+  pedigreeData,
 }: DetailTabsProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "pedigree" | "trainer" | "race-record" | "documents">("overview");
 
@@ -105,31 +108,16 @@ export function DetailTabs({
 
         {/* Pedigree Panel */}
         {activeTab === "pedigree" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6 space-y-4 max-w-md">
-              <h5 className="text-xs uppercase tracking-wider text-white/45">Pedigree Specifications</h5>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                  <span className="text-white/40">Sire</span>
-                  <span className="text-white font-medium">{sireName || "—"}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                  <span className="text-white/40">Dam</span>
-                  <span className="text-white font-medium">{damName || "—"}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                  <span className="text-white/40">Colour / Sex</span>
-                  <span className="text-white capitalize">{colour} / {sex}</span>
-                </div>
-                {age && (
-                  <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                    <span className="text-white/40">Age</span>
-                    <span className="text-white">{age} Years</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <PedigreeTable
+            horseName={horseName}
+            sireName={sireName}
+            damName={damName}
+            sex={sex}
+            colour={colour}
+            age={age}
+            breedingUrl={breedingUrl}
+            pedigreeData={pedigreeData}
+          />
         )}
 
         {/* Trainer Panel */}

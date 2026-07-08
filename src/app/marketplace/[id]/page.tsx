@@ -10,6 +10,7 @@ import fs from "fs";
 import path from "path";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
+import pedigreesData from "@/data/pedigrees.json";
 import { getCampaignStatus, STATUS_INFO } from "@/lib/campaign-status";
 
 // Scan a horse's gallery directory for images (excluding the cover image already used)
@@ -381,6 +382,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                   }}
                   horseSlug={hltRecord.id}
                   listingStatus={hlt.listing_status}
+                  pedigreeData={(pedigreesData as any)[hltRecord.id] || null}
                 />
               </section>
             </div>
