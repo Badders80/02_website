@@ -16,7 +16,7 @@ interface PedigreeData {
   cross_line?: PedigreeCrossLine;
 }
 
-interface PedigreeTableProps {
+interface PedigreeTableSandboxProps {
   horseName: string;
   sireName: string;
   damName: string;
@@ -122,7 +122,7 @@ function Connector({ width = 16, height = 60 }: { width?: number; height?: numbe
   );
 }
 
-export function PedigreeTable({
+export function PedigreeTableSandbox({
   horseName,
   sireName,
   damName,
@@ -132,7 +132,7 @@ export function PedigreeTable({
   foalingDate,
   breedingUrl,
   pedigreeData,
-}: PedigreeTableProps) {
+}: PedigreeTableSandboxProps) {
   const formattedFoalingDate = formatFoalingDate(foalingDate);
   const [view, setView] = useState<"tree" | "dam-line" | "sire-line">("tree");
 

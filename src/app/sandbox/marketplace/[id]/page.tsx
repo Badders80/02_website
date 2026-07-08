@@ -8,6 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
+import pedigreesData from "@/data/pedigrees.json";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,8 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
       left_shoulder_brand: "",
       right_shoulder_brand: "",
       breeder: horseData?.breeder || "",
+      breeding_url: horseData?.breeding_url || "",
+      pedigree_data: (pedigreesData as any)[hlt.horse_slug] || null,
     },
     trainer: {
       name: hlt.trainer_name || horseData?.trainer_name || "",
