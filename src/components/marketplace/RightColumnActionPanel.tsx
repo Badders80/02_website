@@ -76,26 +76,18 @@ export function RightColumnActionPanel({
     fetchLive();
   }, [horseSlug, user]);
 
-  const sharesTotal = inventory?.shares_total ?? 0;
-  const sharesAvailable = inventory?.shares_available ?? 0;
-  const sharesSold = inventory ? inventory.shares_sold : 0;
-  const status: CampaignStatus = inventory
-    ? (initialListingStatus === "draft"
-      ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
-      : getCampaignStatus({
-          listing_status: inventory.listing_status,
-          shares_total: inventory.shares_total,
-          shares_sold: inventory.shares_sold,
-          has_terms_sheet: hasTermsSheet,
-        }))
-    : (initialListingStatus === "draft"
-      ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
-      : getCampaignStatus({
-          listing_status: initialListingStatus || "draft",
-          shares_total: 0,
-          shares_sold: 0,
-          has_terms_sheet: hasTermsSheet,
-        }));
+  // Campaign status always from static hlts.json — live inventory must not override sold-out horses
+  const sharesTotal = staticTerms?.shares_total ?? inventory?.shares_total ?? 0;
+  const sharesSold = staticTerms?.shares_sold ?? inventory?.shares_sold ?? 0;
+  const sharesAvailable = Math.max(0, sharesTotal - sharesSold);
+  const status: CampaignStatus = initialListingStatus === "draft"
+    ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
+    : getCampaignStatus({
+        listing_status: initialListingStatus || "draft",
+        shares_total: sharesTotal,
+        shares_sold: sharesSold,
+        has_terms_sheet: hasTermsSheet,
+      });
 
   const tier: UserTier = getUserTier(user, kycStatus);
 

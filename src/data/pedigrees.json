@@ -1,5 +1,11 @@
 {
   "first-gear": {
+    "cross_line": {
+      "sire_dam_sire": "Flying Spur (AUS) 1992",
+      "sire_dam_dam": "Nandina (USA) 1992",
+      "dam_sire_sire": "Last Tycoon (IRE) 1983",
+      "dam_sire_dam": "Courtzia (NZ) 1986"
+    },
     "sire_line": [
       {
         "sire": "Derryn (AUS) 2013",
@@ -86,6 +92,12 @@
     ]
   },
   "hottathanafantasy": {
+    "cross_line": {
+      "sire_dam_sire": "Exit To Nowhere (USA) 1988",
+      "sire_dam_dam": "Seralia (GB) 1995",
+      "dam_sire_sire": "Roberto (USA) 1969",
+      "dam_sire_dam": "Arabia (USA) 1977"
+    },
     "sire_line": [
       {
         "sire": "Contributer (IRE) 2010",
@@ -164,6 +176,12 @@
     ]
   },
   "i-stole-a-manolo": {
+    "cross_line": {
+      "sire_dam_sire": "Storm Cat (USA) 1983",
+      "sire_dam_dam": "Country Reel (USA) 1986",
+      "dam_sire_sire": "Thorn Park (AUS) 1999",
+      "dam_sire_dam": "Cloxleigh Dancer (AUS) 1992"
+    },
     "sire_line": [
       {
         "sire": "Satono Aladdin (JPN) 2011",
@@ -246,6 +264,12 @@
     ]
   },
   "prudentia": {
+    "cross_line": {
+      "sire_dam_sire": "Encosta De Lago (AUS) 1993",
+      "sire_dam_dam": "Factor (NZ) 1986",
+      "dam_sire_sire": "Last Tycoon (IRE) 1983",
+      "dam_sire_dam": "Courtzia (NZ) 1986"
+    },
     "sire_line": [
       {
         "sire": "Proisir (AUS) 2009",
@@ -328,6 +352,12 @@
     ]
   },
   "tlm-x-yearn": {
+    "cross_line": {
+      "sire_dam_sire": "Iffraaj (GB) 2001",
+      "sire_dam_dam": "Pastorale (GB) 1988",
+      "dam_sire_sire": "Danehill (USA) 1986",
+      "dam_sire_dam": "Razyana (USA) 1981"
+    },
     "sire_line": [
       {
         "sire": "Turn Me Loose (NZ) 2011",
@@ -402,6 +432,12 @@
     ]
   },
   "nellie": {
+    "cross_line": {
+      "sire_dam_sire": "Wootton Bassett (GB) 2008",
+      "sire_dam_dam": "Balladonia (GB) 1996",
+      "dam_sire_sire": "Bahhare (USA) 1994",
+      "dam_sire_dam": "Soleil Etoile (NZ) 1993"
+    },
     "sire_line": [
       {
         "sire": "Almanzor (FR) 2013",

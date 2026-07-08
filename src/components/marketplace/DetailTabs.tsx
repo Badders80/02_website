@@ -366,16 +366,14 @@ export function DetailTabs({
 
         {/* Documents Panel */}
         {activeTab === "documents" && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-6">
             <h4 className="text-md font-medium text-white">Legal Disclosures & Documents</h4>
             <p className="text-xs text-white/40 leading-relaxed font-light">
               Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the HLT parameters prior to committing stakes.
             </p>
 
-            <div className="relative pt-2">
-              {/* Document cards — dimmed when restricted */}
-              <div className={`space-y-3 ${!canAccessDocs ? "opacity-30 pointer-events-none select-none" : ""}`}>
-                {/* Product Disclosure Statement */}
+            {canAccessDocs ? (
+              <div className="space-y-3 pt-2">
                 <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
                   <div>
                     <p className="text-xs font-medium text-white/95">Product Disclosure Statement (PDS)</p>
@@ -390,8 +388,6 @@ export function DetailTabs({
                     Download
                   </a>
                 </div>
-
-                {/* Syndicate Agreement */}
                 <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
                   <div>
                     <p className="text-xs font-medium text-white/95">Syndicate Agreement</p>
@@ -407,37 +403,41 @@ export function DetailTabs({
                   </a>
                 </div>
               </div>
-
-              {/* Glassmorphic overlay — restricted access */}
-              {!canAccessDocs && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[4px] rounded-xl border border-white/[0.04]" />
-                  <div className="relative z-10 text-center px-6">
-                    {isComingSoon ? (
-                      <>
-                        <p className="text-[18px] font-light tracking-tight text-white/70">Coming Soon</p>
-                        <p className="mt-2 text-[11px] font-light text-white/40 max-w-xs">Documents will be available when this offering goes live.</p>
-                      </>
-                    ) : tier === "guest" ? (
-                      <>
-                        <p className="text-[14px] font-medium tracking-tight text-white/70">Register to Access</p>
-                        <p className="mt-2 text-[11px] font-light text-white/40 max-w-xs">Create an account and complete verification to view legal documents.</p>
-                      </>
-                    ) : tier === "auth" ? (
-                      <>
-                        <p className="text-[14px] font-medium tracking-tight text-white/70">Verification Required</p>
-                        <p className="mt-2 text-[11px] font-light text-white/40 max-w-xs">Complete identity verification to access legal disclosures and documents.</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-[14px] font-medium tracking-tight text-white/70">Restricted: Investors Only</p>
-                        <p className="mt-2 text-[11px] font-light text-white/40 max-w-xs">Documents for this campaign are restricted to verified investors.</p>
-                      </>
-                    )}
-                  </div>
+            ) : (
+              <div className="relative min-h-[220px] rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-xl flex items-center justify-center px-6 py-12 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="text-center max-w-sm">
+                  {isComingSoon ? (
+                    <>
+                      <p className="text-[18px] font-light tracking-tight text-white/80">Coming Soon</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Documents will be available when this offering goes live.
+                      </p>
+                    </>
+                  ) : tier === "guest" ? (
+                    <>
+                      <p className="text-[15px] font-medium tracking-tight text-white/80">Register to Access</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Create an account and complete verification to view legal documents.
+                      </p>
+                    </>
+                  ) : tier === "auth" ? (
+                    <>
+                      <p className="text-[15px] font-medium tracking-tight text-white/80">Verification Required</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Complete identity verification to access legal disclosures and documents.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-[15px] font-medium tracking-tight text-white/80">Restricted: Investors Only</p>
+                      <p className="mt-2 text-[11px] font-light text-white/45 leading-relaxed">
+                        Documents for this campaign are restricted to verified investors.
+                      </p>
+                    </>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>

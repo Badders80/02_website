@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { buildPedigreeTree } from "@/lib/pedigree-tree";
+import type { PedigreeCrossLine } from "@/lib/pedigree-tree";
 
 interface PedigreeEntry {
   mare?: string;
@@ -11,6 +13,7 @@ interface PedigreeEntry {
 interface PedigreeData {
   dam_line?: PedigreeEntry[];
   sire_line?: PedigreeEntry[];
+  cross_line?: PedigreeCrossLine;
 }
 
 interface PedigreeTableProps {
@@ -32,14 +35,12 @@ function formatFoalingDate(dateStr?: string): string | null {
   return date.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" });
 }
 
-// Parse a name like "Proisir (AUS) 2009" → { name: "Proisir", country: "AUS", year: "2009" }
 function parseHorseName(fullName: string): { name: string; country: string; year: string } {
   if (!fullName || fullName === "—") return { name: "—", country: "", year: "" };
   const match = fullName.match(/^(.+?)\s*\(([A-Z]{2,4})\)\s*(\d{4})?$/);
   if (match) {
     return { name: match[1].trim(), country: match[2], year: match[3] || "" };
   }
-  // Try just name + year without country
   const match2 = fullName.match(/^(.+?)\s+(\d{4})$/);
   if (match2) {
     return { name: match2[1].trim(), country: "", year: match2[2] };
@@ -47,37 +48,66 @@ function parseHorseName(fullName: string): { name: string; country: string; year
   return { name: fullName.trim(), country: "", year: "" };
 }
 
-interface TreeNodeProps {
+function PedigreePill({
+  fullName,
+  highlight = false,
+  muted = false,
+}: {
   fullName: string;
-  label?: string;
-  opacity?: string;
-}
-
-function TreeNode({ fullName, label, opacity = "70" }: TreeNodeProps) {
+  highlight?: boolean;
+  muted?: boolean;
+}) {
   const parsed = parseHorseName(fullName);
+  const isEmpty = parsed.name === "—";
+
   return (
-    <div className="flex flex-col items-end text-right min-w-[100px]">
-      <span className={`text-[11px] md:text-[12px] font-medium leading-tight whitespace-nowrap text-white/${opacity}`}>
+    <div
+      className={`rounded-full border px-3.5 py-2 text-center min-w-[92px] max-w-[140px] ${
+        highlight
+          ? "border-[#d4a964]/35 bg-[#d4a964]/10 shadow-[0_0_20px_rgba(212,169,100,0.08)]"
+          : isEmpty || muted
+            ? "border-white/[0.05] bg-white/[0.02] opacity-50"
+            : "border-white/[0.1] bg-white/[0.05] hover:border-white/[0.16] transition-colors"
+      }`}
+    >
+      <div className={`text-[11px] font-medium leading-tight ${highlight ? "text-white" : "text-white/85"}`}>
         {parsed.name}
-      </span>
+      </div>
       {(parsed.country || parsed.year) && (
-        <span className={`text-[9px] text-white/${Number(opacity) * 0.5} mt-0.5 font-light`}>
+        <div className="text-[9px] text-white/40 mt-0.5 font-light tracking-wide">
           {parsed.country && parsed.year ? `${parsed.country} ${parsed.year}` : parsed.country || parsed.year}
-        </span>
+        </div>
       )}
-      {label && <span className="text-[7px] text-white/20 mt-0.5 uppercase tracking-wider">{label}</span>}
     </div>
   );
 }
 
-function Connector({ h = 24, gap = 70 }: { h?: number; gap?: number }) {
+function PedigreeBranch({
+  gen4Top,
+  gen4Bottom,
+  gen3Top,
+  gen3Bottom,
+  gen2,
+}: {
+  gen4Top: string;
+  gen4Bottom: string;
+  gen3Top: string;
+  gen3Bottom: string;
+  gen2: string;
+}) {
   return (
-    <div className="flex items-center shrink-0">
-      <div className="h-px bg-white/10" style={{ width: `${h}px` }} />
-      <div className="flex flex-col" style={{ gap: `${gap}px` }}>
-        <div className="w-px bg-white/10" style={{ height: `${gap / 2}px` }} />
-        <div className="w-px bg-white/10" style={{ height: `${gap / 2}px` }} />
+    <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex flex-col gap-2 md:gap-3">
+        <PedigreePill fullName={gen4Top} muted />
+        <PedigreePill fullName={gen4Bottom} muted />
       </div>
+      <div className="w-4 md:w-6 h-px bg-white/10 shrink-0" />
+      <div className="flex flex-col gap-3 md:gap-5">
+        <PedigreePill fullName={gen3Top} />
+        <PedigreePill fullName={gen3Bottom} />
+      </div>
+      <div className="w-4 md:w-6 h-px bg-white/10 shrink-0" />
+      <PedigreePill fullName={gen2} />
     </div>
   );
 }
@@ -100,37 +130,21 @@ export function PedigreeTable({
   const sireLine = (pedigreeData?.sire_line || []).slice(0, 10);
   const hasFullPedigree = damLine.length > 0 || sireLine.length > 0;
 
-  // Gen 2
-  const sire = sireName;
-  const dam = damName;
+  const tree = buildPedigreeTree(
+    sireName,
+    damName,
+    horseName,
+    sireLine,
+    damLine,
+    pedigreeData?.cross_line,
+  );
 
-  // Gen 3
-  const sireSire = sireLine[1]?.sire || "—";
-  const sireDam = sireLine[0]?.dam || "—";
-  const damSire = damLine[0]?.sire || "—";
-  const damDam = damLine[1]?.mare || "—";
-
-  // Gen 4 — parents of each gen 3 horse
-  // Sire's Sire's parents (from sireLine)
-  const sireSireSire = sireLine[2]?.sire || "—";
-  const sireSireDam = sireLine[1]?.dam || "—";
-  // Sire's Dam's parents — cross-line, not in our data
-  const sireDamSire = "—";
-  const sireDamDam = "—";
-  // Dam's Sire's parents — cross-line, not in our data
-  const damSireSire = "—";
-  const damSireDam = "—";
-  // Dam's Dam's parents (from damLine)
-  const damDamSire = damLine[1]?.sire || "—";
-  const damDamDam = damLine[2]?.mare || "—";
-
-  // Dam line and sire line URLs
+  const horseLabel = `${colour} ${sex}${age ? `, ${age}yo` : ""}`;
   const damLineUrl = breedingUrl ? `${breedingUrl}#bm-dam` : undefined;
   const sireLineUrl = breedingUrl ? `${breedingUrl}#bm-sire` : undefined;
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* View toggle */}
+    <div className="space-y-6">
       {hasFullPedigree && (
         <div className="flex gap-2">
           {(["tree", "dam-line", "sire-line"] as const).map((v) => (
@@ -150,93 +164,36 @@ export function PedigreeTable({
         </div>
       )}
 
-      {/* === TREE VIEW — 4 generations === */}
       {view === "tree" && (
-        <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6 md:p-10 overflow-x-auto">
-          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-8">4-Generation Pedigree</h5>
+        <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
+          <h5 className="text-xs uppercase tracking-wider text-white/45 mb-6">4-Generation Pedigree</h5>
 
-          <div className="flex items-center min-w-fit">
-            {/* Gen 1 — Horse */}
-            <TreeNode fullName={horseName} label={`${colour} ${sex}${age ? `, ${age}yo` : ""}`} opacity="90" />
+          <div className="flex items-center gap-3 md:gap-5 min-w-fit">
+            <div className="flex flex-col gap-10 md:gap-14">
+              <PedigreeBranch
+                gen4Top={tree.sireSireSire}
+                gen4Bottom={tree.sireSireDam}
+                gen3Top={tree.sireSire}
+                gen3Bottom={tree.sireDam}
+                gen2={tree.sire}
+              />
+              <PedigreeBranch
+                gen4Top={tree.damSireSire}
+                gen4Bottom={tree.damSireDam}
+                gen3Top={tree.damSire}
+                gen3Bottom={tree.damDam}
+                gen2={tree.dam}
+              />
+            </div>
 
-            {/* Connector to Gen 2 */}
-            <Connector h={28} gap={120} />
+            <div className="w-5 md:w-8 h-px bg-white/10 shrink-0" />
 
-            {/* Gen 2 — Sire (top) / Dam (bottom) */}
-            <div className="flex flex-col" style={{ gap: "120px" }}>
-              {/* SIRE branch */}
-              <div className="flex items-center">
-                <TreeNode fullName={sire} label="Sire" opacity="80" />
-                {hasFullPedigree && (
-                  <>
-                    <Connector h={20} gap={80} />
-                    {/* Gen 3 — Sire's parents */}
-                    <div className="flex flex-col" style={{ gap: "80px" }}>
-                      <div className="flex items-center">
-                        <TreeNode fullName={sireSire} label="Sire's Sire" opacity="70" />
-                        {sireLine.length > 2 && (
-                          <>
-                            <Connector h={16} gap={50} />
-                            {/* Gen 4 — Sire's Sire's parents */}
-                            <div className="flex flex-col" style={{ gap: "50px" }}>
-                              <TreeNode fullName={sireSireSire} opacity="50" />
-                              <TreeNode fullName={sireSireDam} opacity="50" />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <div className="flex items-center">
-                        <TreeNode fullName={sireDam} label="Sire's Dam" opacity="60" />
-                        <Connector h={16} gap={40} />
-                        {/* Gen 4 — Sire's Dam's parents (cross-line, unknown) */}
-                        <div className="flex flex-col" style={{ gap: "40px" }}>
-                          <TreeNode fullName={sireDamSire} opacity="25" />
-                          <TreeNode fullName={sireDamDam} opacity="25" />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* DAM branch */}
-              <div className="flex items-center">
-                <TreeNode fullName={dam} label="Dam" opacity="80" />
-                {hasFullPedigree && (
-                  <>
-                    <Connector h={20} gap={80} />
-                    {/* Gen 3 — Dam's parents */}
-                    <div className="flex flex-col" style={{ gap: "80px" }}>
-                      <div className="flex items-center">
-                        <TreeNode fullName={damSire} label="Dam's Sire" opacity="60" />
-                        <Connector h={16} gap={40} />
-                        {/* Gen 4 — Dam's Sire's parents (cross-line, unknown) */}
-                        <div className="flex flex-col" style={{ gap: "40px" }}>
-                          <TreeNode fullName={damSireSire} opacity="25" />
-                          <TreeNode fullName={damSireDam} opacity="25" />
-                        </div>
-                      </div>
-                      <div className="flex items-center">
-                        <TreeNode fullName={damDam} label="Dam's Dam" opacity="70" />
-                        {damLine.length > 1 && (
-                          <>
-                            <Connector h={16} gap={50} />
-                            {/* Gen 4 — Dam's Dam's parents */}
-                            <div className="flex flex-col" style={{ gap: "50px" }}>
-                              <TreeNode fullName={damDamSire} opacity="50" />
-                              <TreeNode fullName={damDamDam} opacity="50" />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
+            <div className="flex flex-col items-center gap-1">
+              <PedigreePill fullName={tree.horse} highlight />
+              <span className="text-[9px] text-white/35 font-light capitalize mt-1">{horseLabel}</span>
             </div>
           </div>
 
-          {/* Specs row */}
           <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
             <span className="text-white/40">Sex: <span className="text-white/80 capitalize">{sex || "—"}</span></span>
             <span className="text-white/40">Colour: <span className="text-white/80 capitalize">{colour || "—"}</span></span>
@@ -255,7 +212,6 @@ export function PedigreeTable({
         </div>
       )}
 
-      {/* === DAM LINE VIEW — max 10 generations === */}
       {view === "dam-line" && hasFullPedigree && damLine.length > 0 && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
@@ -283,7 +239,6 @@ export function PedigreeTable({
         </div>
       )}
 
-      {/* === SIRE LINE VIEW — max 10 generations === */}
       {view === "sire-line" && hasFullPedigree && sireLine.length > 0 && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
