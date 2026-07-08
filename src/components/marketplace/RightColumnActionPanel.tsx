@@ -267,7 +267,6 @@ export function RightColumnActionPanel({
         <ClosedCampaignPanel
           status={status}
           horseName={horseName}
-          heading="Term Complete"
           message={`The lease period for ${horseName} has concluded. Register your interest for future campaigns.`}
           ctaLabel={`I'm keen to hear about horses like ${horseName}`}
           horseSlug={horseSlug}
@@ -295,7 +294,6 @@ export function RightColumnActionPanel({
       <ClosedCampaignPanel
         status={status}
         horseName={horseName}
-        heading="Term Complete"
         message={`The lease period for ${horseName} has concluded.`}
         ctaLabel={`I'm keen to hear about horses like ${horseName}`}
         horseSlug={horseSlug}
@@ -371,7 +369,7 @@ function ClosedCampaignPanel({
   status: CampaignStatus;
   horseName: string;
   horseSlug: string;
-  heading: string;
+  heading?: string;
   message: string;
   ctaLabel: string;
 }) {
@@ -410,9 +408,11 @@ function ClosedCampaignPanel({
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
       <CampaignStatusBadge status={status} />
       <div className="space-y-3">
-        <h4 className="text-[15px] font-medium tracking-wide text-white">
-          {heading}
-        </h4>
+        {heading && (
+          <h4 className="text-[15px] font-medium tracking-wide text-white">
+            {heading}
+          </h4>
+        )}
         <p className="text-[12px] font-light text-white/50 leading-relaxed">
           {message}
         </p>
