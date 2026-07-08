@@ -380,6 +380,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                     nztr_license_number: trainer.nztr_license_number || "",
                   }}
                   horseSlug={hltRecord.id}
+                  listingStatus={hlt.listing_status}
                 />
               </section>
             </div>

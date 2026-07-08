@@ -31,6 +31,7 @@ interface DetailTabsProps {
     nztr_license_number?: string;
   };
   horseSlug: string;
+  listingStatus?: string;
 }
 
 // Hardcoded historical races for Prudentia since she has them in the prototype.
@@ -56,16 +57,18 @@ export function DetailTabs({
   performanceProfileUrl,
   trainer,
   horseSlug,
+  listingStatus,
 }: DetailTabsProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "trainer" | "race-record" | "documents">("details");
+  const [activeTab, setActiveTab] = useState<"overview" | "pedigree" | "trainer" | "race-record" | "documents">("overview");
 
   const races = horseSlug === "prudentia" ? PRUDENTIA_RACES : [];
+  const isComingSoon = listingStatus === "draft";
 
   return (
     <div className="space-y-8">
       {/* Tab Nav */}
       <div className="flex border-b border-white/[0.06] overflow-x-auto scrollbar-none">
-        {(["details", "trainer", "race-record", "documents"] as const).map((tab) => (
+        {(["overview", "pedigree", "trainer", "race-record", "documents"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -76,50 +79,54 @@ export function DetailTabs({
                 : "border-transparent text-white/40 hover:text-white/70"
             }`}
           >
-            {tab.replace("-", " ")}
+            {tab.replace(/-/g, " ")}
           </button>
         ))}
       </div>
 
       {/* Tab Panels */}
       <div className="pt-2 min-h-[220px]">
-        {/* Details Panel */}
-        {activeTab === "details" && (
+        {/* Overview Panel */}
+        {activeTab === "overview" && (
           <div className="space-y-6 animate-fade-in font-light">
             <h4 className="text-md font-medium text-white">Expanded Pedigree</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <p className="text-sm leading-[1.8] text-white/60">
-                  {horseName} represents a strategic leasehold campaign within the Evolution syndicate network. 
-                  Sired by <span className="text-white font-normal">{sireName || "—"}</span> out of <span className="text-white font-normal">{damName || "—"}</span>, 
-                  her breeding carries proven speed and durability profiles suited for domestic New Zealand benchmark competition.
-                </p>
-                <p className="text-sm leading-[1.8] text-white/60">
-                  Trained under professional preparations, she has shown great adaptability to track variations and is being built toward late-season stakes qualifications.
-                </p>
-              </div>
-              <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6 space-y-4">
-                <h5 className="text-xs uppercase tracking-wider text-white/45">Pedigree Specifications</h5>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                    <span className="text-white/40">Sire</span>
-                    <span className="text-white font-medium">{sireName || "—"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                    <span className="text-white/40">Dam</span>
-                    <span className="text-white font-medium">{damName || "—"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                    <span className="text-white/40">Colour / Sex</span>
-                    <span className="text-white capitalize">{colour} / {sex}</span>
-                  </div>
-                  {age && (
-                    <div className="flex justify-between border-b border-white/[0.04] pb-2">
-                      <span className="text-white/40">Age</span>
-                      <span className="text-white">{age} Years</span>
-                    </div>
-                  )}
+            <div className="space-y-4">
+              <p className="text-sm leading-[1.8] text-white/60">
+                {horseName} represents a strategic leasehold campaign within the Evolution syndicate network. 
+                Sired by <span className="text-white font-normal">{sireName || "—"}</span> out of <span className="text-white font-normal">{damName || "—"}</span>, 
+                her breeding carries proven speed and durability profiles suited for domestic New Zealand benchmark competition.
+              </p>
+              <p className="text-sm leading-[1.8] text-white/60">
+                Trained under professional preparations, she has shown great adaptability to track variations and is being built toward late-season stakes qualifications.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Pedigree Panel */}
+        {activeTab === "pedigree" && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6 space-y-4 max-w-md">
+              <h5 className="text-xs uppercase tracking-wider text-white/45">Pedigree Specifications</h5>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between border-b border-white/[0.04] pb-2">
+                  <span className="text-white/40">Sire</span>
+                  <span className="text-white font-medium">{sireName || "—"}</span>
                 </div>
+                <div className="flex justify-between border-b border-white/[0.04] pb-2">
+                  <span className="text-white/40">Dam</span>
+                  <span className="text-white font-medium">{damName || "—"}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/[0.04] pb-2">
+                  <span className="text-white/40">Colour / Sex</span>
+                  <span className="text-white capitalize">{colour} / {sex}</span>
+                </div>
+                {age && (
+                  <div className="flex justify-between border-b border-white/[0.04] pb-2">
+                    <span className="text-white/40">Age</span>
+                    <span className="text-white">{age} Years</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -219,35 +226,53 @@ export function DetailTabs({
 
             <div className="space-y-3 pt-2">
               {/* Product Disclosure Statement */}
-              <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
+              <div className={`relative flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4 ${isComingSoon ? "overflow-hidden" : ""}`}>
                 <div>
                   <p className="text-xs font-medium text-white/95">Product Disclosure Statement (PDS)</p>
                   <p className="text-[10px] text-white/35 mt-0.5">PDF · Financial Disclosures</p>
                 </div>
-                <a
-                  href={`/documents/${horseSlug}/pds.pdf`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline"
-                >
-                  Download
-                </a>
+                {isComingSoon ? (
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/30">Coming Soon</span>
+                ) : (
+                  <a
+                    href={`/documents/${horseSlug}/pds.pdf`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline"
+                  >
+                    Download
+                  </a>
+                )}
+                {isComingSoon && (
+                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[3px] flex items-center justify-center pointer-events-none">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/30">Coming Soon</span>
+                  </div>
+                )}
               </div>
 
               {/* Syndicate Agreement */}
-              <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
+              <div className={`relative flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4 ${isComingSoon ? "overflow-hidden" : ""}`}>
                 <div>
                   <p className="text-xs font-medium text-white/95">Syndicate Agreement</p>
                   <p className="text-[10px] text-white/35 mt-0.5">PDF · Operational Syndicate Structure</p>
                 </div>
-                <a
-                  href={`/documents/${horseSlug}/syndicate-agreement.pdf`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline"
-                >
-                  Download
-                </a>
+                {isComingSoon ? (
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/30">Coming Soon</span>
+                ) : (
+                  <a
+                    href={`/documents/${horseSlug}/syndicate-agreement.pdf`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline"
+                  >
+                    Download
+                  </a>
+                )}
+                {isComingSoon && (
+                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[3px] flex items-center justify-center pointer-events-none">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/30">Coming Soon</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
