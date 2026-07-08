@@ -255,7 +255,7 @@ export function RightColumnActionPanel({
           horseName={horseName}
           heading="Campaign Fully Subscribed"
           message={`All shares in ${horseName} have been acquired. This horse is in active campaign.`}
-          ctaLabel="Register Interest for Similar Horses"
+          ctaLabel={`I'm keen to hear about horses like ${horseName}`}
           horseSlug={horseSlug}
         />
       );
@@ -269,14 +269,41 @@ export function RightColumnActionPanel({
           horseName={horseName}
           heading="Term Complete"
           message={`The lease period for ${horseName} has concluded. Register your interest for future campaigns.`}
-          ctaLabel="Register Interest for Similar Horses"
+          ctaLabel={`I'm keen to hear about horses like ${horseName}`}
           horseSlug={horseSlug}
         />
       );
     }
   }
 
-  // ─── KYC'D USER — full access to eligible horses ───
+  // ─── KYC'D — fully subscribed / term completed (no terms sheet) ───
+  if (status === "fully-subscribed") {
+    return (
+      <ClosedCampaignPanel
+        status={status}
+        horseName={horseName}
+        heading="Campaign Fully Subscribed"
+        message="All shares have been acquired. This horse is in active campaign."
+        ctaLabel={`I'm keen to hear about horses like ${horseName}`}
+        horseSlug={horseSlug}
+      />
+    );
+  }
+
+  if (status === "term-completed") {
+    return (
+      <ClosedCampaignPanel
+        status={status}
+        horseName={horseName}
+        heading="Term Complete"
+        message={`The lease period for ${horseName} has concluded.`}
+        ctaLabel={`I'm keen to hear about horses like ${horseName}`}
+        horseSlug={horseSlug}
+      />
+    );
+  }
+
+  // ─── KYC'D USER — eligible horses with terms ───
   const statusInfo = STATUS_INFO[status];
 
   return (
@@ -328,17 +355,6 @@ export function RightColumnActionPanel({
         />
       )}
 
-      {status === "fully-subscribed" && (
-        <p className="text-[13px] font-light text-white/40 leading-relaxed">
-          All shares have been acquired. This horse is in active campaign.
-        </p>
-      )}
-
-      {status === "term-completed" && (
-        <p className="text-[13px] font-light text-white/40 leading-relaxed">
-          The lease period for this horse has concluded.
-        </p>
-      )}
     </div>
   );
 }
@@ -410,7 +426,7 @@ function ClosedCampaignPanel({
           type="button"
           onClick={handleRegisterInterest}
           disabled={loading}
-          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white/[0.04] border border-white/[0.08] text-white hover:bg-white/[0.08] transition-all duration-300 active:scale-[0.98] disabled:opacity-50"
+          className="w-full text-center py-3.5 px-4 rounded-full text-[12px] font-medium normal-case tracking-normal leading-snug bg-white/[0.04] border border-white/[0.08] text-white hover:bg-white/[0.08] active:scale-[0.98] disabled:opacity-50"
         >
           {loading ? "Submitting..." : ctaLabel}
         </button>
