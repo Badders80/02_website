@@ -185,10 +185,12 @@ export function PedigreeTable({
           {/* Pedigree tree: goes Left (Gen 1: Horse) to Right (Gen 4: Great-Grandparents) */}
           <div className="flex items-center justify-start min-w-fit py-4">
             
-            {/* Gen 1: Target Horse */}
-            <div className="flex flex-col items-center gap-1 pr-2 shrink-0">
+            {/* Gen 1: Target Horse (with absolutely positioned description to prevent vertical layout shifting) */}
+            <div className="relative flex flex-col items-center justify-center shrink-0 pr-2 h-[46px]">
               <PedigreePill fullName={tree.horse} highlight />
-              <span className="text-[9px] text-white/35 font-light capitalize mt-3">{horseLabel}</span>
+              <span className="absolute top-[100%] left-1/2 -translate-x-1/2 text-[9px] text-white/35 font-light capitalize mt-2 whitespace-nowrap">
+                {horseLabel}
+              </span>
             </div>
 
             {/* Connecting Horse (Gen 1) to Sire/Dam (Gen 2) */}
