@@ -82,11 +82,9 @@ function TabAccessOverlay({
 function DocumentsGateOverlay({
   label,
   title,
-  description,
 }: {
   label: string;
   title: string;
-  description: string;
 }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
@@ -94,7 +92,6 @@ function DocumentsGateOverlay({
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 space-y-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/30">{label}</p>
           <h4 className="text-[16px] font-light text-white leading-snug">{title}</h4>
-          <p className="text-[11px] font-light text-white/45 leading-relaxed">{description}</p>
         </div>
       </div>
     </div>
@@ -102,11 +99,6 @@ function DocumentsGateOverlay({
 }
 
 const LEGAL_DOCUMENTS = [
-  {
-    name: "HLT Term Sheet",
-    subtitle: "PDF · Summary of Lease Parameters",
-    filename: "term-sheet.pdf",
-  },
   {
     name: "Product Disclosure Statement (PDS)",
     subtitle: "PDF · Financial Disclosures",
@@ -446,32 +438,28 @@ export function DetailTabs({
               Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the HLT parameters prior to committing stakes.
             </p>
 
-            <div className="relative pt-2 min-h-[320px]">
+            <div className="relative pt-2">
               <LegalDocumentCards horseSlug={horseSlug} interactive={canAccessDocs} />
               {!canAccessDocs && (
                 isComingSoon ? (
                   <DocumentsGateOverlay
                     label="Coming Soon"
                     title="Documents will be available when this offering goes live."
-                    description="We strongly recommend reviewing the HLT parameters prior to committing stakes."
                   />
                 ) : tier === "guest" ? (
                   <DocumentsGateOverlay
                     label="Register to Access"
-                    title="Create an account to view legal documents."
-                    description="Complete verification to download PDS and syndicate agreements."
+                    title="Create an account and complete verification to view legal documents."
                   />
                 ) : tier === "auth" ? (
                   <DocumentsGateOverlay
                     label="Verification Required"
-                    title="Complete identity verification to access documents."
-                    description="Legal disclosures are available to verified investors only."
+                    title="Complete identity verification to access legal disclosures and documents."
                   />
                 ) : (
                   <DocumentsGateOverlay
-                    label="Restricted"
+                    label="Restricted: Investors Only"
                     title="Documents for this campaign are restricted to verified investors."
-                    description="Contact us if you believe you should have access."
                   />
                 )
               )}
