@@ -118,13 +118,6 @@ export default async function MarketplacePage() {
           </p>
         </section>
 
-        {/* Philosophy — founder voice */}
-        <section className="px-12 md:px-16 lg:px-20 max-w-4xl mx-auto pb-20">
-          <p className="text-[14px] leading-[1.85] font-light text-white/40 max-w-2xl">
-            Racing ownership has been a closed shop for centuries. Evolution makes it regulated, transparent, and accessible — from a single share to a significant stake. The technology serves the tradition; it does not replace it.
-          </p>
-        </section>
-
         {/* Dynamic Listing Grid Component */}
         <ListingGrid initialCampaigns={campaigns} isSandbox={false} />
       </main>
