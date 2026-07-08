@@ -390,6 +390,7 @@ export default async function CampaignDetailPage({ params }: Props) {
               <RightColumnActionPanel
                 horseName={horse?.name || "Racehorse"}
                 horseSlug={hltRecord.id}
+                initialListingStatus={hlt.listing_status}
               />
             </div>
 

@@ -9,6 +9,7 @@ import { STATUS_INFO, getCampaignStatus, type CampaignStatus } from "@/lib/campa
 interface RightColumnActionPanelProps {
   horseSlug: string;
   horseName: string;
+  initialListingStatus?: string;
 }
 
 interface LiveInventory {
@@ -26,6 +27,7 @@ interface LiveInventory {
 export function RightColumnActionPanel({
   horseSlug,
   horseName,
+  initialListingStatus,
 }: RightColumnActionPanelProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -53,12 +55,18 @@ export function RightColumnActionPanel({
   const sharesAvailable = inventory?.shares_available ?? 0;
   const sharesSold = inventory ? inventory.shares_sold : 0;
   const status: CampaignStatus = inventory
-    ? getCampaignStatus({
-        listing_status: inventory.listing_status,
-        shares_total: inventory.shares_total,
-        shares_sold: inventory.shares_sold,
-      })
-    : "coming-soon";
+    ? (initialListingStatus === "draft"
+      ? "coming-soon"
+      : getCampaignStatus({
+          listing_status: inventory.listing_status,
+          shares_total: inventory.shares_total,
+          shares_sold: inventory.shares_sold,
+        }))
+    : (initialListingStatus === "draft" ? "coming-soon" : getCampaignStatus({
+        listing_status: initialListingStatus || "draft",
+        shares_total: 0,
+        shares_sold: 0,
+      }));
 
   const handleSignInRedirect = () => {
     const targetUrl = `/marketplace/${horseSlug}`;
