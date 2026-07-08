@@ -293,6 +293,7 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
           },
           body: JSON.stringify({
             horse_slug: horseSlug,
+            horse_name: horseName,
             action_type: "waitlist",
             user_email: email.trim(),
           }),
@@ -302,7 +303,11 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
         await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email.trim() }),
+          body: JSON.stringify({
+            email: email.trim(),
+            horse_slug: horseSlug,
+            horse_name: horseName,
+          }),
         });
       }
       setSubmitted(true);

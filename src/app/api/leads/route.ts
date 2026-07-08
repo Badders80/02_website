@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { appendLead } from "@/lib/google-sheets";
+import { notifyAlexOfInterest } from "@/lib/notify-alex";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { horse_slug, action_type, user_name, user_email } = body;
+    const { horse_slug, horse_name, action_type, user_name, user_email } = body;
 
     if (!horse_slug || !action_type) {
       return NextResponse.json({ error: "Missing required fields: horse_slug, action_type" }, { status: 400 });
@@ -42,6 +43,21 @@ export async function POST(request: NextRequest) {
       referrer_url: "",
       status: "New",
     });
+
+    // Send Alex an email notification for waitlist signups
+    if (action_type === "waitlist") {
+      try {
+        await notifyAlexOfInterest({
+          interestedEmail: user_email || decoded.email || "(unknown)",
+          horseName: horse_name || horse_slug.replace(/-/g, " "),
+          horseSlug: horse_slug,
+          source: "logged-in",
+        });
+      } catch (emailErr: any) {
+        console.error("[API Leads] Email notification failed:", emailErr.message);
+        // Don't fail the request — the lead was still recorded
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
