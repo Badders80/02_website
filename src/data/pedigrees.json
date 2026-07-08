@@ -216,19 +216,59 @@
     ]
   },
   "nellie": {
-    "dam_line": [],
-    "sire_line": [],
-    "basic": {
-      "sire": "Almanzor (FR)",
-      "dam": "Night Danza (by Danzero)"
-    }
+    "sire_line": [
+      {
+        "sire": "Almanzor (FR) 2013",
+        "dam": "Darkova (USA) 2008"
+      },
+      {
+        "sire": "Wootton Bassett (GB) 2008",
+        "dam": "Beauty Is Truth (USA) 2003"
+      }
+    ],
+    "dam_line": [
+      {
+        "mare": "Night Danza (AUS) 2006",
+        "sire": "Danzero (AUS) 1991"
+      },
+      {
+        "mare": "Gretchen (NZ) 2000",
+        "sire": "Bahhare (USA) 1994"
+      },
+      {
+        "mare": "Soleil Etoile (NZ) 1993",
+        "sire": "Star Way (GB) 1977"
+      }
+    ]
   },
   "tlm-x-yearn": {
-    "dam_line": [],
-    "sire_line": [],
-    "basic": {
-      "sire": "Turn Me Loose",
-      "dam": "Yearn"
-    }
+    "sire_line": [
+      {
+        "sire": "Turn Me Loose (NZ) 2011",
+        "dam": "Indomitable (NZ) 2003"
+      },
+      {
+        "sire": "Iffraaj (GB) 2001",
+        "dam": "Past Excuses (NZ) 1997"
+      }
+    ],
+    "dam_line": [
+      {
+        "mare": "Yearn (NZ) 2013",
+        "sire": "Savabeel (AUS) 2001"
+      },
+      {
+        "mare": "Princess Uno (AUS) 2003",
+        "sire": "Danehill (USA) 1986"
+      },
+      {
+        "mare": "Numero Privee (USA) 1990",
+        "sire": "Private Account (USA) 1976"
+      },
+      {
+        "mare": "Numero (USA) 1979",
+        "sire": "Northern Dancer (CAN) 1961"
+      }
+    ]
   }
 }
