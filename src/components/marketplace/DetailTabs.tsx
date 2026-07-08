@@ -101,6 +101,58 @@ function DocumentsGateOverlay({
   );
 }
 
+const LEGAL_DOCUMENTS = [
+  {
+    name: "HLT Term Sheet",
+    subtitle: "PDF · Summary of Lease Parameters",
+    filename: "term-sheet.pdf",
+  },
+  {
+    name: "Product Disclosure Statement (PDS)",
+    subtitle: "PDF · Financial Disclosures",
+    filename: "pds.pdf",
+  },
+  {
+    name: "Syndicate Agreement",
+    subtitle: "PDF · Operational Syndicate Structure",
+    filename: "syndicate-agreement.pdf",
+  },
+] as const;
+
+function LegalDocumentCards({
+  horseSlug,
+  interactive,
+}: {
+  horseSlug: string;
+  interactive: boolean;
+}) {
+  return (
+    <div className={`space-y-3 ${interactive ? "" : "pointer-events-none select-none"}`}>
+      {LEGAL_DOCUMENTS.map((doc) => (
+        <div
+          key={doc.filename}
+          className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4"
+        >
+          <div>
+            <p className="text-xs font-medium text-white/95">{doc.name}</p>
+            <p className="text-[10px] text-white/35 mt-0.5">{doc.subtitle}</p>
+          </div>
+          <a
+            href={`/documents/${horseSlug}/${doc.filename}`}
+            target="_blank"
+            rel="noreferrer"
+            tabIndex={interactive ? 0 : -1}
+            aria-hidden={!interactive}
+            className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline shrink-0"
+          >
+            Download
+          </a>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // Hardcoded historical races for Prudentia
 const PRUDENTIA_RACES: Race[] = [
   { date: "15 Mar 2025", venue: "Tauranga", race: "1400m", trackCondition: "Heavy", result: "1st" },
@@ -394,82 +446,34 @@ export function DetailTabs({
               Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the HLT parameters prior to committing stakes.
             </p>
 
-            <div className="relative pt-2 min-h-[200px]">
-              {canAccessDocs ? (
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
-                    <div>
-                      <p className="text-xs font-medium text-white/95">Product Disclosure Statement (PDS)</p>
-                      <p className="text-[10px] text-white/35 mt-0.5">PDF · Financial Disclosures</p>
-                    </div>
-                    <a
-                      href={`/documents/${horseSlug}/pds.pdf`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline"
-                    >
-                      Download
-                    </a>
-                  </div>
-                  <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
-                    <div>
-                      <p className="text-xs font-medium text-white/95">Syndicate Agreement</p>
-                      <p className="text-[10px] text-white/35 mt-0.5">PDF · Operational Syndicate Structure</p>
-                    </div>
-                    <a
-                      href={`/documents/${horseSlug}/syndicate-agreement.pdf`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964] hover:underline"
-                    >
-                      Download
-                    </a>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-3 pointer-events-none select-none" aria-hidden="true">
-                    <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
-                      <div>
-                        <p className="text-xs font-medium text-white/95">Product Disclosure Statement (PDS)</p>
-                        <p className="text-[10px] text-white/35 mt-0.5">PDF · Financial Disclosures</p>
-                      </div>
-                      <span className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964]">Download</span>
-                    </div>
-                    <div className="flex justify-between items-center border border-white/[0.06] bg-white/[0.01] rounded-xl p-4">
-                      <div>
-                        <p className="text-xs font-medium text-white/95">Syndicate Agreement</p>
-                        <p className="text-[10px] text-white/35 mt-0.5">PDF · Operational Syndicate Structure</p>
-                      </div>
-                      <span className="text-[10px] font-medium uppercase tracking-widest text-[#d4a964]">Download</span>
-                    </div>
-                  </div>
-                  {isComingSoon ? (
-                    <DocumentsGateOverlay
-                      label="Coming Soon"
-                      title="Documents will be available when this offering goes live."
-                      description="We strongly recommend reviewing the HLT parameters prior to committing stakes."
-                    />
-                  ) : tier === "guest" ? (
-                    <DocumentsGateOverlay
-                      label="Register to Access"
-                      title="Create an account to view legal documents."
-                      description="Complete verification to download PDS and syndicate agreements."
-                    />
-                  ) : tier === "auth" ? (
-                    <DocumentsGateOverlay
-                      label="Verification Required"
-                      title="Complete identity verification to access documents."
-                      description="Legal disclosures are available to verified investors only."
-                    />
-                  ) : (
-                    <DocumentsGateOverlay
-                      label="Restricted"
-                      title="Documents for this campaign are restricted to verified investors."
-                      description="Contact us if you believe you should have access."
-                    />
-                  )}
-                </>
+            <div className="relative pt-2 min-h-[320px]">
+              <LegalDocumentCards horseSlug={horseSlug} interactive={canAccessDocs} />
+              {!canAccessDocs && (
+                isComingSoon ? (
+                  <DocumentsGateOverlay
+                    label="Coming Soon"
+                    title="Documents will be available when this offering goes live."
+                    description="We strongly recommend reviewing the HLT parameters prior to committing stakes."
+                  />
+                ) : tier === "guest" ? (
+                  <DocumentsGateOverlay
+                    label="Register to Access"
+                    title="Create an account to view legal documents."
+                    description="Complete verification to download PDS and syndicate agreements."
+                  />
+                ) : tier === "auth" ? (
+                  <DocumentsGateOverlay
+                    label="Verification Required"
+                    title="Complete identity verification to access documents."
+                    description="Legal disclosures are available to verified investors only."
+                  />
+                ) : (
+                  <DocumentsGateOverlay
+                    label="Restricted"
+                    title="Documents for this campaign are restricted to verified investors."
+                    description="Contact us if you believe you should have access."
+                  />
+                )
               )}
             </div>
           </div>
