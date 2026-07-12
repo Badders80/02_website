@@ -36,19 +36,19 @@ interface LiveInventory {
 }
 
 function closedCopy(status?: CampaignStatus): { title: string; body: string } {
-  if (status === "fully-subscribed") {
+  if (status === "fully_subscribed") {
     return {
       title: "Fully Subscribed",
       body: "All shares in this syndicate have been allocated.",
     };
   }
-  if (status === "term-completed") {
+  if (status === "completed") {
     return {
       title: "Term Completed",
       body: "This campaign has completed. New allocations are not available.",
     };
   }
-  if (status === "coming-soon" || status === "coming-soon-with-details") {
+  if (status === "coming_soon" || status === "coming_soon_details") {
     return {
       title: "Coming Soon",
       body: "Be first to know — this syndicate is not open for applications yet. Check back or register interest from the horse page.",
@@ -148,7 +148,7 @@ export default function PurchasePage(props: PurchasePageProps) {
 
   // Closed catalog: show First to know / status without forcing login spinner forever
   const campaignStatus =
-    inventory?.campaign_status || props.campaignStatus || "coming-soon";
+    inventory?.campaign_status || props.campaignStatus || "coming_soon";
   const purchasable =
     serverPurchasable && inventory?.purchasable !== false;
   const closed = closedCopy(campaignStatus);

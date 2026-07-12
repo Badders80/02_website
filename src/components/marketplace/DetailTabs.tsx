@@ -45,10 +45,10 @@ interface DetailTabsProps {
 }
 
 function getRaceRecordEmptyMessage(status: CampaignStatus): string {
-  if (status === "term-completed") {
+  if (status === "completed") {
     return "No recent starts recorded in our timeline. View the Full NZTR Record for complete race history.";
   }
-  if (status === "fully-subscribed") {
+  if (status === "fully_subscribed") {
     return "No recent starts recorded yet. Horse may be in early campaign or pre-race preparation.";
   }
   return "No recent starts recorded. Horse is currently in pre-training preparation.";
@@ -198,14 +198,14 @@ function getOverviewCopy(
   const para1 = `${horseName} represents a strategic leasehold campaign within the Evolution syndicate network. Sired by ${sireName || "—"} out of ${damName || "—"}, ${pronouns.possessive} breeding carries proven speed and durability profiles suited for domestic New Zealand benchmark competition.`;
 
   let para2: string;
-  if (status === "term-completed") {
+  if (status === "completed") {
     para2 = `${pronouns.subject.charAt(0).toUpperCase() + pronouns.subject.slice(1)} has completed ${pronouns.possessive} lease campaign under professional preparations, demonstrating adaptability across track conditions throughout ${pronouns.possessive} racing career.`;
-  } else if (status === "fully-subscribed") {
+  } else if (status === "fully_subscribed") {
     para2 = `Trained under professional preparations, ${pronouns.subject} has shown great adaptability to track variations and is in active campaign.`;
-  } else if (status === "become-an-owner") {
+  } else if (status === "listed") {
     para2 = `Trained under professional preparations, ${pronouns.subject} has shown great adaptability to track variations and is being built toward late-season stakes qualifications.`;
   } else {
-    // coming-soon
+    // coming_soon / coming_soon_details / draft
     para2 = `Trained under professional preparations, ${pronouns.subject} has shown great adaptability to track variations and is being built toward late-season stakes qualifications.`;
   }
 
@@ -248,23 +248,22 @@ export function DetailTabs({
     : horseSlug === "first-gear" ? FIRST_GEAR_RACES
     : [];
 
-  // Determine status
-  const status: CampaignStatus = listingStatus === "draft"
-    ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
-    : getCampaignStatus({
-        listing_status: listingStatus || "draft",
-        shares_total: sharesTotal,
-        shares_sold: sharesSold,
-        has_terms_sheet: hasTermsSheet,
-      });
+  // Determine status (first-class campaign_status when present; else inference)
+  const status: CampaignStatus = getCampaignStatus({
+    listing_status: listingStatus || "draft",
+    shares_total: sharesTotal,
+    shares_sold: sharesSold,
+    has_terms_sheet: hasTermsSheet,
+  });
 
   // Determine user tier
   const tier: UserTier = !user ? "guest" : kycStatus === "verified" ? "kyc" : "auth";
 
   // Documents are accessible only to KYC'd users for eligible statuses
-  const docsEligibleStatuses: CampaignStatus[] = ["coming-soon-with-details", "become-an-owner"];
+  const docsEligibleStatuses: CampaignStatus[] = ["coming_soon_details", "listed"];
   const canAccessDocs = tier === "kyc" && docsEligibleStatuses.includes(status);
-  const isComingSoon = listingStatus === "draft";
+  const isComingSoon =
+    status === "coming_soon" || status === "coming_soon_details";
 
   const trainerCopy = getTrainerCopy(trainer.stable_name || trainer.name || "");
   const overviewCopy = getOverviewCopy(horseName, sireName, damName, sex, status);

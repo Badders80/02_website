@@ -103,10 +103,17 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
   let horseDisplayName = hltId; // fallback to slug, upgraded to display name if inventory read succeeds
 
   try {
-    // Read authoritative price from Inventory sheet
+    // Read authoritative price from live ops (hlts)
     const inventory = await readInventoryBySlug(hltId);
     if (inventory) {
-      pricePerShareNzd = inventory.price_per_share_nzd;
+      const sheetPrice = inventory.price_per_share_nzd;
+      if (sheetPrice != null && Number(sheetPrice) > 0) {
+        pricePerShareNzd = Number(sheetPrice);
+      } else {
+        console.warn(
+          `[webhook] Inventory price missing/invalid for ${hltId} — using metadata price`
+        );
+      }
       if (inventory.name) {
         horseDisplayName = inventory.name;
       }

@@ -22,6 +22,9 @@ interface RightColumnActionPanelProps {
   horseSlug: string;
   horseName: string;
   initialListingStatus?: string;
+  /** First-class campaign lifecycle from server (live or static). */
+  initialCampaignStatus?: string | null;
+  marketplaceVisible?: boolean | string | null;
   hasTermsSheet?: boolean;
   staticTerms?: StaticTerms;
 }
@@ -31,11 +34,13 @@ interface LiveInventory {
   shares_sold: number;
   shares_available: number;
   listing_status: string;
-  price_per_share_nzd: number;
-  totalLeasePercent: number | string;
-  leasePeriodMonths: number | string;
+  campaign_status?: string | null;
+  marketplace_visible?: boolean | string | null;
+  price_per_share_nzd: number | null;
+  totalLeasePercent: number | string | null;
+  leasePeriodMonths: number | string | null;
   leaseStartDate: string;
-  investorReturnPct: number | string;
+  investorReturnPct: number | string | null;
 }
 
 // Helper: determine if user tier can see real terms
@@ -51,6 +56,8 @@ export function RightColumnActionPanel({
   horseSlug,
   horseName,
   initialListingStatus,
+  initialCampaignStatus,
+  marketplaceVisible,
   hasTermsSheet,
   staticTerms,
 }: RightColumnActionPanelProps) {
@@ -76,19 +83,19 @@ export function RightColumnActionPanel({
     fetchLive();
   }, [horseSlug, user]);
 
-  // Campaign status always from static hlts.json — live inventory must not override sold-out horses
-  const sharesTotal = staticTerms?.shares_total ?? inventory?.shares_total ?? 0;
-  const sharesSold = staticTerms?.shares_sold ?? inventory?.shares_sold ?? 0;
+  // Prefer live stock; server-passed staticTerms is first paint fallback
+  const sharesTotal = inventory?.shares_total ?? staticTerms?.shares_total ?? 0;
+  const sharesSold = inventory?.shares_sold ?? staticTerms?.shares_sold ?? 0;
   const sharesAvailable = Math.max(0, sharesTotal - sharesSold);
-  const status: CampaignStatus = initialListingStatus === "draft"
-    ? (hasTermsSheet ? "coming-soon-with-details" : "coming-soon")
-    : getCampaignStatus({
-        listing_status: initialListingStatus || "draft",
-        shares_total: sharesTotal,
-        shares_sold: sharesSold,
-        has_terms_sheet: hasTermsSheet,
-      });
-
+  const status: CampaignStatus = getCampaignStatus({
+    campaign_status: inventory?.campaign_status || initialCampaignStatus,
+    listing_status: inventory?.listing_status || initialListingStatus || "draft",
+    shares_total: sharesTotal,
+    shares_sold: sharesSold,
+    has_terms_sheet: hasTermsSheet,
+    marketplace_visible:
+      inventory?.marketplace_visible ?? marketplaceVisible,
+  });
   const tier: UserTier = getUserTier(user, kycStatus);
 
   const handleSignInRedirect = () => {
@@ -100,18 +107,33 @@ export function RightColumnActionPanel({
     router.push(`/auth/verify?redirect=${encodeURIComponent(`/marketplace/${horseSlug}`)}`);
   };
 
-  const termsSource = inventory ?? (staticTerms
-    ? {
-        price_per_share_nzd: staticTerms.price_per_share_nzd,
-        totalLeasePercent: staticTerms.totalLeasePercent,
-        leasePeriodMonths: staticTerms.leasePeriodMonths,
-        leaseStartDate: staticTerms.leaseStartDate,
-        investorReturnPct: staticTerms.investorReturnPct,
-        shares_total: staticTerms.shares_total,
-        shares_sold: staticTerms.shares_sold,
-        shares_available: staticTerms.shares_total - staticTerms.shares_sold,
-      }
-    : null);
+  // Live inventory wins field-by-field when present; no invented prices.
+  const termsSource =
+    inventory || staticTerms
+      ? {
+          price_per_share_nzd:
+            inventory != null
+              ? inventory.price_per_share_nzd ?? 0
+              : staticTerms?.price_per_share_nzd ?? 0,
+          totalLeasePercent:
+            inventory?.totalLeasePercent ??
+            staticTerms?.totalLeasePercent ??
+            "",
+          leasePeriodMonths:
+            inventory?.leasePeriodMonths ??
+            staticTerms?.leasePeriodMonths ??
+            "",
+          leaseStartDate:
+            inventory?.leaseStartDate ?? staticTerms?.leaseStartDate ?? "",
+          investorReturnPct:
+            inventory?.investorReturnPct ??
+            staticTerms?.investorReturnPct ??
+            "",
+          shares_total: sharesTotal,
+          shares_sold: sharesSold,
+          shares_available: sharesAvailable,
+        }
+      : null;
 
   // While loading auth state, show a subtle loading skeleton
   if (loading) {
@@ -135,7 +157,7 @@ export function RightColumnActionPanel({
         <RegistrationGate horseName={horseName} onSignIn={handleSignInRedirect} />
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
           <CampaignStatusBadge status={status} />
-          {status === "become-an-owner" && sharesTotal > 0 && (
+          {status === "listed" && sharesTotal > 0 && (
             <span className="text-[12px] font-light text-white/40">
               {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
             </span>
@@ -150,7 +172,7 @@ export function RightColumnActionPanel({
     const statusInfo = STATUS_INFO[status];
 
     // Coming Soon (no details) — even auth users see the Notify Me card
-    if (status === "coming-soon") {
+    if (status === "coming_soon") {
       return (
         <div className="space-y-4">
           <ComingSoonTermsModal horseName={horseName} horseSlug={horseSlug} />
@@ -159,7 +181,7 @@ export function RightColumnActionPanel({
     }
 
     // Coming Soon (with details) — show blurred terms + verify CTA
-    if (status === "coming-soon-with-details") {
+    if (status === "coming_soon_details") {
       return (
         <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
           <div className="flex items-center justify-between">
@@ -200,8 +222,8 @@ export function RightColumnActionPanel({
       );
     }
 
-    // Become An Owner — same verify overlay, no terms visible
-    if (status === "become-an-owner") {
+    // Listed — same verify overlay, no terms visible
+    if (status === "listed") {
       return (
         <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
           <div className="flex items-center justify-between">
@@ -248,7 +270,7 @@ export function RightColumnActionPanel({
     }
 
     // Fully Subscribed — closed campaign, register interest
-    if (status === "fully-subscribed") {
+    if (status === "fully_subscribed") {
       return (
         <ClosedCampaignPanel
           status={status}
@@ -261,8 +283,8 @@ export function RightColumnActionPanel({
       );
     }
 
-    // Term Completed — lease concluded, register interest
-    if (status === "term-completed") {
+    // Completed — lease concluded, register interest
+    if (status === "completed") {
       return (
         <ClosedCampaignPanel
           status={status}
@@ -275,8 +297,8 @@ export function RightColumnActionPanel({
     }
   }
 
-  // ─── KYC'D — fully subscribed / term completed (no terms sheet) ───
-  if (status === "fully-subscribed") {
+  // ─── KYC'D — fully subscribed / completed (no terms sheet) ───
+  if (status === "fully_subscribed") {
     return (
       <ClosedCampaignPanel
         status={status}
@@ -289,7 +311,7 @@ export function RightColumnActionPanel({
     );
   }
 
-  if (status === "term-completed") {
+  if (status === "completed") {
     return (
       <ClosedCampaignPanel
         status={status}
@@ -313,14 +335,14 @@ export function RightColumnActionPanel({
             {statusInfo.label}
           </span>
         </div>
-        {status === "become-an-owner" && sharesTotal > 0 && (
+        {status === "listed" && sharesTotal > 0 && (
           <span className="text-[12px] font-light text-white/40">
             {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
           </span>
         )}
       </div>
 
-      {status === "become-an-owner" && termsSource && (
+      {status === "listed" && termsSource && (
         <InvestmentTermsModal
           horseName={horseName}
           horseSlug={horseSlug}
@@ -334,11 +356,11 @@ export function RightColumnActionPanel({
         />
       )}
 
-      {status === "coming-soon" && (
+      {status === "coming_soon" && (
         <ComingSoonTermsModal horseName={horseName} horseSlug={horseSlug} />
       )}
 
-      {status === "coming-soon-with-details" && termsSource && (
+      {status === "coming_soon_details" && termsSource && (
         <InvestmentTermsModal
           horseName={horseName}
           horseSlug={horseSlug}
@@ -357,7 +379,7 @@ export function RightColumnActionPanel({
   );
 }
 
-// ─── Closed Campaign Panel (fully-subscribed / term-completed) ───
+// ─── Closed Campaign Panel (fully_subscribed / completed) ───
 function ClosedCampaignPanel({
   status,
   horseName,

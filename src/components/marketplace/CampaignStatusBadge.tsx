@@ -6,7 +6,7 @@ interface CampaignStatusBadgeProps {
 }
 
 export function CampaignStatusBadge({ status, className = "" }: CampaignStatusBadgeProps) {
-  const statusInfo = STATUS_INFO[status];
+  const statusInfo = STATUS_INFO[status] ?? STATUS_INFO.coming_soon;
 
   return (
     <div

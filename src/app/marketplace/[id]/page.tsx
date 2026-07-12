@@ -13,7 +13,8 @@ import path from "path";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 import pedigreesData from "@/data/pedigrees.json";
-import { getCampaignStatus } from "@/lib/campaign-status";
+import { getCampaignStatus, isOnWebsite } from "@/lib/campaign-status";
+import { getLiveInventory } from "@/lib/google-sheets";
 
 // Scan a horse's gallery directory for images (excluding the cover image already used)
 function getGalleryImages(slug: string, coverUrl?: string): string[] {
@@ -160,12 +161,12 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
   );
 }
 
-// SSG: data comes from local JSON, no runtime API calls.
 export const runtime = "nodejs";
-// Pre-render known campaign IDs at build time; allow on-demand generation for new ones.
+/** Live Sheets ops for status/price/stock — do not SSG stale commercial state. */
+export const dynamic = "force-dynamic";
 export const dynamicParams = true;
 
-// Pre-render campaigns at build time from local JSON.
+// Known static IDs for build tooling; runtime still force-dynamic for live ops.
 export async function generateStaticParams() {
   return (hltsData as any[]).map((hlt) => ({ id: hlt.horse_slug || hlt.id }));
 }
@@ -174,41 +175,121 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+/** Live row present → use live price only (null stays null). Static only when no live row. */
+function resolveLotPriceNzd(
+  live: Awaited<ReturnType<typeof getLiveInventory>> | null,
+  staticPrice: number | string | null | undefined
+): number | null {
+  if (live) {
+    const p = live.price_per_share_nzd;
+    if (p != null && Number.isFinite(Number(p)) && Number(p) > 0) return Number(p);
+    return null;
+  }
+  if (
+    staticPrice != null &&
+    staticPrice !== "" &&
+    Number.isFinite(Number(staticPrice)) &&
+    Number(staticPrice) > 0
+  ) {
+    return Number(staticPrice);
+  }
+  return null;
+}
+
 export default async function CampaignDetailPage({ params }: Props) {
   const { id } = await params;
-  let hlt: any = null;
 
-  // Find HLT from local JSON data
-  hlt = (hltsData as any[]).find((h) => (h.horse_slug || h.id) === id);
+  const staticHlt = (hltsData as any[]).find((h) => (h.horse_slug || h.id) === id) || null;
 
-  if (!hlt) {
+  let live: Awaited<ReturnType<typeof getLiveInventory>> = null;
+  try {
+    live = await getLiveInventory(id);
+  } catch (err: any) {
+    console.warn(
+      `[marketplace/${id}] Live inventory failed; using static fallback:`,
+      err?.message || err
+    );
+  }
+
+  if (!staticHlt && !live) {
     notFound();
   }
 
-  // Find horse data from local JSON
-  const horseData = (horsesData as any[]).find((h) => h.slug === id || h.name === hlt.horse_name);
+  // Prefer live ops for commercial fields; static for identity/content.
+  const hlt = staticHlt || {
+    horse_slug: live!.slug,
+    horse_name: live!.name,
+    listing_status: live!.listing_status,
+    campaign_status: live!.campaign_status,
+    shares_total: live!.shares_total,
+    shares_sold: live!.shares_sold,
+    price_per_share_nzd: live!.price_per_share_nzd,
+    marketplace_visible: live!.marketplace_visible,
+    leasehold_stake_pct: live!.totalLeasePercent,
+    lease_period_months: live!.leasePeriodMonths,
+    lease_start_date: live!.leaseStartDate,
+    investor_return_pct: live!.investorReturnPct,
+  };
 
-  // Build the HLT object in the shape the page expects
+  const horseData = (horsesData as any[]).find(
+    (h) => h.slug === id || h.name === hlt.horse_name || h.name === live?.name
+  );
+
+  const sharesTotal = live != null ? Number(live.shares_total) : Number(hlt.shares_total || 0);
+  const sharesSold = live != null ? Number(live.shares_sold) : Number(hlt.shares_sold || 0);
+  const lotPriceNzd = resolveLotPriceNzd(live, hlt.price_per_share_nzd);
+  const listingStatus = live?.listing_status || hlt.listing_status;
+  const marketplaceVisible =
+    live?.marketplace_visible != null && live.marketplace_visible !== ""
+      ? live.marketplace_visible
+      : hlt.marketplace_visible;
+  const leaseholdStake =
+    live?.totalLeasePercent ?? hlt.leasehold_stake_pct ?? null;
+  const leasePeriodMonths =
+    live?.leasePeriodMonths ?? hlt.lease_period_months ?? null;
+  const leaseStartDate =
+    live?.leaseStartDate || hlt.lease_start_date || "TBD";
+  const investorReturnPct =
+    live?.investorReturnPct ?? hlt.investor_return_pct ?? null;
+
+  const status = getCampaignStatus({
+    campaign_status: live?.campaign_status || hlt.campaign_status,
+    listing_status: listingStatus,
+    shares_total: sharesTotal,
+    shares_sold: sharesSold,
+    has_terms_sheet: hlt.has_terms_sheet,
+    marketplace_visible: marketplaceVisible,
+  });
+
+  // Drafts stay off the public website
+  if (!isOnWebsite(status)) {
+    notFound();
+  }
+
   const hltRecord = {
-    id: hlt.horse_slug || hlt.id,
-    status: hlt.listing_status === "active" ? "published" : "draft",
-    shares_total: Number(hlt.shares_total),
-    shares_sold: Number(hlt.shares_sold),
-    share_price_cents: Number(hlt.price_per_share_nzd || 1500) * 100,
+    id: live?.slug || hlt.horse_slug || hlt.id || id,
+    status: listingStatus === "active" ? "published" : "draft",
+    shares_total: sharesTotal,
+    shares_sold: sharesSold,
+    // No invented commercial default — null/unknown → 0 cents for JSON-LD only
+    share_price_cents: lotPriceNzd != null ? Math.round(lotPriceNzd * 100) : 0,
     fractional_interest_per_share: 1.0,
-    leasehold_stake_percentage: hlt.leasehold_stake_pct || 100,
-    lease_period_months: hlt.lease_period_months || 36,
-    lease_start_date: hlt.lease_start_date || "TBD",
-    investor_return_percentage: hlt.investor_return_pct || 80,
+    leasehold_stake_percentage: leaseholdStake ?? 100,
+    lease_period_months: leasePeriodMonths ?? 36,
+    lease_start_date: leaseStartDate,
+    investor_return_percentage: investorReturnPct ?? 80,
     horse_microchip: hlt.horse_microchip,
     horse: {
-      name: hlt.horse_name || horseData?.name || "Racehorse",
-      age: horseData?.foaling_date ? new Date().getFullYear() - new Date(horseData.foaling_date).getFullYear() : undefined,
+      name: live?.name || hlt.horse_name || horseData?.name || "Racehorse",
+      age: horseData?.foaling_date
+        ? new Date().getFullYear() - new Date(horseData.foaling_date).getFullYear()
+        : undefined,
       sex: (horseData?.sex || "").charAt(0).toUpperCase() + (horseData?.sex || "").slice(1),
       colour: horseData?.colour || "",
       sire_name: horseData?.sire_name || "",
       dam_name: horseData?.dam_name || "",
-      image_url: hlt.image_path || horseData?.image_path || "/images/content/horses/placeholder.png",
+      image_url:
+        hlt.image_path || horseData?.image_path || "/images/content/horses/placeholder.png",
       story: hlt.story || horseData?.story || "",
       life_number: horseData?.life_number || "",
       microchip: hlt.horse_microchip || horseData?.microchip || "",
@@ -232,12 +313,6 @@ export default async function CampaignDetailPage({ params }: Props) {
   const trainer = hltRecord.trainer;
   const sharesAvailable = hltRecord.shares_total - hltRecord.shares_sold;
   const totalLeasePercent = hltRecord.leasehold_stake_percentage || 100;
-  const status = getCampaignStatus({
-    listing_status: hlt.listing_status,
-    shares_total: hltRecord.shares_total,
-    shares_sold: hltRecord.shares_sold,
-    has_terms_sheet: hlt.has_terms_sheet,
-  });
 
   // Initials for avatar fallback
   const trainerInitials = trainer?.name
@@ -388,7 +463,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                     nztr_license_number: trainer.nztr_license_number || "",
                   }}
                   horseSlug={hltRecord.id}
-                  listingStatus={hlt.listing_status}
+                  listingStatus={listingStatus}
                   hasTermsSheet={hlt.has_terms_sheet}
                   sharesTotal={hltRecord.shares_total}
                   sharesSold={hltRecord.shares_sold}
@@ -404,14 +479,17 @@ export default async function CampaignDetailPage({ params }: Props) {
               <RightColumnActionPanel
                 horseName={horse?.name || "Racehorse"}
                 horseSlug={hltRecord.id}
-                initialListingStatus={hlt.listing_status}
+                initialListingStatus={listingStatus}
+                initialCampaignStatus={live?.campaign_status || hlt.campaign_status}
+                marketplaceVisible={marketplaceVisible}
                 hasTermsSheet={hlt.has_terms_sheet}
                 staticTerms={{
-                  price_per_share_nzd: Number(hlt.price_per_share_nzd || 0),
-                  totalLeasePercent: hlt.leasehold_stake_pct || totalLeasePercent,
-                  leasePeriodMonths: hlt.lease_period_months || hltRecord.lease_period_months,
-                  leaseStartDate: hlt.lease_start_date || hltRecord.lease_start_date,
-                  investorReturnPct: hlt.investor_return_pct || hltRecord.investor_return_percentage,
+                  price_per_share_nzd: lotPriceNzd ?? 0,
+                  totalLeasePercent: leaseholdStake ?? totalLeasePercent,
+                  leasePeriodMonths: leasePeriodMonths ?? hltRecord.lease_period_months,
+                  leaseStartDate: leaseStartDate,
+                  investorReturnPct:
+                    investorReturnPct ?? hltRecord.investor_return_percentage,
                   shares_total: hltRecord.shares_total,
                   shares_sold: hltRecord.shares_sold,
                 }}

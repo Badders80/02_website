@@ -74,7 +74,7 @@ Close the content gap with Racex.ae (25+ articles vs our 1) by publishing 30+ SE
 | Entity | Role | Data Available |
 |---|---|---|
 | Wexford Stables (Lance O'Sullivan & Andrew Scott) | Trainer — Prudentia, Hottathanafantasy, I Stole A Manolo | Full bio in stables.json: Lance is 12-time champion jockey, 2,479 career wins, 1989 Japan Cup aboard Horlicks. Partnership has 600+ wins. |
-| Stephen Gray Racing | Trainer — First Gear, TLM x Yearn | Full bio in stables.json: Stephen Gray & Kevin Gray, Copper Belt Lodge, Palmerston North. 24 years in Singapore. Known for stayers and late-maturing types. |
+| Stephen Gray Racing | Trainer — First Gear, TML x Yearn | Full bio in stables.json: Stephen Gray & Kevin Gray, Copper Belt Lodge, Palmerston North. 24 years in Singapore. Known for stayers and late-maturing types. |
 | B.A.X Bloodstock (Kylie Bax) | Owner/Manager — all horses | Owner_name in hlts.json. Kylie Bax is the contact. B.A.X Bloodstock Achieving Xcellence Limited. |
 | Tokinvest | Platform partner | VARA-regulated marketplace. Multiple press articles. Scott Thiel CEO. |
 

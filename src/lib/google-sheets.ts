@@ -1,12 +1,17 @@
 import { google } from "googleapis";
 import path from "path";
 import fs from "fs";
+import { lotTotalNzd } from "./pricing";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg";
-const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "Inventory";
+/** Runtime ops inventory tab. Default `hlts` (not the sync template name "Inventory"). Override via GOOGLE_SHEETS_INVENTORY_TAB. */
+const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "hlts";
 const HOLDINGS_TAB = process.env.GOOGLE_SHEETS_HOLDINGS_TAB || "Holdings";
 const LEADS_TAB = process.env.GOOGLE_SHEETS_LEADS_TAB || "Leads";
 const COMMUNICATIONS_TAB = process.env.GOOGLE_SHEETS_COMMUNICATIONS_TAB || "Communications";
+
+/** Default platform fee (%) when sheet cell empty — commercial SOP (list = owner × 1.05). */
+const DEFAULT_PLATFORM_FEE_PCT = 5;
 
 // In-memory cache for inventory reads (60s TTL)
 const inventoryCache: Record<string, { data: any; expiry: number }> = {};
@@ -74,19 +79,71 @@ function columnToLetter(column: number): string {
   return letter;
 }
 
+/** Parse a sheet cell as a finite number, or null if blank/invalid. Does not invent zeros for commercial fields. */
+function parseOptionalNumber(raw: unknown): number | null {
+  if (raw === undefined || raw === null) return null;
+  const s = String(raw).trim();
+  if (s === "") return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Lot list price from owner rate via `./pricing` (no import cycle: pricing is pure math).
+ *   list_rate = owner × (1 + fee/100); lot_pct = stake/lots; lot = list_rate × lot_pct × months
+ * Returns null when inputs incomplete or invalid (does not invent prices).
+ */
+function deriveLotPriceFromOwnerRate(
+  ownerRatePer1pctMonth: number,
+  platformFeePct: number,
+  leaseholdStakePct: number,
+  sharesTotal: number,
+  leasePeriodMonths: number
+): number | null {
+  if (
+    !(ownerRatePer1pctMonth > 0) ||
+    !(sharesTotal > 0) ||
+    !(leasePeriodMonths > 0) ||
+    !(leaseholdStakePct > 0)
+  ) {
+    return null;
+  }
+  try {
+    const lot = lotTotalNzd({
+      ownerRatePer1PctMonth: ownerRatePer1pctMonth,
+      platformFeePct,
+      stakePct: leaseholdStakePct,
+      lots: sharesTotal,
+      months: leasePeriodMonths,
+    });
+    return Number.isFinite(lot) ? lot : null;
+  } catch {
+    return null;
+  }
+}
+
 // --- Types ---
 
 export interface InventoryRow {
   slug: string;
   name: string;
   listing_status: string;
-  price_per_share_nzd: number;
+  /** Explicit sheet price, or derived from owner rate; null if neither available (no fake defaults). */
+  price_per_share_nzd: number | null;
   shares_total: number;
   shares_sold: number;
-  leasehold_stake_pct: number;
-  lease_period_months: number;
+  leasehold_stake_pct: number | null;
+  lease_period_months: number | null;
   lease_start_date: string;
-  investor_return_pct: number;
+  /** Null when sheet cell empty — do not invent e.g. 80. Callers must handle. */
+  investor_return_pct: number | null;
+  /** Raw sheet campaign_status (pass-through; derivation lives in campaign-status module). */
+  campaign_status: string;
+  /** Owner $/1%/month. Aliases: owner_rate, rate_per_1pct_month. */
+  owner_rate_per_1pct_month: number | null;
+  /** Platform fee % on list rate. Defaults to 5 when missing/empty. */
+  platform_fee_pct: number;
+  marketplace_visible: string;
   trainer_name: string;
   trainer_stable: string;
   trainer_location: string;
@@ -133,55 +190,97 @@ export interface CommunicationRow {
 
 // --- Inventory reads ---
 
+/** Known header names for docs / ensureSheetExists; runtime mapping is header-flexible + case-insensitive. */
 const INVENTORY_HEADERS = [
-  "slug", "name", "listing_status", "price_per_share_nzd", "shares_total",
-  "shares_sold", "leasehold_stake_pct", "lease_period_months", "lease_start_date",
-  "investor_return_pct", "trainer_name", "trainer_stable", "trainer_location",
+  "horse_slug", "horse_name", "listing_status", "campaign_status",
+  "price_per_share_nzd", "owner_rate_per_1pct_month", "platform_fee_pct",
+  "shares_total", "shares_sold", "leasehold_stake_pct", "lease_period_months",
+  "lease_start_date", "investor_return_pct", "marketplace_visible",
+  "trainer_name", "trainer_stable", "trainer_location",
   "wins", "placed", "next_up", "loveracing_id", "image_path", "story", "pedigree",
 ];
 
+function mapInventoryRow(headers: string[], row: string[]): InventoryRow {
+  const obj: Record<string, string> = {};
+  headers.forEach((h, i) => {
+    obj[h] = row[i] ?? "";
+  });
+
+  const ownerRate = parseOptionalNumber(
+    obj.owner_rate_per_1pct_month || obj.owner_rate || obj.rate_per_1pct_month
+  );
+
+  const platformFeeRaw = parseOptionalNumber(obj.platform_fee_pct);
+  const platform_fee_pct =
+    platformFeeRaw !== null ? platformFeeRaw : DEFAULT_PLATFORM_FEE_PCT;
+
+  const leasehold_stake_pct = parseOptionalNumber(obj.leasehold_stake_pct);
+  const lease_period_months = parseOptionalNumber(obj.lease_period_months);
+  const shares_total = Number(obj.shares_total || 0) || 0;
+  const shares_sold = Number(obj.shares_sold || 0) || 0;
+
+  // Prefer explicit lot price; else derive from owner rate (no invented commercial prices).
+  const explicitPrice = parseOptionalNumber(obj.price_per_share_nzd);
+  let price_per_share_nzd: number | null = explicitPrice;
+  if (price_per_share_nzd === null && ownerRate !== null) {
+    price_per_share_nzd = deriveLotPriceFromOwnerRate(
+      ownerRate,
+      platform_fee_pct,
+      leasehold_stake_pct ?? 0,
+      shares_total,
+      lease_period_months ?? 0
+    );
+  }
+
+  return {
+    slug: obj.slug || obj.horse_slug || "",
+    name: obj.name || obj.horse_name || "",
+    listing_status: obj.listing_status || "draft",
+    campaign_status: (obj.campaign_status || "").trim(),
+    price_per_share_nzd,
+    shares_total,
+    shares_sold,
+    leasehold_stake_pct,
+    lease_period_months,
+    lease_start_date: obj.lease_start_date || "",
+    investor_return_pct: parseOptionalNumber(obj.investor_return_pct),
+    owner_rate_per_1pct_month: ownerRate,
+    platform_fee_pct,
+    marketplace_visible: (obj.marketplace_visible || "").trim(),
+    trainer_name: obj.trainer_name || "",
+    trainer_stable: obj.trainer_stable || "",
+    trainer_location: obj.trainer_location || "",
+    wins: Number(obj.wins || 0) || 0,
+    placed: Number(obj.placed || 0) || 0,
+    next_up: obj.next_up || "",
+    loveracing_id: obj.loveracing_id ? Number(obj.loveracing_id) : undefined,
+  };
+}
+
+/** Read all rows from the runtime ops inventory tab (`hlts` by default). */
 export async function readInventory(): Promise<InventoryRow[]> {
   try {
     return await withRetry(async () => {
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${INVENTORY_TAB}!A:W`,
+        range: `${INVENTORY_TAB}!A:AZ`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) return [];
 
       const headers = rows[0].map((h: string) => h.toLowerCase().trim());
-      return rows.slice(1).map((row: string[]) => {
-        const obj: any = {};
-        headers.forEach((h: string, i: number) => {
-          obj[h] = row[i] || "";
-        });
-        return {
-          slug: obj.slug || obj.horse_slug || "",
-          name: obj.name || obj.horse_name || "",
-          listing_status: obj.listing_status || "draft",
-          price_per_share_nzd: Number(obj.price_per_share_nzd || 0),
-          shares_total: Number(obj.shares_total || 0),
-          shares_sold: Number(obj.shares_sold || 0),
-          leasehold_stake_pct: Number(obj.leasehold_stake_pct || 0),
-          lease_period_months: Number(obj.lease_period_months || 0),
-          lease_start_date: obj.lease_start_date || "",
-          investor_return_pct: Number(obj.investor_return_pct || 0),
-          trainer_name: obj.trainer_name || "",
-          trainer_stable: obj.trainer_stable || "",
-          trainer_location: obj.trainer_location || "",
-          wins: Number(obj.wins || 0),
-          placed: Number(obj.placed || 0),
-          next_up: obj.next_up || "",
-          loveracing_id: obj.loveracing_id ? Number(obj.loveracing_id) : undefined,
-        };
-      });
+      return rows.slice(1).map((row: string[]) => mapInventoryRow(headers, row));
     });
   } catch (err: any) {
     console.error("[Google Sheets] Failed to read inventory:", err.message);
     return [];
   }
+}
+
+/** Alias for marketplace listing — same as readInventory (all rows). */
+export async function readInventoryList(): Promise<InventoryRow[]> {
+  return readInventory();
 }
 
 export async function readInventoryBySlug(slug: string): Promise<InventoryRow | null> {
@@ -204,7 +303,11 @@ export async function readInventoryBySlug(slug: string): Promise<InventoryRow | 
   }
 }
 
-// Convenience function for backward compat
+/**
+ * Live ops snapshot for one horse (checkout, inventory API, purchase UI).
+ * Commercial fields are null when unknown — no fake 80% return / invented prices.
+ * campaign_status is raw sheet value; status derivation stays in campaign-status module.
+ */
 export async function getLiveInventory(horseSlug: string) {
   const row = await readInventoryBySlug(horseSlug);
   if (!row) return null;
@@ -215,11 +318,15 @@ export async function getLiveInventory(horseSlug: string) {
     shares_total: row.shares_total,
     shares_available: Math.max(0, row.shares_total - row.shares_sold),
     listing_status: row.listing_status,
+    campaign_status: row.campaign_status || null,
     price_per_share_nzd: row.price_per_share_nzd,
-    totalLeasePercent: row.leasehold_stake_pct || 100,
-    leasePeriodMonths: row.lease_period_months || 36,
+    owner_rate_per_1pct_month: row.owner_rate_per_1pct_month,
+    platform_fee_pct: row.platform_fee_pct,
+    marketplace_visible: row.marketplace_visible,
+    totalLeasePercent: row.leasehold_stake_pct,
+    leasePeriodMonths: row.lease_period_months,
     leaseStartDate: row.lease_start_date || "",
-    investorReturnPct: row.investor_return_pct || 80,
+    investorReturnPct: row.investor_return_pct,
   };
 }
 
@@ -232,7 +339,7 @@ export async function updateInventorySharesSold(slug: string, newSharesSold: num
       // Read current data to find the row for this slug
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${INVENTORY_TAB}!A:W`,
+        range: `${INVENTORY_TAB}!A:AZ`,
       });
       const rows = response.data.values;
       if (!rows || rows.length <= 1) throw new Error("No inventory data");

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 
 interface DocumentStatus {
   status: string;
@@ -22,6 +23,11 @@ interface HltData {
     story?: string;
     sire_name?: string;
     dam_name?: string;
+    sex?: string;
+    colour?: string;
+    age?: number;
+    breeding_url?: string | null;
+    pedigree_data?: any;
   };
   trainer?: {
     name: string;
@@ -43,8 +49,10 @@ interface DetailTabsSandboxProps {
   }>;
 }
 
+import { PedigreeTableSandbox } from "./PedigreeTableSandbox";
+
 export function DetailTabsSandbox({ hlt, races }: DetailTabsSandboxProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "trainer" | "race-record" | "documents">("details");
+  const [activeTab, setActiveTab] = useState<"details" | "pedigree" | "trainer" | "race-record" | "documents">("details");
 
   const getDocUrl = (docType: "pds" | "sa" | "term_sheet") => {
     // GCS backend retired — documents now served via local paths or external links
@@ -56,11 +64,15 @@ export function DetailTabsSandbox({ hlt, races }: DetailTabsSandboxProps) {
     return !!hlt.documents?.[docType]?.gcs_url;
   };
 
+  const isWexford = 
+    hlt.trainer?.stable_name?.toLowerCase().includes("wexford") || 
+    hlt.trainer?.name?.toLowerCase().includes("wexford");
+
   return (
     <div className="space-y-8">
       {/* Tab Selectors */}
       <div className="flex border-b border-white/[0.06] overflow-x-auto scrollbar-none">
-        {(["details", "trainer", "race-record", "documents"] as const).map((tab) => (
+        {(["details", "pedigree", "trainer", "race-record", "documents"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -94,22 +106,113 @@ export function DetailTabsSandbox({ hlt, races }: DetailTabsSandboxProps) {
           </div>
         )}
 
+        {/* Pedigree Panel */}
+        {activeTab === "pedigree" && (
+          <PedigreeTableSandbox
+            horseName={hlt.horse?.name || ""}
+            sireName={hlt.horse?.sire_name || ""}
+            damName={hlt.horse?.dam_name || ""}
+            sex={hlt.horse?.sex || ""}
+            colour={hlt.horse?.colour || ""}
+            age={hlt.horse?.age}
+            breedingUrl={hlt.horse?.breeding_url}
+            pedigreeData={hlt.horse?.pedigree_data}
+          />
+        )}
+
         {/* Trainer Panel */}
         {activeTab === "trainer" && (
           <div className="space-y-6 animate-fade-in">
-            <h4 className="text-md font-medium text-white">Trainer Profile</h4>
+            <h4 className="text-md font-medium text-white mb-2">Trainer Profile</h4>
             {hlt.trainer ? (
-              <div className="space-y-4 font-light">
-                <p className="text-sm leading-[1.8] text-white/50">
-                  <span className="text-white font-normal">{hlt.trainer.name}</span> manages Wexford Stables out of Matamata, NZ. 
-                  Renowned for training top-tier middle-distance stayers, Wexford Stables utilizes world-class preparation environments, equine swimming resources, and patience-first horse education structures.
-                </p>
-                {hlt.trainer.nztr_license_number && (
-                  <p className="text-xs text-white/30">
-                    NZTR License Number: <span className="font-mono text-white/50">{hlt.trainer.nztr_license_number}</span>
+              isWexford ? (
+                <div className="grid grid-cols-1 md:grid-cols-[200px,1fr] gap-8 items-start font-light">
+                  {/* Photo & Video Card */}
+                  <div className="space-y-4">
+                    <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-white/[0.08] bg-zinc-950">
+                      <Image
+                        src="/images/content/stables/trainer-wexford.png"
+                        alt="Lance O'Sullivan & Andrew Scott"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <a
+                      href="https://share.google/PHnBC9AaKVlo2llf2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-3 p-2.5 rounded-xl border border-white/[0.06] bg-white/[0.01] hover:bg-white/[0.03] transition duration-300"
+                    >
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 border border-white/[0.08] bg-zinc-900">
+                        <Image
+                          src="/images/content/stables/trainer-wexford.png"
+                          alt="Video thumbnail"
+                          fill
+                          className="object-cover opacity-60 group-hover:scale-105 transition duration-500"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <svg className="w-4 h-4 text-white/90 group-hover:scale-110 transition duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[8px] uppercase tracking-widest text-[#d4a964] font-medium">Watch More</p>
+                        <p className="text-[10px] text-white/80 font-normal truncate group-hover:text-white transition">500th Win celebration ↗</p>
+                      </div>
+                    </a>
+                  </div>
+
+                  {/* Story & Stats */}
+                  <div className="space-y-6">
+                    <div>
+                      <h5 className="text-sm font-medium text-white mb-2">Lance O&apos;Sullivan ONZM &amp; Andrew Scott</h5>
+                      <p className="text-xs uppercase tracking-wider text-white/30 font-medium mb-3">Wexford Stables · Matamata, NZ</p>
+                      
+                      <div className="space-y-3 text-sm leading-[1.8] text-white/50">
+                        <p>
+                          Congratulations to Wexford Stables&apos; Lance O&apos;Sullivan and Andrew Scott, who secured their <span className="text-white font-normal">500th win in partnership</span> recently at Te Rapa Racing 🙌.
+                        </p>
+                        <p>
+                          The training pair have worked in partnership on two separate occasions, during the 2006/07 &amp; 2007/08 seasons, with the pair returning to partnership during the 2013/14 season.
+                        </p>
+                        <p>
+                          They have won <span className="text-white font-normal">54 Group and Listed races</span> together and are in top form, sitting <span className="text-white font-normal">2nd on the trainers&apos; premiership table</span> with an incredible strike rate of <span className="text-white font-normal">4.76</span> and 46 wins.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-4 border-t border-white/[0.04] pt-4">
+                      <div>
+                        <p className="text-[9px] uppercase tracking-wider text-white/30 mb-0.5">Premiership</p>
+                        <p className="text-base text-[#d4a964] font-medium">2nd</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] uppercase tracking-wider text-white/30 mb-0.5">Strike Rate</p>
+                        <p className="text-base text-white font-medium">4.76</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] uppercase tracking-wider text-white/30 mb-0.5">Group Wins</p>
+                        <p className="text-base text-white font-medium">54</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 font-light">
+                  <p className="text-sm leading-[1.8] text-white/50">
+                    <span className="text-white font-normal">{hlt.trainer.name}</span> manages Wexford Stables out of Matamata, NZ. 
+                    Renowned for training top-tier middle-distance stayers, Wexford Stables utilizes world-class preparation environments, equine swimming resources, and patience-first horse education structures.
                   </p>
-                )}
-              </div>
+                  {hlt.trainer.nztr_license_number && (
+                    <p className="text-xs text-white/30">
+                      NZTR License Number: <span className="font-mono text-white/50">{hlt.trainer.nztr_license_number}</span>
+                    </p>
+                  )}
+                </div>
+              )
             ) : (
               <p className="text-sm text-white/40 font-light">No trainer profile assigned yet. Preparation notes will be posted upon stable entry.</p>
             )}

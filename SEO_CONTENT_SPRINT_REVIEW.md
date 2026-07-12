@@ -21,7 +21,7 @@ The sprint correctly identifies that Evolution Stables has a material content de
 
 **Recommendations:**
 1. **Rebalance the portfolio.** Treat the 5 guides and the team profile as P0. Treat race reports as P1/P2 and publish the strongest 5–7 first, not all 15.
-2. **Add current-horse content.** Prudentia, Hottathanafantasy, I Stole A Manolo, and TLM x Yearn need individual syndicate pages or horse profiles with JSON-LD. These are likely higher commercial intent than old race reports.
+2. **Add current-horse content.** Prudentia, Hottathanafantasy, I Stole A Manolo, and TML x Yearn need individual syndicate pages or horse profiles with JSON-LD. These are likely higher commercial intent than old race reports.
 3. **Cut or merge weak press summaries.** Articles that are primarily about Tokinvest corporate news (pre-seed raise, VARA licence) should be combined into a single "Tokinvest & Evolution: the regulated platform" explainer rather than 4 separate thin pages.
 4. **Add a hub page.** `/insights` should be a real index listing categories: Guides, Press Commentary, Race Reports, Team. This turns isolated pages into a structured section.
 

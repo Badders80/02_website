@@ -70,7 +70,8 @@ HORSE_SLUG_MAP = {
     "Hottathanafantasy": "hottathanafantasy",
     "I Stole A Manolo": "i-stole-a-manolo",
     "Nellie": "nellie",
-    "TLM x Yearn": "tlm-x-yearn",
+    "TML x Yearn": "tml-x-yearn",
+    "TLM x Yearn": "tml-x-yearn",  # legacy typo
 }
 
 
@@ -259,7 +260,7 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
             shares_sold = 0
             listing_status = "draft"
             marketplace_visible = False
-        # Nellie + TLM x Yearn: unregistered → Coming Soon (handled in unregistered block)
+        # Nellie + TML x Yearn: unregistered → Coming Soon (handled in unregistered block)
 
         # Pricing from lease
         price_per_share = float(lease.get("token_price_nzd") or ssot_hlt.get("token_price_nzd") or existing_hlt.get("price_per_share_nzd") or 0)
@@ -301,7 +302,7 @@ def sync_hlts(horses: list[dict]) -> list[dict]:
         }
         results.append(hlt)
 
-    # Add unregistered horses (Nellie, TLM x Yearn) as draft HLTs from existing data
+    # Add unregistered horses (Nellie, TML x Yearn) as draft HLTs from existing data
     for slug, existing_hlt in existing_map.items():
         if slug not in [r["horse_slug"] for r in results]:
             # Preserve existing entry for horses without SSOT HLT records

@@ -65,9 +65,13 @@ export async function POST(request: NextRequest) {
       staticHlt,
       liveInventory
         ? {
+            campaign_status: liveInventory.campaign_status,
             listing_status: liveInventory.listing_status,
+            shares_total: liveInventory.shares_total,
+            shares_sold: liveInventory.shares_sold,
             shares_available: liveInventory.shares_available,
             price_per_share_nzd: liveInventory.price_per_share_nzd,
+            marketplace_visible: liveInventory.marketplace_visible,
           }
         : null,
       sharesQty,

@@ -23,9 +23,6 @@ export async function GET(
     }
 
     const staticHlt = findStaticHlt(hlts, slug);
-    const campaignStatus = staticHlt
-      ? getCampaignStatus(staticHlt)
-      : undefined;
 
     let live: Awaited<ReturnType<typeof getLiveInventory>> = null;
     try {
@@ -34,15 +31,30 @@ export async function GET(
       console.warn(`[API Inventory] live read failed for ${slug}:`, err?.message);
     }
 
+    // Prefer live campaign_status / listing when present; static fallback
+    const campaignStatus = getCampaignStatus({
+      campaign_status: live?.campaign_status || staticHlt?.campaign_status,
+      listing_status: live?.listing_status || staticHlt?.listing_status,
+      shares_total: live?.shares_total ?? staticHlt?.shares_total,
+      shares_sold: live?.shares_sold ?? staticHlt?.shares_sold,
+      has_terms_sheet: staticHlt?.has_terms_sheet,
+      marketplace_visible:
+        live?.marketplace_visible ?? staticHlt?.marketplace_visible,
+    });
+
     // Eligibility for UI: do not require live inventory just to show closed state
     const eligibility = checkPurchaseEligibility(
       slug,
       staticHlt,
       live
         ? {
+            campaign_status: live.campaign_status,
             listing_status: live.listing_status,
+            shares_total: live.shares_total,
+            shares_sold: live.shares_sold,
             shares_available: live.shares_available,
             price_per_share_nzd: live.price_per_share_nzd,
+            marketplace_visible: live.marketplace_visible,
           }
         : null,
       1,
@@ -76,6 +88,22 @@ export async function GET(
       );
     }
 
+    // Prefer live lot price (may be null); static only when no live row. Never invent 1500.
+    let pricePerShare: number | null = null;
+    if (live) {
+      pricePerShare =
+        live.price_per_share_nzd != null &&
+        Number.isFinite(Number(live.price_per_share_nzd))
+          ? Number(live.price_per_share_nzd)
+          : null;
+    } else if (
+      staticHlt?.price_per_share_nzd != null &&
+      staticHlt.price_per_share_nzd !== "" &&
+      Number.isFinite(Number(staticHlt.price_per_share_nzd))
+    ) {
+      pricePerShare = Number(staticHlt.price_per_share_nzd);
+    }
+
     return NextResponse.json({
       slug,
       name: live?.name || staticHlt?.horse_name || slug,
@@ -84,9 +112,9 @@ export async function GET(
       shares_available: sharesAvailable,
       listing_status:
         live?.listing_status || staticHlt?.listing_status || "draft",
-      price_per_share_nzd: live
-        ? live.price_per_share_nzd
-        : Number(staticHlt?.price_per_share_nzd || 0),
+      marketplace_visible:
+        live?.marketplace_visible ?? staticHlt?.marketplace_visible ?? null,
+      price_per_share_nzd: pricePerShare,
       totalLeasePercent: live?.totalLeasePercent ?? null,
       leasePeriodMonths:
         live?.leasePeriodMonths ?? staticHlt?.lease_period_months ?? null,
@@ -96,6 +124,7 @@ export async function GET(
       // Explicit gate for PurchaseFlow — do not infer from shares alone
       purchasable: eligibility.allowed,
       purchases_enabled: isPurchasesEnabled(),
+      // Canonical lifecycle from campaign-status module (not raw sheet only)
       campaign_status: campaignStatus ?? eligibility.campaignStatus ?? null,
       eligibility_code: eligibility.code,
       eligibility_reason: eligibility.reason,

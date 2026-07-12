@@ -10,6 +10,8 @@ export const metadata = {
     "Discover and explore native digital-syndication opportunities within the Evolution ecosystem. Browse active offerings, ownership positions, and live data.",
 };
 
+import { CampaignStatus } from "@/lib/campaign-status";
+
 interface Campaign {
   id: string;
   location: string;
@@ -17,6 +19,7 @@ interface Campaign {
   price: string;
   availability: string;
   is_active: boolean;
+  status: CampaignStatus;
   horse: {
     name: string;
     image_url: string;
@@ -38,6 +41,7 @@ export default async function MarketplaceSandboxPage() {
       price: "$1,500 NZD",
       availability: "77 / 100 Left",
       is_active: true,
+      status: "listed",
       horse: {
         name: "Prudentia",
         image_url: "/images/content/stables/prudentia-action.png",
@@ -56,6 +60,7 @@ export default async function MarketplaceSandboxPage() {
       price: "$1,500 NZD",
       availability: "100 / 100 Left",
       is_active: false,
+      status: "coming_soon",
       horse: {
         name: "Hottathanafantasy",
         image_url: "/images/content/horses/Hottathan-BG.png",
@@ -74,6 +79,7 @@ export default async function MarketplaceSandboxPage() {
       price: "$1,500 NZD",
       availability: "100 / 100 Left",
       is_active: false,
+      status: "completed",
       horse: {
         name: "First Gear",
         image_url: "/images/content/horses/FirstGear-BG.png",
@@ -92,6 +98,7 @@ export default async function MarketplaceSandboxPage() {
       price: "$1,500 NZD",
       availability: "100 / 100 Left",
       is_active: false,
+      status: "coming_soon_details",
       horse: {
         name: "I Stole A Manolo",
         image_url: "/images/content/horses/IStole-BG.png",

@@ -14,7 +14,7 @@ interface InvestmentTermsModalProps {
   investorReturnPct: number | string;
   sharesTotal: number;
   sharesAvailable: number;
-  /** Preview mode: show real terms without purchase CTA (coming-soon-with-details) */
+  /** Preview mode: show real terms without purchase CTA (coming_soon_details) */
   readOnly?: boolean;
 }
 

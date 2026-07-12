@@ -66,6 +66,17 @@ const nextConfig: NextConfig = {
         destination: "/sandbox/mystable",
         permanent: true,
       },
+      // Turn Me Loose → TML (was mistyped TLM)
+      {
+        source: "/marketplace/tlm-x-yearn",
+        destination: "/marketplace/tml-x-yearn",
+        permanent: true,
+      },
+      {
+        source: "/marketplace/tlm-x-yearn/:path*",
+        destination: "/marketplace/tml-x-yearn/:path*",
+        permanent: true,
+      },
     ];
   },
 };

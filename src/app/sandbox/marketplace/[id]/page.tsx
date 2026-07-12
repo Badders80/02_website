@@ -34,7 +34,10 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
     status: hlt.listing_status === "active" ? "published" : "draft",
     shares_total: Number(hlt.shares_total),
     shares_sold: Number(hlt.shares_sold),
-    share_price_cents: Number(hlt.price_per_share_nzd || 1500) * 100,
+    share_price_cents:
+      hlt.price_per_share_nzd != null && Number(hlt.price_per_share_nzd) > 0
+        ? Number(hlt.price_per_share_nzd) * 100
+        : 0,
     fractional_interest_per_share: 1.0,
     leasehold_stake_percentage: Number(hlt.leasehold_stake_pct || 100),
     lease_period_months: Number(hlt.lease_period_months || 36),

@@ -116,7 +116,7 @@ else if listing_status == "draft" → Coming Soon
 | Hottathanafantasy | 20/20 | 100% | Fully Subscribed |
 | I Stole A Manolo | 0/20 | 0% | Coming Soon |
 | Nellie | 0/20 | 0% | Coming Soon |
-| TLM x Yearn | 0/20 | 0% | Coming Soon |
+| TML x Yearn | 0/20 | 0% | Coming Soon |
 
 ---
 
@@ -126,7 +126,7 @@ else if listing_status == "draft" → Coming Soon
 |---|---|---|---|---|
 | Registered + raced | Prudentia, First Gear, I Stole A Manolo | ✅ | ✅ | Registered name |
 | Registered + not raced | Hottathanafantasy | ✅ | ❌ | Registered name |
-| Not registered | Nellie, TLM x Yearn | ❌ | ❌ | Nickname or Sire x Dam |
+| Not registered | Nellie, TML x Yearn | ❌ | ❌ | Nickname or Sire x Dam |
 
 Unregistered horses are known by sire x dam until officially registered. May be given a nickname (e.g. "Nellie") before registration. Pedigree can still be built from sire and dam. When registered, they get a loveracing_id, breeding_url, and registered name replaces the nickname.
 

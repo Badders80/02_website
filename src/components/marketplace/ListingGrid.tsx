@@ -33,12 +33,12 @@ interface ListingGridProps {
 }
 
 export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGridProps) {
-  const [filter, setFilter] = useState<"all" | "available" | "subscribed" | "completed">("all");
+  const [filter, setFilter] = useState<"all" | "available" | "coming_soon">("all");
 
   const filteredCampaigns = initialCampaigns.filter((camp) => {
-    if (filter === "available") return camp.status === "become-an-owner" || camp.status === "coming-soon" || camp.status === "coming-soon-with-details";
-    if (filter === "subscribed") return camp.status === "fully-subscribed";
-    if (filter === "completed") return camp.status === "term-completed";
+    if (filter === "available") return camp.status === "listed";
+    if (filter === "coming_soon")
+      return camp.status === "coming_soon" || camp.status === "coming_soon_details";
     return true;
   });
 
@@ -46,8 +46,11 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
     return isSandbox ? `/sandbox/marketplace/${id}` : `/marketplace/${id}`;
   };
 
-  const showFeatured = filter !== "subscribed" && filter !== "completed" && filteredCampaigns.some((c) => c.status === "become-an-owner");
-  const featuredCampaign = showFeatured ? filteredCampaigns.find((c) => c.status === "become-an-owner") : null;
+  const showFeatured =
+    filter !== "coming_soon" && filteredCampaigns.some((c) => c.status === "listed");
+  const featuredCampaign = showFeatured
+    ? filteredCampaigns.find((c) => c.status === "listed")
+    : null;
 
   return (
     <div className="space-y-12">
@@ -56,8 +59,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
         {([
           { key: "all", label: "All Horses" },
           { key: "available", label: "Available" },
-          { key: "subscribed", label: "Fully Subscribed" },
-          { key: "completed", label: "Term Completed" },
+          { key: "coming_soon", label: "Coming Soon" },
         ] as const).map((tab) => (
           <button
             key={tab.key}
@@ -138,7 +140,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
                     </p>
 
                     {/* Hover stats — only for available horses */}
-                    {camp.status === "become-an-owner" && (
+                    {camp.status === "listed" && (
                       <div className="grid grid-cols-3 gap-4 border-t border-white/[0.06] pt-4 opacity-0 max-h-0 overflow-hidden pointer-events-none transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:max-h-20 group-hover:pointer-events-auto">
                         <div>
                           <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 mb-0.5">wins</p>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import { CampaignStatus } from "@/lib/campaign-status";
 
 interface Campaign {
   id: string;
@@ -13,6 +14,7 @@ interface Campaign {
   price: string;
   availability: string;
   is_active: boolean;
+  status: CampaignStatus;
   horse: {
     name: string;
     image_url: string;
@@ -30,7 +32,7 @@ interface ListingGridSandboxProps {
 }
 
 export function ListingGridSandbox({ initialCampaigns }: ListingGridSandboxProps) {
-  const [filter, setFilter] = useState<"all" | "active" | "subscribed">("all");
+  const [filter, setFilter] = useState<"all" | "available" | "coming_soon">("all");
   
   // Sandbox Control States
   const [accent, setAccent] = useState<"gold" | "emerald" | "ice" | "grayscale">("gold");
@@ -39,8 +41,9 @@ export function ListingGridSandbox({ initialCampaigns }: ListingGridSandboxProps
   const [showProgress, setShowProgress] = useState(true);
 
   const filteredCampaigns = initialCampaigns.filter((camp) => {
-    if (filter === "active") return camp.is_active;
-    if (filter === "subscribed") return !camp.is_active;
+    if (filter === "available") return camp.status === "listed";
+    if (filter === "coming_soon")
+      return camp.status === "coming_soon" || camp.status === "coming_soon_details";
     return true;
   });
 
@@ -81,8 +84,11 @@ export function ListingGridSandbox({ initialCampaigns }: ListingGridSandboxProps
 
   const activeAccent = accentColors[accent];
 
-  const showFeatured = filter !== "subscribed" && filteredCampaigns.some((c) => c.is_active);
-  const featuredCampaign = showFeatured ? filteredCampaigns.find((c) => c.is_active) : null;
+  const showFeatured =
+    filter !== "coming_soon" && filteredCampaigns.some((c) => c.status === "listed");
+  const featuredCampaign = showFeatured
+    ? filteredCampaigns.find((c) => c.status === "listed")
+    : null;
 
   return (
     <div className="relative space-y-12 overflow-hidden">
@@ -198,19 +204,23 @@ export function ListingGridSandbox({ initialCampaigns }: ListingGridSandboxProps
 
       {/* Filter Navigation */}
       <div className="relative z-10 flex justify-start border-b border-white/[0.04] pb-4 gap-8 max-w-6xl mx-auto px-12 md:px-16 lg:px-20 select-none">
-        {(["all", "active", "subscribed"] as const).map((tab) => (
+        {([
+          { key: "all", label: "All Horses" },
+          { key: "available", label: "Available" },
+          { key: "coming_soon", label: "Coming Soon" },
+        ] as const).map((tab) => (
           <button
-            key={tab}
+            key={tab.key}
             type="button"
-            onClick={() => setFilter(tab)}
+            onClick={() => setFilter(tab.key)}
             className={`text-[10px] uppercase tracking-[0.2em] font-medium transition-all duration-300 relative py-1 cursor-pointer ${
-              filter === tab
+              filter === tab.key
                 ? activeAccent.text
                 : "text-white/40 hover:text-white/70"
             }`}
           >
-            {tab === "all" ? "All Offerings" : tab === "active" ? "Open Stakes" : "Fully Subscribed"}
-            {filter === tab && (
+            {tab.label}
+            {filter === tab.key && (
               <motion.span 
                 layoutId="activeTabUnderline"
                 className={`absolute bottom-0 left-0 right-0 h-[1.5px] ${activeAccent.underline}`}

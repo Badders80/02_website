@@ -2,11 +2,17 @@ import { Metadata } from "next";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { ListingGrid } from "@/components/marketplace/ListingGrid";
-import { getCampaignStatus, CampaignStatus } from "@/lib/campaign-status";
+import {
+  getCampaignStatus,
+  isOnWebsite,
+  type CampaignStatus,
+} from "@/lib/campaign-status";
+import { readInventoryList } from "@/lib/google-sheets";
 import hltsData from "@/data/hlts.json";
 
-// SSG: data comes from local JSON, no runtime API calls.
 export const runtime = "nodejs";
+/** Live Sheets ops — do not SSG stale commercial state. */
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Marketplace | Evolution Stables",
@@ -63,44 +69,172 @@ interface Campaign {
   };
 }
 
+/** Unified row shape after live merge or static fallback. */
+type MarketplaceSourceRow = {
+  horse_slug?: string;
+  id?: string;
+  horse_name?: string;
+  campaign_status?: string | null;
+  listing_status?: string;
+  shares_total?: number | string;
+  shares_sold?: number | string;
+  has_terms_sheet?: boolean;
+  marketplace_visible?: boolean | string | null;
+  price_per_share_nzd?: number | string | null;
+  trainer_location?: string;
+  trainer_stable?: string;
+  trainer_contact_name?: string;
+  pedigree?: string;
+  image_path?: string;
+  story?: string;
+  wins?: string | number;
+  placed?: string | number;
+  next_up?: string;
+  sex?: string;
+  colour?: string;
+  sire_name?: string;
+  dam_name?: string;
+  stats?: { wins?: string; placed?: string; next_up?: string };
+};
+
+function formatLotPrice(price: number | string | null | undefined): string {
+  if (price === null || price === undefined || price === "") return "—";
+  const n = Number(price);
+  if (!Number.isFinite(n) || n <= 0) return "—";
+  return `$${n.toLocaleString()} NZD`;
+}
+
+function staticBySlug(): Map<string, any> {
+  const map = new Map<string, any>();
+  for (const h of hltsData as any[]) {
+    const key = h.horse_slug || h.id;
+    if (key) map.set(key, h);
+  }
+  return map;
+}
+
+/**
+ * Prefer live Sheets inventory; on empty/failure fall back to static hlts.json.
+ * Live commercial fields win; static supplies content (image, story, terms flag).
+ */
+async function loadMarketplaceSource(): Promise<MarketplaceSourceRow[]> {
+  try {
+    const live = await readInventoryList();
+    if (live.length > 0) {
+      const staticMap = staticBySlug();
+      return live
+        .filter((row) => row.slug)
+        .map((row) => {
+          const s = staticMap.get(row.slug) || {};
+          return {
+            horse_slug: row.slug,
+            id: s.id || row.slug,
+            horse_name: row.name || s.horse_name,
+            campaign_status: row.campaign_status || s.campaign_status || null,
+            listing_status: row.listing_status || s.listing_status,
+            shares_total: row.shares_total,
+            shares_sold: row.shares_sold,
+            has_terms_sheet: s.has_terms_sheet,
+            marketplace_visible:
+              row.marketplace_visible !== "" && row.marketplace_visible != null
+                ? row.marketplace_visible
+                : s.marketplace_visible,
+            price_per_share_nzd: row.price_per_share_nzd,
+            trainer_location: row.trainer_location || s.trainer_location,
+            trainer_stable: row.trainer_stable || s.trainer_stable,
+            trainer_contact_name: s.trainer_contact_name,
+            pedigree: s.pedigree,
+            image_path: s.image_path,
+            story: s.story,
+            wins: row.wins ?? s.wins,
+            placed: row.placed ?? s.placed,
+            next_up: row.next_up || s.next_up,
+            sex: s.sex || s.horse_sex,
+            colour: s.colour || s.horse_colour,
+            sire_name: s.sire_name || s.horse_sire_name,
+            dam_name: s.dam_name || s.horse_dam_name,
+            stats: s.stats,
+          } satisfies MarketplaceSourceRow;
+        });
+    }
+    console.warn(
+      "[marketplace] Live inventory empty or unavailable; falling back to static hlts.json"
+    );
+  } catch (err: any) {
+    console.warn(
+      "[marketplace] Live inventory failed; falling back to static hlts.json:",
+      err?.message || err
+    );
+  }
+  return hltsData as MarketplaceSourceRow[];
+}
+
+function mapToCampaign(hlt: MarketplaceSourceRow): Campaign {
+  const slug = hlt.horse_slug || hlt.id || "";
+  const status = getCampaignStatus({
+    campaign_status: hlt.campaign_status,
+    listing_status: hlt.listing_status,
+    shares_total: hlt.shares_total,
+    shares_sold: hlt.shares_sold,
+    has_terms_sheet: hlt.has_terms_sheet,
+    marketplace_visible: hlt.marketplace_visible,
+  });
+
+  const location = `${(hlt.trainer_location || "Matamata NZ")
+    .toUpperCase()
+    .replace(/,?\s*NZ$/, "")} · ${(hlt.trainer_stable || "Wexford Stables").toUpperCase()}`;
+  const trainerContact = hlt.trainer_contact_name || "";
+  const sex = hlt.sex || "";
+  const colour = hlt.colour || "";
+  const sire = hlt.sire_name || "";
+  const dam = hlt.dam_name || "";
+  const pedigreeParts = [
+    sex,
+    colour,
+    sire && dam ? `${sire} x ${dam}` : sire || dam,
+  ].filter(Boolean);
+
+  const portraitSlugs = ["hottathanafantasy", "i-stole-a-manolo"];
+  const smallSlugs = ["prudentia"];
+  const imageScale = portraitSlugs.includes(slug)
+    ? "scale-110"
+    : smallSlugs.includes(slug)
+      ? "scale-90"
+      : "scale-100";
+
+  const sharesTotal = Number(hlt.shares_total) || 0;
+  const sharesSold = Number(hlt.shares_sold) || 0;
+  const pct =
+    sharesTotal > 0 ? Math.round((sharesSold / sharesTotal) * 100) : 0;
+
+  return {
+    id: slug,
+    location,
+    trainerContact,
+    pedigree: hlt.pedigree || pedigreeParts.join(" / "),
+    price: formatLotPrice(hlt.price_per_share_nzd),
+    availability: `${pct}% subscribed`,
+    is_active: status === "listed",
+    status,
+    imageScale,
+    horse: {
+      name: hlt.horse_name || slug,
+      image_url: hlt.image_path || "/images/content/horses/placeholder.png",
+      story: hlt.story || "",
+    },
+    stats: {
+      wins: String(hlt.wins ?? hlt.stats?.wins ?? "0"),
+      placed: String(hlt.placed ?? hlt.stats?.placed ?? "0"),
+      nextUp: hlt.next_up || hlt.stats?.next_up || "TBD",
+    },
+  };
+}
+
 export default async function MarketplacePage() {
-  // Read from local JSON (synced from Google Sheets via replay script)
-  const campaigns: Campaign[] = (hltsData as any[])
-    .filter((hlt) => hlt.marketplace_visible === true || hlt.marketplace_visible === "TRUE")
-    .map((hlt) => {
-      const location = `${(hlt.trainer_location || "Matamata NZ").toUpperCase().replace(/,?\s*NZ$/, "")} · ${(hlt.trainer_stable || "Wexford Stables").toUpperCase()}`;
-      const trainerContact = hlt.trainer_contact_name || "";
-      const sex = hlt.sex || (hlt as any).horse_sex || "";
-      const colour = hlt.colour || (hlt as any).horse_colour || "";
-      const sire = hlt.sire_name || (hlt as any).horse_sire_name || "";
-      const dam = hlt.dam_name || (hlt as any).horse_dam_name || "";
-      const pedigreeParts = [sex, colour, sire && dam ? `${sire} x ${dam}` : sire || dam].filter(Boolean);
-      // Standing portrait images need more scale to fill the card
-      const portraitSlugs = ["hottathanafantasy", "i-stole-a-manolo"];
-      const smallSlugs = ["prudentia"];
-      const imageScale = portraitSlugs.includes(hlt.horse_slug) ? "scale-110" : smallSlugs.includes(hlt.horse_slug) ? "scale-90" : "scale-100";
-      return {
-        id: hlt.horse_slug || hlt.id,
-        location,
-        trainerContact,
-        pedigree: hlt.pedigree || pedigreeParts.join(" / "),
-        price: `$${Number(hlt.price_per_share_nzd || 1500).toLocaleString()} NZD`,
-        availability: `${Math.round((Number(hlt.shares_sold) / Number(hlt.shares_total)) * 100)}% subscribed`,
-        is_active: hlt.listing_status === "active",
-        status: getCampaignStatus(hlt),
-        imageScale,
-        horse: {
-          name: hlt.horse_name || hlt.id,
-          image_url: hlt.image_path || "/images/content/horses/placeholder.png",
-          story: hlt.story || "",
-        },
-        stats: {
-          wins: hlt.wins || hlt.stats?.wins || "0",
-          placed: hlt.placed || hlt.stats?.placed || "0",
-          nextUp: hlt.next_up || hlt.stats?.next_up || "TBD",
-        },
-      };
-    });
+  const source = await loadMarketplaceSource();
+  const campaigns: Campaign[] = source
+    .map(mapToCampaign)
+    .filter((c) => c.id && isOnWebsite(c.status));
 
   return (
     <>
