@@ -1,8 +1,9 @@
 # 02_website — Progress (Diary)
 
-**Last updated:** 2026-07-13  
+**Last updated:** 2026-07-13 (/end)  
 **Current phase:** Manolo controlled payment trial  
-**Money:** `PURCHASES_ENABLED` unset (kill-switch OFF)
+**Money:** `PURCHASES_ENABLED` unset (kill-switch OFF)  
+**Blockers:** Payment E2E not yet run (intentional)
 
 > ⛔ **Not the “what’s next” file.** This is history.  
 > **Boot:** [`../00_START_HERE.md`](../00_START_HERE.md) → [`../relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  

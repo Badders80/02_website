@@ -6,8 +6,8 @@
 **Git remote:** `Badders80/02_website` · Vercel project `evolution-3-0`
 
 > **This is the map** — what the system is and the rules.  
-> **Boot agents from:** [`relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  
-> **Diary:** [PROGRESS.md](PROGRESS.md)
+> **Boot agents from:** [`00_START_HERE.md`](../00_START_HERE.md) → [`relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  
+> **Diary:** [PROGRESS.md](PROGRESS.md) · daily log: monorepo `docs/logs/2026-07-13.md`
 
 ---
 
