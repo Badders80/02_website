@@ -70,16 +70,17 @@ function PedigreePill({
   const isEmpty = parsed.name === "—";
 
   return (
-    <div className="relative flex flex-col items-center justify-center shrink-0">
+    <div className="relative z-10 flex w-full flex-col items-center justify-center">
+      {/* Opaque fill so connector borders never bleed through the pill */}
       <div
-        className={`rounded-full border text-center transition duration-300 flex flex-col justify-center items-center ${
+        className={`w-full rounded-full border text-center transition duration-300 flex flex-col justify-center items-center ${
           highlight
-            ? "border-[#d4a964]/35 bg-[#d4a964]/10 shadow-[0_0_20px_rgba(212,169,100,0.08)] px-4 h-[42px] min-w-[110px] max-w-[155px]"
+            ? "border-[#d4a964]/40 bg-[#14110c] shadow-[0_0_20px_rgba(212,169,100,0.08)] px-3 h-[42px]"
             : isEmpty
-              ? "border-white/[0.03] bg-white/[0.01] opacity-35 h-[36px] px-3 min-w-[100px]"
+              ? "border-white/[0.04] bg-[#0c0c0c] opacity-40 h-[36px] px-2"
               : muted
-                ? "border-white/[0.06] bg-white/[0.02] opacity-65 hover:border-white/[0.12] hover:opacity-85 px-2.5 h-[34px] min-w-[95px] max-w-[135px]"
-                : "border-white/[0.1] bg-white/[0.04] hover:border-white/[0.16] hover:bg-white/[0.06] px-3.5 h-[38px] min-w-[110px] max-w-[150px]"
+                ? "border-white/[0.08] bg-[#0e0e0e] opacity-75 hover:border-white/[0.14] hover:opacity-90 px-2 h-[34px]"
+                : "border-white/[0.12] bg-[#111111] hover:border-white/[0.18] hover:bg-[#141414] px-2.5 h-[38px]"
         }`}
       >
         <div
@@ -113,14 +114,16 @@ function PedigreePill({
   );
 }
 
-/** Horizontal stubs from pill centre to cell edges — meet connector borders flush. */
+/**
+ * Horse node only — no line stubs.
+ * Lines live exclusively in the fork columns so they never cross pill faces.
+ * Full-width pills sit flush against adjacent connector columns.
+ */
 function NodeCell({
   fullName,
   label,
   highlight = false,
   muted = false,
-  lineIn = false,
-  lineOut = false,
   className = "",
   sublabel,
 }: {
@@ -128,20 +131,12 @@ function NodeCell({
   label?: string;
   highlight?: boolean;
   muted?: boolean;
-  lineIn?: boolean;
-  lineOut?: boolean;
   className?: string;
   sublabel?: string;
 }) {
   return (
-    <div className={`relative flex items-center justify-center min-w-0 ${className}`}>
-      {lineIn && (
-        <div className="absolute left-0 right-1/2 top-1/2 h-px bg-white/10 pointer-events-none" aria-hidden />
-      )}
-      {lineOut && (
-        <div className="absolute left-1/2 right-0 top-1/2 h-px bg-white/10 pointer-events-none" aria-hidden />
-      )}
-      <div className="relative z-10">
+    <div className={`relative z-10 flex w-full min-w-0 items-center justify-center ${className}`}>
+      <div className="relative w-full">
         <PedigreePill fullName={fullName} label={label} highlight={highlight} muted={muted} />
         {sublabel && (
           <span className="absolute top-[100%] left-1/2 -translate-x-1/2 text-[9px] text-white/35 font-light capitalize mt-1.5 whitespace-nowrap">
@@ -153,21 +148,21 @@ function NodeCell({
   );
 }
 
-/** Top half of a binary fork: spine + arm to upper child (border-share). */
+/** Top half of a binary fork in a spacing column only (border-share). */
 function ForkTop({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`box-border h-1/2 self-end w-full border-l border-t border-white/10 ${className}`}
+      className={`box-border h-1/2 w-full self-end border-l border-t border-white/15 ${className}`}
       aria-hidden
     />
   );
 }
 
-/** Bottom half of a binary fork: spine + arm to lower child (border-share). */
+/** Bottom half of a binary fork in a spacing column only (border-share). */
 function ForkBottom({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`box-border h-1/2 self-start w-full border-l border-b border-white/10 ${className}`}
+      className={`box-border h-1/2 w-full self-start border-l border-b border-white/15 ${className}`}
       aria-hidden
     />
   );
@@ -228,80 +223,38 @@ export function PedigreeTable({
       {view === "tree" && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
           {/*
-            4-gen CSS grid pedigree: 4 horse cols + 3 fork cols, 8 equal rows.
-            Connectors use border-share (no absolute heights) so lines never drift.
+            4-gen grid: horse cols (1/3/5/7) + fork-only cols (2/4/6).
+            Lines never enter horse cells — pills are full-width + opaque, flush to forks.
           */}
           <div
             className="grid min-w-fit py-8 items-stretch
-              grid-cols-[minmax(118px,150px)_28px_minmax(110px,145px)_24px_minmax(105px,140px)_20px_minmax(95px,130px)]
+              grid-cols-[minmax(120px,155px)_36px_minmax(112px,148px)_32px_minmax(108px,142px)_28px_minmax(100px,132px)]
               grid-rows-[repeat(8,48px)]"
           >
-            {/* Gen 1: subject horse */}
             <NodeCell
               fullName={tree.horse}
               highlight
-              lineOut
               sublabel={horseLabel}
               className="col-start-1 row-start-1 row-span-8"
             />
 
-            {/* Fork: horse → sire / dam */}
+            {/* Fork cols only — no lines under pills */}
             <ForkTop className="col-start-2 row-start-1 row-span-4" />
             <ForkBottom className="col-start-2 row-start-5 row-span-4" />
 
-            {/* Gen 2: parents */}
-            <NodeCell
-              fullName={tree.sire}
-              label="Sire"
-              lineIn
-              lineOut
-              className="col-start-3 row-start-1 row-span-4"
-            />
-            <NodeCell
-              fullName={tree.dam}
-              label="Dam"
-              lineIn
-              lineOut
-              className="col-start-3 row-start-5 row-span-4"
-            />
+            <NodeCell fullName={tree.sire} label="Sire" className="col-start-3 row-start-1 row-span-4" />
+            <NodeCell fullName={tree.dam} label="Dam" className="col-start-3 row-start-5 row-span-4" />
 
-            {/* Fork: parents → grandparents */}
             <ForkTop className="col-start-4 row-start-1 row-span-2" />
             <ForkBottom className="col-start-4 row-start-3 row-span-2" />
             <ForkTop className="col-start-4 row-start-5 row-span-2" />
             <ForkBottom className="col-start-4 row-start-7 row-span-2" />
 
-            {/* Gen 3: grandparents */}
-            <NodeCell
-              fullName={tree.sireSire}
-              label="Sire's Sire"
-              lineIn
-              lineOut
-              className="col-start-5 row-start-1 row-span-2"
-            />
-            <NodeCell
-              fullName={tree.sireDam}
-              label="Sire's Dam"
-              lineIn
-              lineOut
-              className="col-start-5 row-start-3 row-span-2"
-            />
-            <NodeCell
-              fullName={tree.damSire}
-              label="Dam's Sire"
-              lineIn
-              lineOut
-              className="col-start-5 row-start-5 row-span-2"
-            />
-            <NodeCell
-              fullName={tree.damDam}
-              label="Dam's Dam"
-              lineIn
-              lineOut
-              className="col-start-5 row-start-7 row-span-2"
-            />
+            <NodeCell fullName={tree.sireSire} label="Sire's Sire" className="col-start-5 row-start-1 row-span-2" />
+            <NodeCell fullName={tree.sireDam} label="Sire's Dam" className="col-start-5 row-start-3 row-span-2" />
+            <NodeCell fullName={tree.damSire} label="Dam's Sire" className="col-start-5 row-start-5 row-span-2" />
+            <NodeCell fullName={tree.damDam} label="Dam's Dam" className="col-start-5 row-start-7 row-span-2" />
 
-            {/* Fork: grandparents → great-grandparents */}
             <ForkTop className="col-start-6 row-start-1" />
             <ForkBottom className="col-start-6 row-start-2" />
             <ForkTop className="col-start-6 row-start-3" />
@@ -311,15 +264,14 @@ export function PedigreeTable({
             <ForkTop className="col-start-6 row-start-7" />
             <ForkBottom className="col-start-6 row-start-8" />
 
-            {/* Gen 4: great-grandparents */}
-            <NodeCell fullName={tree.sireSireSire} muted lineIn className="col-start-7 row-start-1" />
-            <NodeCell fullName={tree.sireSireDam} muted lineIn className="col-start-7 row-start-2" />
-            <NodeCell fullName={tree.sireDamSire} muted lineIn className="col-start-7 row-start-3" />
-            <NodeCell fullName={tree.sireDamDam} muted lineIn className="col-start-7 row-start-4" />
-            <NodeCell fullName={tree.damSireSire} muted lineIn className="col-start-7 row-start-5" />
-            <NodeCell fullName={tree.damSireDam} muted lineIn className="col-start-7 row-start-6" />
-            <NodeCell fullName={tree.damDamSire} muted lineIn className="col-start-7 row-start-7" />
-            <NodeCell fullName={tree.damDamDam} muted lineIn className="col-start-7 row-start-8" />
+            <NodeCell fullName={tree.sireSireSire} muted className="col-start-7 row-start-1" />
+            <NodeCell fullName={tree.sireSireDam} muted className="col-start-7 row-start-2" />
+            <NodeCell fullName={tree.sireDamSire} muted className="col-start-7 row-start-3" />
+            <NodeCell fullName={tree.sireDamDam} muted className="col-start-7 row-start-4" />
+            <NodeCell fullName={tree.damSireSire} muted className="col-start-7 row-start-5" />
+            <NodeCell fullName={tree.damSireDam} muted className="col-start-7 row-start-6" />
+            <NodeCell fullName={tree.damDamSire} muted className="col-start-7 row-start-7" />
+            <NodeCell fullName={tree.damDamDam} muted className="col-start-7 row-start-8" />
           </div>
 
           <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
