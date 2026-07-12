@@ -64,19 +64,33 @@ const TIER_WIDTH_PX: Record<NodeTier, number> = {
 };
 
 /**
- * Fixed-width opaque pill. Labels sit absolute below so they never shift
- * the geometric centre used by stems / forks.
+ * Pill + optional stems.
+ * Stems are anchored to the pill face (top: 50% of .node) — SIRE/DAM labels
+ * sit under the pill in flow and never move the stem mid-line.
  */
 function PedigreeNode({
   fullName,
   tier,
   legend,
   sublabel,
+  stemIn = false,
+  stemOut = false,
+  goldStemIn = false,
+  goldStemOut = false,
+  /** Stem length into the adjacent fork track (px). */
+  stemInLen = 22,
+  stemOutLen = 22,
 }: {
   fullName: string;
   tier: NodeTier;
   legend?: string;
   sublabel?: string;
+  stemIn?: boolean;
+  stemOut?: boolean;
+  goldStemIn?: boolean;
+  goldStemOut?: boolean;
+  stemInLen?: number;
+  stemOutLen?: number;
 }) {
   const parsed = parseHorseName(fullName);
   const isEmpty = parsed.name === "—";
@@ -85,11 +99,15 @@ function PedigreeNode({
       ? `${parsed.country} ${parsed.year}`
       : parsed.country || parsed.year;
   const w = TIER_WIDTH_PX[tier];
+  const stemInCls = goldStemIn ? "bg-[#c5a059]/30" : "bg-white/15";
+  const stemOutCls = goldStemOut ? "bg-[#c5a059]/30" : "bg-white/15";
 
   return (
+    /* Outer width only — height = pill only so cell centering = pill mid = fork mid */
     <div className="relative z-10 shrink-0" style={{ width: w }}>
+      {/* .node — stems lock to THIS box's vertical centre (not the legend) */}
       <div
-        className={`box-border flex w-full flex-col items-center justify-center rounded-[20px] border px-3 py-2 text-center transition-[border-color] duration-200 ${
+        className={`relative box-border flex w-full flex-col items-center justify-center rounded-[20px] border px-3 py-2 text-center transition-[border-color] duration-200 ${
           tier === "subject"
             ? "min-h-[48px] border-[#c5a059]/40 bg-[#14110c] shadow-[0_0_18px_rgba(197,160,89,0.08)]"
             : isEmpty
@@ -101,6 +119,20 @@ function PedigreeNode({
                   : "min-h-[40px] border-white/[0.08] bg-[#0e0e0e] opacity-80 hover:border-white/25 hover:opacity-95"
         }`}
       >
+        {stemIn && (
+          <div
+            className={`pointer-events-none absolute top-1/2 z-[1] h-px -translate-y-1/2 ${stemInCls}`}
+            style={{ right: "100%", width: stemInLen }}
+            aria-hidden
+          />
+        )}
+        {stemOut && (
+          <div
+            className={`pointer-events-none absolute top-1/2 z-[1] h-px -translate-y-1/2 ${stemOutCls}`}
+            style={{ left: "100%", width: stemOutLen }}
+            aria-hidden
+          />
+        )}
         <span
           className={`block w-full whitespace-normal break-words leading-snug line-clamp-2 ${
             tier === "subject"
@@ -125,7 +157,7 @@ function PedigreeNode({
           </span>
         )}
       </div>
-      {/* Absolute — does not affect pill/stem vertical centre */}
+      {/* Out of flow — cannot shift pill or stem mid-line */}
       {legend && !isEmpty && (
         <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[9px] font-light uppercase tracking-[0.08em] text-white/30">
           {legend}
@@ -141,9 +173,7 @@ function PedigreeNode({
 }
 
 /**
- * Grid cell: pill dead-centre; stems dock to pill mid (top 50% of cell)
- * and run only in the gap to the cell edge — never under the fill.
- * Fork T-junctions land on the same mid-line.
+ * Grid cell: centres the node stack. Stems live on the pill, not the cell.
  */
 function NodeCell({
   fullName,
@@ -154,6 +184,8 @@ function NodeCell({
   stemOut = false,
   goldStemIn = false,
   goldStemOut = false,
+  stemInLen,
+  stemOutLen,
   className = "",
 }: {
   fullName: string;
@@ -164,31 +196,26 @@ function NodeCell({
   stemOut?: boolean;
   goldStemIn?: boolean;
   goldStemOut?: boolean;
+  stemInLen?: number;
+  stemOutLen?: number;
   className?: string;
 }) {
-  const stemInCls = goldStemIn ? "bg-[#c5a059]/30" : "bg-white/15";
-  const stemOutCls = goldStemOut ? "bg-[#c5a059]/30" : "bg-white/15";
-  const half = TIER_WIDTH_PX[tier] / 2;
-
   return (
     <div
       className={`relative z-10 flex h-full min-w-0 w-full items-center justify-center ${className}`}
     >
-      {stemIn && (
-        <div
-          className={`pointer-events-none absolute left-0 top-1/2 h-px -translate-y-px ${stemInCls}`}
-          style={{ width: `calc(50% - ${half}px)` }}
-          aria-hidden
-        />
-      )}
-      {stemOut && (
-        <div
-          className={`pointer-events-none absolute right-0 top-1/2 h-px -translate-y-px ${stemOutCls}`}
-          style={{ width: `calc(50% - ${half}px)` }}
-          aria-hidden
-        />
-      )}
-      <PedigreeNode fullName={fullName} tier={tier} legend={legend} sublabel={sublabel} />
+      <PedigreeNode
+        fullName={fullName}
+        tier={tier}
+        legend={legend}
+        sublabel={sublabel}
+        stemIn={stemIn}
+        stemOut={stemOut}
+        goldStemIn={goldStemIn}
+        goldStemOut={goldStemOut}
+        stemInLen={stemInLen}
+        stemOutLen={stemOutLen}
+      />
     </div>
   );
 }
@@ -298,6 +325,7 @@ export function PedigreeTableSandbox({
               sublabel={horseLabel}
               stemOut
               goldStemOut
+              stemOutLen={28}
               className="col-start-1 row-start-1 row-span-8"
             />
 
@@ -312,6 +340,8 @@ export function PedigreeTableSandbox({
               stemIn
               stemOut
               goldStemIn
+              stemInLen={28}
+              stemOutLen={24}
               className="col-start-3 row-start-1 row-span-4"
             />
             <NodeCell
@@ -321,6 +351,8 @@ export function PedigreeTableSandbox({
               stemIn
               stemOut
               goldStemIn
+              stemInLen={28}
+              stemOutLen={24}
               className="col-start-3 row-start-5 row-span-4"
             />
 
