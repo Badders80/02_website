@@ -220,37 +220,28 @@ function NodeCell({
   );
 }
 
-/** Top half of a binary fork (border-share) — spacing column only. */
-function ForkTop({
+/**
+ * Binary fork in a spacing column.
+ * Spans both child row-groups; spine runs 25%→75% (pill centres), not 0%→100%.
+ * Horizontal arms dock at those same midpoints.
+ */
+function ConnectorFork({
   className = "",
   gold = false,
 }: {
   className?: string;
   gold?: boolean;
 }) {
-  const border = gold ? "border-[#c5a059]/30" : "border-white/15";
+  const line = gold ? "bg-[#c5a059]/30" : "bg-white/15";
   return (
-    <div
-      className={`box-border h-1/2 w-full self-end border-l border-t ${border} ${className}`}
-      aria-hidden
-    />
-  );
-}
-
-/** Bottom half of a binary fork (border-share) — spacing column only. */
-function ForkBottom({
-  className = "",
-  gold = false,
-}: {
-  className?: string;
-  gold?: boolean;
-}) {
-  const border = gold ? "border-[#c5a059]/30" : "border-white/15";
-  return (
-    <div
-      className={`box-border h-1/2 w-full self-start border-l border-b ${border} ${className}`}
-      aria-hidden
-    />
+    <div className={`relative h-full w-full ${className}`} aria-hidden>
+      {/* Vertical spine — pill mid of top child → pill mid of bottom child */}
+      <div className={`absolute left-0 top-[25%] bottom-[25%] w-px ${line}`} />
+      {/* Top arm (into upper child mid) */}
+      <div className={`absolute left-0 right-0 top-[25%] h-px ${line}`} />
+      {/* Bottom arm (into lower child mid) */}
+      <div className={`absolute left-0 right-0 top-[75%] h-px ${line}`} />
+    </div>
   );
 }
 
@@ -310,9 +301,9 @@ export function PedigreeTableSandbox({
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
           {/*
             4-gen editorial grid:
-            - horse tracks fixed, pills centered (not stretched)
-            - fork tracks only draw lines (border-share)
-            - edge stems live in node gutters — never under pill fill
+            - horse tracks: fixed pills, centred
+            - fork tracks: single ConnectorFork (spine 25%→75% = pill mids)
+            - stems on .node face — never under fill
           */}
           <div
             className="grid min-w-fit justify-items-stretch py-10 items-stretch
@@ -329,9 +320,8 @@ export function PedigreeTableSandbox({
               className="col-start-1 row-start-1 row-span-8"
             />
 
-            {/* Gen 1 fork — gold accent root branch */}
-            <ForkTop gold className="col-start-2 row-start-1 row-span-4" />
-            <ForkBottom gold className="col-start-2 row-start-5 row-span-4" />
+            {/* Gen 1: full height, sire mid @ 25%, dam mid @ 75% */}
+            <ConnectorFork gold className="col-start-2 row-start-1 row-span-8" />
 
             <NodeCell
               fullName={tree.sire}
@@ -356,24 +346,20 @@ export function PedigreeTableSandbox({
               className="col-start-3 row-start-5 row-span-4"
             />
 
-            <ForkTop className="col-start-4 row-start-1 row-span-2" />
-            <ForkBottom className="col-start-4 row-start-3 row-span-2" />
-            <ForkTop className="col-start-4 row-start-5 row-span-2" />
-            <ForkBottom className="col-start-4 row-start-7 row-span-2" />
+            {/* Gen 2: each pair spans 4 rows → centres at 25% / 75% */}
+            <ConnectorFork className="col-start-4 row-start-1 row-span-4" />
+            <ConnectorFork className="col-start-4 row-start-5 row-span-4" />
 
             <NodeCell fullName={tree.sireSire} tier="grand" stemIn stemOut className="col-start-5 row-start-1 row-span-2" />
             <NodeCell fullName={tree.sireDam} tier="grand" stemIn stemOut className="col-start-5 row-start-3 row-span-2" />
             <NodeCell fullName={tree.damSire} tier="grand" stemIn stemOut className="col-start-5 row-start-5 row-span-2" />
             <NodeCell fullName={tree.damDam} tier="grand" stemIn stemOut className="col-start-5 row-start-7 row-span-2" />
 
-            <ForkTop className="col-start-6 row-start-1" />
-            <ForkBottom className="col-start-6 row-start-2" />
-            <ForkTop className="col-start-6 row-start-3" />
-            <ForkBottom className="col-start-6 row-start-4" />
-            <ForkTop className="col-start-6 row-start-5" />
-            <ForkBottom className="col-start-6 row-start-6" />
-            <ForkTop className="col-start-6 row-start-7" />
-            <ForkBottom className="col-start-6 row-start-8" />
+            {/* Gen 3: each pair spans 2 rows → centres at 25% / 75% */}
+            <ConnectorFork className="col-start-6 row-start-1 row-span-2" />
+            <ConnectorFork className="col-start-6 row-start-3 row-span-2" />
+            <ConnectorFork className="col-start-6 row-start-5 row-span-2" />
+            <ConnectorFork className="col-start-6 row-start-7 row-span-2" />
 
             <NodeCell fullName={tree.sireSireSire} tier="great" stemIn className="col-start-7 row-start-1" />
             <NodeCell fullName={tree.sireSireDam} tier="great" stemIn className="col-start-7 row-start-2" />
