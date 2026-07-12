@@ -23,9 +23,10 @@
 
 | Date | Focus | Outcome | Notes |
 |------|-------|---------|-------|
-| 2026-07-13 | Live ops + pricing + lifecycle + Manolo stage | **Deployed** | Commits `0f53d2a`, `4a0002f`, `287971e`. Manolo listed; kill-switch off; health green. |
+| 2026-07-13 | Session wrap | **Notes** | Trial still next; boot hardened; islands have continue+STATE |
+| 2026-07-13 | Live ops + pricing + lifecycle + Manolo stage | **Deployed** | `0f53d2a`…`287971e`. Manolo listed; kill-switch off; health green. |
+| 2026-07-13 | Session protocol all islands + boot harden | **Docs** | continue/STATE; `00_START_HERE`; GAME_PLAN non-boot |
 | 2026-07-12 | Hard-close purchases | **Deployed** | `bfa4929` — PURCHASES_ENABLED gate |
-| 2026-07-13 | Session log protocol lock-in | **Docs** | AGENTS boot, BUILD_SUMMARY/PROGRESS refreshed |
 | 2026-06-17 | Go-live + OAuth (historical) | Complete | Pre-reframe; WIF era — **obsolete as current status** |
 | 2026-06-12 | Ownership applications | Complete | Historical |
 | 2026-06-11 | GCP/WIF infra | Complete | **GCP path retired** |
