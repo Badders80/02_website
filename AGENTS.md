@@ -7,20 +7,28 @@
 
 ## Agent boot (required — 2 files only)
 
+**When the user asks “what’s next”, “status”, or “look at 02_website”:**
+
+1. **First reads must be** (in order, before ListDir sprawl or GAME_PLAN):
+   - [`relay/continue.md`](relay/continue.md)
+   - [`../docs/next-session-notes.md`](../docs/next-session-notes.md)
+2. Answer from those. Execute **Next action** if asked to proceed.
+3. Only then open E2E runbook / BUILD_SUMMARY / code if the task needs it.
+
+Shortcut file: [`00_START_HERE.md`](00_START_HERE.md) (same rule).
+
 | Order | File | Role |
 |-------|------|------|
 | **1** | [`relay/continue.md`](relay/continue.md) | **Next action** — overwrite every session wrap |
 | **2** | [`../docs/next-session-notes.md`](../docs/next-session-notes.md) | **Current truth** — status, numbers, kill-switch, trial |
 
-Then execute **Next action**. Do not re-derive state from chat or stale June docs.
-
 | Optional | When |
 |----------|------|
 | [`docs/BUILD_SUMMARY.md`](docs/BUILD_SUMMARY.md) | Architecture / map / rules |
-| [`docs/PROGRESS.md`](docs/PROGRESS.md) | Session diary table |
-| [`relay/*-e2e-*.md`](relay/) | Runbooks linked from continue |
+| [`docs/PROGRESS.md`](docs/PROGRESS.md) | Session diary (history only — not “what’s next”) |
+| [`relay/*-e2e-*.md`](relay/) | Runbooks **linked from continue** |
 
-**Do not boot from:** old SESSION_BRIEF WIF docs, sandbox HTML, or chat memory alone.
+**Do not boot from:** `GAME_PLAN.md`, June SESSION_BRIEF/WIF docs, sandbox HTML, parent monorepo listing, or chat memory alone.
 
 ### Session wrap (30s ritual)
 

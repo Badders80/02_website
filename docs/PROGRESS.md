@@ -4,7 +4,8 @@
 **Current phase:** Manolo controlled payment trial  
 **Money:** `PURCHASES_ENABLED` unset (kill-switch OFF)
 
-> **Boot:** [`../relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  
+> ⛔ **Not the “what’s next” file.** This is history.  
+> **Boot:** [`../00_START_HERE.md`](../00_START_HERE.md) → [`../relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  
 > **Map:** [BUILD_SUMMARY.md](BUILD_SUMMARY.md)
 
 ---

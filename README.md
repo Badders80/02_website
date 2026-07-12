@@ -8,27 +8,31 @@
 
 ## Agent / session boot (required)
 
-**Anyone working in this folder — start here. Do not re-derive state from chat.**
+> **STOP.** Before listing the repo or opening `GAME_PLAN.md` / old docs:  
+> read **only** the two files below, then answer “what’s next.”
 
 | Order | File | Role |
 |-------|------|------|
+| **0** | [`00_START_HERE.md`](00_START_HERE.md) | Same rule, hard to miss |
 | **1** | [`relay/continue.md`](relay/continue.md) | Next action only |
 | **2** | [`../docs/next-session-notes.md`](../docs/next-session-notes.md) | Current truth (kill-switch, Manolo, numbers) |
 
 **Copy-paste:**
 
 ```text
-Read relay/continue.md and ../docs/next-session-notes.md. What's next?
+Read 02_website/00_START_HERE.md (or relay/continue.md + docs/next-session-notes.md). What's next?
 ```
 
-| Also | When |
-|------|------|
-| [`AGENTS.md`](AGENTS.md) | Laws + boot + do-not list |
-| [`docs/BUILD_SUMMARY.md`](docs/BUILD_SUMMARY.md) | Architecture map |
-| [`docs/PROGRESS.md`](docs/PROGRESS.md) | Session diary |
-| [`../docs/SESSION_PROTOCOL.md`](../docs/SESSION_PROTOCOL.md) | Monorepo wrap ritual |
+**Banned for boot:** `GAME_PLAN.md`, June WIF/SESSION_BRIEF, random `docs/` archaeology, parent `evo_01` tree walk.
 
-**End of session:** overwrite `relay/continue.md` + patch `../docs/next-session-notes.md` (30s). See SESSION_PROTOCOL.
+| Later | When |
+|------|------|
+| [`AGENTS.md`](AGENTS.md) | Laws |
+| [`docs/BUILD_SUMMARY.md`](docs/BUILD_SUMMARY.md) | Architecture map |
+| [`docs/PROGRESS.md`](docs/PROGRESS.md) | Diary history only |
+| [`../docs/SESSION_PROTOCOL.md`](../docs/SESSION_PROTOCOL.md) | Wrap ritual |
+
+**End of session:** *update the end of session notes* → overwrite `relay/continue.md` + patch `../docs/next-session-notes.md`.
 
 ---
 

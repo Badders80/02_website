@@ -1,10 +1,17 @@
 # Evolution Stables — Website Game Plan
 
+> ⛔ **NOT the boot file for “what’s next”.**  
+> This plan is **historical** (Phase 0 framing).  
+> **Agents: stop.** Read instead:  
+> 1. [`relay/continue.md`](relay/continue.md)  
+> 2. [`../docs/next-session-notes.md`](../docs/next-session-notes.md)  
+> Or open [`00_START_HERE.md`](00_START_HERE.md).
+
 **Track:** Frontend (investor/user-facing)  
 **Repository:** `02_website/`  
 **Deployment:** Vercel  
-**Timeline:** 6-8 weeks  
-**Status:** 🟢 Phase 0 — Asset Extraction
+**Timeline:** 6-8 weeks (original estimate)  
+**Status:** ⚠️ SUPERSEDED for current phase — see `relay/continue.md` (Manolo payment trial)
 
 ---
 

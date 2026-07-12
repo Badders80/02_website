@@ -1,7 +1,8 @@
 # Continue — Manolo payment trial
 
 **Boot order:** this file → `../../docs/next-session-notes.md` → execute Next action.  
-**Protocol:** `../../docs/SESSION_PROTOCOL.md`
+**Do not** open `GAME_PLAN.md` or list the monorepo first — those are not boot sources.  
+**Protocol:** `../../docs/SESSION_PROTOCOL.md` · pointer: `../00_START_HERE.md`
 
 ## Last action
 
