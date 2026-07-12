@@ -28,6 +28,8 @@ interface PedigreeTableSandboxProps {
   pedigreeData?: PedigreeData | null;
 }
 
+type NodeTier = "subject" | "parent" | "grand" | "great";
+
 function formatFoalingDate(dateStr?: string): string | null {
   if (!dateStr) return null;
   const date = new Date(dateStr);
@@ -37,77 +39,98 @@ function formatFoalingDate(dateStr?: string): string | null {
 
 function parseHorseName(fullName: string): { name: string; country: string; year: string } {
   if (!fullName || fullName === "—") return { name: "—", country: "", year: "" };
-  
-  // Strip " (by ...)" from the name
+
   let cleanName = fullName.replace(/\s*\(by\s+[^)]+\)/i, "");
-  
-  // Match name, country in parentheses, and optional year + optional suffix (like nsb)
+
   const match = cleanName.match(/^(.+?)\s*\(([A-Z]{2,4})\)(?:\s+(\d{4})(?:\s+[a-zA-Z]+)?)?$/i);
   if (match) {
     return { name: match[1].trim(), country: match[2], year: match[3] || "" };
   }
-  
+
   const match2 = cleanName.match(/^(.+?)\s+(\d{4})(?:\s+[a-zA-Z]+)?$/i);
   if (match2) {
     return { name: match2[1].trim(), country: "", year: match2[2] };
   }
-  
+
   return { name: cleanName.trim(), country: "", year: "" };
 }
 
-function PedigreePill({
+const TIER_WIDTH: Record<NodeTier, string> = {
+  subject: "w-[152px]",
+  parent: "w-[142px]",
+  grand: "w-[132px]",
+  great: "w-[122px]",
+};
+
+/**
+ * Fixed-width opaque pill. Name wraps (2 lines) — never truncates mid-word as a single ellipsis.
+ * Stems live outside this surface (in NodeCell flex gutters).
+ */
+function PedigreeNode({
   fullName,
-  label,
-  highlight = false,
-  muted = false,
+  tier,
+  legend,
+  sublabel,
 }: {
   fullName: string;
-  label?: string;
-  highlight?: boolean;
-  muted?: boolean;
+  tier: NodeTier;
+  legend?: string;
+  sublabel?: string;
 }) {
   const parsed = parseHorseName(fullName);
   const isEmpty = parsed.name === "—";
+  const meta =
+    parsed.country && parsed.year
+      ? `${parsed.country} ${parsed.year}`
+      : parsed.country || parsed.year;
 
   return (
-    <div className="relative z-10 flex w-full flex-col items-center justify-center">
-      {/* Opaque fill so connector borders never bleed through the pill */}
+    <div className={`relative z-10 flex shrink-0 flex-col items-center ${TIER_WIDTH[tier]}`}>
       <div
-        className={`w-full rounded-full border text-center transition duration-300 flex flex-col justify-center items-center ${
-          highlight
-            ? "border-[#d4a964]/40 bg-[#14110c] shadow-[0_0_20px_rgba(212,169,100,0.08)] px-3 h-[42px]"
+        className={`box-border flex w-full flex-col items-center justify-center rounded-[20px] border px-3 py-2 text-center transition-[border-color] duration-200 ${
+          tier === "subject"
+            ? "min-h-[48px] border-[#c5a059]/40 bg-[#14110c] shadow-[0_0_18px_rgba(197,160,89,0.08)]"
             : isEmpty
-              ? "border-white/[0.04] bg-[#0c0c0c] opacity-40 h-[36px] px-2"
-              : muted
-                ? "border-white/[0.08] bg-[#0e0e0e] opacity-75 hover:border-white/[0.14] hover:opacity-90 px-2 h-[34px]"
-                : "border-white/[0.12] bg-[#111111] hover:border-white/[0.18] hover:bg-[#141414] px-2.5 h-[38px]"
+              ? "min-h-[40px] border-white/[0.04] bg-[#0c0c0c] opacity-40"
+              : tier === "parent"
+                ? "min-h-[46px] border-white/12 bg-[#111] hover:border-white/35"
+                : tier === "grand"
+                  ? "min-h-[44px] border-white/10 bg-[#111] hover:border-white/30"
+                  : "min-h-[40px] border-white/[0.08] bg-[#0e0e0e] opacity-80 hover:border-white/25 hover:opacity-95"
         }`}
       >
-        <div
-          className={`font-medium leading-tight truncate w-full ${
-            highlight
-              ? "text-[12px] text-white"
-              : muted
-                ? "text-[9.5px] text-white/80"
-                : "text-[11px] text-white/85"
+        <span
+          className={`block w-full whitespace-normal break-words leading-snug line-clamp-2 ${
+            tier === "subject"
+              ? "text-[13px] font-medium text-white"
+              : tier === "parent"
+                ? "text-[11px] font-medium text-white/90"
+                : tier === "grand"
+                  ? "text-[10px] font-normal text-white/80"
+                  : "text-[9.5px] font-light text-white/70"
           }`}
           title={parsed.name}
         >
           {parsed.name}
-        </div>
-        {(parsed.country || parsed.year) && (
-          <div
-            className={`text-white/40 mt-0.5 font-light tracking-wide ${
-              muted ? "text-[8px]" : "text-[9px]"
+        </span>
+        {meta && (
+          <span
+            className={`mt-0.5 block font-light tracking-wide text-white/45 ${
+              tier === "great" ? "text-[8px]" : "text-[9px]"
             }`}
           >
-            {parsed.country && parsed.year ? `${parsed.country} ${parsed.year}` : parsed.country || parsed.year}
-          </div>
+            {meta}
+          </span>
         )}
       </div>
-      {label && !isEmpty && (
-        <span className="absolute top-[100%] left-1/2 -translate-x-1/2 text-[7px] text-white/20 uppercase tracking-widest font-light mt-1 whitespace-nowrap">
-          {label}
+      {legend && !isEmpty && (
+        <span className="mt-1.5 text-[9px] uppercase tracking-[0.08em] text-white/30 font-light">
+          {legend}
+        </span>
+      )}
+      {sublabel && (
+        <span className="mt-1.5 text-[10px] font-light capitalize text-white/40 whitespace-nowrap">
+          {sublabel}
         </span>
       )}
     </div>
@@ -115,54 +138,79 @@ function PedigreePill({
 }
 
 /**
- * Horse node only — no line stubs.
- * Lines live exclusively in the fork columns so they never cross pill faces.
- * Full-width pills sit flush against adjacent connector columns.
+ * Grid cell: optional edge stems (flex gutters) + fixed pill.
+ * Stems never cross the pill face — they only fill space between cell edge and pill.
  */
 function NodeCell({
   fullName,
-  label,
-  highlight = false,
-  muted = false,
-  className = "",
+  tier,
+  legend,
   sublabel,
+  stemIn = false,
+  stemOut = false,
+  goldStemIn = false,
+  goldStemOut = false,
+  className = "",
 }: {
   fullName: string;
-  label?: string;
-  highlight?: boolean;
-  muted?: boolean;
-  className?: string;
+  tier: NodeTier;
+  legend?: string;
   sublabel?: string;
+  stemIn?: boolean;
+  stemOut?: boolean;
+  goldStemIn?: boolean;
+  goldStemOut?: boolean;
+  className?: string;
 }) {
+  const stemInCls = goldStemIn ? "bg-[#c5a059]/30" : "bg-white/15";
+  const stemOutCls = goldStemOut ? "bg-[#c5a059]/30" : "bg-white/15";
+
   return (
-    <div className={`relative z-10 flex w-full min-w-0 items-center justify-center ${className}`}>
-      <div className="relative w-full">
-        <PedigreePill fullName={fullName} label={label} highlight={highlight} muted={muted} />
-        {sublabel && (
-          <span className="absolute top-[100%] left-1/2 -translate-x-1/2 text-[9px] text-white/35 font-light capitalize mt-1.5 whitespace-nowrap">
-            {sublabel}
-          </span>
-        )}
-      </div>
+    <div className={`z-10 flex min-w-0 w-full items-center ${className}`}>
+      {stemIn ? (
+        <div className={`h-px min-w-[6px] flex-1 ${stemInCls}`} aria-hidden />
+      ) : (
+        <div className="min-w-0 flex-1" />
+      )}
+      <PedigreeNode fullName={fullName} tier={tier} legend={legend} sublabel={sublabel} />
+      {stemOut ? (
+        <div className={`h-px min-w-[6px] flex-1 ${stemOutCls}`} aria-hidden />
+      ) : (
+        <div className="min-w-0 flex-1" />
+      )}
     </div>
   );
 }
 
-/** Top half of a binary fork in a spacing column only (border-share). */
-function ForkTop({ className = "" }: { className?: string }) {
+/** Top half of a binary fork (border-share) — spacing column only. */
+function ForkTop({
+  className = "",
+  gold = false,
+}: {
+  className?: string;
+  gold?: boolean;
+}) {
+  const border = gold ? "border-[#c5a059]/30" : "border-white/15";
   return (
     <div
-      className={`box-border h-1/2 w-full self-end border-l border-t border-white/15 ${className}`}
+      className={`box-border h-1/2 w-full self-end border-l border-t ${border} ${className}`}
       aria-hidden
     />
   );
 }
 
-/** Bottom half of a binary fork in a spacing column only (border-share). */
-function ForkBottom({ className = "" }: { className?: string }) {
+/** Bottom half of a binary fork (border-share) — spacing column only. */
+function ForkBottom({
+  className = "",
+  gold = false,
+}: {
+  className?: string;
+  gold?: boolean;
+}) {
+  const border = gold ? "border-[#c5a059]/30" : "border-white/15";
   return (
     <div
-      className={`box-border h-1/2 w-full self-start border-l border-b border-white/15 ${className}`}
+      className={`box-border h-1/2 w-full self-start border-l border-b ${border} ${className}`}
       aria-hidden
     />
   );
@@ -223,36 +271,57 @@ export function PedigreeTableSandbox({
       {view === "tree" && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
           {/*
-            4-gen grid: horse cols (1/3/5/7) + fork-only cols (2/4/6).
-            Lines never enter horse cells — pills are full-width + opaque, flush to forks.
+            4-gen editorial grid:
+            - horse tracks fixed, pills centered (not stretched)
+            - fork tracks only draw lines (border-share)
+            - edge stems live in node gutters — never under pill fill
           */}
           <div
-            className="grid min-w-fit py-8 items-stretch
-              grid-cols-[minmax(120px,155px)_36px_minmax(112px,148px)_32px_minmax(108px,142px)_28px_minmax(100px,132px)]
-              grid-rows-[repeat(8,48px)]"
+            className="grid min-w-fit justify-items-stretch py-10 items-stretch
+              grid-cols-[160px_40px_150px_32px_140px_28px_128px]
+              grid-rows-[repeat(8,58px)]"
           >
             <NodeCell
               fullName={tree.horse}
-              highlight
+              tier="subject"
               sublabel={horseLabel}
+              stemOut
+              goldStemOut
               className="col-start-1 row-start-1 row-span-8"
             />
 
-            <ForkTop className="col-start-2 row-start-1 row-span-4" />
-            <ForkBottom className="col-start-2 row-start-5 row-span-4" />
+            {/* Gen 1 fork — gold accent root branch */}
+            <ForkTop gold className="col-start-2 row-start-1 row-span-4" />
+            <ForkBottom gold className="col-start-2 row-start-5 row-span-4" />
 
-            <NodeCell fullName={tree.sire} label="Sire" className="col-start-3 row-start-1 row-span-4" />
-            <NodeCell fullName={tree.dam} label="Dam" className="col-start-3 row-start-5 row-span-4" />
+            <NodeCell
+              fullName={tree.sire}
+              tier="parent"
+              legend="Sire"
+              stemIn
+              stemOut
+              goldStemIn
+              className="col-start-3 row-start-1 row-span-4"
+            />
+            <NodeCell
+              fullName={tree.dam}
+              tier="parent"
+              legend="Dam"
+              stemIn
+              stemOut
+              goldStemIn
+              className="col-start-3 row-start-5 row-span-4"
+            />
 
             <ForkTop className="col-start-4 row-start-1 row-span-2" />
             <ForkBottom className="col-start-4 row-start-3 row-span-2" />
             <ForkTop className="col-start-4 row-start-5 row-span-2" />
             <ForkBottom className="col-start-4 row-start-7 row-span-2" />
 
-            <NodeCell fullName={tree.sireSire} label="Sire's Sire" className="col-start-5 row-start-1 row-span-2" />
-            <NodeCell fullName={tree.sireDam} label="Sire's Dam" className="col-start-5 row-start-3 row-span-2" />
-            <NodeCell fullName={tree.damSire} label="Dam's Sire" className="col-start-5 row-start-5 row-span-2" />
-            <NodeCell fullName={tree.damDam} label="Dam's Dam" className="col-start-5 row-start-7 row-span-2" />
+            <NodeCell fullName={tree.sireSire} tier="grand" stemIn stemOut className="col-start-5 row-start-1 row-span-2" />
+            <NodeCell fullName={tree.sireDam} tier="grand" stemIn stemOut className="col-start-5 row-start-3 row-span-2" />
+            <NodeCell fullName={tree.damSire} tier="grand" stemIn stemOut className="col-start-5 row-start-5 row-span-2" />
+            <NodeCell fullName={tree.damDam} tier="grand" stemIn stemOut className="col-start-5 row-start-7 row-span-2" />
 
             <ForkTop className="col-start-6 row-start-1" />
             <ForkBottom className="col-start-6 row-start-2" />
@@ -263,27 +332,40 @@ export function PedigreeTableSandbox({
             <ForkTop className="col-start-6 row-start-7" />
             <ForkBottom className="col-start-6 row-start-8" />
 
-            <NodeCell fullName={tree.sireSireSire} muted className="col-start-7 row-start-1" />
-            <NodeCell fullName={tree.sireSireDam} muted className="col-start-7 row-start-2" />
-            <NodeCell fullName={tree.sireDamSire} muted className="col-start-7 row-start-3" />
-            <NodeCell fullName={tree.sireDamDam} muted className="col-start-7 row-start-4" />
-            <NodeCell fullName={tree.damSireSire} muted className="col-start-7 row-start-5" />
-            <NodeCell fullName={tree.damSireDam} muted className="col-start-7 row-start-6" />
-            <NodeCell fullName={tree.damDamSire} muted className="col-start-7 row-start-7" />
-            <NodeCell fullName={tree.damDamDam} muted className="col-start-7 row-start-8" />
+            <NodeCell fullName={tree.sireSireSire} tier="great" stemIn className="col-start-7 row-start-1" />
+            <NodeCell fullName={tree.sireSireDam} tier="great" stemIn className="col-start-7 row-start-2" />
+            <NodeCell fullName={tree.sireDamSire} tier="great" stemIn className="col-start-7 row-start-3" />
+            <NodeCell fullName={tree.sireDamDam} tier="great" stemIn className="col-start-7 row-start-4" />
+            <NodeCell fullName={tree.damSireSire} tier="great" stemIn className="col-start-7 row-start-5" />
+            <NodeCell fullName={tree.damSireDam} tier="great" stemIn className="col-start-7 row-start-6" />
+            <NodeCell fullName={tree.damDamSire} tier="great" stemIn className="col-start-7 row-start-7" />
+            <NodeCell fullName={tree.damDamDam} tier="great" stemIn className="col-start-7 row-start-8" />
           </div>
 
           <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
-            <span className="text-white/40">Sex: <span className="text-white/80 capitalize">{sex || "—"}</span></span>
-            <span className="text-white/40">Colour: <span className="text-white/80 capitalize">{colour || "—"}</span></span>
-            {age && <span className="text-white/40">Age: <span className="text-white/80">{age} Years</span></span>}
+            <span className="text-white/40">
+              Sex: <span className="text-white/80 capitalize">{sex || "—"}</span>
+            </span>
+            <span className="text-white/40">
+              Colour: <span className="text-white/80 capitalize">{colour || "—"}</span>
+            </span>
+            {age && (
+              <span className="text-white/40">
+                Age: <span className="text-white/80">{age} Years</span>
+              </span>
+            )}
             {formattedFoalingDate && (
               <span className="text-white/40">
                 Foaled: <span className="text-white/80">{formattedFoalingDate}</span>
               </span>
             )}
             {breedingUrl && (
-              <a href={breedingUrl} target="_blank" rel="noopener noreferrer" className="text-[#d4a964] hover:underline ml-auto">
+              <a
+                href={breedingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#d4a964] hover:underline ml-auto"
+              >
                 Full Breeding Record ↗
               </a>
             )}
@@ -296,7 +378,12 @@ export function PedigreeTableSandbox({
           <div className="flex items-center justify-between mb-4">
             <h5 className="text-xs uppercase tracking-wider text-white/45">Dam Line</h5>
             {damLineUrl && (
-              <a href={damLineUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[#d4a964] hover:underline uppercase tracking-widest">
+              <a
+                href={damLineUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-[#d4a964] hover:underline uppercase tracking-widest"
+              >
                 Full Dam Line ↗
               </a>
             )}
@@ -306,7 +393,12 @@ export function PedigreeTableSandbox({
               const parsedMare = parseHorseName(entry.mare || "");
               const parsedSire = parseHorseName(entry.sire || "");
               return (
-                <div key={i} className={`flex items-center gap-3 text-xs font-light py-2.5 ${i < damLine.length - 1 ? "border-b border-white/[0.03]" : ""}`}>
+                <div
+                  key={i}
+                  className={`flex items-center gap-3 text-xs font-light py-2.5 ${
+                    i < damLine.length - 1 ? "border-b border-white/[0.03]" : ""
+                  }`}
+                >
                   <span className="text-white/30 w-6 text-right">{i + 1}.</span>
                   <span className="text-white/70 flex-1 truncate">{parsedMare.name}</span>
                   <span className="text-white/30 text-[10px]">by</span>
@@ -323,7 +415,12 @@ export function PedigreeTableSandbox({
           <div className="flex items-center justify-between mb-4">
             <h5 className="text-xs uppercase tracking-wider text-white/45">Sire Line</h5>
             {sireLineUrl && (
-              <a href={sireLineUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[#d4a964] hover:underline uppercase tracking-widest">
+              <a
+                href={sireLineUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-[#d4a964] hover:underline uppercase tracking-widest"
+              >
                 Full Sire Line ↗
               </a>
             )}
@@ -333,7 +430,12 @@ export function PedigreeTableSandbox({
               const parsedSire = parseHorseName(entry.sire || "");
               const parsedDam = parseHorseName(entry.dam || "");
               return (
-                <div key={i} className={`flex items-center gap-3 text-xs font-light py-2.5 ${i < sireLine.length - 1 ? "border-b border-white/[0.03]" : ""}`}>
+                <div
+                  key={i}
+                  className={`flex items-center gap-3 text-xs font-light py-2.5 ${
+                    i < sireLine.length - 1 ? "border-b border-white/[0.03]" : ""
+                  }`}
+                >
                   <span className="text-white/30 w-6 text-right">{i + 1}.</span>
                   <span className="text-white/70 flex-1 truncate">{parsedSire.name}</span>
                   <span className="text-white/30 text-[10px]">from</span>
