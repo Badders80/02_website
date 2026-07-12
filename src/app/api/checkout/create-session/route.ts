@@ -2,8 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyIdToken } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
 import { getLiveInventory } from '@/lib/google-sheets';
+import {
+  checkPurchaseEligibility,
+  eligibilityHttpStatus,
+  findStaticHlt,
+} from '@/lib/purchase-eligibility';
 
-// Load HLT data statically (baked at build for api route) — used as fallback only
+// Load HLT data statically (baked at build for api route)
 import hltsModule from '@/data/hlts.json';
 
 const hlts = (hltsModule as any).default || (hltsModule as any);
@@ -11,7 +16,8 @@ const hlts = (hltsModule as any).default || (hltsModule as any);
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { user_id: bodyUserId, hlt_id, shares_to_buy, bypass_kyc, user_email } = body;
+    const { user_id: bodyUserId, hlt_id, shares_to_buy, user_email } = body;
+    // Client bypass_kyc is ignored — never used to open sales or skip gates.
 
     // Verify caller via Firebase ID token (sent as Bearer)
     const authHeader = request.headers.get('authorization') || '';
@@ -35,10 +41,50 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'user_id mismatch with token' }, { status: 403 });
     }
 
-    if (!userId || !hlt_id || !shares_to_buy) {
+    const sharesQty = Number(shares_to_buy);
+    if (!userId || !hlt_id || !sharesQty || sharesQty < 1) {
       return NextResponse.json(
         { error: 'Missing required parameters: user_id, hlt_id, shares_to_buy' },
         { status: 400 }
+      );
+    }
+
+    const staticHlt = findStaticHlt(hlts, hlt_id);
+
+    // Live inventory for stock/price when sales enabled; eligibility still runs if null
+    let liveInventory: Awaited<ReturnType<typeof getLiveInventory>> = null;
+    try {
+      liveInventory = await getLiveInventory(hlt_id);
+    } catch (err: any) {
+      console.warn(`[checkout] getLiveInventory failed for ${hlt_id}:`, err?.message);
+      liveInventory = null;
+    }
+
+    const eligibility = checkPurchaseEligibility(
+      hlt_id,
+      staticHlt,
+      liveInventory
+        ? {
+            listing_status: liveInventory.listing_status,
+            shares_available: liveInventory.shares_available,
+            price_per_share_nzd: liveInventory.price_per_share_nzd,
+          }
+        : null,
+      sharesQty,
+      { requireLiveInventory: true }
+    );
+
+    if (!eligibility.allowed) {
+      console.warn(
+        `[checkout] Rejected create-session slug=${hlt_id} uid=${verifiedUid} code=${eligibility.code} reason=${eligibility.reason}`
+      );
+      return NextResponse.json(
+        {
+          error: eligibility.reason,
+          code: eligibility.code,
+          campaign_status: eligibility.campaignStatus,
+        },
+        { status: eligibilityHttpStatus(eligibility.code) }
       );
     }
 
@@ -49,63 +95,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Eligibility passed ⇒ live inventory is present and valid
+    const pricePerShareNzd = Number(liveInventory!.price_per_share_nzd);
+    const horseName = liveInventory!.name || staticHlt?.horse_name || hlt_id;
+    const leasePeriodMonths = liveInventory!.leasePeriodMonths || 36;
+    const investorReturnPct = liveInventory!.investorReturnPct || 80;
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-    // --- Live inventory check (Phase 3: concurrency control) ---
-    // Attempt live read from Google Sheets; fall back to static JSON if Sheets unavailable
-    let pricePerShareNzd: number;
-    let sharesAvailable: number | null = null;
-    let horseName: string;
-    let leasePeriodMonths: number;
-    let investorReturnPct: number;
-
-    const liveInventory = await getLiveInventory(hlt_id);
-
-    if (liveInventory) {
-      // Price from Sheets (authoritative — prevents client-side price tampering)
-      pricePerShareNzd = liveInventory.price_per_share_nzd;
-      sharesAvailable = liveInventory.shares_available;
-      horseName = liveInventory.name || hlt_id;
-      leasePeriodMonths = liveInventory.leasePeriodMonths || 36;
-      investorReturnPct = liveInventory.investorReturnPct || 80;
-
-      // Concurrency check: reject if not enough shares
-      if (sharesAvailable !== null && shares_to_buy > sharesAvailable) {
-        return NextResponse.json(
-          {
-            error: 'Insufficient shares available',
-            shares_available: sharesAvailable,
-            shares_requested: shares_to_buy,
-          },
-          { status: 409 }
-        );
-      }
-    } else {
-      // Fallback: static JSON (Sheets unavailable)
-      console.warn(`[checkout] Google Sheets unavailable, falling back to static JSON for ${hlt_id}`);
-      const hlt = hlts.find((h: any) => (h.horse_slug || h.id) === hlt_id);
-      if (!hlt) {
-        return NextResponse.json({ error: 'HLT not found' }, { status: 404 });
-      }
-      pricePerShareNzd = hlt.price_per_share_nzd || 1500;
-      horseName = hlt.horse_name || hlt_id;
-      leasePeriodMonths = hlt.lease_period_months || 36;
-      investorReturnPct = hlt.investor_return_pct || 80;
-      // No live shares_available — skip concurrency check (Sheets is down)
-    }
-
-    // Create Stripe Checkout session with authoritative price from Sheets
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
       line_items: [
         {
-          quantity: shares_to_buy,
+          quantity: sharesQty,
           price_data: {
             currency: 'nzd',
-            unit_amount: Math.round(pricePerShareNzd * 100), // per share in cents (Math.round prevents float errors)
+            unit_amount: Math.round(pricePerShareNzd * 100),
             product_data: {
-              name: `${horseName} — Share${shares_to_buy > 1 ? 's' : ''}`,
-              description: `Syndication share${shares_to_buy > 1 ? 's' : ''} in ${horseName}. ${leasePeriodMonths}-month lease, ${investorReturnPct}% return to investors.`,
+              name: `${horseName} — Share${sharesQty > 1 ? 's' : ''}`,
+              description: `Syndication share${sharesQty > 1 ? 's' : ''} in ${horseName}. ${leasePeriodMonths}-month lease, ${investorReturnPct}% return to investors.`,
             },
           },
         },
@@ -114,16 +122,20 @@ export async function POST(request: NextRequest) {
         user_id: userId,
         user_email: verifiedEmail || user_email || '',
         hlt_id,
-        shares_to_buy: String(shares_to_buy),
+        shares_to_buy: String(sharesQty),
         price_per_share_nzd: String(pricePerShareNzd),
         horse_microchip: body.horse_microchip || '',
-        bypass_kyc: String(bypass_kyc || false),
       },
       success_url: `${appUrl}/mystable?success=true`,
       cancel_url: `${appUrl}/marketplace/${hlt_id}`,
     });
 
-    return NextResponse.json({ session_url: session.url, session_id: session.id });
+    // Both keys: clients historically expect `url`; route previously returned session_url only
+    return NextResponse.json({
+      url: session.url,
+      session_url: session.url,
+      session_id: session.id,
+    });
   } catch (error: any) {
     console.error('Checkout session creation error:', error);
     return NextResponse.json(

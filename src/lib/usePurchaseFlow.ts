@@ -75,9 +75,10 @@ export function usePurchaseFlow() {
       }
 
       const data = await res.json();
-      if (data.url) {
+      const checkoutUrl = data.url || data.session_url;
+      if (checkoutUrl) {
         // Redirect to Stripe Checkout
-        window.location.href = data.url;
+        window.location.href = checkoutUrl;
       } else {
         throw new Error("Stripe checkout URL not returned");
       }

@@ -153,6 +153,16 @@ Every task must end with verification:
 
 ## Environment Variables
 
+### Purchase kill-switch (server)
+
+```env
+# Default OFF (unset or any value other than "true" = no Stripe checkout).
+# Only set to true when intentionally opening sales for campaign-open HLTs.
+PURCHASES_ENABLED=true
+```
+
+Eligibility: `src/lib/purchase-eligibility.ts` — requires `PURCHASES_ENABLED=true` **and** static `getCampaignStatus(hlt) === "become-an-owner"` **and** valid price/stock. Live Inventory cannot open a closed campaign.
+
 ### Live (required)
 
 ```env

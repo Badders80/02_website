@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
+import { STATUS_INFO, type CampaignStatus } from "@/lib/campaign-status";
 
 interface PurchasePageProps {
   horseName: string;
@@ -13,6 +14,10 @@ interface PurchasePageProps {
   horseImage: string;
   hasPds: boolean;
   hasSa: boolean;
+  /** Server-computed: false unless PURCHASES_ENABLED and campaign open */
+  purchasable?: boolean;
+  campaignStatus?: CampaignStatus;
+  closedReason?: string;
 }
 
 interface LiveInventory {
@@ -25,11 +30,40 @@ interface LiveInventory {
   leasePeriodMonths: number | string;
   leaseStartDate: string;
   investorReturnPct: number | string;
+  purchasable?: boolean;
+  campaign_status?: CampaignStatus | null;
+  eligibility_reason?: string;
+}
+
+function closedCopy(status?: CampaignStatus): { title: string; body: string } {
+  if (status === "fully-subscribed") {
+    return {
+      title: "Fully Subscribed",
+      body: "All shares in this syndicate have been allocated.",
+    };
+  }
+  if (status === "term-completed") {
+    return {
+      title: "Term Completed",
+      body: "This campaign has completed. New allocations are not available.",
+    };
+  }
+  if (status === "coming-soon" || status === "coming-soon-with-details") {
+    return {
+      title: "Coming Soon",
+      body: "Be first to know — this syndicate is not open for applications yet. Check back or register interest from the horse page.",
+    };
+  }
+  return {
+    title: "Applications Closed",
+    body: "Public share applications are not available for this horse right now.",
+  };
 }
 
 export default function PurchasePage(props: PurchasePageProps) {
   const { user, loading: authLoading, kycStatus } = useAuth();
   const router = useRouter();
+  const serverPurchasable = props.purchasable === true;
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [sharesToBuy, setSharesToBuy] = useState(1);
@@ -43,7 +77,8 @@ export default function PurchasePage(props: PurchasePageProps) {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [inventory, setInventory] = useState<LiveInventory | null>(null);
-  const [inventoryLoading, setInventoryLoading] = useState(true);
+  // If server already closed the path, skip waiting on inventory for the closed panel
+  const [inventoryLoading, setInventoryLoading] = useState(serverPurchasable);
 
   const pdsScrollRef = useRef<HTMLDivElement>(null);
   const saScrollRef = useRef<HTMLDivElement>(null);
@@ -88,9 +123,12 @@ export default function PurchasePage(props: PurchasePageProps) {
     }
   }, [authLoading, user, kycStatus, router, props.horseSlug]);
 
-  // Fetch live inventory only when authenticated
+  // Fetch live inventory only when authenticated AND server says purchasable
   useEffect(() => {
-    if (!user) return;
+    if (!user || !serverPurchasable) {
+      setInventoryLoading(false);
+      return;
+    }
     async function fetchLive() {
       try {
         setInventoryLoading(true);
@@ -106,7 +144,72 @@ export default function PurchasePage(props: PurchasePageProps) {
       }
     }
     fetchLive();
-  }, [props.horseSlug, user]);
+  }, [props.horseSlug, user, serverPurchasable]);
+
+  // Closed catalog: show First to know / status without forcing login spinner forever
+  const campaignStatus =
+    inventory?.campaign_status || props.campaignStatus || "coming-soon";
+  const purchasable =
+    serverPurchasable && inventory?.purchasable !== false;
+  const closed = closedCopy(campaignStatus);
+
+  if (!serverPurchasable) {
+    return (
+      <>
+        <NavBar />
+        <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
+          <div className="mx-auto max-w-2xl px-6 sm:px-10 lg:px-12">
+            <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
+              <Link href="/marketplace" className="hover:text-white/60 transition">
+                Marketplace
+              </Link>
+              <span>/</span>
+              <Link
+                href={`/marketplace/${props.horseSlug}`}
+                className="hover:text-white/60 transition"
+              >
+                {props.horseName}
+              </Link>
+              <span>/</span>
+              <span className="text-white/60">Acquire</span>
+            </div>
+            <div className="flex items-center gap-4 mb-10">
+              <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-white/[0.06] overflow-hidden relative flex-shrink-0">
+                {props.horseImage && (
+                  <img
+                    src={props.horseImage}
+                    alt={props.horseName}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+              <div>
+                <h1 className="text-[24px] font-light text-white tracking-tight">
+                  {props.horseName}
+                </h1>
+                <p className="text-[12px] text-white/40">
+                  {STATUS_INFO[campaignStatus]?.label || "Coming Soon"}
+                </p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 text-center space-y-4">
+              <p className="text-lg font-light text-white/60">{closed.title}</p>
+              <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
+                {props.closedReason || closed.body}
+              </p>
+              <Link
+                href={`/marketplace/${props.horseSlug}`}
+                className="inline-block rounded-full border border-white/10 text-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
+              >
+                ← Back to {props.horseName}
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer minimal />
+      </>
+    );
+  }
 
   if (authLoading || !user || kycStatus !== "verified") {
     return (
@@ -117,7 +220,8 @@ export default function PurchasePage(props: PurchasePageProps) {
   }
 
   const sharesTotal = inventory?.shares_total ?? 0;
-  const sharesAvailable = inventory?.shares_available ?? 0;
+  const sharesAvailable =
+    purchasable ? inventory?.shares_available ?? 0 : 0;
   const pricePerShareNzd = inventory?.price_per_share_nzd ?? 0;
   const totalLeasePercent = inventory?.totalLeasePercent ?? 0;
   const leasePeriodMonths = inventory?.leasePeriodMonths ?? 0;
@@ -128,6 +232,10 @@ export default function PurchasePage(props: PurchasePageProps) {
   const percentStake = ((sharesToBuy / sharesTotal) * Number(totalLeasePercent)).toFixed(2);
 
   const handleStripeCheckout = async () => {
+    if (!purchasable) {
+      setErrorMsg(props.closedReason || closed.body);
+      return;
+    }
     setIsRedirecting(true);
     setErrorMsg("");
 
@@ -153,8 +261,9 @@ export default function PurchasePage(props: PurchasePageProps) {
       }
 
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      const checkoutUrl = data.url || data.session_url;
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
       } else {
         throw new Error("No checkout URL returned");
       }
@@ -189,7 +298,11 @@ export default function PurchasePage(props: PurchasePageProps) {
             <div>
               <h1 className="text-[24px] font-light text-white tracking-tight">{props.horseName}</h1>
               <p className="text-[12px] text-white/40">
-                {inventoryLoading ? "Loading..." : `${sharesAvailable} shares available`}
+                {inventoryLoading
+                  ? "Loading..."
+                  : purchasable
+                    ? `${sharesAvailable} shares available`
+                    : STATUS_INFO[campaignStatus]?.label || "Coming Soon"}
               </p>
             </div>
           </div>
@@ -199,11 +312,11 @@ export default function PurchasePage(props: PurchasePageProps) {
             <div className="flex items-center justify-center py-20">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]"></div>
             </div>
-          ) : sharesAvailable === 0 ? (
+          ) : !purchasable || sharesAvailable === 0 ? (
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 text-center space-y-4">
-              <p className="text-lg font-light text-white/60">Fully Subscribed</p>
+              <p className="text-lg font-light text-white/60">{closed.title}</p>
               <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
-                All shares have been acquired. This horse is in active campaign.
+                {inventory?.eligibility_reason || props.closedReason || closed.body}
               </p>
               <Link
                 href={`/marketplace/${props.horseSlug}`}
