@@ -1,173 +1,138 @@
-# Evolution Stables — Website Build Summary
+# Evolution Stables — Website Build Summary (Map)
 
-**Date:** 2026-06-17  
-**Status:** 🟡 Phase 5 — Production Ready (WIF Configuration Required)  
-**Repository:** `02_website/`
+**Last updated:** 2026-07-13  
+**Repository:** `02_website/`  
+**Prod:** https://www.evolutionstables.nz  
+**Git remote:** `Badders80/02_website` · Vercel project `evolution-3-0`
 
-> **This is the map.** What the project is, what exists, the rules.
-> For session-by-session progress, see [PROGRESS.md](PROGRESS.md).
-
-**CURRENT BLOCKER:** GCP Workload Identity Provider needs manual configuration.
-See: [docs/SESSION_BRIEF_2026_06_17.md](docs/SESSION_BRIEF_2026_06_17.md)
-
----
-
-## What We're Building
-
-Public-facing website for Evolution Stables — the investor and user interface to the backend platform.
-
-**The goal:** Zero-debt replication of evolutionstables.nz with modern tech stack (Next.js 16 + Tailwind 4).
+> **This is the map** — what the system is and the rules.  
+> **Boot agents from:** [`relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  
+> **Diary:** [PROGRESS.md](PROGRESS.md)
 
 ---
 
-## Build Philosophy
+## What we're building
 
-**Old approach:** Clone existing build with all its debt  
-**New approach:** Extract only visible assets → Build fresh with zero debt
+Public investor site for Evolution Stables: browse syndicates, auth, KYC, checkout, MyStable.
 
-**Zero Debt Means:**
-- ✅ Only 3 dependencies (next, react, tailwind)
-- ✅ No unused code
-- ✅ No hidden infrastructure
-- ✅ Clean folder structure
-- ✅ Modern tech stack
-
-**Zero Debt Does NOT Mean:**
-- ❌ No infrastructure for future features
-- ❌ No content management
-- ❌ No SEO infrastructure
+**Stack:** Next.js 16 (App Router) · React 19 · Tailwind · Firebase Auth · Stripe Identity + Checkout · Google Sheets (live ops) · Vercel
 
 ---
 
-## Architecture
+## Architecture (canonical 2026-07)
 
-### Frontend (This Repo)
-- **Next.js 16** — App Router, TypeScript
-- **Tailwind 4** — Utility-first CSS
-- **Firebase Auth** — Client SDK (login, signup)
-- **Stripe Identity** — Redirect flow (via backend API)
-
-### Backend (01_evolution/)
-- **Cloud Functions** — SSOT, Assets, KYC APIs
-- **Firestore** — Database
-- **Cloud Storage** — Image storage
-- **Stripe** — Secret keys, webhooks
-
-### Connection
 ```
-Website (Vercel) → API Calls → Backend (GCP)
+Browser
+  → Vercel (Next.js)
+      → Firebase Auth (identity)
+      → Stripe Identity (KYC) + Checkout (payments)
+      → Google Sheets tab `hlts` (live inventory SSOT)
+      → Google Sheets tabs `holdings` / `leads` / `communications`
 ```
+
+**GCP Cloud Functions / WIF:** retired. Do not depend on them.
+
+### Live ops SSOT
+
+| Source | Role |
+|--------|------|
+| Sheet tab **`hlts`** | Runtime stock, `campaign_status`, owner rate, fee, derived list lot price |
+| `src/data/hlts.json` | Fallback if Sheets fails; keep roughly synced on deploy |
+| `PURCHASES_ENABLED` | Kill-switch (exact `"true"` to charge) |
+
+Spreadsheet ID: `1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg`  
+Sheet tools: `gws` CLI (OAuth) or service account env on Vercel.
 
 ---
 
-## What Exists Now
+## Commercial pricing (locked)
 
-**Files:** ~45 source files  
-**Folders:** Complete skeleton + key components + auth infrastructure + API proxy
+| Term | Definition |
+|------|------------|
+| **Owner rate** | NZD **per month per 1%** of the horse (founder language: “$70”) |
+| **Platform fee** | Variable, default **5%** on owner rate → **list rate** (investor-facing) |
+| **List rate** | `owner_rate × (1 + fee_pct/100)` e.g. 70 → 73.50 |
+| **Lot** | Min purchase size; e.g. 5% stake / 20 lots = **0.25%** of horse |
+| **Purchase price (list lot)** | `list_rate × lot_pct × months` |
+| **Investor return** | Per lease, % of **gross stakes** (row field) |
 
-```
-02_website/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx              ← Homepage with all sections
-│   │   ├── press/page.tsx        ← Press page (3-col grid, SEO)
-│   │   ├── admin/                ← Admin dashboard (CRUD UI)
-│   │   ├── marketplace/page.tsx  ← Marketplace landing
-│   │   ├── marketplace-sandbox/  ← Interactive sandbox with "Apply to Own"
-│   │   ├── mystable/page.tsx     ← User dashboard
-│   │   ├── mystable-sandbox/     ← Sandbox investor dashboard
-│   │   ├── handshake/page.tsx    ← Backend handshake diagnostics page
-│   │   ├── api/proxy/[...path]/  ← API proxy -> Cloud Run -> Cloud Functions
-│   │   └── api/kyc/              ← KYC session creation endpoint
-│   ├── components/
-│   │   ├── NavBar.tsx            ← Navigation
-│   │   ├── Footer.tsx            ← Footer
-│   │   ├── KycBanner.tsx         ← KYC status banner
-│   │   └── sections/
-│   │       ├── HeroSection.tsx
-│   │       ├── PressShowcaseSection.tsx ← Production code (logos + carousel)
-│   │       ├── AboutSection.tsx
-│   │       ├── HowItWorksSection.tsx
-│   │       ├── MarketplaceSection.tsx
-│   │       └── FAQSection.tsx
-│   └── lib/
-│       ├── press-articles.ts     ← Press data
-│       ├── api.ts                ← API client (routes through proxy)
-│       ├── gcp-auth.ts           ← WIF token exchange for Vercel→GCP
-│       ├── auth.ts               ← Firebase auth utilities
-│       ├── auth-context.tsx       ← Auth context provider
-│       ├── firebase.ts           ← Firebase client init
-│       └── usePurchaseFlow.ts    ← KYC purchase flow hook
-├── public/images/                ← ~40 extracted assets
-├── dna/content/
-│   ├── press.json                ← Press articles
-│   ├── faq.json                  ← FAQ items
-│   └── footer.json               ← Footer content
-└── docs/
-    ├── BUILD_SUMMARY.md          ← This file
-    ├── PROGRESS.md               ← Session tracker
-    └── logs/                     ← Daily logs
-```
+Code: `src/lib/pricing.ts` · test: `node scripts/test_pricing.mjs`
+
+**Manolo (trial SKU):** rate 70 · fee 5 · 5%/20 · 16 mo · list lot **$294** · return 75%
 
 ---
 
-## Architecture
+## Campaign lifecycle (locked)
 
-| Feature | Frontend | Backend | Status |
-|---------|----------|---------|--------|
-| **Browse horses** | Marketplace sandbox | `GET /ssot/horses` (via Cloud Run proxy) | 🟡 Auth pending |
-| **Assets/media** | Image display | `GET /assets/*` (via Cloud Run proxy) | 🟡 Auth pending |
-| **KYC verification** | Redirect to Stripe Identity | `POST /kyc/create-session` (via Cloud Run proxy) | 🟡 Auth pending |
-| **Login/auth** | Firebase UI + gcp-auth.ts | Token verification in Cloud Functions | ✅ Code ready |
-| **Auth pipeline** | WIF → `website-api@` SA | Vercel OIDC → GCP STS → identity token | 🟡 OIDC not enabled |
+Sheet column `campaign_status` (first-class):
 
-### Request Flow
-```
-Browser ──Firebase ID Token──→ Vercel (Next.js)
-                                   │
-                              src/app/api/proxy/[...path]/
-                                   │
-                            src/lib/gcp-auth.ts (WIF exchange)
-                                   │
-                         Vercel OIDC Token ─→ GCP STS ─→ identity token
-                                   │
-                         Cloud Run: evolution-api-proxy
-                                   │
-                         ┌─────────┼─────────┐
-                         ▼         ▼         ▼
-                    ssot CF   assets CF   kyc CF
-                    (Firebase Auth middleware on all 3)
-```
+| Status | On website | Can buy* |
+|--------|------------|----------|
+| `draft` | No | No |
+| `coming_soon` | Yes | No |
+| `coming_soon_details` | Yes | No |
+| `listed` | Yes | Yes* |
+| `fully_subscribed` | Yes | No |
+| `completed` | Yes | No |
 
-### GCP Infrastructure
-- **Cloud Functions:** ssot (v13), assets (v5), kyc (v9) — all ACTIVE with Firebase Auth
-- **Cloud Run:** evolution-api-proxy — SERVING, IAM bridge between Vercel and CFs
-- **WIF:** vercel-pool / vercel-oidc — OIDC provider linked to https://oidc.vercel.com
-- **Service Account:** website-api@evolution-engine.iam.gserviceaccount.com
+\* + stock + valid price + kill-switch on.  
+Code: `src/lib/campaign-status.ts`, `src/lib/purchase-eligibility.ts`
 
-### Environment
-```env
-NEXT_PUBLIC_API_BASE=https://australia-southeast1-evolution-engine.cloudfunctions.net
-NEXT_PUBLIC_BYPASS_AUTH_KYC=true  # local dev only
-```
+Legacy fields `listing_status` / `marketplace_visible` may still exist; **status SSOT is `campaign_status`**.
 
 ---
 
-## Architecture Rules
+## Naming
 
-1. **Zero debt** — Only 3 dependencies (next, react, tailwind)
-2. **Extract, don't rebuild** — Get assets/content from existing sources
-3. **Fresh build** — Next.js 16 + Tailwind 4 from scratch
-4. **SEO-first** — Lighthouse = 100 target
-5. **Backend handshake** — All data via HTTP calls to `01_evolution/`
-6. **No secrets** — Public keys only, secrets live in backend
-7. **Production as source of truth** — Copy exact code from Evolution-3.1 GitHub repo instead of recreating from scratch
-8. **WIF auth for Vercel→GCP** — All API calls route through Cloud Run proxy using Workload Identity Federation; no `allUsers` IAM bindings, no service account keys
+- **TML** = Turn Me Loose → slug `tml-x-yearn` (not TLM)  
+- Redirect: `/marketplace/tlm-x-yearn` → `/marketplace/tml-x-yearn`
 
 ---
 
-## Related
+## Key surfaces
 
-- **Current status:** [`PROGRESS.md`](PROGRESS.md) — Session tracker, what's next, architecture status
-- **Plan:** [`GAME_PLAN.md`](../GAME_PLAN.md) — Build plan
-- **Backend:** [`01_evolution/docs/BUILD_SUMMARY.md`](../../01_evolution/docs/BUILD_SUMMARY.md) — Backend map
+| Surface | Notes |
+|---------|--------|
+| `/marketplace` | Live list; filters `isOnWebsite` (excludes draft) |
+| `/marketplace/[slug]` | Detail + purchase UI |
+| `/api/inventory/[slug]` | Live inventory + eligibility |
+| `/api/checkout/*` | Create session + webhook |
+| `/api/kyc/*` | Stripe Identity |
+| `/api/diagnostics/payment-health` | Ops health (no secret values) |
+| `/mystable` | Investor dashboard |
+
+---
+
+## Payment path
+
+Auth → KYC verified → create-session (eligibility) → Stripe Checkout → webhook → append `holdings` → `shares_sold++` → SMTP welcome email  
+
+PDF signing: deferred (empty signed URL fields OK for trial).
+
+---
+
+## Current phase
+
+**Manolo controlled payment trial** — catalog live; money kill-switched; E2E pending.  
+See `relay/continue.md` and `docs/next-session-notes.md`.
+
+---
+
+## Session logging protocol
+
+| File | Update |
+|------|--------|
+| `relay/continue.md` | Every wrap — next action only |
+| `docs/next-session-notes.md` | Every wrap that changes state |
+| This BUILD_SUMMARY | Only when map/rules change |
+| PROGRESS.md | Session rows |
+| `docs/logs/` | Optional detail |
+
+---
+
+## Explicitly obsolete (do not trust as current)
+
+- WIF / GCP handshake as launch blocker (June 2026)  
+- “Inventory” tab name as default (real tab: **hlts**)  
+- $1500 / 100-share fiction  
+- Static JSON as primary marketplace SSOT  
