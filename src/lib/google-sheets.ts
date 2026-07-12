@@ -6,9 +6,10 @@ import { lotTotalNzd } from "./pricing";
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg";
 /** Runtime ops inventory tab. Default `hlts` (not the sync template name "Inventory"). Override via GOOGLE_SHEETS_INVENTORY_TAB. */
 const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "hlts";
-const HOLDINGS_TAB = process.env.GOOGLE_SHEETS_HOLDINGS_TAB || "Holdings";
-const LEADS_TAB = process.env.GOOGLE_SHEETS_LEADS_TAB || "Leads";
-const COMMUNICATIONS_TAB = process.env.GOOGLE_SHEETS_COMMUNICATIONS_TAB || "Communications";
+// Tab titles must match the live spreadsheet exactly (case-sensitive).
+const HOLDINGS_TAB = process.env.GOOGLE_SHEETS_HOLDINGS_TAB || "holdings";
+const LEADS_TAB = process.env.GOOGLE_SHEETS_LEADS_TAB || "leads";
+const COMMUNICATIONS_TAB = process.env.GOOGLE_SHEETS_COMMUNICATIONS_TAB || "communications";
 
 /** Default platform fee (%) when sheet cell empty — commercial SOP (list = owner × 1.05). */
 const DEFAULT_PLATFORM_FEE_PCT = 5;

@@ -101,9 +101,16 @@ export async function POST(request: NextRequest) {
 
     // Eligibility passed ⇒ live inventory is present and valid
     const pricePerShareNzd = Number(liveInventory!.price_per_share_nzd);
+    if (!(pricePerShareNzd > 0)) {
+      return NextResponse.json(
+        { error: 'Live inventory price is invalid', code: 'PRICE_INVALID' },
+        { status: 403 }
+      );
+    }
     const horseName = liveInventory!.name || staticHlt?.horse_name || hlt_id;
-    const leasePeriodMonths = liveInventory!.leasePeriodMonths || 36;
-    const investorReturnPct = liveInventory!.investorReturnPct || 80;
+    // Prefer live lease fields; no invented 36mo / 80% commercial defaults
+    const leasePeriodMonths = Number(liveInventory!.leasePeriodMonths || 0) || undefined;
+    const investorReturnPct = Number(liveInventory!.investorReturnPct || 0) || undefined;
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -117,7 +124,15 @@ export async function POST(request: NextRequest) {
             unit_amount: Math.round(pricePerShareNzd * 100),
             product_data: {
               name: `${horseName} — Share${sharesQty > 1 ? 's' : ''}`,
-              description: `Syndication share${sharesQty > 1 ? 's' : ''} in ${horseName}. ${leasePeriodMonths}-month lease, ${investorReturnPct}% return to investors.`,
+              description: [
+                `Syndication share${sharesQty > 1 ? 's' : ''} in ${horseName}.`,
+                leasePeriodMonths ? `${leasePeriodMonths}-month lease.` : null,
+                investorReturnPct != null
+                  ? `${investorReturnPct}% of gross stakes to investors.`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(' '),
             },
           },
         },
