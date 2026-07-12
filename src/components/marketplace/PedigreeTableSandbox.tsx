@@ -55,16 +55,17 @@ function parseHorseName(fullName: string): { name: string; country: string; year
   return { name: cleanName.trim(), country: "", year: "" };
 }
 
-const TIER_WIDTH: Record<NodeTier, string> = {
-  subject: "w-[152px]",
-  parent: "w-[142px]",
-  grand: "w-[132px]",
-  great: "w-[122px]",
+/** Fixed pill widths — half used so stems stop exactly at pill edges. */
+const TIER_WIDTH_PX: Record<NodeTier, number> = {
+  subject: 152,
+  parent: 142,
+  grand: 132,
+  great: 122,
 };
 
 /**
- * Fixed-width opaque pill. Name wraps (2 lines) — never truncates mid-word as a single ellipsis.
- * Stems live outside this surface (in NodeCell flex gutters).
+ * Fixed-width opaque pill. Labels sit absolute below so they never shift
+ * the geometric centre used by stems / forks.
  */
 function PedigreeNode({
   fullName,
@@ -83,9 +84,10 @@ function PedigreeNode({
     parsed.country && parsed.year
       ? `${parsed.country} ${parsed.year}`
       : parsed.country || parsed.year;
+  const w = TIER_WIDTH_PX[tier];
 
   return (
-    <div className={`relative z-10 flex shrink-0 flex-col items-center ${TIER_WIDTH[tier]}`}>
+    <div className="relative z-10 shrink-0" style={{ width: w }}>
       <div
         className={`box-border flex w-full flex-col items-center justify-center rounded-[20px] border px-3 py-2 text-center transition-[border-color] duration-200 ${
           tier === "subject"
@@ -123,13 +125,14 @@ function PedigreeNode({
           </span>
         )}
       </div>
+      {/* Absolute — does not affect pill/stem vertical centre */}
       {legend && !isEmpty && (
-        <span className="mt-1.5 text-[9px] uppercase tracking-[0.08em] text-white/30 font-light">
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[9px] font-light uppercase tracking-[0.08em] text-white/30">
           {legend}
         </span>
       )}
       {sublabel && (
-        <span className="mt-1.5 text-[10px] font-light capitalize text-white/40 whitespace-nowrap">
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[10px] font-light capitalize text-white/40">
           {sublabel}
         </span>
       )}
@@ -138,8 +141,9 @@ function PedigreeNode({
 }
 
 /**
- * Grid cell: optional edge stems (flex gutters) + fixed pill.
- * Stems never cross the pill face — they only fill space between cell edge and pill.
+ * Grid cell: pill dead-centre; stems dock to pill mid (top 50% of cell)
+ * and run only in the gap to the cell edge — never under the fill.
+ * Fork T-junctions land on the same mid-line.
  */
 function NodeCell({
   fullName,
@@ -164,20 +168,27 @@ function NodeCell({
 }) {
   const stemInCls = goldStemIn ? "bg-[#c5a059]/30" : "bg-white/15";
   const stemOutCls = goldStemOut ? "bg-[#c5a059]/30" : "bg-white/15";
+  const half = TIER_WIDTH_PX[tier] / 2;
 
   return (
-    <div className={`z-10 flex min-w-0 w-full items-center ${className}`}>
-      {stemIn ? (
-        <div className={`h-px min-w-[6px] flex-1 ${stemInCls}`} aria-hidden />
-      ) : (
-        <div className="min-w-0 flex-1" />
+    <div
+      className={`relative z-10 flex h-full min-w-0 w-full items-center justify-center ${className}`}
+    >
+      {stemIn && (
+        <div
+          className={`pointer-events-none absolute left-0 top-1/2 h-px -translate-y-px ${stemInCls}`}
+          style={{ width: `calc(50% - ${half}px)` }}
+          aria-hidden
+        />
+      )}
+      {stemOut && (
+        <div
+          className={`pointer-events-none absolute right-0 top-1/2 h-px -translate-y-px ${stemOutCls}`}
+          style={{ width: `calc(50% - ${half}px)` }}
+          aria-hidden
+        />
       )}
       <PedigreeNode fullName={fullName} tier={tier} legend={legend} sublabel={sublabel} />
-      {stemOut ? (
-        <div className={`h-px min-w-[6px] flex-1 ${stemOutCls}`} aria-hidden />
-      ) : (
-        <div className="min-w-0 flex-1" />
-      )}
     </div>
   );
 }
@@ -278,8 +289,8 @@ export function PedigreeTableSandbox({
           */}
           <div
             className="grid min-w-fit justify-items-stretch py-10 items-stretch
-              grid-cols-[160px_40px_150px_32px_140px_28px_128px]
-              grid-rows-[repeat(8,58px)]"
+              grid-cols-[160px_44px_150px_36px_140px_32px_128px]
+              grid-rows-[repeat(8,60px)]"
           >
             <NodeCell
               fullName={tree.horse}
