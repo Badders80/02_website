@@ -74,20 +74,20 @@ function PedigreePill({
       <div
         className={`rounded-full border text-center transition duration-300 flex flex-col justify-center items-center ${
           highlight
-            ? "border-[#d4a964]/35 bg-[#d4a964]/10 shadow-[0_0_20px_rgba(212,169,100,0.08)] px-4 h-[46px] min-w-[110px] max-w-[155px]"
+            ? "border-[#d4a964]/35 bg-[#d4a964]/10 shadow-[0_0_20px_rgba(212,169,100,0.08)] px-4 h-[42px] min-w-[110px] max-w-[155px]"
             : isEmpty
-              ? "border-white/[0.03] bg-white/[0.01] opacity-35 h-[38px] px-3 min-w-[100px]"
+              ? "border-white/[0.03] bg-white/[0.01] opacity-35 h-[36px] px-3 min-w-[100px]"
               : muted
-                ? "border-white/[0.06] bg-white/[0.02] opacity-65 hover:border-white/[0.12] hover:opacity-85 px-2.5 h-[36px] min-w-[95px] max-w-[135px]"
-                : "border-white/[0.1] bg-white/[0.04] hover:border-white/[0.16] hover:bg-white/[0.06] px-3.5 h-[40px] min-w-[110px] max-w-[150px]"
+                ? "border-white/[0.06] bg-white/[0.02] opacity-65 hover:border-white/[0.12] hover:opacity-85 px-2.5 h-[34px] min-w-[95px] max-w-[135px]"
+                : "border-white/[0.1] bg-white/[0.04] hover:border-white/[0.16] hover:bg-white/[0.06] px-3.5 h-[38px] min-w-[110px] max-w-[150px]"
         }`}
       >
-        <div 
+        <div
           className={`font-medium leading-tight truncate w-full ${
-            highlight 
-              ? "text-[12px] text-white" 
-              : muted 
-                ? "text-[9.5px] text-white/80" 
+            highlight
+              ? "text-[12px] text-white"
+              : muted
+                ? "text-[9.5px] text-white/80"
                 : "text-[11px] text-white/85"
           }`}
           title={parsed.name}
@@ -95,7 +95,7 @@ function PedigreePill({
           {parsed.name}
         </div>
         {(parsed.country || parsed.year) && (
-          <div 
+          <div
             className={`text-white/40 mt-0.5 font-light tracking-wide ${
               muted ? "text-[8px]" : "text-[9px]"
             }`}
@@ -113,19 +113,63 @@ function PedigreePill({
   );
 }
 
-function Connector({ width = 16, height = 60 }: { width?: number; height?: number }) {
+/** Horizontal stubs from pill centre to cell edges — meet connector borders flush. */
+function NodeCell({
+  fullName,
+  label,
+  highlight = false,
+  muted = false,
+  lineIn = false,
+  lineOut = false,
+  className = "",
+  sublabel,
+}: {
+  fullName: string;
+  label?: string;
+  highlight?: boolean;
+  muted?: boolean;
+  lineIn?: boolean;
+  lineOut?: boolean;
+  className?: string;
+  sublabel?: string;
+}) {
   return (
-    <div className="flex items-center shrink-0" style={{ width: `${width + 2}px` }}>
-      {/* Entry line */}
-      <div className="h-px bg-white/10 flex-grow" />
-      {/* Branch bracket */}
-      <div className="relative w-px bg-white/10 shrink-0" style={{ height: `${height}px` }}>
-        {/* Top horizontal branch prong */}
-        <div className="absolute top-0 left-0 h-px bg-white/10" style={{ width: `${width}px` }} />
-        {/* Bottom horizontal branch prong */}
-        <div className="absolute bottom-0 left-0 h-px bg-white/10" style={{ width: `${width}px` }} />
+    <div className={`relative flex items-center justify-center min-w-0 ${className}`}>
+      {lineIn && (
+        <div className="absolute left-0 right-1/2 top-1/2 h-px bg-white/10 pointer-events-none" aria-hidden />
+      )}
+      {lineOut && (
+        <div className="absolute left-1/2 right-0 top-1/2 h-px bg-white/10 pointer-events-none" aria-hidden />
+      )}
+      <div className="relative z-10">
+        <PedigreePill fullName={fullName} label={label} highlight={highlight} muted={muted} />
+        {sublabel && (
+          <span className="absolute top-[100%] left-1/2 -translate-x-1/2 text-[9px] text-white/35 font-light capitalize mt-1.5 whitespace-nowrap">
+            {sublabel}
+          </span>
+        )}
       </div>
     </div>
+  );
+}
+
+/** Top half of a binary fork: spine + arm to upper child (border-share). */
+function ForkTop({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`box-border h-1/2 self-end w-full border-l border-t border-white/10 ${className}`}
+      aria-hidden
+    />
+  );
+}
+
+/** Bottom half of a binary fork: spine + arm to lower child (border-share). */
+function ForkBottom({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`box-border h-1/2 self-start w-full border-l border-b border-white/10 ${className}`}
+      aria-hidden
+    />
   );
 }
 
@@ -183,85 +227,92 @@ export function PedigreeTableSandbox({
 
       {view === "tree" && (
         <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
-          {/* Title removed per user instruction */}
+          {/*
+            4-gen CSS grid pedigree: 4 horse cols + 3 fork cols, 8 equal rows.
+            Connectors use border-share (no absolute heights) so lines never drift.
+          */}
+          <div
+            className="grid min-w-fit py-8 items-stretch
+              grid-cols-[minmax(118px,150px)_28px_minmax(110px,145px)_24px_minmax(105px,140px)_20px_minmax(95px,130px)]
+              grid-rows-[repeat(8,48px)]"
+          >
+            <NodeCell
+              fullName={tree.horse}
+              highlight
+              lineOut
+              sublabel={horseLabel}
+              className="col-start-1 row-start-1 row-span-8"
+            />
 
-          {/* Pedigree tree: goes Left (Gen 1: Horse) to Right (Gen 4: Great-Grandparents) */}
-          <div className="flex items-center justify-start min-w-fit py-6">
-            
-            {/* Gen 1: Target Horse (with absolutely positioned description to prevent vertical layout shifting) */}
-            <div className="relative flex flex-col items-center justify-center shrink-0 pr-2 h-[46px]">
-              <PedigreePill fullName={tree.horse} highlight />
-              <span className="absolute top-[100%] left-1/2 -translate-x-1/2 text-[9px] text-white/35 font-light capitalize mt-2 whitespace-nowrap">
-                {horseLabel}
-              </span>
-            </div>
+            <ForkTop className="col-start-2 row-start-1 row-span-4" />
+            <ForkBottom className="col-start-2 row-start-5 row-span-4" />
 
-            {/* Connecting Horse (Gen 1) to Sire/Dam (Gen 2) */}
-            <Connector width={20} height={240} />
+            <NodeCell
+              fullName={tree.sire}
+              label="Sire"
+              lineIn
+              lineOut
+              className="col-start-3 row-start-1 row-span-4"
+            />
+            <NodeCell
+              fullName={tree.dam}
+              label="Dam"
+              lineIn
+              lineOut
+              className="col-start-3 row-start-5 row-span-4"
+            />
 
-            {/* Gen 2, Gen 3, Gen 4 nested structure */}
-            <div className="flex flex-col gap-10 shrink-0">
-              
-              {/* SIRE side */}
-              <div className="flex items-center gap-2">
-                <PedigreePill fullName={tree.sire} label="Sire" />
-                <Connector width={16} height={116} />
-                
-                <div className="flex flex-col gap-8">
-                  {/* Sire's Sire branch */}
-                  <div className="flex items-center gap-2">
-                    <PedigreePill fullName={tree.sireSire} label="Sire's Sire" />
-                    <Connector width={12} height={48} />
-                    <div className="flex flex-col gap-3">
-                      <PedigreePill fullName={tree.sireSireSire} muted />
-                      <PedigreePill fullName={tree.sireSireDam} muted />
-                    </div>
-                  </div>
+            <ForkTop className="col-start-4 row-start-1 row-span-2" />
+            <ForkBottom className="col-start-4 row-start-3 row-span-2" />
+            <ForkTop className="col-start-4 row-start-5 row-span-2" />
+            <ForkBottom className="col-start-4 row-start-7 row-span-2" />
 
-                  {/* Sire's Dam branch */}
-                  <div className="flex items-center gap-2">
-                    <PedigreePill fullName={tree.sireDam} label="Sire's Dam" />
-                    <Connector width={12} height={48} />
-                    <div className="flex flex-col gap-3">
-                      <PedigreePill fullName={tree.sireDamSire} muted />
-                      <PedigreePill fullName={tree.sireDamDam} muted />
-                    </div>
-                  </div>
-                </div>
+            <NodeCell
+              fullName={tree.sireSire}
+              label="Sire's Sire"
+              lineIn
+              lineOut
+              className="col-start-5 row-start-1 row-span-2"
+            />
+            <NodeCell
+              fullName={tree.sireDam}
+              label="Sire's Dam"
+              lineIn
+              lineOut
+              className="col-start-5 row-start-3 row-span-2"
+            />
+            <NodeCell
+              fullName={tree.damSire}
+              label="Dam's Sire"
+              lineIn
+              lineOut
+              className="col-start-5 row-start-5 row-span-2"
+            />
+            <NodeCell
+              fullName={tree.damDam}
+              label="Dam's Dam"
+              lineIn
+              lineOut
+              className="col-start-5 row-start-7 row-span-2"
+            />
 
-              </div>
+            <ForkTop className="col-start-6 row-start-1" />
+            <ForkBottom className="col-start-6 row-start-2" />
+            <ForkTop className="col-start-6 row-start-3" />
+            <ForkBottom className="col-start-6 row-start-4" />
+            <ForkTop className="col-start-6 row-start-5" />
+            <ForkBottom className="col-start-6 row-start-6" />
+            <ForkTop className="col-start-6 row-start-7" />
+            <ForkBottom className="col-start-6 row-start-8" />
 
-              {/* DAM side */}
-              <div className="flex items-center gap-2">
-                <PedigreePill fullName={tree.dam} label="Dam" />
-                <Connector width={16} height={116} />
-                
-                <div className="flex flex-col gap-8">
-                  {/* Dam's Sire branch */}
-                  <div className="flex items-center gap-2">
-                    <PedigreePill fullName={tree.damSire} label="Dam's Sire" />
-                    <Connector width={12} height={48} />
-                    <div className="flex flex-col gap-3">
-                      <PedigreePill fullName={tree.damSireSire} muted />
-                      <PedigreePill fullName={tree.damSireDam} muted />
-                    </div>
-                  </div>
-
-                  {/* Dam's Dam branch */}
-                  <div className="flex items-center gap-2">
-                    <PedigreePill fullName={tree.damDam} label="Dam's Dam" />
-                    <Connector width={12} height={48} />
-                    <div className="flex flex-col gap-3">
-                      <PedigreePill fullName={tree.damDamSire} muted />
-                      <PedigreePill fullName={tree.damDamDam} muted />
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-
+            <NodeCell fullName={tree.sireSireSire} muted lineIn className="col-start-7 row-start-1" />
+            <NodeCell fullName={tree.sireSireDam} muted lineIn className="col-start-7 row-start-2" />
+            <NodeCell fullName={tree.sireDamSire} muted lineIn className="col-start-7 row-start-3" />
+            <NodeCell fullName={tree.sireDamDam} muted lineIn className="col-start-7 row-start-4" />
+            <NodeCell fullName={tree.damSireSire} muted lineIn className="col-start-7 row-start-5" />
+            <NodeCell fullName={tree.damSireDam} muted lineIn className="col-start-7 row-start-6" />
+            <NodeCell fullName={tree.damDamSire} muted lineIn className="col-start-7 row-start-7" />
+            <NodeCell fullName={tree.damDamDam} muted lineIn className="col-start-7 row-start-8" />
           </div>
 
           <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
