@@ -148,34 +148,21 @@ export function InvestmentTermsModal({
     }
   };
 
-  const termRow = (
-    label: string,
-    value: ReactNode,
-    hint?: string,
-    last = false
-  ) => (
+  const termRow = (label: string, value: ReactNode, last = false) => (
     <div
-      className={`space-y-1 ${
+      className={`flex justify-between gap-4 ${
         last ? "pb-1" : "border-b border-white/[0.06] pb-3.5"
       }`}
     >
-      <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+      <span className="text-white/40 shrink-0 max-w-[55%] leading-snug">
         {label}
-      </p>
-      <p className="text-[15px] font-medium text-white leading-snug">{value}</p>
-      {hint ? (
-        <p className="text-[11px] font-light text-white/40 leading-snug">
-          {hint}
-        </p>
-      ) : null}
+      </span>
+      <span className="text-white font-medium text-right leading-snug">
+        {value}
+      </span>
     </div>
   );
 
-  const priceDisplay =
-    listRatePer1Pct != null && listRatePer1Pct > 0
-      ? `$${formatMoney(listRatePer1Pct)} NZD per month`
-      : null;
-  const minInvestDisplay = `$${formatMoney(pricePerShareNzd)} NZD`;
   const leaseTermDisplay =
     months > 0
       ? `${months} months starting ${formatStartDate(leaseStartDate)}`
@@ -217,35 +204,66 @@ export function InvestmentTermsModal({
               </h3>
             </div>
 
-            {/* Commercial story — price first, then structure */}
-            <div className="space-y-4 text-[13px] font-light">
-              {priceDisplay &&
-                termRow(
-                  "Price",
-                  priceDisplay,
-                  "Based on 1% investment"
-                )}
-              {termRow(
-                "Minimum investment",
-                minInvestDisplay,
-                unitPctOfHorse > 0
-                  ? `${formatPct(unitPctOfHorse)}% unit`
-                  : "1 unit"
+            {/* Hero: price + minimum investment */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {listRatePer1Pct != null && listRatePer1Pct > 0 && (
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+                    Price
+                  </p>
+                  <p className="text-[28px] font-light text-white tracking-tight leading-none">
+                    ${formatMoney(listRatePer1Pct)}
+                    <span className="text-[13px] text-white/50 font-light ml-1">
+                      NZD
+                    </span>
+                  </p>
+                  <p className="text-[11px] font-light text-white/45 leading-snug pt-1">
+                    per month
+                  </p>
+                  <p className="text-[11px] font-light text-white/40 leading-snug">
+                    Based on 1% investment
+                  </p>
+                </div>
               )}
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+                  Minimum investment
+                </p>
+                <p className="text-[28px] font-light text-white tracking-tight leading-none">
+                  ${formatMoney(pricePerShareNzd)}
+                  <span className="text-[13px] text-white/50 font-light ml-1">
+                    NZD
+                  </span>
+                </p>
+                <p className="text-[11px] font-light text-white/45 leading-snug pt-1">
+                  {unitPctOfHorse > 0
+                    ? `${formatPct(unitPctOfHorse)}% unit`
+                    : "1 unit"}
+                </p>
+              </div>
+            </div>
+
+            {/* Secondary: lease, stake, return */}
+            <div className="space-y-4 text-[13px] font-light border-t border-white/[0.06] pt-5">
               {termRow("Lease term", leaseTermDisplay)}
               {termRow(
                 "Syndicate stake available",
-                stakeAvailablePct > 0
-                  ? `${formatPct(stakeAvailablePct)}%`
-                  : "—",
-                "Based on total ownership"
+                stakeAvailablePct > 0 ? (
+                  <span className="inline-flex flex-col items-end gap-0.5">
+                    <span>{formatPct(stakeAvailablePct)}%</span>
+                    <span className="text-[11px] font-light text-white/40">
+                      Based on total ownership
+                    </span>
+                  </span>
+                ) : (
+                  "—"
+                )
               )}
               {termRow(
                 "Investor return",
                 <span className="text-[#34D399] font-medium">
                   {investorReturnPct}% of gross stakes won
                 </span>,
-                undefined,
                 true
               )}
             </div>
