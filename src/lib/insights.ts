@@ -857,7 +857,7 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'how-much-does-it-cost-to-own-a-racehorse-in-nz',
-    title: 'How Much Does It Cost to Own a Racethoroughbred in New Zealand?',
+    title: 'How Much Does It Cost to Own a Racehorse in New Zealand?',
     subtitle: 'A practical guide to thoroughbred ownership costs in New Zealand, including full-cost scenarios and syndication pricing',
     author: 'Evolution Stables',
     authorTitle: '',
@@ -888,7 +888,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Training fees are the largest regular expense. A thoroughbred in full training with a New Zealand trainer typically costs between three and five thousand dollars per month, depending on the stable, location, and level of service. This covers trackwork, feed, stabling, basic farriery, and routine care. Veterinary costs, specialised shoeing, and race-day expenses are usually billed separately.',
+        text: 'Training fees are the largest regular expense. Industry estimates for a thoroughbred in full training with a New Zealand trainer typically cite three to five thousand dollars per month, depending on the stable, location, and level of service. This covers trackwork, feed, stabling, basic farriery, and routine care. Veterinary costs, specialised shoeing, and race-day expenses are usually billed separately.',
       },
       {
         type: 'paragraph',
@@ -924,7 +924,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'A single thoroughbred in training can easily cost several thousand dollars per month before it ever races. Over a year, the total can range from around forty thousand dollars at the low end to seventy thousand dollars or more at the high end, depending on the trainer, campaign frequency, and veterinary needs. These figures are indicative only and vary widely between stables and individual thoroughbreds.',
+        text: 'A single thoroughbred in training can easily cost several thousand dollars per month before it ever races. Over a year, industry estimates suggest totals ranging from around forty thousand dollars at the low end to seventy thousand dollars or more at the high end, depending on the trainer, campaign frequency, and veterinary needs. These figures are indicative only and vary widely between stables and individual thoroughbreds.',
       },
       {
         type: 'paragraph',
@@ -940,7 +940,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'For example, imagine a campaign with an owner rate of seventy-five dollars per month per 1% of the thoroughbred, a 5% platform fee, a unit size of 0.25%, and a lease term of twelve months. The list rate is approximately seventy-eight dollars and seventy-five cents per month per 1%. The unit cost is 0.25% times twelve months times the list rate, which works out to roughly two hundred and thirty-six dollars total for the full lease term.',
+        text: 'For example, a current Evolution Stables campaign offers ownership at an owner rate of seventy dollars per month per 1% of the thoroughbred. With a 5% platform fee, the list rate is seventy-three dollars and fifty cents per month per 1%, snapped to seventy-four dollars for investor-facing pricing. The syndicate holds 5% of the thoroughbred, divided into twenty lots, so each lot is 0.25%. Over a twelve-month lease term, the subscription price for one lot is listed at two hundred and twenty-five dollars. This is the total amount payable — not a monthly fee, but the full upfront subscription for the entire lease period.',
       },
       {
         type: 'paragraph',
@@ -998,7 +998,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Evolution Stables uses a transparent formula: owner rate per 1% per month, plus a small platform fee to form the list rate, multiplied by the lot size and the lease term in months. If the owner rate is fifty units per month per 1%, a 5% platform fee would make the list rate roughly fifty-two and a half units per 1% per month. A 0.25% lot over twelve months would therefore cost 0.25% times twelve times the list rate, or around one hundred and fifty-seven and a half units for the full term. Actual rates vary by campaign and are shown on each listing.',
+        text: 'Evolution Stables uses a transparent formula: owner rate per 1% per month, plus a small platform fee to form the list rate, multiplied by the lot size and the lease term in months. If the owner rate is fifty dollars per month per 1%, a 5% platform fee would make the list rate roughly fifty-two dollars and fifty cents per 1% per month. A 0.25% lot over twelve months would therefore cost 0.25% times twelve times the list rate, or around one hundred and fifty-seven dollars and fifty cents for the full term. Actual rates vary by campaign and are shown on each listing.',
       },
       {
         type: 'paragraph',
@@ -1028,12 +1028,12 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'racehorse-syndication-explained-nz',
-    title: 'Racethoroughbred Syndication Explained: A New Zealand Owner\'s Guide',
+    title: 'Racehorse Syndication Explained: A New Zealand Owner\'s Guide',
     subtitle: 'Educational guide for prospective and current thoroughbred owners',
     author: 'Evolution Stables',
     authorTitle: '',
     date: '2026-07-06',
-    excerpt: 'Racethoroughbred syndication allows multiple people to share the costs and experience of owning a thoroughbred in New Zealand. Here is how it works in practice.',
+    excerpt: 'Racehorse syndication allows multiple people to share the costs and experience of owning a thoroughbred in New Zealand. Here is how it works in practice.',
     heroImage: '/images/content/horses/prudentia-action.png',
     category: 'Guide',
     body: [
@@ -1043,7 +1043,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racethoroughbred syndication is the practice of dividing ownership of a thoroughbred into multiple shares. Instead of one owner funding the entire purchase and ongoing costs, a syndicate allows a group of people to participate according to the percentage they hold. Each owner receives a proportionate share of prize money, owner privileges, and racing experience.',
+        text: 'Thoroughbred syndication is the practice of dividing ownership of a thoroughbred into multiple shares. Instead of one owner funding the entire purchase and ongoing costs, a syndicate allows a group of people to participate according to the percentage they hold. Each owner receives a proportionate share of prize money, owner privileges, and racing experience.',
       },
       {
         type: 'subheading',
@@ -1097,7 +1097,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racethoroughbred syndication in New Zealand sits at the intersection of racing regulation and financial markets law. New Zealand Thoroughbred Racing (NZTR) is the industry body that licenses syndicators, approves disclosure statements, and sets the Bloodstock Syndicator Code of Practice. Because selling shares in a thoroughbred to the public involves an offer of securities, the Financial Markets Conduct Act also applies. Authorised syndicators operate under a streamlined exemption that recognises the special nature of bloodstock syndication, provided they meet strict transparency and conduct standards.',
+        text: 'Thoroughbred syndication in New Zealand sits at the intersection of racing regulation and financial markets law. New Zealand Thoroughbred Racing (NZTR) is the industry body that licenses syndicators, approves disclosure statements, and sets the Bloodstock Syndicator Code of Practice. Because selling shares in a thoroughbred to the public involves an offer of securities, the Financial Markets Conduct Act also applies. Authorised syndicators operate under a streamlined exemption that recognises the special nature of bloodstock syndication, provided they meet strict transparency and conduct standards.',
       },
       {
         type: 'paragraph',
@@ -1259,7 +1259,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'After NZTR releases the stakes, the syndicator applies the deductions agreed in the syndicate agreement. A typical arrangement sees the trainer receive a percentage for placing and training the thoroughbred, the jockey receives a riding fee and a success percentage, and the syndicator deducts agreed administration costs. The remaining balance is the net amount available for owners. Evolution Stables returns 75% of gross stakes to investors, with the remaining 25% covering trainer, jockey, and syndicate expenses. Always check the specific campaign disclosure statement, because percentages can differ between syndicates.',
+        text: 'After NZTR releases the stakes, the syndicator applies the deductions agreed in the syndicate agreement. Under the Evolution Stables model, 75% of gross stakes flows to investors. The remaining 25% covers trainer percentages, jockey fees, stable expenses, and syndicate administration. This means investors do not see a separate trainer or jockey deduction on their settlement statement — those costs are already accounted for in the 25% retained by the syndicate. Always check the specific campaign disclosure statement, because percentages can differ between syndicates.',
       },
       {
         type: 'subheading',
@@ -1267,7 +1267,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Imagine a hypothetical race with a published stake pool of ten thousand units. If the thoroughbred finishes first and the winner receives 50% of the pool, the gross stakes credited to the syndicate would be five thousand units. From that amount, the syndicate agreement deducts trainer and jockey percentages, say a combined 20%, leaving four thousand units. If the syndicate owns 50% of the thoroughbred, its share is two thousand units. If Evolution Stables returns 75% of gross stakes to investors, the investors collectively receive three thousand seven hundred and fifty units. A person holding a 0.25% lot in the syndicate would receive 0.25% of that investor share, or nine and three-quarter units. This is a simplified illustration; real calculations follow the exact disclosure statement and NZTR payment rules.',
+        text: 'Imagine a hypothetical race with a published stake pool of ten thousand dollars. If the thoroughbred finishes first and the winner receives 50% of the pool, the gross stakes credited to the syndicate would be five thousand dollars. Under the Evolution Stables model, 75% of gross stakes flows to investors — that is three thousand seven hundred and fifty dollars. The remaining 25% covers trainer percentages, jockey fees, stable expenses, and syndicate administration. If the syndicate owns 50% of the thoroughbred, the investor pool is calculated against the syndicate stake. A person holding a 0.25% lot in the syndicate would receive 0.25% of the three thousand seven hundred and fifty dollar investor pool, or approximately nine dollars and thirty-eight cents. This is a simplified illustration; real calculations follow the exact disclosure statement and NZTR payment rules.',
       },
       {
         type: 'subheading',
@@ -1453,7 +1453,7 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'how-to-buy-a-racehorse-share-in-nz',
-    title: 'How to Buy a Racethoroughbred Share in New Zealand',
+    title: 'How to Buy a Racehorse Share in New Zealand',
     subtitle: 'A complete walkthrough for buying a share in a New Zealand thoroughbred, from browsing to ownership',
     author: 'Evolution Stables',
     authorTitle: '',
@@ -1532,26 +1532,6 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'subheading',
-        text: 'Comparison: traditional vs digital signup',
-      },
-      {
-        type: 'paragraph',
-        text: 'Traditional syndication often involves paper forms, bank transfers, email chains, and manual reconciliation of updates and distributions. Digital-syndication centralises the same steps in one regulated platform: browse, verify, subscribe, track, and receive settlement from the same account. Both models are governed by the same NZTR rules. The difference is efficiency, transparency, and accessibility.',
-      },
-      {
-        type: 'subheading',
-        text: 'Risk disclosure',
-      },
-      {
-        type: 'paragraph',
-        text: 'Racethoroughbred ownership is speculative. A thoroughbred can be injured, fail to perform, retire early, or earn less prize money than expected. There are no guaranteed returns, and you should only subscribe with money you can afford to lose. Before buying, read all offering documents and consider seeking independent advice.',
-      },
-      {
-        type: 'paragraph',
-        text: 'If you are ready to explore current opportunities, visit the Evolution Stables marketplace and browse the active campaigns.',
-      },
-      {
-        type: 'subheading',
         text: 'What happens after you verify your identity',
       },
       {
@@ -1606,7 +1586,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racethoroughbred ownership is a high-risk activity. A thoroughbred can be injured in training, fail to measure up at the races, retire early, or earn prize money that does not cover the cost of the campaign. Past performance of other thoroughbreds is not a guide to future results, and there is no guaranteed return. You should subscribe only with capital you can afford to lose, read the disclosure statement in full, and seek independent financial, tax, or legal advice if you are unsure.',
+        text: 'Thoroughbred ownership is a high-risk activity. A thoroughbred can be injured in training, fail to measure up at the races, retire early, or earn prize money that does not cover the cost of the campaign. Past performance of other thoroughbreds is not a guide to future results, and there is no guaranteed return. You should subscribe only with capital you can afford to lose, read the disclosure statement in full, and seek independent financial, tax, or legal advice if you are unsure.',
       },
       {
         type: 'paragraph',

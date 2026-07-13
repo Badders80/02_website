@@ -60,7 +60,7 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
       subjectOf: pressArticles.map((article) => ({
         "@type": "NewsArticle",
         headline: article.headline,
-        url: `https://www.evolutionstables.nz${article.url}`,
+        url: article.url.startsWith("http") ? article.url : `https://www.evolutionstables.nz${article.url}`,
         publisher: {
           "@type": "Organization",
           name: article.publisher,
