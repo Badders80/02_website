@@ -277,7 +277,7 @@ export function InvestmentTermsModal({
                   disabled={kycLoading}
                   className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {kycLoading ? "Starting verification..." : "Become an owner"}
+                  {kycLoading ? "Starting verification..." : "Buy now"}
                 </button>
 
                 <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
