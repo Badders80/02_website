@@ -237,23 +237,19 @@ export function InvestmentTermsModal({
               )}
 
               {termRow(
-                "Investor returns",
+                "Investor return",
                 <span className="text-[#34D399] font-medium">
-                  {investorReturnPct}% of stakes on the syndicate stake
-                  <span className="block text-[11px] font-light text-white/45 mt-0.5 normal-case tracking-normal">
-                    Pro-rata by units — not {investorReturnPct}% of the whole
-                    horse
-                  </span>
+                  {investorReturnPct}% gross stakes won*
                 </span>
               )}
 
               {termRow("Capital calls", "None", true)}
             </div>
 
-            <p className="text-[11px] font-light text-white/30 leading-relaxed">
-              Race-day costs — jockey, trainer, nominations — are handled
-              within the ownership framework. Investors are not asked to fund
-              operating expenses.
+            <p className="text-[11px] font-light text-white/35 leading-relaxed">
+              *Returns are pro-rata to your units in the Evolution syndicate
+              stake (not of the whole horse), based on official NZTR stakes,
+              and distributed quarterly after settlement.
             </p>
 
             {readOnly ? (
