@@ -54,8 +54,7 @@ const TERMS_SKELETON_LABELS = [
   "Lease start date",
   "Units available",
   "Syndicate stake",
-  "Investor returns",
-  "Capital calls",
+  "Investor return",
 ];
 
 // Helper: determine if user tier can see real terms

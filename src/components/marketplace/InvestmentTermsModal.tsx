@@ -240,10 +240,9 @@ export function InvestmentTermsModal({
                 "Investor return",
                 <span className="text-[#34D399] font-medium">
                   {investorReturnPct}% gross stakes won*
-                </span>
+                </span>,
+                true
               )}
-
-              {termRow("Capital calls", "None", true)}
             </div>
 
             <p className="text-[11px] font-light text-white/35 leading-relaxed">
