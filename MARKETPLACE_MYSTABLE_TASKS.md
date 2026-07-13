@@ -74,6 +74,12 @@ All `[x]` items confirmed by reading code + `tsc --noEmit` clean + `npm run buil
 
 **No code gaps remain.** All three items previously listed were already built (2+3) or are now built (1).
 
+### Content / Learn pages
+
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 12 | **`/learn/returns` — "Learn more about how returns work"** | 🔴 TODO | Investment Terms modal links here (`InvestmentTermsModal.tsx`). Stub copy in modal: pro-rata ownership, NZTR results, quarterly settlement. Needs full explainer page/section. |
+
 ### Deferred by locked decisions (not Stage 1)
 
 | # | Task | Decision | Reason |

@@ -16,10 +16,11 @@ UI baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`.
 ## Next action
 
 1. Local iterate investment terms / purchase UX (prefer local over push spam).  
-2. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
-3. Optional: purchase qty → % of horse.  
-4. Controlled open remaining lots only when docs ready.  
-5. Do **not** refund founder unit unless asked.
+2. Build `/learn/returns` — "Learn more about how returns work" (modal already links; page TODO).  
+3. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
+4. Optional: purchase qty → % of horse.  
+5. Controlled open remaining lots only when docs ready.  
+6. Do **not** refund founder unit unless asked.
 
 ## Why
 

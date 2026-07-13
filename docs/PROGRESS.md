@@ -14,10 +14,11 @@
 ## What's next (canonical)
 
 1. Iterate investment terms / purchase UX locally — baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`  
-2. Final Manolo PDS + SA (`public/documents/i-stole-a-manolo/`)  
-3. Purchase window: qty → live % of horse (optional polish)  
-4. Controlled open remaining lots when docs ready (`PURCHASES_ENABLED=true`)  
-5. Optional: rotate chat-exposed Stripe `sk_live` if still live  
+2. **`/learn/returns` page** — "Learn more about how returns work" (linked from Investment Terms modal; page not built yet)  
+3. Final Manolo PDS + SA (`public/documents/i-stole-a-manolo/`)  
+4. Purchase window: qty → live % of horse (optional polish)  
+5. Controlled open remaining lots when docs ready (`PURCHASES_ENABLED=true`)  
+6. Optional: rotate chat-exposed Stripe `sk_live` if still live
 
 ---
 
