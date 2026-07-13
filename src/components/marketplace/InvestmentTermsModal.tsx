@@ -1,21 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { toListRate } from "@/lib/pricing";
 
 interface InvestmentTermsModalProps {
   horseName: string;
   horseSlug: string;
+  /** All-in list price for one unit (lot) over the full term — checkout ticket */
   pricePerShareNzd: number;
+  /** Evolution syndicate stake as % of the horse (e.g. 5) */
   totalLeasePercent: number | string;
   leasePeriodMonths: number | string;
   leaseStartDate: string;
   investorReturnPct: number | string;
   sharesTotal: number;
   sharesAvailable: number;
+  /** Owner rate $/mo per 1% of horse — for apples-to-apples price line */
+  ownerRatePer1PctMonth?: number | null;
+  platformFeePct?: number | null;
   /** Preview mode: show real terms without purchase CTA (coming_soon_details) */
   readOnly?: boolean;
+}
+
+function formatStartDate(raw: string): string {
+  if (!raw || raw === "TBD") return raw || "TBD";
+  const d = new Date(raw.includes("T") ? raw : `${raw}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return raw;
+  return d.toLocaleDateString("en-NZ", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatMoney(n: number, digits = 2): string {
+  return n.toLocaleString("en-NZ", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
 }
 
 export function InvestmentTermsModal({
@@ -28,6 +52,8 @@ export function InvestmentTermsModal({
   investorReturnPct,
   sharesTotal,
   sharesAvailable,
+  ownerRatePer1PctMonth,
+  platformFeePct,
   readOnly = false,
 }: InvestmentTermsModalProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,14 +62,41 @@ export function InvestmentTermsModal({
   const { user, kycStatus } = useAuth();
   const router = useRouter();
 
+  const stakePct = Number(totalLeasePercent) || 0;
+  const months = Number(leasePeriodMonths) || 0;
+  const lots = Number(sharesTotal) || 0;
+  const unitPctOfHorse =
+    stakePct > 0 && lots > 0
+      ? Math.round((stakePct / lots) * 10000) / 10000
+      : 0;
+
+  // Apples-to-apples list rate ($/mo per 1% of horse)
+  let listRatePer1Pct: number | null = null;
+  if (
+    ownerRatePer1PctMonth != null &&
+    Number(ownerRatePer1PctMonth) > 0
+  ) {
+    listRatePer1Pct = toListRate(
+      Number(ownerRatePer1PctMonth),
+      platformFeePct != null && Number(platformFeePct) >= 0
+        ? Number(platformFeePct)
+        : 5
+    );
+  } else if (
+    pricePerShareNzd > 0 &&
+    unitPctOfHorse > 0 &&
+    months > 0
+  ) {
+    // Reverse from ticket: lot$ = list_rate × unit% × months
+    listRatePer1Pct = pricePerShareNzd / (unitPctOfHorse * months);
+  }
+
   const handleAcquire = async () => {
-    // KYC gate: verified → purchase, pending → processing screen, none → trigger KYC
     if (kycStatus === "verified") {
       router.push(`/marketplace/${horseSlug}/purchase`);
     } else if (kycStatus === "pending") {
       router.push(`/marketplace/${horseSlug}/kyc-processing`);
     } else {
-      // Trigger Stripe Identity KYC flow
       if (!user) return;
       setKycLoading(true);
       setKycError("");
@@ -62,12 +115,13 @@ export function InvestmentTermsModal({
           }),
         });
         if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: "Failed to start KYC" }));
+          const err = await res.json().catch(() => ({
+            error: "Failed to start KYC",
+          }));
           throw new Error(err.error || "Failed to start KYC");
         }
         const data = await res.json();
         if (data.verified) {
-          // Already verified server-side — go to purchase
           router.push(`/marketplace/${horseSlug}/purchase`);
         } else if (data.session_url || data.url) {
           window.location.href = data.session_url || data.url;
@@ -79,6 +133,21 @@ export function InvestmentTermsModal({
       }
     }
   };
+
+  const termRow = (label: string, value: ReactNode, last = false) => (
+    <div
+      className={`flex justify-between gap-4 ${
+        last ? "pb-1" : "border-b border-white/[0.06] pb-3.5"
+      }`}
+    >
+      <span className="text-white/40 shrink-0 max-w-[55%] leading-snug">
+        {label}
+      </span>
+      <span className="text-white font-medium text-right leading-snug">
+        {value}
+      </span>
+    </div>
+  );
 
   return (
     <>
@@ -96,10 +165,9 @@ export function InvestmentTermsModal({
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative max-w-lg w-full rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
+            className="relative max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close */}
             <button
               type="button"
               onClick={() => setIsOpen(false)}
@@ -108,7 +176,6 @@ export function InvestmentTermsModal({
               ✕
             </button>
 
-            {/* Title */}
             <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-2">
                 Digital-Syndication Terms
@@ -116,49 +183,77 @@ export function InvestmentTermsModal({
               <h3 className="text-[22px] font-light text-white tracking-tight">
                 {horseName}
               </h3>
+              <p className="text-[11px] font-light text-white/40 mt-2 leading-relaxed">
+                Pro-rata units in Evolution Stables&apos; syndicate stake on
+                this horse — not freehold ownership of the whole horse.
+              </p>
             </div>
 
-            {/* Terms */}
+            {/* Hierarchy: price + min invest → term/start → units → stake → returns → capital */}
             <div className="space-y-4 text-[13px] font-light">
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Price per share</span>
-                <span className="text-white font-medium">
-                  ${pricePerShareNzd.toLocaleString()} NZD
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Total lease percentage</span>
-                <span className="text-white font-medium">{totalLeasePercent}%</span>
-              </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Lease period</span>
-                <span className="text-white font-medium">{leasePeriodMonths} months</span>
-              </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Lease start date</span>
-                <span className="text-white font-medium">{leaseStartDate}</span>
-              </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Investor returns</span>
+              {listRatePer1Pct != null && listRatePer1Pct > 0 && (
+                <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3.5">
+                  <span className="text-white/40 shrink-0 max-w-[55%] leading-snug">
+                    Price
+                  </span>
+                  <span className="text-white font-medium text-right leading-snug">
+                    ${formatMoney(listRatePer1Pct)} NZD
+                    <span className="block text-[11px] font-light text-white/45 mt-0.5">
+                      / month per 1% of the horse
+                    </span>
+                  </span>
+                </div>
+              )}
+
+              {termRow(
+                "Minimum investment",
+                <>
+                  ${formatMoney(pricePerShareNzd)} NZD
+                  <span className="block text-[11px] font-light text-white/45 mt-0.5">
+                    1 unit
+                    {unitPctOfHorse > 0
+                      ? ` · ${unitPctOfHorse}% of the horse`
+                      : ""}
+                    {months > 0 ? ` · full ${months}-month term` : ""}
+                  </span>
+                </>
+              )}
+
+              {termRow(
+                "Lease period",
+                months > 0 ? `${months} months` : String(leasePeriodMonths)
+              )}
+
+              {termRow("Lease start date", formatStartDate(leaseStartDate))}
+
+              {termRow(
+                "Units available",
+                `${sharesAvailable} / ${sharesTotal}`
+              )}
+
+              {termRow(
+                `Evolution Stables syndicate stake in ${horseName}`,
+                stakePct > 0 ? `${stakePct}% of the horse` : "—"
+              )}
+
+              {termRow(
+                "Investor returns",
                 <span className="text-[#34D399] font-medium">
-                  {investorReturnPct}% of stakes won
+                  {investorReturnPct}% of stakes on the syndicate stake
+                  <span className="block text-[11px] font-light text-white/45 mt-0.5 normal-case tracking-normal">
+                    Pro-rata by units — not {investorReturnPct}% of the whole
+                    horse
+                  </span>
                 </span>
-              </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Shares available</span>
-                <span className="text-white font-medium">
-                  {sharesAvailable} / {sharesTotal}
-                </span>
-              </div>
-              <div className="flex justify-between pb-1">
-                <span className="text-white/40">Capital calls</span>
-                <span className="text-white font-medium">None</span>
-              </div>
+              )}
+
+              {termRow("Capital calls", "None", true)}
             </div>
 
-            {/* No capital calls note */}
             <p className="text-[11px] font-light text-white/30 leading-relaxed">
-              Race-day costs — jockey, trainer, nominations — are handled within the ownership framework. Investors are not asked to fund operating expenses.
+              Race-day costs — jockey, trainer, nominations — are handled
+              within the ownership framework. Investors are not asked to fund
+              operating expenses.
             </p>
 
             {readOnly ? (
@@ -167,12 +262,11 @@ export function InvestmentTermsModal({
               </p>
             ) : (
               <>
-                {/* KYC status hint */}
                 {kycStatus !== "verified" && (
                   <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
                     {kycStatus === "pending"
                       ? "Your identity verification is in progress. Click Acquire to check status."
-                      : "Identity verification is required before acquiring shares."}
+                      : "Identity verification is required before acquiring units."}
                   </p>
                 )}
 
@@ -182,7 +276,6 @@ export function InvestmentTermsModal({
                   </p>
                 )}
 
-                {/* Acquire CTA */}
                 <button
                   type="button"
                   onClick={handleAcquire}
@@ -193,7 +286,8 @@ export function InvestmentTermsModal({
                 </button>
 
                 <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
-                  All acquisitions are subject to NZTR syndication rules and FMA equine exemptions.
+                  All acquisitions are subject to NZTR syndication rules and
+                  FMA equine exemptions.
                 </p>
               </>
             )}

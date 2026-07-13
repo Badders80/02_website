@@ -492,6 +492,14 @@ export default async function CampaignDetailPage({ params }: Props) {
                     investorReturnPct ?? hltRecord.investor_return_percentage,
                   shares_total: hltRecord.shares_total,
                   shares_sold: hltRecord.shares_sold,
+                  ownerRatePer1PctMonth:
+                    (live as any)?.owner_rate_per_1pct_month ??
+                    (hlt as any).owner_rate_per_1pct_month ??
+                    null,
+                  platformFeePct:
+                    (live as any)?.platform_fee_pct ??
+                    (hlt as any).platform_fee_pct ??
+                    5,
                 }}
               />
             </div>

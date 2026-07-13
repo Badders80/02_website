@@ -121,6 +121,14 @@ export async function GET(
       leaseStartDate: live?.leaseStartDate ?? staticHlt?.lease_start_date ?? null,
       investorReturnPct:
         live?.investorReturnPct ?? staticHlt?.investor_return_pct ?? null,
+      owner_rate_per_1pct_month:
+        live?.owner_rate_per_1pct_month ??
+        (staticHlt as any)?.owner_rate_per_1pct_month ??
+        null,
+      platform_fee_pct:
+        live?.platform_fee_pct ??
+        (staticHlt as any)?.platform_fee_pct ??
+        null,
       // Explicit gate for PurchaseFlow — do not infer from shares alone
       purchasable: eligibility.allowed,
       purchases_enabled: isPurchasesEnabled(),

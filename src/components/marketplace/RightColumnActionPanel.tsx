@@ -16,6 +16,8 @@ interface StaticTerms {
   investorReturnPct: number | string;
   shares_total: number;
   shares_sold: number;
+  ownerRatePer1PctMonth?: number | null;
+  platformFeePct?: number | null;
 }
 
 interface RightColumnActionPanelProps {
@@ -41,7 +43,20 @@ interface LiveInventory {
   leasePeriodMonths: number | string | null;
   leaseStartDate: string;
   investorReturnPct: number | string | null;
+  owner_rate_per_1pct_month?: number | null;
+  platform_fee_pct?: number | null;
 }
+
+const TERMS_SKELETON_LABELS = [
+  "Price",
+  "Minimum investment",
+  "Lease period",
+  "Lease start date",
+  "Units available",
+  "Syndicate stake",
+  "Investor returns",
+  "Capital calls",
+];
 
 // Helper: determine if user tier can see real terms
 type UserTier = "guest" | "auth" | "kyc";
@@ -132,6 +147,14 @@ export function RightColumnActionPanel({
           shares_total: sharesTotal,
           shares_sold: sharesSold,
           shares_available: sharesAvailable,
+          ownerRatePer1PctMonth:
+            inventory?.owner_rate_per_1pct_month ??
+            staticTerms?.ownerRatePer1PctMonth ??
+            null,
+          platformFeePct:
+            inventory?.platform_fee_pct ??
+            staticTerms?.platformFeePct ??
+            null,
         }
       : null;
 
@@ -157,11 +180,6 @@ export function RightColumnActionPanel({
         <RegistrationGate horseName={horseName} onSignIn={handleSignInRedirect} />
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
           <CampaignStatusBadge status={status} />
-          {status === "listed" && sharesTotal > 0 && (
-            <span className="text-[12px] font-light text-white/40">
-              {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
-            </span>
-          )}
         </div>
       </>
     );
@@ -194,7 +212,7 @@ export function RightColumnActionPanel({
           </div>
           {/* Blurred terms skeleton */}
           <div className="space-y-4 select-none pointer-events-none" aria-hidden="true">
-            {["Price per share", "Total lease percentage", "Lease period", "Lease start date", "Investor returns", "Capital calls"].map((label) => (
+            {TERMS_SKELETON_LABELS.map((label) => (
               <div key={label} className="flex justify-between border-b border-white/[0.04] pb-3">
                 <span className="text-[12px] font-light text-white/40">{label}</span>
                 <span className="h-4 bg-white/10 rounded w-20 blur-sm" />
@@ -233,15 +251,10 @@ export function RightColumnActionPanel({
                 {statusInfo.label}
               </span>
             </div>
-            {sharesTotal > 0 && (
-              <span className="text-[12px] font-light text-white/40">
-                {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
-              </span>
-            )}
           </div>
           {/* Blurred terms skeleton */}
           <div className="space-y-4 select-none pointer-events-none" aria-hidden="true">
-            {["Price per share", "Total lease percentage", "Lease period", "Lease start date", "Investor returns", "Capital calls"].map((label) => (
+            {TERMS_SKELETON_LABELS.map((label) => (
               <div key={label} className="flex justify-between border-b border-white/[0.04] pb-3">
                 <span className="text-[12px] font-light text-white/40">{label}</span>
                 <span className="h-4 bg-white/10 rounded w-20 blur-sm" />
@@ -335,11 +348,6 @@ export function RightColumnActionPanel({
             {statusInfo.label}
           </span>
         </div>
-        {status === "listed" && sharesTotal > 0 && (
-          <span className="text-[12px] font-light text-white/40">
-            {Math.round((sharesSold / sharesTotal) * 100)}% subscribed
-          </span>
-        )}
       </div>
 
       {status === "listed" && termsSource && (
@@ -353,6 +361,8 @@ export function RightColumnActionPanel({
           investorReturnPct={termsSource.investorReturnPct}
           sharesTotal={termsSource.shares_total}
           sharesAvailable={termsSource.shares_available}
+          ownerRatePer1PctMonth={termsSource.ownerRatePer1PctMonth}
+          platformFeePct={termsSource.platformFeePct}
         />
       )}
 
@@ -371,6 +381,8 @@ export function RightColumnActionPanel({
           investorReturnPct={termsSource.investorReturnPct}
           sharesTotal={termsSource.shares_total}
           sharesAvailable={termsSource.shares_available}
+          ownerRatePer1PctMonth={termsSource.ownerRatePer1PctMonth}
+          platformFeePct={termsSource.platformFeePct}
           readOnly
         />
       )}
