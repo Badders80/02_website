@@ -5,7 +5,7 @@ import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Brand Guidelines | Evolution Stables',
+  title: 'Brand Guidelines',
   description:
     'The brand guidelines for Evolution Stables — visual identity, colour system, typography, voice and tone, and developer tokens.',
   alternates: {

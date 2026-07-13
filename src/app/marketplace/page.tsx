@@ -15,7 +15,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Marketplace | Evolution Stables",
+  title: "Marketplace",
   description:
     "Discover and explore native digital-syndication opportunities within the Evolution ecosystem. Browse active offerings, ownership positions, and live data.",
   alternates: {
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_NZ",
-    url: "https://evolutionstables.nz/marketplace",
+    url: "https://www.evolutionstables.nz/marketplace",
     siteName: "Evolution Stables",
-    title: "Marketplace | Evolution Stables",
+    title: "Marketplace",
     description:
       "Discover and explore native digital-syndication opportunities within the Evolution ecosystem.",
     images: [
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Marketplace | Evolution Stables",
+    title: "Marketplace",
     description:
       "Discover and explore native digital-syndication opportunities within the Evolution ecosystem.",
     images: ["/opengraph-image"],

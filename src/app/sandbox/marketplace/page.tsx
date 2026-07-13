@@ -5,7 +5,7 @@ import { ListingGridSandbox } from "@/components/marketplace/ListingGridSandbox"
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Marketplace (Sandbox) | Evolution Stables",
+  title: "Marketplace (Sandbox)",
   description:
     "Discover and explore native digital-syndication opportunities within the Evolution ecosystem. Browse active offerings, ownership positions, and live data.",
 };

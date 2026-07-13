@@ -25,6 +25,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "Applebot-Extended", allow: "/" },
       { userAgent: "CCBot", allow: "/" },
     ],
-    sitemap: "https://evolutionstables.nz/sitemap.xml",
+    sitemap: "https://www.evolutionstables.nz/sitemap.xml",
   };
 }

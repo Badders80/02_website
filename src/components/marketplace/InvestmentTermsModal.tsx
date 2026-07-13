@@ -30,7 +30,7 @@ function formatStartDate(raw: string): string {
   if (Number.isNaN(d.getTime())) return raw;
   return d.toLocaleDateString("en-NZ", {
     day: "numeric",
-    month: "long",
+    month: "short",
     year: "numeric",
   });
 }
@@ -163,11 +163,6 @@ export function InvestmentTermsModal({
     </div>
   );
 
-  const leaseTermDisplay =
-    months > 0
-      ? `${months} months starting ${formatStartDate(leaseStartDate)}`
-      : formatStartDate(leaseStartDate);
-
   return (
     <>
       <button
@@ -245,7 +240,11 @@ export function InvestmentTermsModal({
 
             {/* Secondary: lease, stake, return */}
             <div className="space-y-4 text-[13px] font-light border-t border-white/[0.06] pt-5">
-              {termRow("Lease term", leaseTermDisplay)}
+              {termRow(
+                "Lease period",
+                months > 0 ? `${months} months` : "—"
+              )}
+              {termRow("Lease start date", formatStartDate(leaseStartDate))}
               {termRow(
                 "Syndicate stake available",
                 stakeAvailablePct > 0 ? (

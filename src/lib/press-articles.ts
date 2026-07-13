@@ -18,22 +18,6 @@ export const pressArticles: PressArticle[] = [
     imageUrl: '/images/content/horses/prudentia-action.png',
   },
   {
-    title: 'Tauranga Target: Prudentia Pivots Campaign',
-    url: '/updates/prudentia_update_10june2026_email.html',
-    publisher: 'Evolution Stables',
-    date: '2026-06-10',
-    excerpt: "A minor foot issue has prompted the stable to withdraw Prudentia from this Saturday's engagement. She will continue low-impact swimming work to protect her feet before targeting a Benchmark 75 event at Tauranga on 27 June.",
-    imageUrl: '/updates/prudentia_te_rapa_may30.jpg',
-  },
-  {
-    title: 'Te Rapa Review: Prudentia Finishes Tenaciously',
-    url: '/updates/prudentia_update_02june2026_email.html',
-    publisher: 'Evolution Stables',
-    date: '2026-06-02',
-    excerpt: 'A traffic-heavy passage at Te Rapa saw Prudentia finish a courageous fifth on Saturday, with a Tuesday morning veterinary check-up confirming her in superb condition for her winter campaign.',
-    imageUrl: '/updates/prudentia_te_rapa_may30.jpg',
-  },
-  {
     title: 'Prudentia Wins at Te Rapa in Gutsy Heavy Track Performance',
     url: 'https://x.com/EvolutionStable/status/2045096014466760782',
     publisher: 'Evolution Stables',

@@ -24,10 +24,10 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
     "@type": "Organization",
     name: "Evolution Stables",
     alternateName: "Evolution Stables NZ",
-    url: "https://evolutionstables.nz",
-    logo: "https://evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png",
+    url: "https://www.evolutionstables.nz",
+    logo: "https://www.evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png",
     description:
-      "Digital-syndication platform for racehorse ownership. Making racehorse ownership accessible, transparent, and liquid through modern technology and blockchain innovation.",
+      "Digital-syndication platform for racehorse ownership. Making racehorse ownership accessible, transparent, and liquid through regulated settlement infrastructure and modern technology.",
     foundingDate: "2024",
     sameAs: [
       "https://x.com/EvolutionStables",
@@ -46,11 +46,8 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
     keywords: [
       "racehorse ownership",
       "digital syndication",
-      "tokenized assets",
       "real world assets",
       "RWA",
-      "blockchain",
-      "horse racing",
       "fractional ownership",
       "New Zealand racing",
       "NZTR",
@@ -63,7 +60,7 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
       subjectOf: pressArticles.map((article) => ({
         "@type": "NewsArticle",
         headline: article.headline,
-        url: article.url,
+        url: article.url.startsWith("http") ? article.url : `https://www.evolutionstables.nz${article.url}`,
         publisher: {
           "@type": "Organization",
           name: article.publisher,
@@ -77,7 +74,7 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Evolution Stables",
-    url: "https://evolutionstables.nz",
+    url: "https://www.evolutionstables.nz",
   };
 
   return (

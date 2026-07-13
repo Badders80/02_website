@@ -1,0 +1,227 @@
+{
+  "summary": {
+    "health_score": 56,
+    "business_type": "Digital marketplace / fractional racehorse ownership (NZ)",
+    "audit_date": "2026-07-13",
+    "url": "https://www.evolutionstables.nz",
+    "sitemap_urls": 49,
+    "insight_articles": 34,
+    "top_findings": [
+      "Canonical/sitemap use apex while live host is www (307 redirect)",
+      "/mystable in sitemap but robots Disallow; thin auth page",
+      "Marketplace horse pages ~40 words, no H1, Product schema $0/OutOfStock",
+      "FAQPage JSON-LD injected sitewide from root layout",
+      "30/34 insights thin (<400 words full-page text)"
+    ],
+    "quick_wins": [
+      "Unify metadataBase/sitemap/schema to www",
+      "Remove mystable and brand-guidelines from sitemap",
+      "Absolute URLs in Organization subjectOf",
+      "Scope FAQ schema to /faq only",
+      "Add nav links to /insights and /faq"
+    ],
+    "vs_ph_digital_jan_2026": "Site no longer empty; insights+FAQ+marketplace live. Core PH gaps remain: decision-depth content, conversion pages, AI visibility hygiene."
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 62,
+      "what_works": [
+        "HTTPS + HSTS",
+        "robots.txt with AI bot allows",
+        "Sitemap with 49 URLs",
+        "Homepage prerender + edge cache"
+      ],
+      "findings": [
+        {
+          "title": "www vs apex host conflict",
+          "severity": "Critical",
+          "description": "Apex 307-redirects to www; canonicals, sitemap, metadataBase, JSON-LD use non-www apex.",
+          "recommendation": "Standardize all SEO URLs on https://www.evolutionstables.nz"
+        },
+        {
+          "title": "Sitemap includes robots-disallowed /mystable",
+          "severity": "High",
+          "description": "robots.txt Disallow: /mystable but sitemap lists it; page is thin auth dashboard.",
+          "recommendation": "Remove /mystable from sitemap.ts"
+        },
+        {
+          "title": "Relative URLs in JSON-LD subjectOf",
+          "severity": "High",
+          "description": "Organization schema includes relative paths for articles/updates.",
+          "recommendation": "Always absolute https URLs in structured data"
+        },
+        {
+          "title": "Minimal security headers",
+          "severity": "Medium",
+          "description": "Only HSTS observed; missing CSP, X-Frame-Options, etc.",
+          "recommendation": "Add standard security headers on Vercel"
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 44,
+      "what_works": [
+        "34 insight URLs published",
+        "Decision guides for cost, buy share, syndication",
+        "Team Evolution + RWA thought piece solid depth"
+      ],
+      "findings": [
+        {
+          "title": "Majority of insights thin",
+          "severity": "High",
+          "description": "30/34 insight pages under ~400 words of HTML text (press summaries and race reports).",
+          "recommendation": "Expand top guides to 900–1200+ words; expand or noindex thin press clones"
+        },
+        {
+          "title": "Horse listing content empty",
+          "severity": "Critical",
+          "description": "Marketplace detail pages ~40 words, no H1.",
+          "recommendation": "Full commercial copy + unique meta per horse"
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 58,
+      "what_works": [
+        "Homepage title/description/OG solid",
+        "FAQ page dedicated with good title",
+        "Article titles keyword-aligned"
+      ],
+      "findings": [
+        {
+          "title": "Double brand in titles",
+          "severity": "Medium",
+          "description": "Template appends | Evolution Stables when title already includes it.",
+          "recommendation": "Strip brand from page-level title strings"
+        },
+        {
+          "title": "Weak homepage internal links to content hub",
+          "severity": "High",
+          "description": "Crawlable home links miss /insights and /faq as primary paths.",
+          "recommendation": "Add Insights + FAQ to nav/footer"
+        },
+        {
+          "title": "Missing commercial money URLs",
+          "severity": "Medium",
+          "description": "/how-it-works, /fractional-ownership 404; intent partly under /insights only.",
+          "recommendation": "Optional hub pages after guide depth fixed"
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 52,
+      "what_works": [
+        "Organization + WebSite present",
+        "Article on insights",
+        "Product attempt on horses"
+      ],
+      "findings": [
+        {
+          "title": "FAQPage on every page",
+          "severity": "High",
+          "description": "FAQStructuredData in root layout.tsx.",
+          "recommendation": "Page-scope to /faq only"
+        },
+        {
+          "title": "Misleading Product offers",
+          "severity": "High",
+          "description": "price 0.00, OutOfStock, offerCount 0 on Prudentia sample.",
+          "recommendation": "Emit Offer only with real price/availability"
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 50,
+      "what_works": ["Vercel edge cache HIT", "Prerendered homepage"],
+      "findings": [
+        {
+          "title": "PSI quota exceeded",
+          "severity": "Info",
+          "description": "Could not pull Lighthouse/CWV field this run.",
+          "recommendation": "Re-run PSI or CrUX later"
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 55,
+      "what_works": [
+        "AI bots allowed in robots.txt",
+        "FAQ answers citable",
+        "Some decision guides published"
+      ],
+      "findings": [
+        {
+          "title": "llms.txt missing",
+          "severity": "Medium",
+          "description": "/llms.txt returns 404.",
+          "recommendation": "Add llms.txt with brand definition and key URLs"
+        },
+        {
+          "title": "Thin pages weak for AI citation",
+          "severity": "High",
+          "description": "Most insights too short to survive summarisation (PH framework).",
+          "recommendation": "Comparisons, trade-offs, structured costs, proof"
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 72,
+      "what_works": ["Alt attributes present on sampled insight pages", "OG image route"],
+      "findings": []
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical crawl fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "Unify host to www across metadata/sitemap/schema",
+          "Prune sitemap (mystable, brand-guidelines)",
+          "Absolute JSON-LD URLs",
+          "Scope FAQ schema off global layout"
+        ]
+      },
+      {
+        "name": "Phase 2: Conversion pages",
+        "timeframe": "Weeks 1-2",
+        "items": [
+          "Horse listing content + honest Product schema",
+          "Marketplace index copy",
+          "Title template cleanup"
+        ]
+      },
+      {
+        "name": "Phase 3: Decision content",
+        "timeframe": "Weeks 2-4",
+        "items": [
+          "Expand top 5 guides to 900-1200+ words",
+          "Expand or noindex thin press summaries",
+          "Interlink race reports to horse pages"
+        ]
+      },
+      {
+        "name": "Phase 4: GEO and monitoring",
+        "timeframe": "Month 2+",
+        "items": [
+          "Add llms.txt",
+          "Homepage nav to insights/FAQ",
+          "Monthly AI prompt battery",
+          "GSC baseline for seed keywords"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "report": "FULL-AUDIT-REPORT.md",
+    "action_plan": "ACTION-PLAN.md"
+  }
+}

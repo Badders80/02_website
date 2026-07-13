@@ -15,12 +15,17 @@ UI baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`.
 
 ## Next action
 
-1. Local iterate investment terms / purchase UX (prefer local over push spam).  
-2. Build `/learn/returns` — "Learn more about how returns work" (modal already links; page TODO).  
-3. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
-4. Optional: purchase qty → % of horse.  
-5. Controlled open remaining lots only when docs ready.  
-6. Do **not** refund founder unit unless asked.
+**SEO relay (Kimi K2.7 Code) — run first:**
+1. Read `relay/2026-07-13-seo-phase1-llms-content.md` — full spec.
+2. Branch `seo-phase1-content`, execute all 4 parts (crawl fixes → llms.txt → /learn/returns → guide deepening).
+3. Build, commit, do NOT deploy — Alex reviews diff.
+
+**Then Manolo/commercial:**
+4. Local iterate investment terms / purchase UX (prefer local over push spam).  
+5. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
+6. Optional: purchase qty → % of horse.  
+7. Controlled open remaining lots only when docs ready.  
+8. Do **not** refund founder unit unless asked.
 
 ## Why
 
