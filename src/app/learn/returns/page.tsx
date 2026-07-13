@@ -148,7 +148,7 @@ export default function ReturnsPage() {
                 What investors actually receive
               </h2>
               <p>
-                After settlement, investors receive their pro-rata portion of the 75% gross-stakes pool allocated to investors. This is paid directly to the wallet or account associated with their investor profile on Tokinvest, our VARA-licensed settlement partner. From there, the investor can view transaction history, retain the balance, or withdraw according to Tokinvest&apos;s procedures.
+                After settlement, investors receive their pro-rata portion of the 75% gross-stakes pool allocated to investors. This is delivered to investor accounts through our regulated settlement partner, Tokinvest. Settlement timing and account access are governed by the terms of the syndication agreement and the platform&apos;s respective terms.
               </p>
               <p>
                 Alongside the distribution, investors receive reporting that explains the calculation. This includes race-by-race stakes, gross and net figures, the 75% investor allocation, and the pro-rata calculation applied to their holding.

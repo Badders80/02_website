@@ -1516,7 +1516,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'At checkout, you pay the subscription amount through the platform. Your ownership is recorded on the regulated platform, and you receive confirmation of your holding. There are no physical certificates; your holding is maintained digitally by Tokinvest, our VARA-licensed settlement partner.',
+        text: 'At checkout, you pay the subscription amount through the platform. Your ownership is recorded through our regulated settlement partner, Tokinvest, and you receive confirmation of your holding. There are no physical certificates; your holding is maintained digitally under the terms of the syndication agreement.',
       },
       {
         type: 'subheading',
@@ -1562,7 +1562,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Your subscription buys a transparent ownership experience, not just a percentage. You receive regular stable updates, video and photo briefings when available, pre-race and post-race analysis, quarterly financial summaries, and a settlement statement whenever the thoroughbred earns stakes. You also get owner-level access to trackwork, barrier trials, and raceday hospitality where the trainer makes those available. Distributions are processed through the regulated settlement infrastructure and deposited to your wallet on the platform, with a clear audit trail from racetrack to account.',
+        text: 'Your subscription buys a transparent ownership experience, not just a percentage. You receive regular stable updates, video and photo briefings when available, pre-race and post-race analysis, quarterly financial summaries, and a settlement statement whenever the thoroughbred earns stakes. You also get owner-level access to trackwork, barrier trials, and raceday hospitality where the trainer makes those available. Distributions are processed through our regulated settlement partner and delivered to your investor account, with a clear audit trail from racetrack to account.',
       },
       {
         type: 'paragraph',
