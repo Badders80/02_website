@@ -857,7 +857,7 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'how-much-does-it-cost-to-own-a-racehorse-in-nz',
-    title: 'How Much Does It Cost to Own a Racehorse in New Zealand?',
+    title: 'How Much Does It Cost to Own a Racethoroughbred in New Zealand?',
     subtitle: 'A practical guide to thoroughbred ownership costs in New Zealand, including full-cost scenarios and syndication pricing',
     author: 'Evolution Stables',
     authorTitle: '',
@@ -872,7 +872,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Owning a thoroughbred racehorse in New Zealand is often described as a dream, but the financial reality matters. Before committing, prospective owners should understand both the upfront outlay and the ongoing costs that continue whether the horse wins, places, or runs unplaced. This guide explains the major cost categories, provides realistic scenarios, and shows how digital-syndication changes the cost profile.',
+        text: 'Owning a thoroughbred racehorse in New Zealand is often described as a dream, but the financial reality matters. Before committing, prospective owners should understand both the upfront outlay and the ongoing costs that continue whether the thoroughbred wins, places, or runs unplaced. This guide explains the major cost categories, provides realistic scenarios, and shows how digital-syndication changes the cost profile.',
       },
       {
         type: 'subheading',
@@ -900,7 +900,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Each race entry incurs nomination and acceptance fees, transport to the track, jockey fees, and gear such as rugs and boots. These costs vary by meeting and distance, but owners should budget for them across a campaign. A horse racing every few weeks can add several hundred dollars per start in direct race-day costs.',
+        text: 'Each race entry incurs nomination and acceptance fees, transport to the track, jockey fees, and gear such as rugs and boots. These costs vary by meeting and distance, but owners should budget for them across a campaign. A thoroughbred racing every few weeks can add several hundred dollars per start in direct race-day costs.',
       },
       {
         type: 'subheading',
@@ -928,7 +928,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'At the budget end, a horse spelling or racing infrequently at a country stable may keep monthly costs lower. At the premium end, a metropolitan campaign with regular transport, specialist care, and high-quality facilities will push costs to the top of the range. The key is that costs are continuous: they do not stop when the horse is not racing.',
+        text: 'At the budget end, a thoroughbred spelling or racing infrequently at a country stable may keep monthly costs lower. At the premium end, a metropolitan campaign with regular transport, specialist care, and high-quality facilities will push costs to the top of the range. The key is that costs are continuous: they do not stop when the thoroughbred is not racing.',
       },
       {
         type: 'subheading',
@@ -936,15 +936,15 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Evolution Stables uses a simple monthly-owner-rate model. The owner rate is the cost per month for each 1% of the horse. The list rate adds a small platform fee. The all-in subscription price for a unit is the list rate multiplied by the unit percentage and the lease term in months.',
+        text: 'Evolution Stables uses a simple monthly-owner-rate model. The owner rate is the cost per month for each 1% of the thoroughbred. The list rate adds a small platform fee. The all-in subscription price for a unit is the list rate multiplied by the unit percentage and the lease term in months.',
       },
       {
         type: 'paragraph',
-        text: 'For example, imagine a campaign with an owner rate of seventy-five dollars per month per 1% of the horse, a 5% platform fee, a unit size of 0.25%, and a lease term of twelve months. The list rate is approximately seventy-eight dollars and seventy-five cents per month per 1%. The unit cost is 0.25% times twelve months times the list rate, which works out to roughly two hundred and thirty-six dollars total for the full lease term.',
+        text: 'For example, imagine a campaign with an owner rate of seventy-five dollars per month per 1% of the thoroughbred, a 5% platform fee, a unit size of 0.25%, and a lease term of twelve months. The list rate is approximately seventy-eight dollars and seventy-five cents per month per 1%. The unit cost is 0.25% times twelve months times the list rate, which works out to roughly two hundred and thirty-six dollars total for the full lease term.',
       },
       {
         type: 'paragraph',
-        text: 'This single payment covers your share of training, veterinary care, race-day expenses, insurance, and administration for the lease period. There are no additional capital calls during the campaign. If the horse earns prize money, 75% of gross stakes flow back to investors as described in the returns explainer.',
+        text: 'This single payment covers your share of training, veterinary care, race-day expenses, insurance, and administration for the lease period. There are no additional capital calls during the campaign. If the thoroughbred earns prize money, 75% of gross stakes flow back to investors as described in the returns explainer.',
       },
       {
         type: 'subheading',
@@ -955,7 +955,7 @@ export const insightArticles: InsightArticle[] = [
         items: [
           'Included: training fees, stabling, feed, routine farriery, veterinary care, race entries, jockey fees, transport to local meetings, insurance, and syndicate administration.',
           'Sometimes separate: transport to international or long-distance meetings, specialised surgery, or optional veterinary treatments beyond normal campaign care.',
-          'Not included: any form of guaranteed prize money or return. Race results determine whether the horse earns stakes.',
+          'Not included: any form of guaranteed prize money or return. Race results determine whether the thoroughbred earns stakes.',
         ],
       },
       {
@@ -964,7 +964,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Traditional syndicates often ask for an upfront purchase contribution followed by monthly or quarterly levies. Levies can rise unexpectedly if the horse needs extra veterinary work or travels more than expected. Owners may also receive bills for race-day extras or end-of-year top-ups.',
+        text: 'Traditional syndicates often ask for an upfront purchase contribution followed by monthly or quarterly levies. Levies can rise unexpectedly if the thoroughbred needs extra veterinary work or travels more than expected. Owners may also receive bills for race-day extras or end-of-year top-ups.',
       },
       {
         type: 'paragraph',
@@ -981,7 +981,7 @@ export const insightArticles: InsightArticle[] = [
           'Insurance excesses or exclusions that leave owners exposed.',
           'Bloodstock agent commission hidden in the purchase price.',
           'Late-payment fees or administration charges.',
-          'Costs that continue while the horse is spelling or injured.',
+          'Costs that continue while the thoroughbred is spelling or injured.',
         ],
       },
       {
@@ -1028,12 +1028,12 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'racehorse-syndication-explained-nz',
-    title: 'Racehorse Syndication Explained: A New Zealand Owner\'s Guide',
+    title: 'Racethoroughbred Syndication Explained: A New Zealand Owner\'s Guide',
     subtitle: 'Educational guide for prospective and current thoroughbred owners',
     author: 'Evolution Stables',
     authorTitle: '',
     date: '2026-07-06',
-    excerpt: 'Racehorse syndication allows multiple people to share the costs and experience of owning a thoroughbred in New Zealand. Here is how it works in practice.',
+    excerpt: 'Racethoroughbred syndication allows multiple people to share the costs and experience of owning a thoroughbred in New Zealand. Here is how it works in practice.',
     heroImage: '/images/content/horses/prudentia-action.png',
     category: 'Guide',
     body: [
@@ -1043,7 +1043,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racehorse syndication is the practice of dividing ownership of a thoroughbred into multiple shares. Instead of one owner funding the entire purchase and ongoing costs, a syndicate allows a group of people to participate according to the percentage they hold. Each owner receives a proportionate share of prize money, owner privileges, and racing experience.',
+        text: 'Racethoroughbred syndication is the practice of dividing ownership of a thoroughbred into multiple shares. Instead of one owner funding the entire purchase and ongoing costs, a syndicate allows a group of people to participate according to the percentage they hold. Each owner receives a proportionate share of prize money, owner privileges, and racing experience.',
       },
       {
         type: 'subheading',
@@ -1077,7 +1077,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Owners pay an upfront contribution that covers the purchase of the horse and establishment costs. After that, ongoing fees are usually levied monthly or quarterly to cover training, veterinary care, race-day expenses, and administration. A well-run syndicate provides regular financial reporting so owners know where their money is going.',
+        text: 'Owners pay an upfront contribution that covers the purchase of the thoroughbred and establishment costs. After that, ongoing fees are usually levied monthly or quarterly to cover training, veterinary care, race-day expenses, and administration. A well-run syndicate provides regular financial reporting so owners know where their money is going.',
       },
       {
         type: 'subheading',
@@ -1097,7 +1097,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racehorse syndication in New Zealand sits at the intersection of racing regulation and financial markets law. New Zealand Thoroughbred Racing (NZTR) is the industry body that licenses syndicators, approves disclosure statements, and sets the Bloodstock Syndicator Code of Practice. Because selling shares in a thoroughbred to the public involves an offer of securities, the Financial Markets Conduct Act also applies. Authorised syndicators operate under a streamlined exemption that recognises the special nature of bloodstock syndication, provided they meet strict transparency and conduct standards.',
+        text: 'Racethoroughbred syndication in New Zealand sits at the intersection of racing regulation and financial markets law. New Zealand Thoroughbred Racing (NZTR) is the industry body that licenses syndicators, approves disclosure statements, and sets the Bloodstock Syndicator Code of Practice. Because selling shares in a thoroughbred to the public involves an offer of securities, the Financial Markets Conduct Act also applies. Authorised syndicators operate under a streamlined exemption that recognises the special nature of bloodstock syndication, provided they meet strict transparency and conduct standards.',
       },
       {
         type: 'paragraph',
@@ -1211,7 +1211,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'After a race, the stakes are processed by New Zealand Thoroughbred Racing and paid into the nominated owner or syndicate account. The timing depends on the meeting and administrative processing, but it typically follows a predictable cycle. If the horse is syndicated, the syndicator receives the payment and then allocates it to owners according to their share.',
+        text: 'After a race, the stakes are processed by New Zealand Thoroughbred Racing and paid into the nominated owner or syndicate account. The timing depends on the meeting and administrative processing, but it typically follows a predictable cycle. If the thoroughbred is syndicated, the syndicator receives the payment and then allocates it to owners according to their share.',
       },
       {
         type: 'subheading',
@@ -1328,7 +1328,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Traditional racehorse syndication has operated in New Zealand for decades. A licensed syndicator forms a group, collects funds, manages the horse, and distributes any prize money to owners. Digital-syndication follows the same legal and regulatory framework but uses technology to improve access, transparency, and settlement efficiency.',
+        text: 'Traditional racehorse syndication has operated in New Zealand for decades. A licensed syndicator forms a group, collects funds, manages the thoroughbred, and distributes any prize money to owners. Digital-syndication follows the same legal and regulatory framework but uses technology to improve access, transparency, and settlement efficiency.',
       },
       {
         type: 'subheading',
@@ -1453,7 +1453,7 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'how-to-buy-a-racehorse-share-in-nz',
-    title: 'How to Buy a Racehorse Share in New Zealand',
+    title: 'How to Buy a Racethoroughbred Share in New Zealand',
     subtitle: 'A complete walkthrough for buying a share in a New Zealand thoroughbred, from browsing to ownership',
     author: 'Evolution Stables',
     authorTitle: '',
@@ -1468,7 +1468,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Owning a thoroughbred racehorse in New Zealand is more accessible than most people assume. You do not need to buy an entire horse, manage a trainer, or write open-ended cheques for veterinary bills. Through syndication, you can own a defined percentage of a thoroughbred, receive regular updates, and share in any prize money the horse earns. The process is regulated by New Zealand Thoroughbred Racing (NZTR) and, on a digital-syndication platform like Evolution Stables, can be completed online in a matter of days.',
+        text: 'Owning a thoroughbred racehorse in New Zealand is more accessible than most people assume. You do not need to buy an entire thoroughbred, manage a trainer, or write open-ended cheques for veterinary bills. Through syndication, you can own a defined percentage of a thoroughbred, receive regular updates, and share in any prize money the thoroughbred earns. The process is regulated by New Zealand Thoroughbred Racing (NZTR) and, on a digital-syndication platform like Evolution Stables, can be completed online in a matter of days.',
       },
       {
         type: 'subheading',
@@ -1476,11 +1476,11 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Start with the marketplace. Each listing shows the thoroughbred, trainer, location, campaign status, share structure, and terms. Look for horses that match your interest in terms of distance preference, trainer reputation, pedigree, and campaign timing. Read the story, review the available units, and check whether the campaign is listed, coming soon, or fully subscribed.',
+        text: 'Start with the marketplace. Each listing shows the thoroughbred, trainer, location, campaign status, share structure, and terms. Look for thoroughbreds that match your interest in terms of distance preference, trainer reputation, pedigree, and campaign timing. Read the story, review the available units, and check whether the campaign is listed, coming soon, or fully subscribed.',
       },
       {
         type: 'paragraph',
-        text: 'On Evolution Stables, every campaign page explains the ownership model, the lease term, the minimum unit, and what percentage of the horse each unit represents. You can also see how much of the syndicate is already subscribed.',
+        text: 'On Evolution Stables, every campaign page explains the ownership model, the lease term, the minimum unit, and what percentage of the thoroughbred each unit represents. You can also see how much of the syndicate is already subscribed.',
       },
       {
         type: 'subheading',
@@ -1488,7 +1488,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Before subscribing, review the syndicate agreement, the disclosure statement, and the fee schedule. A licensed NZTR syndicator must provide clear information about the horse, the trainer, the costs, the ownership structure, and how prize money is calculated and distributed. If you are using a digital platform, the terms should also explain how identity verification, settlement, and ongoing reporting work.',
+        text: 'Before subscribing, review the syndicate agreement, the disclosure statement, and the fee schedule. A licensed NZTR syndicator must provide clear information about the thoroughbred, the trainer, the costs, the ownership structure, and how prize money is calculated and distributed. If you are using a digital platform, the terms should also explain how identity verification, settlement, and ongoing reporting work.',
       },
       {
         type: 'paragraph',
@@ -1512,7 +1512,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Choose the number of units you want. Each unit represents a clean fraction of the syndicate stake. For example, if the syndicate holds 5% of a horse and the offering is divided into 20 units, each unit is 0.25% of the horse. The total subscription cost is the list rate multiplied by your unit percentage and the lease term in months.',
+        text: 'Choose the number of units you want. Each unit represents a clean fraction of the syndicate stake. For example, if the syndicate holds 5% of a thoroughbred and the offering is divided into 20 units, each unit is 0.25% of the thoroughbred. The total subscription cost is the list rate multiplied by your unit percentage and the lease term in months.',
       },
       {
         type: 'paragraph',
@@ -1524,7 +1524,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'After subscription, you become a registered owner in the syndicate. You will receive stable updates, race previews, post-race reviews, and quarterly settlement statements when the horse earns prize money. You may also receive invitations to trackwork, barrier trials, and raceday hospitality, depending on availability and the trainer.',
+        text: 'After subscription, you become a registered owner in the syndicate. You will receive stable updates, race previews, post-race reviews, and quarterly settlement statements when the thoroughbred earns prize money. You may also receive invitations to trackwork, barrier trials, and raceday hospitality, depending on availability and the trainer.',
       },
       {
         type: 'paragraph',
@@ -1544,7 +1544,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racehorse ownership is speculative. A thoroughbred can be injured, fail to perform, retire early, or earn less prize money than expected. There are no guaranteed returns, and you should only subscribe with money you can afford to lose. Before buying, read all offering documents and consider seeking independent advice.',
+        text: 'Racethoroughbred ownership is speculative. A thoroughbred can be injured, fail to perform, retire early, or earn less prize money than expected. There are no guaranteed returns, and you should only subscribe with money you can afford to lose. Before buying, read all offering documents and consider seeking independent advice.',
       },
       {
         type: 'paragraph',
@@ -1606,7 +1606,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'Racehorse ownership is a high-risk activity. A thoroughbred can be injured in training, fail to measure up at the races, retire early, or earn prize money that does not cover the cost of the campaign. Past performance of other thoroughbreds is not a guide to future results, and there is no guaranteed return. You should subscribe only with capital you can afford to lose, read the disclosure statement in full, and seek independent financial, tax, or legal advice if you are unsure.',
+        text: 'Racethoroughbred ownership is a high-risk activity. A thoroughbred can be injured in training, fail to measure up at the races, retire early, or earn prize money that does not cover the cost of the campaign. Past performance of other thoroughbreds is not a guide to future results, and there is no guaranteed return. You should subscribe only with capital you can afford to lose, read the disclosure statement in full, and seek independent financial, tax, or legal advice if you are unsure.',
       },
       {
         type: 'paragraph',
