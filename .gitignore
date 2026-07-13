@@ -33,3 +33,7 @@ _reference/
 scripts/firebase-service-account.json
 scripts/client-secret.json
 scripts/token.json
+.env.vercel-test
+
+# Local Stripe toolbox keys
+.env.stripe*

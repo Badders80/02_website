@@ -14,6 +14,26 @@ import hltsModule from '@/data/hlts.json';
 
 const hlts = (hltsModule as any).default || (hltsModule as any);
 
+/** Only allow return URLs on our app origin (open-redirect guard). */
+function sameOriginUrl(candidate: unknown, appUrl: string): string | null {
+  if (typeof candidate !== 'string' || !candidate.trim()) return null;
+  try {
+    const base = new URL(appUrl);
+    const url = new URL(candidate, appUrl);
+    if (url.origin !== base.origin) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+/** Ensure Stripe can inject session id for post-pay confirm/recover. */
+function ensureSessionIdPlaceholder(url: string): string {
+  if (url.includes('{CHECKOUT_SESSION_ID}')) return url;
+  const joiner = url.includes('?') ? '&' : '?';
+  return `${url}${joiner}session_id={CHECKOUT_SESSION_ID}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -115,7 +135,17 @@ export async function POST(request: NextRequest) {
     const leasePeriodMonths = Number(liveInventory!.leasePeriodMonths || 0) || undefined;
     const investorReturnPct = Number(liveInventory!.investorReturnPct || 0) || undefined;
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(
+      /\/$/,
+      ''
+    );
+
+    // Prefer client return URLs when same-origin; else confirm page (not bare mystable).
+    // Stripe replaces {CHECKOUT_SESSION_ID} for recover/ops correlation.
+    const defaultSuccess = `${appUrl}/marketplace/${hlt_id}/confirm?success=true&session_id={CHECKOUT_SESSION_ID}`;
+    const defaultCancel = `${appUrl}/marketplace/${hlt_id}/purchase`;
+    const successUrl = sameOriginUrl(body.success_url, appUrl) || defaultSuccess;
+    const cancelUrl = sameOriginUrl(body.cancel_url, appUrl) || defaultCancel;
 
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
@@ -126,12 +156,12 @@ export async function POST(request: NextRequest) {
             currency: 'nzd',
             unit_amount: Math.round(pricePerShareNzd * 100),
             product_data: {
-              name: `${horseName} — Share${sharesQty > 1 ? 's' : ''}`,
+              name: `${horseName} — Unit${sharesQty > 1 ? 's' : ''}`,
               description: [
-                `Syndication share${sharesQty > 1 ? 's' : ''} in ${horseName}.`,
+                `Syndication unit${sharesQty > 1 ? 's' : ''} in ${horseName}.`,
                 leasePeriodMonths ? `${leasePeriodMonths}-month lease.` : null,
                 investorReturnPct != null
-                  ? `${investorReturnPct}% of gross stakes to investors.`
+                  ? `${investorReturnPct}% of gross stakes to investors (pro-rata).`
                   : null,
               ]
                 .filter(Boolean)
@@ -148,8 +178,8 @@ export async function POST(request: NextRequest) {
         price_per_share_nzd: String(pricePerShareNzd),
         horse_microchip: body.horse_microchip || '',
       },
-      success_url: `${appUrl}/mystable?success=true`,
-      cancel_url: `${appUrl}/marketplace/${hlt_id}`,
+      success_url: ensureSessionIdPlaceholder(successUrl),
+      cancel_url: cancelUrl,
     });
 
     // Both keys: clients historically expect `url`; route previously returned session_url only

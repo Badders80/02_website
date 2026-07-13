@@ -1,4 +1,4 @@
-# Continue — Manolo: 1 unit held, docs then go-live
+# Continue — Manolo: 1 unit held; terms polish; docs then go-live
 
 **Boot order:** this file → `../../docs/next-session-notes.md` → execute Next action.  
 **Do not** open `GAME_PLAN.md` or list the monorepo first.  
@@ -7,44 +7,42 @@
 
 ## Last action
 
-2026-07-13 (session).  
-Live Manolo purchase **kept**: 1 lot @ $294, founder as buyer (`alex@evolutionstables.nz`).  
-Stripe paid (`pi_3TsWEa…` / session `cs_live_a10iydu…`).  
-Webhook did **not** auto-fire; fulfilled via `/api/checkout/recover`.  
-Welcome email + holdings + `shares_sold` 0→1 + MyStable path verified.  
-**No refund.** Unit stays as real inventory.  
-Kill-switch **OFF**. Public go-live deferred until **docs** (PDS/SA) updated.
+2026-07-13 session 2 closed (/end).  
+Live pay + fulfill + webhook + MyStable + terms hierarchy v1.  
+Founder holds 1 unit (paid $294; new list **$225** / rate **$75** after $5 snap).  
+Manolo: **12 mo** from **2026-08-01**. Kill-switch **OFF**.  
+UI baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`.
 
 ## Next action
 
-1. Finalise Manolo legal docs (PDS + Syndicate Agreement) — replace stubs under `public/documents/i-stole-a-manolo/`.  
-2. Only then: controlled open (`PURCHASES_ENABLED=true`) for public lots; leave founder unit as sold.  
-3. Do **not** reverse holdings / refund unless founder changes mind.
+1. Local iterate investment terms / purchase UX (prefer local over push spam).  
+2. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
+3. Optional: purchase qty → % of horse.  
+4. Controlled open remaining lots only when docs ready.  
+5. Do **not** refund founder unit unless asked.
 
 ## Why
 
-Money + fulfill + LIVE checkout webhook proven. Docs still gate public open.
+Money path proven; commercial clarity + legal docs gate public open.
 
 ## Open threads
 
 - PDF e-sign deferred  
-- Server-side KYC on create-session later  
-- Nellie / TML stay `draft`  
-- `PAYMENT_RECOVER_SECRET` on Vercel for ops backfill  
-- **Rotate** `Evo_Website` sk_live if exposed in chat; already set on Vercel Production  
+- Server-side KYC later  
+- Nellie / TML draft  
+- Rotate chat-exposed `sk_live` if still needed  
 
 ## Do not
 
-- Casual `PURCHASES_ENABLED=true` without webhook proof + docs  
-- Refund / zero `shares_sold` without explicit ask  
-- Treat GAME_PLAN / June WIF as current  
+- Casual `PURCHASES_ENABLED=true` without docs  
+- Refund / wipe holdings without ask  
+- GAME_PLAN as boot  
 
 ## Key paths
 
 | What | Path |
 |------|------|
-| Truth | `../../docs/next-session-notes.md` |
+| Terms UI | `src/components/marketplace/InvestmentTermsModal.tsx` |
+| Pricing snap | `src/lib/pricing.ts` |
 | Fulfill | `src/lib/checkout-fulfill.ts` |
-| Recover | `src/app/api/checkout/recover/route.ts` |
-| Webhook | `src/app/api/checkout/webhook/route.ts` |
-| Docs stubs | `public/documents/i-stole-a-manolo/` |
+| Baseline UI | `relay/2026-07-13-investment-terms-ui-baseline.md` |

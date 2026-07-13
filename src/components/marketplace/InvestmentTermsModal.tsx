@@ -204,8 +204,8 @@ export function InvestmentTermsModal({
                   </p>
                 </div>
               )}
-              <div className="rounded-2xl border border-[#d4a964]/25 bg-[#d4a964]/[0.06] p-4 space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#d4a964]/80">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
                   Minimum investment
                 </p>
                 <p className="text-[28px] font-light text-white tracking-tight leading-none">
@@ -265,8 +265,8 @@ export function InvestmentTermsModal({
                 {kycStatus !== "verified" && (
                   <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
                     {kycStatus === "pending"
-                      ? "Your identity verification is in progress. Click Acquire to check status."
-                      : "Identity verification is required before acquiring units."}
+                      ? "Your identity verification is in progress. Click Buy now to check status."
+                      : "Identity verification is required before you can buy units."}
                   </p>
                 )}
 
@@ -280,7 +280,7 @@ export function InvestmentTermsModal({
                   type="button"
                   onClick={handleAcquire}
                   disabled={kycLoading}
-                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {kycLoading ? "Starting verification..." : "Buy now"}
                 </button>

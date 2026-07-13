@@ -1,6 +1,6 @@
 # Evolution Stables — Website Build Summary (Map)
 
-**Last updated:** 2026-07-13  
+**Last updated:** 2026-07-13 (session 2)  
 **Repository:** `02_website/`  
 **Prod:** https://www.evolutionstables.nz  
 **Git remote:** `Badders80/02_website` · Vercel project `evolution-3-0`
@@ -51,14 +51,14 @@ Sheet tools: `gws` CLI (OAuth) or service account env on Vercel.
 |------|------------|
 | **Owner rate** | NZD **per month per 1%** of the horse (founder language: “$70”) |
 | **Platform fee** | Variable, default **5%** on owner rate → **list rate** (investor-facing) |
-| **List rate** | `owner_rate × (1 + fee_pct/100)` e.g. 70 → 73.50 |
-| **Lot** | Min purchase size; e.g. 5% stake / 20 lots = **0.25%** of horse |
-| **Purchase price (list lot)** | `list_rate × lot_pct × months` |
-| **Investor return** | Per lease, % of **gross stakes** (row field) |
+| **List rate** | `owner_rate × (1 + fee_pct/100)` then **round UP to nearest $5** e.g. 70 → 73.50 → **75** |
+| **Lot / unit** | Min purchase size; e.g. 5% stake / 20 lots = **0.25%** of horse |
+| **Purchase price (list lot)** | `list_rate_raw × lot_pct × months` then **round UP to nearest $5** (or use snapped list rate) |
+| **Investor return** | % of **gross stakes won**, pro-rata to units in Evolution syndicate stake |
 
-Code: `src/lib/pricing.ts` · test: `node scripts/test_pricing.mjs`
+Code: `src/lib/pricing.ts` · `roundUpListPriceNzd` · test: `node scripts/test_pricing.mjs`
 
-**Manolo (trial SKU):** rate 70 · fee 5 · 5%/20 · 16 mo · list lot **$294** · return 75%
+**Manolo (live SKU):** rate 70 · fee 5 · 5%/20 · **12 mo** from **2026-08-01** · **$75** / mo / 1% · **$225** / unit · return 75%
 
 ---
 
@@ -105,16 +105,40 @@ Legacy fields `listing_status` / `marketplace_visible` may still exist; **status
 
 ## Payment path
 
-Auth → KYC verified → create-session (eligibility) → Stripe Checkout → webhook → append `holdings` → `shares_sold++` → SMTP welcome email  
+Auth → KYC verified → create-session (eligibility + list price snap) → Stripe Checkout → webhook **`/api/checkout/webhook`** → `fulfillCheckoutSession` → append `holdings` → `shares_sold++` → SMTP welcome + admin → communications log  
 
-PDF signing: deferred (empty signed URL fields OK for trial).
+Ops backfill: **`POST /api/checkout/recover`** (Bearer `PAYMENT_RECOVER_SECRET`) retrieves paid session and runs same fulfill (idempotent by `purchase_id`).
+
+Shared fulfill: `src/lib/checkout-fulfill.ts`
+
+PDF signing: deferred (empty signed URL fields OK for Stage 1).
+
+### Stripe LIVE webhooks (required)
+
+| Endpoint | Events |
+|----------|--------|
+| `https://www.evolutionstables.nz/api/checkout/webhook` | `checkout.session.completed`, `checkout.session.expired` |
+| `https://www.evolutionstables.nz/api/kyc/callback` | Identity verification sessions |
+
+Secrets: `STRIPE_CHECKOUT_WEBHOOK_SECRET`, `STRIPE_KYC_WEBHOOK_SECRET` on Vercel Production.
+
+---
+
+## Investment terms (UX rules)
+
+- Lead with **Price** ($/mo per 1% of horse) + **Minimum investment** (unit ticket for full term).  
+- **Syndicate stake** = Evolution total % of the horse (e.g. 5%), mid/lower hierarchy.  
+- **Units** not “shares”; min unit = stake/lots (e.g. 0.25% of horse).  
+- Investor return display: **75% gross stakes won\*** with pro-rata quarterly NZTR footnote.  
+- Glass greyscale baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`  
+- CTA: **Buy now**
 
 ---
 
 ## Current phase
 
-**Manolo controlled payment trial** — catalog live; money kill-switched; E2E pending.  
-See `relay/continue.md` and `docs/next-session-notes.md`.
+**Money path proven** (founder holds 1 Manolo unit). Kill-switch OFF. Public open gated on legal docs + terms polish.  
+See `relay/continue.md` and monorepo `docs/next-session-notes.md`.
 
 ---
 

@@ -53,12 +53,12 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
 
           <div className="space-y-3">
             <h1 className="text-[32px] font-light text-white tracking-tight">
-              {success === "true" ? "You're now an owner." : "Purchase confirmation"}
+              {success === "true" ? "Purchase complete." : "Purchase confirmation"}
             </h1>
             <p className="text-[15px] font-light text-white/50 leading-relaxed max-w-md mx-auto">
               {success === "true"
-                ? `Your holding in ${horseName} has been confirmed. A welcome note is on its way to your email with details on what happens next.`
-                : "If you completed a purchase, your confirmation will appear here. If you were redirected back, the payment may have been cancelled."}
+                ? `Your unit(s) in ${horseName} are recorded. A welcome note is on its way — check MyStable for your holding.`
+                : "If you completed payment, your holding will show in MyStable. If you cancelled, no charge was made."}
             </p>
           </div>
 
@@ -67,10 +67,10 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-4 text-left max-w-md mx-auto">
               <p className="text-[11px] uppercase tracking-[0.2em] text-white/30">What happens next</p>
               <div className="space-y-3 text-[13px] font-light text-white/50 leading-relaxed">
-                <p>• A welcome email is on its way with your holding details</p>
-                <p>• Your ownership stake will appear in MyStable after the next data sync</p>
-                <p>• Quarterly investor reports will be delivered per the reporting cycle</p>
-                <p>• Race updates and stable news will be shared as they happen</p>
+                <p>• Welcome email with your holding details</p>
+                <p>• Units appear in MyStable once payment is fulfilled</p>
+                <p>• Quarterly investor reports on the reporting cycle</p>
+                <p>• Race updates and stable news as they happen</p>
               </div>
             </div>
           )}

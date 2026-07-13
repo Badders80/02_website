@@ -39,7 +39,7 @@ function closedCopy(status?: CampaignStatus): { title: string; body: string } {
   if (status === "fully_subscribed") {
     return {
       title: "Fully Subscribed",
-      body: "All shares in this syndicate have been allocated.",
+      body: "All units in this syndicate have been allocated.",
     };
   }
   if (status === "completed") {
@@ -51,12 +51,12 @@ function closedCopy(status?: CampaignStatus): { title: string; body: string } {
   if (status === "coming_soon" || status === "coming_soon_details") {
     return {
       title: "Coming Soon",
-      body: "Be first to know — this syndicate is not open for applications yet. Check back or register interest from the horse page.",
+      body: "Be first to know — this syndicate is not open for purchase yet. Check back or register interest from the horse page.",
     };
   }
   return {
-    title: "Applications Closed",
-    body: "Public share applications are not available for this horse right now.",
+    title: "Purchases Closed",
+    body: "Units are not available for purchase on this horse right now.",
   };
 }
 
@@ -194,7 +194,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                 {props.horseName}
               </Link>
               <span>/</span>
-              <span className="text-white/60">Acquire</span>
+              <span className="text-white/60">Buy</span>
             </div>
             <div className="flex items-center gap-4 mb-10">
               <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-white/[0.06] overflow-hidden relative flex-shrink-0">
@@ -252,11 +252,19 @@ export default function PurchasePage(props: PurchasePageProps) {
   const investorReturnPct = inventory?.investorReturnPct ?? 0;
 
   const totalPriceNzd = sharesToBuy * pricePerShareNzd;
-  const percentStake = ((sharesToBuy / sharesTotal) * Number(totalLeasePercent)).toFixed(2);
+  // Pro-rata % of the whole horse (units slice the Evolution syndicate stake)
+  const percentStake =
+    sharesTotal > 0 && Number(totalLeasePercent) > 0
+      ? ((sharesToBuy / sharesTotal) * Number(totalLeasePercent)).toFixed(2)
+      : "0.00";
 
   const handleStripeCheckout = async () => {
     if (!purchasable) {
       setErrorMsg(props.closedReason || closed.body);
+      return;
+    }
+    if (sharesToBuy < 1 || sharesToBuy > sharesAvailable) {
+      setErrorMsg(`Select between 1 and ${sharesAvailable} unit${sharesAvailable === 1 ? "" : "s"}.`);
       return;
     }
     setIsRedirecting(true);
@@ -273,6 +281,7 @@ export default function PurchasePage(props: PurchasePageProps) {
         body: JSON.stringify({
           hlt_id: props.horseSlug,
           shares_to_buy: sharesToBuy,
+          // Same-origin; server appends Stripe session_id placeholder
           success_url: `${window.location.origin}/marketplace/${props.horseSlug}/confirm?success=true`,
           cancel_url: `${window.location.origin}/marketplace/${props.horseSlug}/purchase`,
         }),
@@ -308,7 +317,7 @@ export default function PurchasePage(props: PurchasePageProps) {
             <span>/</span>
             <Link href={`/marketplace/${props.horseSlug}`} className="hover:text-white/60 transition">{props.horseName}</Link>
             <span>/</span>
-            <span className="text-white/60">Acquire</span>
+            <span className="text-white/60">Buy</span>
           </div>
 
           {/* Horse header */}
@@ -324,7 +333,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                 {inventoryLoading
                   ? "Loading..."
                   : purchasable
-                    ? `${sharesAvailable} shares available`
+                    ? `${sharesAvailable} unit${sharesAvailable === 1 ? "" : "s"} available`
                     : STATUS_INFO[campaignStatus]?.label || "Coming Soon"}
               </p>
             </div>
@@ -367,13 +376,16 @@ export default function PurchasePage(props: PurchasePageProps) {
           {/* Step 1: Amount selector */}
           {step === 1 && (
             <div className="space-y-8">
-              <h2 className="text-[18px] font-light text-white">How many shares?</h2>
+              <h2 className="text-[18px] font-light text-white">How many units?</h2>
 
               <div className="flex items-center justify-between border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
                 <div>
                   <p className="text-[11px] uppercase tracking-wider text-white/30 mb-1">Quantity</p>
-                  <p className="text-[12px] font-light text-white/50">
+                  <p className="text-[13px] font-medium text-white tabular-nums">
                     {percentStake}% of the horse
+                  </p>
+                  <p className="text-[11px] font-light text-white/40 mt-0.5">
+                    {sharesToBuy} unit{sharesToBuy === 1 ? "" : "s"} · of {Number(totalLeasePercent) || "—"}% syndicate stake
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -421,7 +433,7 @@ export default function PurchasePage(props: PurchasePageProps) {
 
               <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4 text-[14px] font-light">
                 <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Shares</span>
+                  <span className="text-white/40">Units</span>
                   <span className="text-white font-medium">{sharesToBuy}</span>
                 </div>
                 <div className="flex justify-between border-b border-white/[0.06] pb-3">
@@ -429,15 +441,15 @@ export default function PurchasePage(props: PurchasePageProps) {
                   <span className="text-white font-medium">${totalPriceNzd.toLocaleString()} NZD</span>
                 </div>
                 <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Percentage stake</span>
+                  <span className="text-white/40">Of the horse</span>
                   <span className="text-white font-medium">{percentStake}%</span>
                 </div>
                 <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Return on stakes won</span>
-                  <span className="text-[#34D399] font-medium">{investorReturnPct}%</span>
+                  <span className="text-white/40">Investor return</span>
+                  <span className="text-[#34D399] font-medium">{investorReturnPct}% gross stakes won</span>
                 </div>
                 <div className="flex justify-between pb-1">
-                  <span className="text-white/40">Length of ownership</span>
+                  <span className="text-white/40">Lease period</span>
                   <span className="text-white font-medium">{leasePeriodMonths} months</span>
                 </div>
               </div>
@@ -712,14 +724,14 @@ export default function PurchasePage(props: PurchasePageProps) {
                       disabled={!pdsAgreed || !saAgreed || isRedirecting}
                       className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
-                      {isRedirecting ? "Redirecting..." : "Continue to Payment"}
+                      {isRedirecting ? "Redirecting..." : "Buy now"}
                     </button>
                   </div>
 
                   {/* Compliance Notice */}
                   <p className="text-[10.5px] font-light leading-relaxed text-white/45 text-center bg-white/[0.02] border border-white/[0.05] rounded-xl p-3">
-                    ℹ️ Stage 1: payment records your holding and sends a welcome email. Final signed PDS/SA
-                    delivery is deferred — placeholders only until the e-sign pipeline ships.
+                    Payment records your holding and sends a welcome email. Final signed PDS/SA
+                    delivery is deferred until the e-sign pipeline ships.
                   </p>
                 </div>
               )}

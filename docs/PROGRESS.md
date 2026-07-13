@@ -1,9 +1,9 @@
 # 02_website — Progress (Diary)
 
-**Last updated:** 2026-07-13 (/end)  
-**Current phase:** Manolo controlled payment trial  
+**Last updated:** 2026-07-13 (/end session 2)  
+**Current phase:** Manolo 1 unit held; terms UX polish; docs before public open  
 **Money:** `PURCHASES_ENABLED` unset (kill-switch OFF)  
-**Blockers:** Payment E2E not yet run (intentional)
+**Blockers:** Legal PDS/SA still stubs; public open gated on docs
 
 > ⛔ **Not the “what’s next” file.** This is history.  
 > **Boot:** [`../00_START_HERE.md`](../00_START_HERE.md) → [`../relay/continue.md`](../relay/continue.md) → [`../../docs/next-session-notes.md`](../../docs/next-session-notes.md)  
@@ -13,10 +13,11 @@
 
 ## What's next (canonical)
 
-1. Health check: `/api/diagnostics/payment-health`  
-2. E2E runbook: `relay/2026-07-13-payment-e2e-manolo.md`  
-3. Controlled one-lot purchase on **I Stole A Manolo** ($294) when founder ready  
-4. Unset kill-switch after trial unless leaving open intentionally  
+1. Iterate investment terms / purchase UX locally — baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`  
+2. Final Manolo PDS + SA (`public/documents/i-stole-a-manolo/`)  
+3. Purchase window: qty → live % of horse (optional polish)  
+4. Controlled open remaining lots when docs ready (`PURCHASES_ENABLED=true`)  
+5. Optional: rotate chat-exposed Stripe `sk_live` if still live  
 
 ---
 
@@ -24,7 +25,8 @@
 
 | Date | Focus | Outcome | Notes |
 |------|-------|---------|-------|
-| 2026-07-13 | Go-live catalog + Manolo trial prep + session protocol | **Shipped** | [log](logs/2026-07-13.md) · full: `docs/logs/2026-07-13.md` |
+| 2026-07-13 | Manolo live pay + fulfill + MyStable + terms hierarchy | **Shipped** | [log](logs/2026-07-13.md) session 2 · webhook + recover · $225 list |
+| 2026-07-13 | Go-live catalog + Manolo trial prep + session protocol | **Shipped** | [log](logs/2026-07-13.md) |
 | 2026-07-13 | Session wrap | **Notes** | Trial still next; boot hardened; islands have continue+STATE |
 | 2026-07-13 | Live ops + pricing + lifecycle + Manolo stage | **Deployed** | `0f53d2a`…`287971e`. Manolo listed; kill-switch off; health green. |
 | 2026-07-13 | Session protocol all islands + boot harden | **Docs** | continue/STATE; `00_START_HERE`; GAME_PLAN non-boot |
@@ -40,13 +42,18 @@
 | Area | Status |
 |------|--------|
 | Live `hlts` catalog | ✅ |
-| Pricing model | ✅ |
+| Pricing model | ✅ + list $ round up to $5 |
 | Campaign lifecycle | ✅ |
 | TML slug | ✅ |
 | Kill-switch | ✅ off |
-| Manolo listed trial SKU | ✅ staged |
-| Payment E2E | ⏳ next |
+| Manolo listed SKU | ✅ 12 mo · start 2026-08-01 · $225 unit |
+| Payment E2E (charge + fulfill) | ✅ founder 1 unit held ($294 historical) |
+| LIVE checkout webhook | ✅ |
+| Recover fulfill path | ✅ `/api/checkout/recover` |
+| MyStable live holdings | ✅ |
+| Investment terms hierarchy | ✅ iterate further |
 | PDF e-sign | ⏸️ deferred |
+| Manolo legal docs | ⏳ stubs |
 | Nellie / TML | draft |
 
 ---
@@ -55,7 +62,8 @@
 
 - Phases 0–5 (assets → content → marketplace → SEO → applications): complete historically  
 - Phase 6 WIF/GCP: **abandoned** — replaced by Sheets + Stripe direct  
-- Phase 7 (current): **Go-live catalog honesty + controlled open-SKU**
+- Phase 7: Go-live catalog honesty + controlled open-SKU  
+- Phase 8 (current): **Money path proven; commercial clarity + docs before public open**
 
 ---
 
