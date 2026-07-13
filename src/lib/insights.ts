@@ -20,6 +20,85 @@ export interface InsightArticle {
 
 export const insightArticles: InsightArticle[] = [
   {
+    slug: 'gt-law-racehorse-tokenization-uae',
+    title: 'Global Validation: Racehorse Tokenization Framework Enters the UAE Market',
+    subtitle:
+      'Greenberg Traurig legal insight validates the digital-syndication model Evolution Stables pioneered under NZTR',
+    author: 'Evolution Stables',
+    authorTitle: '',
+    date: '2026-03-19',
+    category: 'Press',
+    excerpt:
+      'A GT Alert by international law firm Greenberg Traurig highlights the monumental shift toward racehorse tokenization in the UAE, driven by a landmark partnership between Dubai Racing Club and Tokinvest. As the foundational platform utilizing this digital syndication architecture in our region, Evolution Stables views this global expansion as validation of the fractional ownership model pioneered under New Zealand Thoroughbred Racing (NZTR) regulations.',
+    heroImage: '/images/press/tokinvest-drc.webp',
+    body: [
+      {
+        type: 'paragraph',
+        text: 'A recent GT Alert by international law firm Greenberg Traurig analyses the monumental shift toward racehorse tokenization in the UAE, driven by a landmark partnership between Dubai Racing Club and Tokinvest, a broker-dealer regulated by the Virtual Assets Regulatory Authority (VARA). As the foundational platform utilizing this digital syndication architecture in our region, Evolution Stables views this global expansion as validation of the fractional ownership model. Through the overarching ecosystem established by Tokinvest and DSG Group — which maps directly to the model pioneered by Evolution Stables under New Zealand Thoroughbred Racing (NZTR) regulations — digital horse syndication is officially stepping onto the world\'s most elite racing stages.',
+      },
+      {
+        type: 'heading',
+        text: 'The Hook: UAE Moves from Policy to Production',
+      },
+      {
+        type: 'paragraph',
+        text: 'The UAE is officially moving racehorse tokenization from policy to production for the 2026/27 racing season. Global powerhouses are taking notice, with legal heavyweights like Greenberg Traurig analysing the shift. The Dubai Racing Club unveiled plans to tokenize racehorses in partnership with Tokinvest, targeting a public debut as early as September or October 2026 — in time for the start of the 2026-2027 racing season.',
+      },
+      {
+        type: 'paragraph',
+        text: 'DRC\'s CEO, Ali Al Ali, explained the tokenization scheme in detail: it is an alternative, and potentially lower-cost, form of the syndication model that has traditionally opened racehorse ownership to the wider public. A horse owner sells a portion of their horse\'s future prize money to outside investors for the duration of a single racing season. Investors buy in through digital tokens on the Tokinvest platform, priced based on the horse\'s value. The owner keeps full legal ownership and remains responsible for all costs, but gives up a proportionate slice of any winnings to token holders.',
+      },
+      {
+        type: 'heading',
+        text: 'The Connection: How the Mechanics Work',
+      },
+      {
+        type: 'paragraph',
+        text: 'The Greenberg Traurig insight breaks down the mechanics described in the GT Alert: fractional economic rights, lowering the cost barriers of traditional syndicates. Token holders hold a contractual right to a share of future earnings, linked to the performance of a living asset. If the horse wins, token holders receive their proportional share of the prize money. If it does not, their loss is limited to what they paid for the token. Additional benefits such as stable visits and race-day hospitality may also be offered, depending on participation tier.',
+      },
+      {
+        type: 'paragraph',
+        text: 'From a legal perspective, the structure raises important questions about how token holders\' rights are characterised under UAE law and how regulators and holders may enforce those rights in a dispute. Greenberg Traurig notes that equivalent structures have faced regulatory hurdles in other markets — in the United Kingdom, passive token holders sharing returns may attract Financial Conduct Authority scrutiny as a collective investment scheme, and in the United States, a profit-linked token may fall within the Howey test for investment contracts. Dubai\'s structural approach differs in that regulators designed VARA to accommodate real-world asset tokenization rather than retrofit existing regulatory regimes.',
+      },
+      {
+        type: 'heading',
+        text: 'The Leverage: New Zealand Investors Are Already Participating',
+      },
+      {
+        type: 'quote',
+        text: 'While international eyes are turning to the Dubai Racing Club\'s upcoming rollout with Tokinvest, New Zealand investors are already participating in this exact asset class. The underlying digital syndication model being deployed in Dubai by Tokinvest and DSG Group is built on the identical compliance and operational framework that powers Evolution Stables domestically. By launching first in NZ, we\'ve field-tested the mechanics that are now defining the future of global racing capital.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Evolution Stables operates as an NZTR-authorised syndicator, combining traditional racing expertise with modern digital-syndication. The platform delivers greater liquidity, accessibility, real-time performance tracking, and global reach — all while maintaining full regulatory compliance. The Tokinvest partnership provides the regulated, financial-grade infrastructure that bridges traditional racing with accessible, digital-syndication ownership.',
+      },
+      {
+        type: 'heading',
+        text: 'Why This Matters',
+      },
+      {
+        type: 'paragraph',
+        text: 'The Greenberg Traurig analysis confirms what Evolution Stables has been building since launch: the digital-syndication model is not a fringe experiment but a globally recognised framework for racehorse ownership. The fact that one of the world\'s largest law firms has produced a formal legal alert on the exact structure we operate validates the compliance and operational architecture at the foundation of Evolution Stables.',
+      },
+      {
+        type: 'paragraph',
+        text: 'The UAE\'s move to productionise racehorse tokenization for the 2026/27 season — with VARA-designed regulation, Dubai Racing Club institutional backing, and Tokinvest as the regulated marketplace — mirrors the path Evolution Stables has already walked in New Zealand. The difference is timing: Evolution Stables has already completed its first full settlement cycle with documented investor reporting, while Dubai targets its public debut later in 2026.',
+      },
+      {
+        type: 'heading',
+        text: 'Read the Full Legal Insight',
+      },
+      {
+        type: 'paragraph',
+        text: 'The complete GT Alert from Greenberg Traurig is available here: https://www.gtlaw.com/en/insights/2026/3/racehorse-tokenization-enters-the-uae-market',
+      },
+      {
+        type: 'paragraph',
+        text: 'Related professionals: Caitlin Coady, Omar Hegazy, and Abigail Carpenter of Greenberg Traurig\'s Dubai office. Capabilities: Entertainment, Media & Sports; Equine Industry Group; Gaming; Blockchain & Digital Assets; Sports Law.',
+      },
+    ],
+  },
+  {
     slug: 'everyone-talking-rwas-we-deliver-them',
     title: "Everyone's been talking about RWAs. We deliver them.",
     subtitle: 'Prudentia (NZ) · Asset ID 10 · Q1/Q2 2026 Quarterly Investor Report',

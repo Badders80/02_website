@@ -9,6 +9,15 @@ export interface PressArticle {
 
 export const pressArticles: PressArticle[] = [
   {
+    title: 'Global Validation: Racehorse Tokenization Framework Enters the UAE Market',
+    url: 'https://www.gtlaw.com/en/insights/2026/3/racehorse-tokenization-enters-the-uae-market',
+    publisher: 'Greenberg Traurig',
+    date: '2026-03-19',
+    excerpt:
+      'A GT Alert by international law firm Greenberg Traurig analyses the landmark partnership between Dubai Racing Club and Tokinvest, detailing how racehorse tokenization is moving from policy to production for the 2026/27 season. The legal insight validates the exact digital-syndication architecture that Evolution Stables pioneered under NZTR regulation in New Zealand — the same compliance and operational framework now defining the global standard.',
+    imageUrl: '/images/press/tokinvest-drc.webp',
+  },
+  {
     title: "Everyone's been talking about RWAs. We deliver them.",
     url: '/insights/everyone-talking-rwas-we-deliver-them',
     publisher: 'Evolution Stables',
