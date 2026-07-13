@@ -27,7 +27,17 @@ Thumbs.db
 .env*.local
 .env.production
 .env.vercel-pulled
+.env.vercel-test
+.env.production.pulled
+.env.review-tmp
 _reference/
+
+# Audit working files (not for repo)
+evolutionstables.nz-audit/
+
+# Relay working files
+relay/inbox/
+relay/outbox/
 
 # Google credentials — never commit
 scripts/firebase-service-account.json
