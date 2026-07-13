@@ -42,7 +42,7 @@
 | Area | Status |
 |------|--------|
 | Live `hlts` catalog | ✅ |
-| Pricing model | ✅ + list $ round up to $5 |
+| Pricing model | ✅ + list $ round up to nearest dollar |
 | Campaign lifecycle | ✅ |
 | TML slug | ✅ |
 | Kill-switch | ✅ off |

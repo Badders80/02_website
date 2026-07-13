@@ -176,7 +176,7 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-/** Live row present → use live price only (null stays null). Static only when no live row. Investor list $ snap up to nearest $5. */
+/** Live row present → use live price only (null stays null). Static only when no live row. Investor list $ snap up to nearest dollar. */
 function resolveLotPriceNzd(
   live: Awaited<ReturnType<typeof getLiveInventory>> | null,
   staticPrice: number | string | null | undefined

@@ -2,17 +2,17 @@
  * Independent pricing math checks (plain Node, no TS runtime).
  * Mirrors formulas in src/lib/pricing.ts.
  *
- * Investor-facing list NZD: always round UP to nearest $5.
+ * Investor-facing list NZD: always round UP to nearest dollar.
  * owner 70, fee 5%, stake 5%, lots 20, months 12:
- * - list_rate raw 73.5 → 75
+ * - list_rate raw 73.5 → 74
  * - lot_pct 0.25
- * - list lot = 75 * 0.25 * 12 = 225
+ * - list lot = 74 * 0.25 * 12 = 222
  */
 
 import assert from "node:assert/strict";
 
 const DEFAULT_FEE_PCT = 5;
-const LIST_PRICE_STEP_NZD = 5;
+const LIST_PRICE_STEP_NZD = 1;
 
 function roundUpListPriceNzd(amount) {
   if (!(amount > 0) || !Number.isFinite(amount)) return amount;
@@ -65,10 +65,10 @@ function stakeTotalNzdList({
 }
 
 // --- Snap rules ---
-assert.equal(roundUpListPriceNzd(73.5), 75);
-assert.equal(roundUpListPriceNzd(220.5), 225);
-assert.equal(roundUpListPriceNzd(75), 75);
-assert.equal(roundUpListPriceNzd(225), 225);
+assert.equal(roundUpListPriceNzd(73.5), 74);
+assert.equal(roundUpListPriceNzd(220.5), 221);
+assert.equal(roundUpListPriceNzd(74), 74);
+assert.equal(roundUpListPriceNzd(222), 222);
 
 // --- Manolo-shaped example (12 mo) ---
 const ownerRate = 70;
@@ -78,7 +78,7 @@ const lots = 20;
 const months = 12;
 
 assert.equal(toListRateRaw(ownerRate, fee), 73.5);
-assert.equal(toListRate(ownerRate, fee), 75);
+assert.equal(toListRate(ownerRate, fee), 74);
 assert.equal(lotPct(stakePct, lots), 0.25);
 
 assert.equal(
@@ -98,7 +98,7 @@ assert.equal(
     lots,
     months,
   }),
-  225
+  222
 );
 
 assert.equal(
@@ -108,7 +108,7 @@ assert.equal(
     stakePct,
     months,
   }),
-  4500 // 75 * 5 * 12
+  4440 // 74 * 5 * 12
 );
 
 // Legacy 16-mo shape
@@ -120,7 +120,7 @@ assert.equal(
     lots: 20,
     months: 16,
   }),
-  300 // 75 * 0.25 * 16
+  296 // 74 * 0.25 * 16
 );
 
 // Default fee = 5

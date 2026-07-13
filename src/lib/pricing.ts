@@ -11,16 +11,16 @@
  * - lot_total_nzd = list_rate * lot_pct * months
  * - owner_total_for_stake = owner_rate * stake_pct * months
  * - list_total_for_stake = owner_total_for_stake * (1 + fee_pct/100)
- * - Investor-facing list NZD amounts always round UP to nearest $5
- *   (e.g. 73.50 → 75, 220.50 → 225)
+ * - Investor-facing list NZD amounts always round UP to nearest dollar
+ *   (e.g. 73.50 → 74, 220.50 → 221)
  */
 
 /** Investor-facing list prices snap up to this step (NZD). */
-export const LIST_PRICE_STEP_NZD = 5;
+export const LIST_PRICE_STEP_NZD = 1;
 
 /**
- * Round UP to nearest $5 for investor-facing list amounts.
- * Exact multiples of $5 stay unchanged. Non-positive / non-finite returned as-is.
+ * Round UP to nearest dollar for investor-facing list amounts.
+ * Whole dollars stay unchanged. Non-positive / non-finite returned as-is.
  */
 export function roundUpListPriceNzd(amount: number): number {
   if (typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
@@ -77,7 +77,7 @@ function resolveFeePct(feePct?: number): number {
   return fee;
 }
 
-/** list_rate = owner_rate * (1 + fee_pct/100) — raw (no $5 snap). */
+/** list_rate = owner_rate * (1 + fee_pct/100) — raw (no dollar snap). */
 export function toListRateRaw(
   ownerRatePer1PctMonth: number,
   platformFeePct: number = DEFAULT_FEE_PCT
@@ -88,8 +88,8 @@ export function toListRateRaw(
 }
 
 /**
- * Investor-facing list rate ($/mo per 1% of horse), rounded UP to nearest $5.
- * e.g. owner 70 + 5% fee → 73.5 → 75
+ * Investor-facing list rate ($/mo per 1% of horse), rounded UP to nearest dollar.
+ * e.g. owner 70 + 5% fee → 73.5 → 74
  */
 export function toListRate(
   ownerRatePer1PctMonth: number,
@@ -107,7 +107,7 @@ export function lotPct(stakePct: number, lots: number): number {
 
 /**
  * List-side total NZD for one lot over the term (investor ticket).
- * Uses investor list rate (already $5-up) so 70@5% / 12mo / 0.25% unit → 75 × 0.25 × 12 = 225.
+ * Uses investor list rate (already $1-up) so 70@5% / 12mo / 0.25% unit → 74 × 0.25 × 12 = 222.
  * Final snap guards float dust.
  */
 export function lotTotalNzd({

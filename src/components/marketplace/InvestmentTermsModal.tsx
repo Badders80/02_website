@@ -30,17 +30,24 @@ function formatStartDate(raw: string): string {
   if (Number.isNaN(d.getTime())) return raw;
   return d.toLocaleDateString("en-NZ", {
     day: "numeric",
-    month: "short",
+    month: "long",
     year: "numeric",
   });
 }
 
-/** Investor list amounts are whole dollars after $5 snap (75, 225). */
+/** Investor list amounts are whole dollars (ceil to nearest $1). */
 function formatMoney(n: number): string {
   return Math.round(n).toLocaleString("en-NZ", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
+}
+
+/** Format stake % without trailing junk (5 → 5, 4.75 → 4.75, 0.25 → 0.25). */
+function formatPct(n: number): string {
+  if (!Number.isFinite(n)) return "—";
+  const rounded = Math.round(n * 10000) / 10000;
+  return String(rounded);
 }
 
 export function InvestmentTermsModal({
@@ -66,9 +73,15 @@ export function InvestmentTermsModal({
   const stakePct = Number(totalLeasePercent) || 0;
   const months = Number(leasePeriodMonths) || 0;
   const lots = Number(sharesTotal) || 0;
+  const available = Number(sharesAvailable) || 0;
   const unitPctOfHorse =
     stakePct > 0 && lots > 0
       ? Math.round((stakePct / lots) * 10000) / 10000
+      : 0;
+  // Remaining syndicate as % of the horse (e.g. 19/20 × 5% = 4.75%)
+  const stakeAvailablePct =
+    stakePct > 0 && lots > 0
+      ? Math.round((available / lots) * stakePct * 10000) / 10000
       : 0;
 
   // Apples-to-apples list rate ($/mo per 1% of horse)
@@ -135,20 +148,38 @@ export function InvestmentTermsModal({
     }
   };
 
-  const termRow = (label: string, value: ReactNode, last = false) => (
+  const termRow = (
+    label: string,
+    value: ReactNode,
+    hint?: string,
+    last = false
+  ) => (
     <div
-      className={`flex justify-between gap-4 ${
+      className={`space-y-1 ${
         last ? "pb-1" : "border-b border-white/[0.06] pb-3.5"
       }`}
     >
-      <span className="text-white/40 shrink-0 max-w-[55%] leading-snug">
+      <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
         {label}
-      </span>
-      <span className="text-white font-medium text-right leading-snug">
-        {value}
-      </span>
+      </p>
+      <p className="text-[15px] font-medium text-white leading-snug">{value}</p>
+      {hint ? (
+        <p className="text-[11px] font-light text-white/40 leading-snug">
+          {hint}
+        </p>
+      ) : null}
     </div>
   );
+
+  const priceDisplay =
+    listRatePer1Pct != null && listRatePer1Pct > 0
+      ? `$${formatMoney(listRatePer1Pct)} NZD per month`
+      : null;
+  const minInvestDisplay = `$${formatMoney(pricePerShareNzd)} NZD`;
+  const leaseTermDisplay =
+    months > 0
+      ? `${months} months starting ${formatStartDate(leaseStartDate)}`
+      : formatStartDate(leaseStartDate);
 
   return (
     <>
@@ -186,75 +217,56 @@ export function InvestmentTermsModal({
               </h3>
             </div>
 
-            {/* Hero: price + minimum investment */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {listRatePer1Pct != null && listRatePer1Pct > 0 && (
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
-                    Price
-                  </p>
-                  <p className="text-[28px] font-light text-white tracking-tight leading-none">
-                    ${formatMoney(listRatePer1Pct)}
-                    <span className="text-[13px] text-white/50 font-light ml-1">
-                      NZD
-                    </span>
-                  </p>
-                  <p className="text-[11px] font-light text-white/45 leading-snug pt-1">
-                    / month per 1% of the horse
-                  </p>
-                </div>
-              )}
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
-                  Minimum investment
-                </p>
-                <p className="text-[28px] font-light text-white tracking-tight leading-none">
-                  ${formatMoney(pricePerShareNzd)}
-                  <span className="text-[13px] text-white/50 font-light ml-1">
-                    NZD
-                  </span>
-                </p>
-                <p className="text-[11px] font-light text-white/45 leading-snug pt-1">
-                  1 unit
-                  {unitPctOfHorse > 0
-                    ? ` · ${unitPctOfHorse}% of the horse`
-                    : ""}
-                  {months > 0 ? ` · full ${months}-month term` : ""}
-                </p>
-              </div>
-            </div>
-
-            {/* Secondary: dates, return, syndicate */}
-            <div className="space-y-4 text-[13px] font-light border-t border-white/[0.06] pt-5">
+            {/* Commercial story — price first, then structure */}
+            <div className="space-y-4 text-[13px] font-light">
+              {priceDisplay &&
+                termRow(
+                  "Price",
+                  priceDisplay,
+                  "Based on 1% investment"
+                )}
               {termRow(
-                "Lease period",
-                months > 0 ? `${months} months` : String(leasePeriodMonths)
+                "Minimum investment",
+                minInvestDisplay,
+                unitPctOfHorse > 0
+                  ? `${formatPct(unitPctOfHorse)}% unit`
+                  : "1 unit"
               )}
-              {termRow("Lease start date", formatStartDate(leaseStartDate))}
+              {termRow("Lease term", leaseTermDisplay)}
               {termRow(
-                "Units available",
-                `${sharesAvailable} / ${sharesTotal}`
+                "Syndicate stake available",
+                stakeAvailablePct > 0
+                  ? `${formatPct(stakeAvailablePct)}%`
+                  : "—",
+                "Based on total ownership"
               )}
               {termRow(
                 "Investor return",
                 <span className="text-[#34D399] font-medium">
-                  {investorReturnPct}% gross stakes won*
-                </span>
-              )}
-              {termRow(
-                "Syndicate stake",
-                stakePct > 0 ? `${stakePct}% of the horse` : "—",
+                  {investorReturnPct}% of gross stakes won
+                </span>,
+                undefined,
                 true
               )}
             </div>
 
-            <p className="text-[11px] font-light text-white/35 leading-relaxed">
-              *Returns are pro-rata to your units in the Evolution syndicate
-              stake (not of the whole horse), based on official NZTR stakes,
-              and distributed quarterly after settlement. Evolution&apos;s
-              total syndicate on this horse is {stakePct > 0 ? `${stakePct}%` : "a defined fraction"}{" "}
-              — units are slices of that stake only.
-            </p>
+            <div className="space-y-2 border-t border-white/[0.06] pt-5">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+                Returns explained
+              </p>
+              <p className="text-[11px] font-light text-white/35 leading-relaxed">
+                Returns are pro-rata based on your ownership in Evolution&apos;s
+                syndicate stake. They are calculated according to official NZTR
+                results and distributed quarterly after settlement.{" "}
+                {/* TODO: wire real returns explainer page */}
+                <a
+                  href="/learn/returns"
+                  className="text-white/55 underline underline-offset-2 hover:text-white/80 transition"
+                >
+                  Learn more about how returns work
+                </a>
+              </p>
+            </div>
 
             {readOnly ? (
               <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">

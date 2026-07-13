@@ -16,13 +16,17 @@
 
 ---
 
-## Structure (content hierarchy at freeze)
+## Structure (content hierarchy — current)
 
 1. Eyebrow + horse name  
-2. **Hero pair:** Price | Minimum investment (cards)  
-3. Secondary rows: lease period, start, units, return, syndicate stake  
-4. Single `*` footnote (pro-rata / NZTR / quarterly)  
-5. **Buy now** CTA + legal line  
+2. Stacked terms (greyscale):  
+   - **Price** — `$X NZD per month` + hint “Based on 1% investment”  
+   - **Minimum investment** — `$Y NZD` + hint `0.25% unit`  
+   - **Lease term** — `12 months starting 1 August 2026`  
+   - **Syndicate stake available** — remaining % of horse (e.g. 4.75%) + “Based on total ownership”  
+   - **Investor return** — `75% of gross stakes won` (mint)  
+3. **Returns explained** + “Learn more about how returns work” → `/learn/returns` (TODO page)  
+4. **Buy now** CTA (white) + legal line  
 
 ---
 
@@ -140,7 +144,7 @@ text-[10px] font-light leading-relaxed text-white/20 text-center
 | Return | 75% gross stakes won* |
 | Syndicate stake | 5% of the horse |
 
-Pricing rule (separate from UI): list NZD always **round up to nearest $5** (`src/lib/pricing.ts` → `roundUpListPriceNzd`).
+Pricing rule (separate from UI): list NZD always **round up to nearest dollar** (`src/lib/pricing.ts` → `roundUpListPriceNzd`).
 
 ---
 

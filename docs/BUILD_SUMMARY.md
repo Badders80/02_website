@@ -51,9 +51,9 @@ Sheet tools: `gws` CLI (OAuth) or service account env on Vercel.
 |------|------------|
 | **Owner rate** | NZD **per month per 1%** of the horse (founder language: “$70”) |
 | **Platform fee** | Variable, default **5%** on owner rate → **list rate** (investor-facing) |
-| **List rate** | `owner_rate × (1 + fee_pct/100)` then **round UP to nearest $5** e.g. 70 → 73.50 → **75** |
+| **List rate** | `owner_rate × (1 + fee_pct/100)` then **round UP to nearest dollar** e.g. 70 → 73.50 → **74** |
 | **Lot / unit** | Min purchase size; e.g. 5% stake / 20 lots = **0.25%** of horse |
-| **Purchase price (list lot)** | `list_rate_raw × lot_pct × months` then **round UP to nearest $5** (or use snapped list rate) |
+| **Purchase price (list lot)** | snapped list rate × lot_pct × months, then **round UP to nearest dollar** |
 | **Investor return** | % of **gross stakes won**, pro-rata to units in Evolution syndicate stake |
 
 Code: `src/lib/pricing.ts` · `roundUpListPriceNzd` · test: `node scripts/test_pricing.mjs`
