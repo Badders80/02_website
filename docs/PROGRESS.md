@@ -24,6 +24,7 @@
 
 | Date | Focus | Outcome | Notes |
 |------|-------|---------|-------|
+| 2026-07-13 | Go-live catalog + Manolo trial prep + session protocol | **Shipped** | [log](logs/2026-07-13.md) · full: `docs/logs/2026-07-13.md` |
 | 2026-07-13 | Session wrap | **Notes** | Trial still next; boot hardened; islands have continue+STATE |
 | 2026-07-13 | Live ops + pricing + lifecycle + Manolo stage | **Deployed** | `0f53d2a`…`287971e`. Manolo listed; kill-switch off; health green. |
 | 2026-07-13 | Session protocol all islands + boot harden | **Docs** | continue/STATE; `00_START_HERE`; GAME_PLAN non-boot |

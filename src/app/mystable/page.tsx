@@ -10,7 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, isAuthInitialized } from "@/lib/firebase";
-import holdingsData from "@/data/holdings.json";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 
@@ -21,10 +20,71 @@ interface HoldingRecord {
   hlt_id: string;
   horse_microchip: string;
   shares_owned: number;
+  /** % of campaign lots (shares_owned / shares_total * 100) */
   percentage_owned: number;
   purchase_price_cents: number;
   status: string;
   created_at: string;
+}
+
+function buildCampaignMap(): Record<string, Campaign> {
+  const hltMap: Record<string, Campaign> = {};
+  (hltsData as any[]).forEach((hlt: any) => {
+    const key = hlt.horse_slug || hlt.id;
+    const horse = (horsesData as any[]).find((h: any) => h.slug === key);
+    hltMap[key] = {
+      id: key,
+      shares_total: Number(hlt.shares_total) || 0,
+      share_price_cents: Number(hlt.price_per_share_nzd || 0) * 100,
+      horse_microchip: hlt.horse_microchip,
+      horse: {
+        name: hlt.horse_name || horse?.name || "Racehorse",
+        sex: horse?.sex || "",
+        colour: horse?.colour || "",
+        sire_name: horse?.sire_name || "",
+        dam_name: horse?.dam_name || "",
+        image_url: hlt.image_path || horse?.image_path || "",
+      },
+      trainer: {
+        name: hlt.trainer_name || "",
+        stable_name: hlt.trainer_stable || "",
+        location: hlt.trainer_location || "",
+      },
+    };
+  });
+  return hltMap;
+}
+
+/** Map Sheets holdings → overview cards. Prefer actual purchase total NZD from sheet. */
+function liveToHoldingRecords(
+  live: LiveHolding[],
+  hltMap: Record<string, Campaign>
+): HoldingRecord[] {
+  return live.map((h) => {
+    const slug = h.horse_slug;
+    const camp = hltMap[slug];
+    const sharesTotal = camp?.shares_total || 0;
+    const sharesOwned = Number(h.shares_owned) || 0;
+    const paidNzd = Number(h.purchase_price_total_nzd);
+    const priceCents =
+      Number.isFinite(paidNzd) && paidNzd > 0
+        ? Math.round(paidNzd * 100)
+        : Math.round((camp?.share_price_cents || 0) * sharesOwned);
+    const pct =
+      sharesTotal > 0
+        ? Math.round((sharesOwned / sharesTotal) * 10000) / 100
+        : 0;
+    return {
+      id: h.purchase_id || `${slug}-${h.timestamp}`,
+      hlt_id: slug,
+      horse_microchip: camp?.horse_microchip || "",
+      shares_owned: sharesOwned,
+      percentage_owned: pct,
+      purchase_price_cents: priceCents,
+      status: "paid",
+      created_at: h.timestamp || new Date().toISOString(),
+    };
+  });
 }
 
 interface Campaign {
@@ -117,40 +177,57 @@ export default function MyStablePage() {
   // C7: Tab state
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
 
-  // C7: Live holdings from Google Sheets
+  // Live holdings from Google Sheets (SSOT) — drives Overview + Documents
   const [liveHoldings, setLiveHoldings] = useState<LiveHolding[]>([]);
   const [liveHoldingsLoading, setLiveHoldingsLoading] = useState(false);
   const [liveHoldingsError, setLiveHoldingsError] = useState(false);
 
-  // C7: Communications from Google Sheets
+  // Communications from Google Sheets
   const [communications, setCommunications] = useState<Communication[]>([]);
   const [communicationsLoading, setCommunicationsLoading] = useState(false);
   const [communicationsError, setCommunicationsError] = useState(false);
   const [expandedComm, setExpandedComm] = useState<string | null>(null);
 
-  // C7: Fetch live holdings
+  const applyLiveHoldings = useCallback(
+    (rows: LiveHolding[], hltMap?: Record<string, Campaign>) => {
+      const map = hltMap || buildCampaignMap();
+      setLiveHoldings(rows);
+      setHoldings(liveToHoldingRecords(rows, map));
+    },
+    []
+  );
+
   const fetchLiveHoldings = useCallback(async () => {
     if (!user) return;
     setLiveHoldingsLoading(true);
+    setLiveHoldingsError(false);
     try {
       const token = await user.getIdToken();
       const res = await fetch("/api/holdings", {
         headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
       });
-      if (res.ok) {
-        const data = await res.json();
-        setLiveHoldings(data.holdings || []);
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && Array.isArray(data.holdings)) {
+        applyLiveHoldings(data.holdings);
+        setErrorMsg("");
       } else {
         setLiveHoldingsError(true);
+        setErrorMsg(
+          data?.code === "SHEETS_QUOTA"
+            ? "Live holdings temporarily unavailable (data rate limit). Retry in a minute."
+            : data?.error || "Could not load live holdings."
+        );
       }
-    } catch (err) {
+    } catch {
       setLiveHoldingsError(true);
+      setErrorMsg("Could not load live holdings.");
     } finally {
       setLiveHoldingsLoading(false);
+      setLoadingData(false);
     }
-  }, [user]);
+  }, [user, applyLiveHoldings]);
 
-  // C7: Fetch communications
   const fetchCommunications = useCallback(async () => {
     if (!user) return;
     setCommunicationsLoading(true);
@@ -158,6 +235,7 @@ export default function MyStablePage() {
       const token = await user.getIdToken();
       const res = await fetch("/api/communications", {
         headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
       });
       if (res.ok) {
         const data = await res.json();
@@ -165,29 +243,40 @@ export default function MyStablePage() {
       } else {
         setCommunicationsError(true);
       }
-    } catch (err) {
+    } catch {
       setCommunicationsError(true);
     } finally {
       setCommunicationsLoading(false);
     }
   }, [user]);
 
-  // C7: Fetch live data when tab changes
+  // Lazy-load inbox when tab opens
   useEffect(() => {
     if (!user) return;
-    if (activeTab === "documents" && liveHoldings.length === 0 && !liveHoldingsError && !liveHoldingsLoading) {
-      fetchLiveHoldings();
-    }
-    if (activeTab === "inbox" && communications.length === 0 && !communicationsError && !communicationsLoading) {
+    if (
+      activeTab === "inbox" &&
+      communications.length === 0 &&
+      !communicationsError &&
+      !communicationsLoading
+    ) {
       fetchCommunications();
     }
-  }, [activeTab, user, liveHoldings.length, communications.length, liveHoldingsError, communicationsError, liveHoldingsLoading, communicationsLoading, fetchLiveHoldings, fetchCommunications]);
+  }, [
+    activeTab,
+    user,
+    communications.length,
+    communicationsError,
+    communicationsLoading,
+    fetchCommunications,
+  ]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
       if (!isAuthInitialized()) {
-        throw new Error("Firebase authentication is not configured. Please contact support.");
+        throw new Error(
+          "Firebase authentication is not configured. Please contact support."
+        );
       }
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
@@ -202,18 +291,16 @@ export default function MyStablePage() {
   useEffect(() => {
     if (authLoading) return;
 
-    // Detect post-Stripe checkout success (sheet write happens in webhook; json updates after manual sync + rebuild)
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('success') === 'true') {
-        setTimeout(() => setPurchaseSuccess(true), 0);
-        // Clean url (optional)
-        window.history.replaceState({}, '', '/mystable');
-      }
+    const successParam =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("success") === "true";
+
+    if (successParam) {
+      setPurchaseSuccess(true);
+      window.history.replaceState({}, "", "/mystable");
     }
 
     if (!user) {
-      // Load mock dashboard data for the gated preview
       const previewCampaign: Campaign = {
         id: "hlt-prudentia",
         shares_total: 100,
@@ -226,82 +313,80 @@ export default function MyStablePage() {
           colour: "Bay",
           sire_name: "Proisir (AUS)",
           dam_name: "Little Bit Irish (NZ)",
-          image_url: "/images/content/stables/prudentia-action.png"
+          image_url: "/images/content/stables/prudentia-action.png",
         },
         trainer: {
           name: "Lance O'Sullivan & Andrew Scott",
           stable_name: "Wexford Stables",
-          location: "Matamata, NZ"
-        }
+          location: "Matamata, NZ",
+        },
       };
-      setTimeout(() => {
-        setHoldings([MOCK_HOLDING]);
-        setCampaigns({ "hlt-prudentia": previewCampaign });
-        setUpdates([MOCK_UPDATE]);
-        setLoadingData(false);
-      }, 0);
+      setHoldings([MOCK_HOLDING]);
+      setCampaigns({ "hlt-prudentia": previewCampaign });
+      setUpdates([MOCK_UPDATE]);
+      setLoadingData(false);
+      setLiveHoldingsLoading(false);
       return;
     }
 
-    // Load from local JSON data
-    const loadDashboardData = () => {
+    // Logged-in: one stable load per user session change (avoid Strict Mode cancel storms)
+    let stale = false;
+    const loadDashboardData = async () => {
       setLoadingData(true);
+      setLiveHoldingsLoading(true);
       setErrorMsg("");
-
+      setLiveHoldingsError(false);
       try {
-        // Build campaign map from local JSON
-        const hltMap: Record<string, Campaign> = {};
-        (hltsData as any[]).forEach((hlt: any) => {
-          const key = hlt.horse_slug || hlt.id;
-          const horse = (horsesData as any[]).find((h: any) => h.slug === key);
-          hltMap[key] = {
-            id: key,
-            shares_total: Number(hlt.shares_total),
-            share_price_cents: Number(hlt.price_per_share_nzd || 1500) * 100,
-            horse_microchip: hlt.horse_microchip,
-            horse: {
-              name: hlt.horse_name || horse?.name || "Racehorse",
-              sex: horse?.sex || "",
-              colour: horse?.colour || "",
-              sire_name: horse?.sire_name || "",
-              dam_name: horse?.dam_name || "",
-              image_url: hlt.image_path || horse?.image_path || "",
-            },
-            trainer: {
-              name: hlt.trainer_name || "",
-              stable_name: hlt.trainer_stable || "",
-              location: hlt.trainer_location || "",
-            },
-          };
-        });
-
-        // Filter holdings by user email (from local JSON)
-        const userHoldings = (holdingsData as any[])
-          .filter((h: any) => h.user_email === user.email && h.kyc_status === "verified")
-          .map((h: any) => ({
-            id: `${h.hlt_id}-${h.user_email}`,
-            hlt_id: h.hlt_id,
-            horse_microchip: hltMap[h.hlt_id]?.horse_microchip || "",
-            shares_owned: Number(h.shares_owned),
-            percentage_owned: (Number(h.shares_owned) / (hltMap[h.hlt_id]?.shares_total || 100)) * 100,
-            purchase_price_cents: (hltMap[h.hlt_id]?.share_price_cents || 150000) * Number(h.shares_owned),
-            status: "paid",
-            created_at: h.purchase_date || new Date().toISOString(),
-          }));
-
-        setHoldings(userHoldings);
+        const hltMap = buildCampaignMap();
         setCampaigns(hltMap);
-        setUpdates([]); // No content updates in local JSON yet
+        setUpdates([]);
+
+        const token = await user.getIdToken();
+        const res = await fetch("/api/holdings", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (stale) return;
+
+        if (res.ok && Array.isArray(data.holdings)) {
+          applyLiveHoldings(data.holdings, hltMap);
+          if (successParam && data.holdings.length === 0) {
+            // Webhook lag — single delayed retry
+            window.setTimeout(() => {
+              if (!stale) void fetchLiveHoldings();
+            }, 2500);
+          }
+        } else {
+          setLiveHoldingsError(true);
+          setHoldings([]);
+          setLiveHoldings([]);
+          setErrorMsg(
+            data?.code === "SHEETS_QUOTA"
+              ? "Live holdings temporarily unavailable (data rate limit). Wait ~1 min and refresh."
+              : data?.error ||
+                  "Could not load live holdings. Refresh or try again shortly."
+          );
+        }
       } catch (err: any) {
         console.error("Dashboard loading error:", err);
-        setErrorMsg("Failed to load dashboard data.");
+        if (!stale) {
+          setErrorMsg("Failed to load dashboard data.");
+          setLiveHoldingsError(true);
+        }
       } finally {
+        // Always clear spinners for this run; stale runs must not leave UI stuck
+        setLiveHoldingsLoading(false);
         setLoadingData(false);
       }
     };
 
-    loadDashboardData();
-  }, [user, authLoading]);
+    void loadDashboardData();
+    return () => {
+      stale = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-load when auth identity changes
+  }, [user?.uid, authLoading]);
 
   // Aggregate stats
   const totalInvestmentCents = holdings.reduce((sum, h) => sum + h.purchase_price_cents, 0);
@@ -365,8 +450,22 @@ export default function MyStablePage() {
 
           {purchaseSuccess && (
             <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
-              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-sm text-emerald-400">
-                ✅ Payment received. Holding recorded in source sheet (via webhook). Run <code>python scripts/sync_inventory.py</code> then rebuild/deploy to surface in this JSON-powered view. kyc_status claims updated for future purchases.
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-sm text-emerald-200/90 space-y-2">
+                <p className="font-medium text-emerald-300">
+                  ✅ Payment received
+                </p>
+                <p className="font-light text-emerald-200/70">
+                  Your holding is loaded from live inventory. If it is not listed
+                  yet, wait a few seconds and refresh — fulfilment runs after
+                  Stripe confirms payment.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void fetchLiveHoldings()}
+                  className="text-[11px] uppercase tracking-wider text-[#d4a964] hover:text-white transition"
+                >
+                  Refresh holdings
+                </button>
               </div>
             </div>
           )}
@@ -482,7 +581,7 @@ export default function MyStablePage() {
                   <p className="text-xs font-light text-white/40">Unable to load live holdings data. Data may be delayed.</p>
                   <button
                     type="button"
-                    onClick={fetchLiveHoldings}
+                    onClick={() => void fetchLiveHoldings()}
                     className="text-[11px] uppercase tracking-wider text-[#d4a964] hover:text-white transition"
                   >
                     Retry
@@ -569,20 +668,33 @@ export default function MyStablePage() {
             </div>
           )}
 
-          {loadingData ? (
+          {loadingData || liveHoldingsLoading ? (
             <div className="text-center py-20 text-white/30 text-sm font-light">Loading holdings and update timelines...</div>
           ) : holdings.length === 0 ? (
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-16 text-center space-y-6">
               <p className="text-lg font-light text-white/60">No active ownership stakes found</p>
               <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
-                You haven&apos;t acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey.
+                {liveHoldingsError
+                  ? "We could not reach live holdings. Try refresh, or check back shortly."
+                  : "You haven\u2019t acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey."}
               </p>
-              <Link
-                href="/marketplace"
-                className="inline-block rounded-full bg-white text-black px-8 py-3 text-[11px] font-medium uppercase tracking-widest hover:bg-white/90 transition-colors"
-              >
-                Go to Marketplace
-              </Link>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {liveHoldingsError && (
+                  <button
+                    type="button"
+                    onClick={() => void fetchLiveHoldings()}
+                    className="inline-block rounded-full border border-white/15 text-white px-8 py-3 text-[11px] font-medium uppercase tracking-widest hover:bg-white/5 transition-colors"
+                  >
+                    Retry
+                  </button>
+                )}
+                <Link
+                  href="/marketplace"
+                  className="inline-block rounded-full bg-white text-black px-8 py-3 text-[11px] font-medium uppercase tracking-widest hover:bg-white/90 transition-colors"
+                >
+                  Go to Marketplace
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
@@ -633,16 +745,42 @@ export default function MyStablePage() {
                             </div>
                             <div className="flex sm:text-right flex-row sm:flex-col justify-between sm:justify-start gap-4">
                               <div>
-                                <p className="text-xs text-white/30 uppercase tracking-wider">Stake</p>
-                                <p className="text-sm font-semibold text-white">{holding.percentage_owned}%</p>
+                                <p className="text-xs text-white/30 uppercase tracking-wider">Lots</p>
+                                <p className="text-sm font-semibold text-white">
+                                  {holding.shares_owned}
+                                  <span className="text-white/40 font-normal text-xs ml-1">
+                                    ({holding.percentage_owned}% of campaign)
+                                  </span>
+                                </p>
                               </div>
                               <div>
                                 <p className="text-xs text-white/30 uppercase tracking-wider">Acquisition</p>
                                 <p className="text-sm font-semibold text-white">
-                                  ${(holding.purchase_price_cents / 100).toLocaleString()} NZD
+                                  $
+                                  {(holding.purchase_price_cents / 100).toLocaleString(
+                                    "en-NZ",
+                                    { minimumFractionDigits: 0, maximumFractionDigits: 2 }
+                                  )}{" "}
+                                  NZD
                                 </p>
                               </div>
                             </div>
+                          </div>
+                          <div className="pt-2 border-t border-white/[0.04] flex justify-between items-center">
+                            <p className="text-[10px] text-white/30">
+                              Acquired{" "}
+                              {new Date(holding.created_at).toLocaleDateString("en-NZ", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </p>
+                            <Link
+                              href={`/marketplace/${holding.hlt_id}`}
+                              className="text-[11px] text-[#d4a964] hover:text-white transition"
+                            >
+                              View horse →
+                            </Link>
                           </div>
                         </div>
                       );

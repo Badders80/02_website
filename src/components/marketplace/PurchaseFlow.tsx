@@ -83,18 +83,39 @@ export default function PurchasePage(props: PurchasePageProps) {
   const pdsScrollRef = useRef<HTMLDivElement>(null);
   const saScrollRef = useRef<HTMLDivElement>(null);
 
-  // Track when PDS/SA containers become scrollable (PDF load / layout shifts)
+  // Track when PDS/SA containers become scrollable (PDF load / layout shifts).
+  // Stage 1: missing docs or short/stub PDFs that don't overflow → treat as "scrolled"
+  // so acknowledgment is never permanently locked.
   useEffect(() => {
     function isScrollable(el: HTMLElement) {
       return el.scrollHeight > el.clientHeight + 1;
     }
 
     function updateScrollable() {
-      setPdsScrollable(!!(pdsScrollRef.current && isScrollable(pdsScrollRef.current)));
-      setSaScrollable(!!(saScrollRef.current && isScrollable(saScrollRef.current)));
+      // Missing doc → no scroll gate
+      if (!props.hasPds) {
+        setPdsScrollable(false);
+        setPdsScrolled(true);
+      } else if (pdsScrollRef.current) {
+        const canScroll = isScrollable(pdsScrollRef.current);
+        setPdsScrollable(canScroll);
+        if (!canScroll) setPdsScrolled(true);
+      }
+
+      if (!props.hasSa) {
+        setSaScrollable(false);
+        setSaScrolled(true);
+      } else if (saScrollRef.current) {
+        const canScroll = isScrollable(saScrollRef.current);
+        setSaScrollable(canScroll);
+        if (!canScroll) setSaScrolled(true);
+      }
     }
 
     updateScrollable();
+    // PDF embeds often finish layout after first paint
+    const t1 = window.setTimeout(updateScrollable, 200);
+    const t2 = window.setTimeout(updateScrollable, 800);
 
     let observer: ResizeObserver | null = null;
     if (typeof ResizeObserver !== "undefined") {
@@ -107,6 +128,8 @@ export default function PurchasePage(props: PurchasePageProps) {
     return () => {
       observer?.disconnect();
       window.removeEventListener("resize", updateScrollable);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
     };
   }, [props.hasPds, props.hasSa, agreementSubStep]);
 
@@ -450,23 +473,31 @@ export default function PurchasePage(props: PurchasePageProps) {
                 </span>
               </div>
 
-              {/* Sub-step 3.1: PDS Review */}
+              {/* Sub-step 3.1: PDS Review — Stage 1 allows proceed without final legal PDFs */}
               {agreementSubStep === 1 && (
                 <div className="space-y-6">
                   <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[14px] font-medium text-white">Product Disclosure Statement</p>
-                        <p className="text-[11px] text-white/40 mt-0.5">Please scroll to the bottom to acknowledge</p>
+                        <p className="text-[11px] text-white/40 mt-0.5">
+                          {props.hasPds
+                            ? pdsScrollable
+                              ? "Please scroll to the bottom to acknowledge"
+                              : "Review the disclosure (or open full PDF), then acknowledge"
+                            : "Final PDS pending — acknowledge interim terms to continue"}
+                        </p>
                       </div>
-                      <a
-                        href={`/documents/${props.horseSlug}/pds.pdf`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[10px] uppercase tracking-wider text-white/60 hover:text-white transition"
-                      >
-                        Open ↗
-                      </a>
+                      {props.hasPds && (
+                        <a
+                          href={`/documents/${props.horseSlug}/pds.pdf`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[10px] uppercase tracking-wider text-white/60 hover:text-white transition"
+                        >
+                          Open ↗
+                        </a>
+                      )}
                     </div>
 
                     {props.hasPds ? (
@@ -480,29 +511,35 @@ export default function PurchasePage(props: PurchasePageProps) {
                         }}
                         className="h-64 overflow-y-auto bg-black/40 rounded-lg p-4 text-[11px] font-light text-white/50 leading-relaxed border border-white/[0.04] scroll-smooth"
                       >
-                        <embed src={`/documents/${props.horseSlug}/pds.pdf`} type="application/pdf" className="w-full h-full" />
+                        <embed src={`/documents/${props.horseSlug}/pds.pdf`} type="application/pdf" className="w-full min-h-[14rem] h-full" />
                       </div>
                     ) : (
-                      <div className="h-32 flex items-center justify-center text-[12px] font-light text-white/30 bg-black/40 rounded-lg border border-white/[0.04]">
-                        Document being prepared — purchasing will be available once disclosures are published.
+                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-white/60 leading-relaxed">
+                        <p className="text-amber-200/90 font-medium text-[11px] uppercase tracking-wider">
+                          Interim disclosure (Stage 1)
+                        </p>
+                        <p>
+                          The full Product Disclosure Statement for {props.horseName} is being finalised.
+                          Proceeding records your intent and KYC identity. Final legal documents will be
+                          issued to your MyStable and email after allocation.
+                        </p>
                       </div>
                     )}
 
-                    {/* Skip to End shortcut */}
+                    {/* Skip to End shortcut — also unlocks if stub PDF never scrolls */}
                     {props.hasPds && !pdsScrolled && (
                       <button
                         type="button"
-                        disabled={!pdsScrollable}
                         onClick={() => {
                           const el = pdsScrollRef.current;
                           if (el && el.scrollHeight > el.clientHeight) {
                             el.scrollTop = el.scrollHeight;
-                            setPdsScrolled(true);
                           }
+                          setPdsScrolled(true);
                         }}
-                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition py-1"
+                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
                       >
-                        Skip to End ↓
+                        {pdsScrollable ? "Skip to End ↓" : "Mark as reviewed ↓"}
                       </button>
                     )}
 
@@ -522,18 +559,18 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </p>
                     </div>
 
-                    {props.hasPds && (
-                      <label className={`flex items-center gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
-                        <input
-                          type="checkbox"
-                          checked={pdsAgreed}
-                          disabled={!pdsScrolled}
-                          onChange={(e) => setPdsAgreed(e.target.checked)}
-                          className="w-4 h-4 rounded accent-[#d4a964]"
-                        />
-                        I have read and agree to the terms of the Product Disclosure Statement
-                      </label>
-                    )}
+                    <label className={`flex items-center gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
+                      <input
+                        type="checkbox"
+                        checked={pdsAgreed}
+                        disabled={!pdsScrolled}
+                        onChange={(e) => setPdsAgreed(e.target.checked)}
+                        className="w-4 h-4 rounded accent-[#d4a964]"
+                      />
+                      {props.hasPds
+                        ? "I have read and agree to the terms of the Product Disclosure Statement"
+                        : "I acknowledge the interim PDS notice and agree to receive the final PDS after allocation"}
+                    </label>
                   </div>
 
                   <div className="flex gap-4">
@@ -546,7 +583,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                     </button>
                     <button
                       type="button"
-                      disabled={!pdsAgreed || !props.hasPds}
+                      disabled={!pdsAgreed}
                       onClick={() => setAgreementSubStep(2)}
                       className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
@@ -556,23 +593,31 @@ export default function PurchasePage(props: PurchasePageProps) {
                 </div>
               )}
 
-              {/* Sub-step 3.2: SA Review */}
+              {/* Sub-step 3.2: SA Review — Stage 1 allows proceed without final legal PDFs */}
               {agreementSubStep === 2 && (
                 <div className="space-y-6">
                   <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[14px] font-medium text-white">Syndicate Agreement</p>
-                        <p className="text-[11px] text-white/40 mt-0.5">Please scroll to the bottom to acknowledge</p>
+                        <p className="text-[11px] text-white/40 mt-0.5">
+                          {props.hasSa
+                            ? saScrollable
+                              ? "Please scroll to the bottom to acknowledge"
+                              : "Review the agreement (or open full PDF), then acknowledge"
+                            : "Final syndicate agreement pending — acknowledge interim terms to continue"}
+                        </p>
                       </div>
-                      <a
-                        href={`/documents/${props.horseSlug}/syndicate-agreement.pdf`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[10px] uppercase tracking-wider text-white/60 hover:text-white transition"
-                      >
-                        Open ↗
-                      </a>
+                      {props.hasSa && (
+                        <a
+                          href={`/documents/${props.horseSlug}/syndicate-agreement.pdf`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[10px] uppercase tracking-wider text-white/60 hover:text-white transition"
+                        >
+                          Open ↗
+                        </a>
+                      )}
                     </div>
 
                     {props.hasSa ? (
@@ -586,29 +631,34 @@ export default function PurchasePage(props: PurchasePageProps) {
                         }}
                         className="h-64 overflow-y-auto bg-black/40 rounded-lg p-4 text-[11px] font-light text-white/50 leading-relaxed border border-white/[0.04] scroll-smooth"
                       >
-                        <embed src={`/documents/${props.horseSlug}/syndicate-agreement.pdf`} type="application/pdf" className="w-full h-full" />
+                        <embed src={`/documents/${props.horseSlug}/syndicate-agreement.pdf`} type="application/pdf" className="w-full min-h-[14rem] h-full" />
                       </div>
                     ) : (
-                      <div className="h-32 flex items-center justify-center text-[12px] font-light text-white/30 bg-black/40 rounded-lg border border-white/[0.04]">
-                        Document being prepared — purchasing will be available once disclosures are published.
+                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-white/60 leading-relaxed">
+                        <p className="text-amber-200/90 font-medium text-[11px] uppercase tracking-wider">
+                          Interim agreement (Stage 1)
+                        </p>
+                        <p>
+                          The full Syndicate Agreement for {props.horseName} is being finalised.
+                          Your purchase records allocation in MyStable. Signed final documents will
+                          follow (PDF e-sign pipeline deferred for Stage 1).
+                        </p>
                       </div>
                     )}
 
-                    {/* Skip to End shortcut */}
                     {props.hasSa && !saScrolled && (
                       <button
                         type="button"
-                        disabled={!saScrollable}
                         onClick={() => {
                           const el = saScrollRef.current;
                           if (el && el.scrollHeight > el.clientHeight) {
                             el.scrollTop = el.scrollHeight;
-                            setSaScrolled(true);
                           }
+                          setSaScrolled(true);
                         }}
-                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition py-1"
+                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
                       >
-                        Skip to End ↓
+                        {saScrollable ? "Skip to End ↓" : "Mark as reviewed ↓"}
                       </button>
                     )}
 
@@ -628,18 +678,18 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </p>
                     </div>
 
-                    {props.hasSa && (
-                      <label className={`flex items-center gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
-                        <input
-                          type="checkbox"
-                          checked={saAgreed}
-                          disabled={!saScrolled}
-                          onChange={(e) => setSaAgreed(e.target.checked)}
-                          className="w-4 h-4 rounded accent-[#d4a964]"
-                        />
-                        I have read and agree to the terms of the Syndicate Agreement
-                      </label>
-                    )}
+                    <label className={`flex items-center gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
+                      <input
+                        type="checkbox"
+                        checked={saAgreed}
+                        disabled={!saScrolled}
+                        onChange={(e) => setSaAgreed(e.target.checked)}
+                        className="w-4 h-4 rounded accent-[#d4a964]"
+                      />
+                      {props.hasSa
+                        ? "I have read and agree to the terms of the Syndicate Agreement"
+                        : "I acknowledge the interim syndicate terms and agree to receive the final agreement after allocation"}
+                    </label>
                   </div>
 
                   {errorMsg && (
@@ -659,7 +709,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                     <button
                       type="button"
                       onClick={handleStripeCheckout}
-                      disabled={!pdsAgreed || !saAgreed || !props.hasPds || !props.hasSa || isRedirecting}
+                      disabled={!pdsAgreed || !saAgreed || isRedirecting}
                       className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       {isRedirecting ? "Redirecting..." : "Continue to Payment"}
@@ -668,7 +718,8 @@ export default function PurchasePage(props: PurchasePageProps) {
 
                   {/* Compliance Notice */}
                   <p className="text-[10.5px] font-light leading-relaxed text-white/45 text-center bg-white/[0.02] border border-white/[0.05] rounded-xl p-3">
-                    ℹ️ Compliance Notice: Copies of your signed documents will be emailed to you automatically after successful payment.
+                    ℹ️ Stage 1: payment records your holding and sends a welcome email. Final signed PDS/SA
+                    delivery is deferred — placeholders only until the e-sign pipeline ships.
                   </p>
                 </div>
               )}

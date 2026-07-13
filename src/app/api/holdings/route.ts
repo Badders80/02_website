@@ -33,9 +33,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ holdings });
   } catch (error: any) {
     console.error("[API Holdings] Error:", error);
+    const msg = error?.message || "Failed to fetch holdings";
+    const quota = /quota exceeded|rate limit|RESOURCE_EXHAUSTED/i.test(msg);
     return NextResponse.json(
-      { error: error.message || "Failed to fetch holdings" },
-      { status: 500 }
+      {
+        error: msg,
+        code: quota ? "SHEETS_QUOTA" : "HOLDINGS_FETCH_FAILED",
+        holdings: null,
+      },
+      { status: quota ? 503 : 500 }
     );
   }
 }

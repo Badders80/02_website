@@ -1,4 +1,4 @@
-# Continue — Manolo payment trial
+# Continue — Manolo: 1 unit held, docs then go-live
 
 **Boot order:** this file → `../../docs/next-session-notes.md` → execute Next action.  
 **Do not** open `GAME_PLAN.md` or list the monorepo first.  
@@ -7,44 +7,44 @@
 
 ## Last action
 
-2026-07-13 session closed.  
-Done this arc: live Sheets catalog, pricing ($70 owner → list lot), 6-state lifecycle, TML rename, Manolo **listed** @ **$294**, payment-health, kill-switch **OFF**.  
-Session protocol rolled to **all evo_01 islands** (continue + STATE).  
-Boot hardened (`00_START_HERE`, GAME_PLAN banned for “what’s next”).  
-Founder walked site (looks decent); Antigravity test found correct next steps.  
-**Money E2E not run.**
+2026-07-13 (session).  
+Live Manolo purchase **kept**: 1 lot @ $294, founder as buyer (`alex@evolutionstables.nz`).  
+Stripe paid (`pi_3TsWEa…` / session `cs_live_a10iydu…`).  
+Webhook did **not** auto-fire; fulfilled via `/api/checkout/recover`.  
+Welcome email + holdings + `shares_sold` 0→1 + MyStable path verified.  
+**No refund.** Unit stays as real inventory.  
+Kill-switch **OFF**. Public go-live deferred until **docs** (PDS/SA) updated.
 
 ## Next action
 
-1. Health: `curl -sS https://www.evolutionstables.nz/api/diagnostics/payment-health | python3 -m json.tool`  
-2. Walk `relay/2026-07-13-payment-e2e-manolo.md` (browse Manolo → KYC → prove PURCHASES_DISABLED → controlled one lot @ $294).  
-3. After trial: unset `PURCHASES_ENABLED` unless founder wants money left open.
+1. Finalise Manolo legal docs (PDS + Syndicate Agreement) — replace stubs under `public/documents/i-stole-a-manolo/`.  
+2. Only then: controlled open (`PURCHASES_ENABLED=true`) for public lots; leave founder unit as sold.  
+3. Do **not** reverse holdings / refund unless founder changes mind.
 
 ## Why
 
-Catalog/ops ready; payment path unproven E2E. Next is trial, not architecture.
+Money + fulfill + LIVE checkout webhook proven. Docs still gate public open.
 
 ## Open threads
 
-- Optional `PAYMENT_HEALTH_SECRET`  
 - PDF e-sign deferred  
+- Server-side KYC on create-session later  
 - Nellie / TML stay `draft`  
-- Dual status fields cleanup later  
+- `PAYMENT_RECOVER_SECRET` on Vercel for ops backfill  
+- **Rotate** `Evo_Website` sk_live if exposed in chat; already set on Vercel Production  
 
 ## Do not
 
-- Casual `PURCHASES_ENABLED=true`  
-- TLM / Inventory tab default / $1500 / 100-share fiction  
-- Uppercase Holdings/Leads tab defaults  
-- Trust June WIF / GAME_PLAN as current  
+- Casual `PURCHASES_ENABLED=true` without webhook proof + docs  
+- Refund / zero `shares_sold` without explicit ask  
+- Treat GAME_PLAN / June WIF as current  
 
 ## Key paths
 
 | What | Path |
 |------|------|
 | Truth | `../../docs/next-session-notes.md` |
-| E2E | `relay/2026-07-13-payment-e2e-manolo.md` |
-| Map | `docs/BUILD_SUMMARY.md` |
-| Pricing | `src/lib/pricing.ts` |
-| Lifecycle | `src/lib/campaign-status.ts` |
-| Sheets | `src/lib/google-sheets.ts` |
+| Fulfill | `src/lib/checkout-fulfill.ts` |
+| Recover | `src/app/api/checkout/recover/route.ts` |
+| Webhook | `src/app/api/checkout/webhook/route.ts` |
+| Docs stubs | `public/documents/i-stole-a-manolo/` |

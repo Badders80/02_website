@@ -131,9 +131,19 @@ export async function GET(request: Request) {
     ok: blockers.length === 0 || (blockers.length === 1 && blockers[0].includes("not listed")),
     purchases_enabled,
     money_open: purchases_enabled,
-    env,
+    env: {
+      ...env,
+      PAYMENT_RECOVER_SECRET: !!process.env.PAYMENT_RECOVER_SECRET,
+    },
     sheets,
     manolo,
+    webhook: {
+      checkout_url: "https://www.evolutionstables.nz/api/checkout/webhook",
+      events: ["checkout.session.completed"],
+      secret_configured: !!process.env.STRIPE_CHECKOUT_WEBHOOK_SECRET,
+      recover_path: "/api/checkout/recover",
+      note: "Zero Vercel logs for webhook = Stripe never delivered. Configure LIVE endpoint in Dashboard, then resend or use recover.",
+    },
     blockers,
     ready_for_controlled_open,
     next: purchases_enabled

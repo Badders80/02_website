@@ -18,7 +18,16 @@ const DEFAULT_PLATFORM_FEE_PCT = 5;
 const inventoryCache: Record<string, { data: any; expiry: number }> = {};
 const CACHE_TTL = 60_000; // 60 seconds
 
-// Retry wrapper for transient failures
+function isQuotaOrRateLimitError(err: any): boolean {
+  const msg = String(err?.message || err || "");
+  const code = err?.code || err?.response?.status;
+  return (
+    code === 429 ||
+    /quota exceeded|rate limit|RESOURCE_EXHAUSTED|Too many requests/i.test(msg)
+  );
+}
+
+// Retry wrapper for transient failures — never hammer Sheets on quota
 async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3): Promise<T> {
   let lastError: any;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -26,9 +35,12 @@ async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3): Promise<T> {
       return await fn();
     } catch (err: any) {
       lastError = err;
+      if (isQuotaOrRateLimitError(err)) {
+        throw err; // fail fast — retries make quota worse
+      }
       if (attempt < maxAttempts - 1) {
         const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
@@ -433,9 +445,22 @@ export async function checkHoldingExists(purchaseId: string): Promise<boolean> {
   }
 }
 
+/** Short TTL cache — MyStable + Strict Mode were double-fetching and burning quota. */
+const holdingsByEmailCache: Record<
+  string,
+  { data: HoldingRow[]; expiry: number }
+> = {};
+const HOLDINGS_CACHE_TTL_MS = 45_000;
+
 export async function readHoldingsByEmail(email: string): Promise<HoldingRow[]> {
+  const key = email.toLowerCase().trim();
+  const cached = holdingsByEmailCache[key];
+  if (cached && Date.now() < cached.expiry) {
+    return cached.data;
+  }
+
   try {
-    return await withRetry(async () => {
+    const data = await withRetry(async () => {
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
@@ -446,16 +471,23 @@ export async function readHoldingsByEmail(email: string): Promise<HoldingRow[]> 
 
       const headers = rows[0].map((h: string) => h.toLowerCase().trim());
       const emailIndex = headers.indexOf("user_email");
+      if (emailIndex === -1) return [];
 
-      return rows.slice(1)
-        .filter((row: string[]) => row[emailIndex]?.toLowerCase() === email.toLowerCase())
+      return rows
+        .slice(1)
+        .filter(
+          (row: string[]) =>
+            (row[emailIndex] || "").toLowerCase() === key
+        )
         .map((row: string[]) => ({
           purchase_id: row[headers.indexOf("purchase_id")] || "",
           timestamp: row[headers.indexOf("timestamp")] || "",
           user_email: row[emailIndex] || "",
           horse_slug: row[headers.indexOf("horse_slug")] || "",
           shares_owned: Number(row[headers.indexOf("shares_owned")] || 0),
-          purchase_price_total_nzd: Number(row[headers.indexOf("purchase_price_total_nzd")] || 0),
+          purchase_price_total_nzd: Number(
+            row[headers.indexOf("purchase_price_total_nzd")] || 0
+          ),
           signed_pds_url: row[headers.indexOf("signed_pds_url")] || "",
           signed_sa_url: row[headers.indexOf("signed_sa_url")] || "",
           kyc_status: row[headers.indexOf("kyc_status")] || "",
@@ -463,9 +495,30 @@ export async function readHoldingsByEmail(email: string): Promise<HoldingRow[]> 
           utm_campaign: row[headers.indexOf("utm_campaign")] || "",
         }));
     });
+
+    holdingsByEmailCache[key] = {
+      data,
+      expiry: Date.now() + HOLDINGS_CACHE_TTL_MS,
+    };
+    return data;
   } catch (err: any) {
-    console.error(`[Google Sheets] Failed to fetch holdings for ${email}:`, err.message);
-    return [];
+    console.error(
+      `[Google Sheets] Failed to fetch holdings for ${email}:`,
+      err.message
+    );
+    // Surface failure to API (do not pretend user has zero holdings)
+    throw err;
+  }
+}
+
+/** Invalidate after append so MyStable sees new purchase without waiting TTL. */
+export function invalidateHoldingsCache(email?: string): void {
+  if (email) {
+    delete holdingsByEmailCache[email.toLowerCase().trim()];
+  } else {
+    for (const k of Object.keys(holdingsByEmailCache)) {
+      delete holdingsByEmailCache[k];
+    }
   }
 }
 
