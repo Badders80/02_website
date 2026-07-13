@@ -7,6 +7,7 @@ import {
   eligibilityHttpStatus,
   findStaticHlt,
 } from '@/lib/purchase-eligibility';
+import { roundUpListPriceNzd } from '@/lib/pricing';
 
 // Load HLT data statically (baked at build for api route)
 import hltsModule from '@/data/hlts.json';
@@ -100,7 +101,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Eligibility passed ⇒ live inventory is present and valid
-    const pricePerShareNzd = Number(liveInventory!.price_per_share_nzd);
+    const pricePerShareNzd = roundUpListPriceNzd(
+      Number(liveInventory!.price_per_share_nzd)
+    );
     if (!(pricePerShareNzd > 0)) {
       return NextResponse.json(
         { error: 'Live inventory price is invalid', code: 'PRICE_INVALID' },

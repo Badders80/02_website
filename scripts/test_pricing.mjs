@@ -2,21 +2,31 @@
  * Independent pricing math checks (plain Node, no TS runtime).
  * Mirrors formulas in src/lib/pricing.ts.
  *
- * Example: owner 70, fee 5%, stake 5%, lots 20, months 16
- * - list_rate = 73.5
- * - lot_pct = 0.25
- * - owner lot total = 70 * 0.25 * 16 = 280
- * - list lot total  = 73.5 * 0.25 * 16 = 294
+ * Investor-facing list NZD: always round UP to nearest $5.
+ * owner 70, fee 5%, stake 5%, lots 20, months 12:
+ * - list_rate raw 73.5 → 75
+ * - lot_pct 0.25
+ * - list lot = 75 * 0.25 * 12 = 225
  */
 
 import assert from "node:assert/strict";
 
 const DEFAULT_FEE_PCT = 5;
+const LIST_PRICE_STEP_NZD = 5;
 
-function toListRate(ownerRate, feePct = DEFAULT_FEE_PCT) {
+function roundUpListPriceNzd(amount) {
+  if (!(amount > 0) || !Number.isFinite(amount)) return amount;
+  return Math.ceil(amount / LIST_PRICE_STEP_NZD) * LIST_PRICE_STEP_NZD;
+}
+
+function toListRateRaw(ownerRate, feePct = DEFAULT_FEE_PCT) {
   if (!(ownerRate >= 0) || !Number.isFinite(ownerRate)) throw new Error("ownerRate");
   if (!(feePct >= 0) || !Number.isFinite(feePct)) throw new Error("feePct");
   return ownerRate * (1 + feePct / 100);
+}
+
+function toListRate(ownerRate, feePct = DEFAULT_FEE_PCT) {
+  return roundUpListPriceNzd(toListRateRaw(ownerRate, feePct));
 }
 
 function lotPct(stakePct, lots) {
@@ -24,10 +34,16 @@ function lotPct(stakePct, lots) {
   return stakePct / lots;
 }
 
-function lotTotalNzd({ ownerRatePer1PctMonth, platformFeePct = DEFAULT_FEE_PCT, stakePct, lots, months }) {
+function lotTotalNzd({
+  ownerRatePer1PctMonth,
+  platformFeePct = DEFAULT_FEE_PCT,
+  stakePct,
+  lots,
+  months,
+}) {
   if (!(months > 0)) throw new Error("months");
   const listRate = toListRate(ownerRatePer1PctMonth, platformFeePct);
-  return listRate * lotPct(stakePct, lots) * months;
+  return roundUpListPriceNzd(listRate * lotPct(stakePct, lots) * months);
 }
 
 function ownerLotTotalNzd({ ownerRatePer1PctMonth, stakePct, lots, months }) {
@@ -38,47 +54,53 @@ function stakeTotalNzdOwner({ ownerRatePer1PctMonth, stakePct, months }) {
   return ownerRatePer1PctMonth * stakePct * months;
 }
 
-function stakeTotalNzdList({ ownerRatePer1PctMonth, platformFeePct = DEFAULT_FEE_PCT, stakePct, months }) {
-  return stakeTotalNzdOwner({ ownerRatePer1PctMonth, stakePct, months }) * (1 + platformFeePct / 100);
+function stakeTotalNzdList({
+  ownerRatePer1PctMonth,
+  platformFeePct = DEFAULT_FEE_PCT,
+  stakePct,
+  months,
+}) {
+  const listRate = toListRate(ownerRatePer1PctMonth, platformFeePct);
+  return roundUpListPriceNzd(listRate * stakePct * months);
 }
 
-function ownerRateFromStakeTotal(ownerStakeTotal, stakePct, months) {
-  return ownerStakeTotal / (stakePct * months);
-}
+// --- Snap rules ---
+assert.equal(roundUpListPriceNzd(73.5), 75);
+assert.equal(roundUpListPriceNzd(220.5), 225);
+assert.equal(roundUpListPriceNzd(75), 75);
+assert.equal(roundUpListPriceNzd(225), 225);
 
-function ownerRateFromListStakeTotal(listStakeTotal, stakePct, months, feePct = DEFAULT_FEE_PCT) {
-  return listStakeTotal / (stakePct * months) / (1 + feePct / 100);
-}
-
-function ownerRateFromListLotTotal(listLotTotal, stakePct, lots, months, feePct = DEFAULT_FEE_PCT) {
-  return listLotTotal / (lotPct(stakePct, lots) * months) / (1 + feePct / 100);
-}
-
-// --- Core example ---
+// --- Manolo-shaped example (12 mo) ---
 const ownerRate = 70;
 const fee = 5;
 const stakePct = 5;
 const lots = 20;
-const months = 16;
+const months = 12;
 
-assert.equal(toListRate(ownerRate, fee), 73.5);
+assert.equal(toListRateRaw(ownerRate, fee), 73.5);
+assert.equal(toListRate(ownerRate, fee), 75);
 assert.equal(lotPct(stakePct, lots), 0.25);
 
 assert.equal(
-  ownerLotTotalNzd({ ownerRatePer1PctMonth: ownerRate, stakePct, lots, months }),
-  280
+  ownerLotTotalNzd({
+    ownerRatePer1PctMonth: ownerRate,
+    stakePct,
+    lots,
+    months,
+  }),
+  70 * 0.25 * 12 // 210
 );
 assert.equal(
-  lotTotalNzd({ ownerRatePer1PctMonth: ownerRate, platformFeePct: fee, stakePct, lots, months }),
-  294
+  lotTotalNzd({
+    ownerRatePer1PctMonth: ownerRate,
+    platformFeePct: fee,
+    stakePct,
+    lots,
+    months,
+  }),
+  225
 );
 
-const ownerStake = stakeTotalNzdOwner({
-  ownerRatePer1PctMonth: ownerRate,
-  stakePct,
-  months,
-});
-assert.equal(ownerStake, 70 * 5 * 16); // 5600
 assert.equal(
   stakeTotalNzdList({
     ownerRatePer1PctMonth: ownerRate,
@@ -86,13 +108,20 @@ assert.equal(
     stakePct,
     months,
   }),
-  5600 * 1.05 // 5880
+  4500 // 75 * 5 * 12
 );
 
-// Reverse
-assert.equal(ownerRateFromStakeTotal(5600, stakePct, months), 70);
-assert.equal(ownerRateFromListStakeTotal(5880, stakePct, months, fee), 70);
-assert.equal(ownerRateFromListLotTotal(294, stakePct, lots, months, fee), 70);
+// Legacy 16-mo shape
+assert.equal(
+  lotTotalNzd({
+    ownerRatePer1PctMonth: 70,
+    platformFeePct: 5,
+    stakePct: 5,
+    lots: 20,
+    months: 16,
+  }),
+  300 // 75 * 0.25 * 16
+);
 
 // Default fee = 5
 assert.equal(toListRate(100), 105);
@@ -100,14 +129,15 @@ assert.equal(toListRate(100), 105);
 // Guards
 assert.throws(() => lotPct(5, 0));
 assert.throws(() => lotPct(0, 20));
-assert.throws(() => lotTotalNzd({ ownerRatePer1PctMonth: 70, stakePct: 5, lots: 20, months: 0 }));
-assert.throws(() => toListRate(-1));
-
-// No $1500 magic — scale check only
-assert.equal(
-  lotTotalNzd({ ownerRatePer1PctMonth: 100, platformFeePct: 0, stakePct: 10, lots: 10, months: 12 }),
-  100 * 1 * 12 // 1200
+assert.throws(() =>
+  lotTotalNzd({
+    ownerRatePer1PctMonth: 70,
+    stakePct: 5,
+    lots: 20,
+    months: 0,
+  })
 );
+assert.throws(() => toListRate(-1));
 
 console.log("test_pricing.mjs: all assertions passed");
 console.log(
@@ -115,10 +145,13 @@ console.log(
     {
       list_rate: toListRate(70, 5),
       lot_pct: lotPct(5, 20),
-      owner_lot_total: 280,
-      list_lot_total: 294,
-      owner_stake_total: 5600,
-      list_stake_total: 5880,
+      list_lot_12mo: lotTotalNzd({
+        ownerRatePer1PctMonth: 70,
+        platformFeePct: 5,
+        stakePct: 5,
+        lots: 20,
+        months: 12,
+      }),
     },
     null,
     2

@@ -11,7 +11,23 @@
  * - lot_total_nzd = list_rate * lot_pct * months
  * - owner_total_for_stake = owner_rate * stake_pct * months
  * - list_total_for_stake = owner_total_for_stake * (1 + fee_pct/100)
+ * - Investor-facing list NZD amounts always round UP to nearest $5
+ *   (e.g. 73.50 → 75, 220.50 → 225)
  */
+
+/** Investor-facing list prices snap up to this step (NZD). */
+export const LIST_PRICE_STEP_NZD = 5;
+
+/**
+ * Round UP to nearest $5 for investor-facing list amounts.
+ * Exact multiples of $5 stay unchanged. Non-positive / non-finite returned as-is.
+ */
+export function roundUpListPriceNzd(amount: number): number {
+  if (typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
+    return amount;
+  }
+  return Math.ceil(amount / LIST_PRICE_STEP_NZD) * LIST_PRICE_STEP_NZD;
+}
 
 export type PricingInputs = {
   /** Owner rate: NZD per month per 1% of the horse */
@@ -61,14 +77,25 @@ function resolveFeePct(feePct?: number): number {
   return fee;
 }
 
-/** list_rate = owner_rate * (1 + fee_pct/100) */
-export function toListRate(
+/** list_rate = owner_rate * (1 + fee_pct/100) — raw (no $5 snap). */
+export function toListRateRaw(
   ownerRatePer1PctMonth: number,
   platformFeePct: number = DEFAULT_FEE_PCT
 ): number {
   assertFiniteNonNegative("ownerRatePer1PctMonth", ownerRatePer1PctMonth);
   const fee = resolveFeePct(platformFeePct);
   return ownerRatePer1PctMonth * (1 + fee / 100);
+}
+
+/**
+ * Investor-facing list rate ($/mo per 1% of horse), rounded UP to nearest $5.
+ * e.g. owner 70 + 5% fee → 73.5 → 75
+ */
+export function toListRate(
+  ownerRatePer1PctMonth: number,
+  platformFeePct: number = DEFAULT_FEE_PCT
+): number {
+  return roundUpListPriceNzd(toListRateRaw(ownerRatePer1PctMonth, platformFeePct));
 }
 
 /** lot_pct = stake_pct / lots */
@@ -79,8 +106,9 @@ export function lotPct(stakePct: number, lots: number): number {
 }
 
 /**
- * List-side total NZD for one lot over the term.
- * lot_total_nzd = list_rate * lot_pct * months
+ * List-side total NZD for one lot over the term (investor ticket).
+ * Uses investor list rate (already $5-up) so 70@5% / 12mo / 0.25% unit → 75 × 0.25 × 12 = 225.
+ * Final snap guards float dust.
  */
 export function lotTotalNzd({
   ownerRatePer1PctMonth,
@@ -96,7 +124,7 @@ export function lotTotalNzd({
   const fee = resolveFeePct(platformFeePct);
   const listRate = toListRate(ownerRatePer1PctMonth, fee);
   const pct = lotPct(stakePct, lots);
-  return listRate * pct * months;
+  return roundUpListPriceNzd(listRate * pct * months);
 }
 
 /**
@@ -141,13 +169,10 @@ export function stakeTotalNzdList({
   stakePct,
   months,
 }: StakeTotalInputs): number {
-  const ownerTotal = stakeTotalNzdOwner({
-    ownerRatePer1PctMonth,
-    stakePct,
-    months,
-  });
+  // Prefer rounded list rate × stake × months (aligned with unit ticket × lots)
   const fee = resolveFeePct(platformFeePct);
-  return ownerTotal * (1 + fee / 100);
+  const listRate = toListRate(ownerRatePer1PctMonth, fee);
+  return roundUpListPriceNzd(listRate * stakePct * months);
 }
 
 /** owner_rate = total / (stake_pct * months) */

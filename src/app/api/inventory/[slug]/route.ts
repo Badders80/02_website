@@ -6,6 +6,7 @@ import {
   findStaticHlt,
   isPurchasesEnabled,
 } from "@/lib/purchase-eligibility";
+import { roundUpListPriceNzd } from "@/lib/pricing";
 import hltsModule from "@/data/hlts.json";
 
 export const dynamic = "force-dynamic";
@@ -104,6 +105,11 @@ export async function GET(
       pricePerShare = Number(staticHlt.price_per_share_nzd);
     }
 
+    const listLotPrice =
+      pricePerShare != null && pricePerShare > 0
+        ? roundUpListPriceNzd(pricePerShare)
+        : pricePerShare;
+
     return NextResponse.json({
       slug,
       name: live?.name || staticHlt?.horse_name || slug,
@@ -114,7 +120,7 @@ export async function GET(
         live?.listing_status || staticHlt?.listing_status || "draft",
       marketplace_visible:
         live?.marketplace_visible ?? staticHlt?.marketplace_visible ?? null,
-      price_per_share_nzd: pricePerShare,
+      price_per_share_nzd: listLotPrice,
       totalLeasePercent: live?.totalLeasePercent ?? null,
       leasePeriodMonths:
         live?.leasePeriodMonths ?? staticHlt?.lease_period_months ?? null,

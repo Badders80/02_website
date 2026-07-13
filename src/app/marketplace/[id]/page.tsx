@@ -15,6 +15,7 @@ import horsesData from "@/data/horses.json";
 import pedigreesData from "@/data/pedigrees.json";
 import { getCampaignStatus, isOnWebsite } from "@/lib/campaign-status";
 import { getLiveInventory } from "@/lib/google-sheets";
+import { roundUpListPriceNzd } from "@/lib/pricing";
 
 // Scan a horse's gallery directory for images (excluding the cover image already used)
 function getGalleryImages(slug: string, coverUrl?: string): string[] {
@@ -175,14 +176,16 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-/** Live row present → use live price only (null stays null). Static only when no live row. */
+/** Live row present → use live price only (null stays null). Static only when no live row. Investor list $ snap up to nearest $5. */
 function resolveLotPriceNzd(
   live: Awaited<ReturnType<typeof getLiveInventory>> | null,
   staticPrice: number | string | null | undefined
 ): number | null {
   if (live) {
     const p = live.price_per_share_nzd;
-    if (p != null && Number.isFinite(Number(p)) && Number(p) > 0) return Number(p);
+    if (p != null && Number.isFinite(Number(p)) && Number(p) > 0) {
+      return roundUpListPriceNzd(Number(p));
+    }
     return null;
   }
   if (
@@ -191,7 +194,7 @@ function resolveLotPriceNzd(
     Number.isFinite(Number(staticPrice)) &&
     Number(staticPrice) > 0
   ) {
-    return Number(staticPrice);
+    return roundUpListPriceNzd(Number(staticPrice));
   }
   return null;
 }
