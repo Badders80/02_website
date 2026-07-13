@@ -14,7 +14,7 @@ export const pressArticles: PressArticle[] = [
     publisher: 'Greenberg Traurig',
     date: '2026-03-19',
     excerpt:
-      'A GT Alert by international law firm Greenberg Traurig analyses the landmark partnership between Dubai Racing Club and Tokinvest, detailing how racehorse tokenization is moving from policy to production for the 2026/27 season. The legal insight validates the exact digital-syndication architecture that Evolution Stables pioneered under NZTR regulation in New Zealand — the same compliance and operational framework now defining the global standard.',
+      'A GT Alert by international law firm Greenberg Traurig analyses the landmark partnership between Dubai Racing Club and Tokinvest, detailing how racehorse tokenization is moving from policy to production for the 2026/27 season. The global equine token marketplace launch was covered widely across mainstream media, including the Khaleej Times and Gulf Today, confirming broad institutional recognition of the fractional racehorse ownership model. The legal insight validates the exact digital-syndication architecture that Evolution Stables pioneered under NZTR regulation in New Zealand — the same compliance and operational framework now defining the global standard.',
     imageUrl: '/images/press/tokinvest-drc.webp',
   },
   {
