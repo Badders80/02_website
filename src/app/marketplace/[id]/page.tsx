@@ -82,9 +82,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       canonical: `/marketplace/${id}`,
     },
     openGraph: {
-      title: `${horseName} | Evolution Stables Marketplace`,
+      title: `${horseName} | Marketplace`,
       description: story.substring(0, 160),
-      url: `https://evolutionstables.nz/marketplace/${id}`,
+      url: `https://www.evolutionstables.nz/marketplace/${id}`,
       type: "website",
       images: hlt.image_path
         ? [{ url: hlt.image_path, width: 1200, height: 630, alt: horseName }]
@@ -92,7 +92,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     twitter: {
       card: "summary_large_image",
-      title: `${horseName} | Evolution Stables`,
+      title: `${horseName}`,
       description: story.substring(0, 160),
       images: hlt.image_path ? [hlt.image_path] : undefined,
     },
@@ -119,7 +119,7 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
     description: horse?.story || `Racehorse ownership opportunity for ${horse?.name || "Racehorse"}.`,
     image: horse?.image_url?.startsWith("http")
       ? horse.image_url
-      : `https://evolutionstables.nz${horse?.image_url || ""}`,
+      : `https://www.evolutionstables.nz${horse?.image_url || ""}`,
     brand: {
       "@type": "Brand",
       name: "Evolution Stables",
@@ -140,7 +140,7 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
     ],
     offers: {
       "@type": "Offer",
-      url: `https://evolutionstables.nz/marketplace/${hltRecord.id}`,
+      url: `https://www.evolutionstables.nz/marketplace/${hltRecord.id}`,
       priceCurrency: "NZD",
       price: sharePrice.toFixed(2),
       availability: sharesAvailable > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",

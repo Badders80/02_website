@@ -9,7 +9,7 @@ function PressJsonLd() {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     headline: article.headline,
-    url: article.url.startsWith('http') ? article.url : `https://evolutionstables.nz${article.url}`,
+    url: article.url.startsWith('http') ? article.url : `https://www.evolutionstables.nz${article.url}`,
     datePublished: article.datePublished,
     author: {
       "@type": "Organization",
@@ -20,7 +20,7 @@ function PressJsonLd() {
       name: article.publisher,
       logo: {
         "@type": "ImageObject",
-        url: "https://evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png",
+        url: "https://www.evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png",
       },
     },
   }));
@@ -34,35 +34,35 @@ function PressJsonLd() {
 }
 
 export const metadata: Metadata = {
-  title: 'Press & Media | Evolution Stables',
+  title: 'Press & Media',
   description:
-    'The latest news, media coverage, and press releases from Evolution Stables. Discover how we are transforming thoroughbred ownership through digital innovation.',
+    "The latest news, media coverage, and press releases from Evolution Stables. Discover how we are transforming thoroughbred ownership through digital innovation.",
   alternates: {
-    canonical: '/press',
+    canonical: "/press",
   },
   openGraph: {
-    type: 'website',
-    locale: 'en_NZ',
-    url: 'https://evolutionstables.nz/press',
-    siteName: 'Evolution Stables',
-    title: 'Press & Media | Evolution Stables',
+    type: "website",
+    locale: "en_NZ",
+    url: "https://www.evolutionstables.nz/press",
+    siteName: "Evolution Stables",
+    title: "Press & Media",
     description:
-      'The latest news, media coverage, and press releases from Evolution Stables.',
+      "The latest news, media coverage, and press releases from Evolution Stables.",
     images: [
       {
-        url: '/opengraph-image',
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: 'Evolution Stables',
+        alt: "Evolution Stables",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Press & Media | Evolution Stables',
+    card: "summary_large_image",
+    title: "Press & Media",
     description:
-      'The latest news, media coverage, and press releases from Evolution Stables.',
-    images: ['/opengraph-image'],
+      "The latest news, media coverage, and press releases from Evolution Stables.",
+    images: ["/opengraph-image"],
   },
 };
 

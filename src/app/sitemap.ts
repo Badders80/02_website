@@ -10,7 +10,7 @@ import hltsData from "@/data/hlts.json";
  * This helps with SEO by ensuring all important pages are indexed.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://evolutionstables.nz";
+  const baseUrl = "https://www.evolutionstables.nz";
   const now = new Date();
 
   const routes: MetadataRoute.Sitemap = [
@@ -39,16 +39,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/brand-guidelines`,
+      url: `${baseUrl}/learn/returns`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/mystable`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/privacy`,

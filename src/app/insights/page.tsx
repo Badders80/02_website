@@ -12,15 +12,15 @@ export const metadata: Metadata = {
     canonical: "/insights",
   },
   openGraph: {
-    title: "Insights | Evolution Stables",
+    title: "Insights",
     description:
       "Guides, press coverage, race reports, and thought leadership from Evolution Stables.",
-    url: "https://evolutionstables.nz/insights",
+    url: "https://www.evolutionstables.nz/insights",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Insights | Evolution Stables",
+    title: "Insights",
     description:
       "Guides, press coverage, race reports, and thought leadership from Evolution Stables.",
   },

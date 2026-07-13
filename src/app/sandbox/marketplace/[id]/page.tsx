@@ -93,7 +93,7 @@ export default async function CampaignDetailSandboxPage({ params }: Props) {
     "@type": "Product",
     name: horse?.name || "Racehorse Campaign",
     description: `${horse?.age || ""}YO ${horse?.sex || ""} by ${horse?.sire_name || ""} out of ${horse?.dam_name || ""}`,
-    image: horse?.image_url ? `https://evolutionstables.nz${horse.image_url}` : "",
+    image: horse?.image_url ? `https://www.evolutionstables.nz${horse.image_url}` : "",
     offers: {
       "@type": "Offer",
       price: sharePriceNzd,

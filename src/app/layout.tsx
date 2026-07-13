@@ -5,21 +5,19 @@ import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { FAQStructuredData } from "@/components/seo/FAQStructuredData";
 import { getPressArticlesForStructuredData } from "@/lib/press-articles";
-import { faqItems } from "@/lib/faq-items";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://evolutionstables.nz"),
+  metadataBase: new URL("https://www.evolutionstables.nz"),
   title: {
     default: "Evolution Stables — Digital Racehorse Ownership",
     template: "%s | Evolution Stables",
   },
   description:
-    "Own racehorses through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset investing powered by Tokinvest.",
+    "Own thoroughbreds through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset investing powered by Tokinvest.",
   keywords: [
     "racehorse ownership",
     "digital syndication",
@@ -38,11 +36,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_NZ",
-    url: "https://evolutionstables.nz",
+    url: "https://www.evolutionstables.nz",
     siteName: "Evolution Stables",
     title: "Evolution Stables — Digital Racehorse Ownership",
     description:
-      "Own racehorses through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
+      "Own thoroughbreds through digital-syndication. Making racehorse ownership accessible, transparent, and liquid.",
     images: [
       {
         url: "/opengraph-image",
@@ -96,7 +94,6 @@ export default function RootLayout({
     <html lang="en-NZ" className={cn("font-sans", geist.variable, geistMono.variable)} suppressHydrationWarning>
       <head>
         <StructuredData pressArticles={getPressArticlesForStructuredData()} />
-        <FAQStructuredData items={faqItems} />
       </head>
       <body className="min-h-screen bg-black text-foreground antialiased relative" suppressHydrationWarning>
         <SmoothScrollProvider>

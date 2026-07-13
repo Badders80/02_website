@@ -12,15 +12,15 @@ export const metadata: Metadata = {
     canonical: "/faq",
   },
   openGraph: {
-    title: "FAQ | Evolution Stables",
+    title: "FAQ",
     description:
       "Common questions about racehorse ownership and digital-syndication, answered.",
-    url: "https://evolutionstables.nz/faq",
+    url: "https://www.evolutionstables.nz/faq",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FAQ | Evolution Stables",
+    title: "FAQ",
     description:
       "Common questions about racehorse ownership and digital-syndication, answered.",
   },

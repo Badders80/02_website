@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       type: 'article',
       locale: 'en_NZ',
-      url: `https://evolutionstables.nz/insights/${article.slug}`,
+      url: `https://www.evolutionstables.nz/insights/${article.slug}`,
       title: article.title,
       description: article.excerpt,
       publishedTime: article.date,
@@ -58,25 +58,25 @@ function ArticleJsonLd({ article }: { article: ReturnType<typeof getInsightArtic
     '@type': 'Article',
     headline: article.title,
     description: article.excerpt,
-    image: `https://evolutionstables.nz${article.heroImage}`,
+    image: `https://www.evolutionstables.nz${article.heroImage}`,
     datePublished: article.date,
     author: {
       '@type': 'Person',
       name: article.author,
       jobTitle: article.authorTitle,
-      url: 'https://evolutionstables.nz',
+      url: 'https://www.evolutionstables.nz',
     },
     publisher: {
       '@type': 'Organization',
       name: 'Evolution Stables',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png',
+        url: 'https://www.evolutionstables.nz/images/brand/legacy/legacy-logo-gold-favicon.png',
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://evolutionstables.nz/insights/${article.slug}`,
+      '@id': `https://www.evolutionstables.nz/insights/${article.slug}`,
     },
   };
   return (
