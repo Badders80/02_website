@@ -1160,6 +1160,30 @@ export const insightArticles: InsightArticle[] = [
         type: 'paragraph',
         text: 'Understanding these basics helps you ask better questions before subscribing. A well-run syndicate will welcome scrutiny and provide clear answers on structure, costs, and regulatory status.',
       },
+      {
+        type: 'paragraph',
+        text: 'Questions to ask before you subscribe',
+      },
+      {
+        type: 'paragraph',
+        text: 'Before committing, ask the syndicator: Is the syndicator NZTR-authorised and current? Can I see the disclosure statement? What are the total costs over the full term, not just the monthly rate? How often will I receive updates and what format will they take? What happens if the thoroughbred is injured or retires? How are stakes calculated and distributed? What is the exit process if I need to sell my share? These are not aggressive questions — they are the baseline a reputable syndicator expects.',
+      },
+      {
+        type: 'paragraph',
+        text: 'If the answers are vague or evasive, walk away. The regulatory framework gives you the right to clear information before you commit. A syndicator that cannot explain its cost structure or distribution waterfall in plain language is not one you should trust with your capital.',
+      },
+      {
+        type: 'paragraph',
+        text: 'The Evolution Stables model',
+      },
+      {
+        type: 'paragraph',
+        text: 'Evolution Stables operates as an NZTR-authorised syndicator using a digital-syndication model. Each thoroughbred is offered in fractional lots with a fixed monthly rate and defined term. Onboarding includes identity verification through regulated infrastructure. Owners receive race updates, trainer reports, and quarterly statements. Stakes are distributed on a pro-rata basis with 75% of gross stakes returned to investors. The full process — from browse to ownership to settlement — is documented and auditable.',
+      },
+      {
+        type: 'paragraph',
+        text: 'This is one example of how the regulatory framework and modern technology can work together. The syndication model has existed for decades in New Zealand. The digital layer adds transparency, accessibility, and structured reporting without changing the underlying regulatory obligations.',
+      },
     ],
   },
   {
@@ -1260,6 +1284,30 @@ export const insightArticles: InsightArticle[] = [
       {
         type: 'paragraph',
         text: 'Prize money is only one part of the ownership economics. To see how subscriptions, costs, and returns fit together across a full campaign, read the returns explainer at /learn/returns. It walks through the ownership waterfall, the 75% investor return policy, and how quarterly settlements are delivered to owner accounts.',
+      },
+      {
+        type: 'paragraph',
+        text: 'What affects the size of the prize pool',
+      },
+      {
+        type: 'paragraph',
+        text: 'Several factors determine how much money is on the line in any given race. The grade of the meeting is the biggest: metropolitan Saturday meetings carry the highest stakes, followed by premier provincial meetings, then midweek and rural fixtures. Sponsored races may have contributed stakes above the base NZTR allocation. Group and Listed races carry the largest pools but require the thoroughbred to meet eligibility criteria including ratings and nominations.',
+      },
+      {
+        type: 'paragraph',
+        text: 'The number of runners also matters. Some races guarantee a minimum payment to every starter, while others pay only the first few past the post. Races with smaller fields may offer less total prize money but a higher probability of earning a share. Owners and syndicators factor this into campaign planning — targeting races where the thoroughbred is competitive and the prize money justifies the entry and travel costs.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Prize money versus total ownership economics',
+      },
+      {
+        type: 'paragraph',
+        text: 'It is important to separate prize money from the total economics of ownership. A thoroughbred that earns stakes has done well on the track, but the cost of training, agistment, veterinary care, transport, and insurance runs whether the thoroughbred wins or not. A campaign that earns moderate prize money may still be net-negative for owners once costs are accounted for. Conversely, a thoroughbred that does not win much can still be valuable if it is later sold for breeding or as a performing asset.',
+      },
+      {
+        type: 'paragraph',
+        text: 'This is why disclosure statements matter. They set out the cost structure, the distribution waterfall, and the assumptions behind any projections. A reputable syndicator will be clear about the costs that exist regardless of prize money, and will not present stakes as the only economic variable that matters.',
       },
     ],
   },
@@ -1380,6 +1428,26 @@ export const insightArticles: InsightArticle[] = [
       {
         type: 'paragraph',
         text: 'Both models are governed by the same New Zealand framework. New Zealand Thoroughbred Racing licenses syndicators, approves disclosure statements, and enforces the Bloodstock Syndicator Code of Practice. The Financial Markets Conduct Act provides the legal backdrop for any offer of shares to the public. Digital-syndication platforms must meet the same obligations and may also hold additional licences in other jurisdictions where they operate, such as the Dubai Virtual Assets Regulatory Authority licence held by Tokinvest. Regulation is not a feature of one model or the other; it is a baseline requirement for both.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Making the choice',
+      },
+      {
+        type: 'paragraph',
+        text: 'If you are already embedded in the NZ racing community, know your trainer personally, and want a hands-on relationship with a small group of co-owners, a traditional syndicate may suit you. The social dimension of racing is real, and traditional structures often deliver it well.',
+      },
+      {
+        type: 'paragraph',
+        text: 'If you are new to racing, live outside New Zealand, or want a structured investment-style exposure with clear reporting and cost certainty, digital-syndication is designed for you. The onboarding is online, the terms are documented, and the reporting arrives on a schedule rather than when someone remembers to send it.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Some owners will use both. A traditional syndicate for the social club, a digital holding for the transparency and ease. The models are not mutually exclusive — they serve different needs within the same sport.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Whichever path you choose, verify that the syndicator is NZTR-authorised, read the disclosure statement before subscribing, and confirm you understand the cost structure and term length. The regulatory framework exists to protect owners, but only if you engage with it.',
       },
     ],
   },
