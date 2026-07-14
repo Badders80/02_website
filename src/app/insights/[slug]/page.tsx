@@ -6,6 +6,29 @@ import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
 import { getInsightArticle, insightArticles } from '@/lib/insights';
 
+/** Split text on URLs and render them as anchor tags. */
+function linkifyText(text?: string) {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (urlRegex.test(part)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#d4a964] underline decoration-[#d4a964]/40 hover:decoration-[#d4a964] transition-colors"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -198,7 +221,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
               }
               return (
                 <p key={i} className="text-[16px] md:text-[17px] font-light text-white/55 leading-[1.8] text-justify">
-                  {block.text}
+                  {linkifyText(block.text)}
                 </p>
               );
             })}
