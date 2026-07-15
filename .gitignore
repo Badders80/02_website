@@ -47,3 +47,6 @@ scripts/token.json
 
 # Local Stripe toolbox keys
 .env.stripe*
+
+# Image backups — never commit raw backups
+public/images/images_backup/
