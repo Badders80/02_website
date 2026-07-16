@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -75,6 +76,11 @@ export default function ReturnsPage() {
   return (
     <>
       <ReturnsJsonLd />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "How ownership returns work", href: "/learn/returns" },
+        ]}
+      />
       <NavBar />
       <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 lg:px-12">

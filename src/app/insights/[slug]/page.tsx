@@ -4,7 +4,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
-import { getInsightArticle, insightArticles } from '@/lib/insights';
+import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
+import { RelatedInsights } from '@/components/seo/RelatedInsights';
+import {
+  getInsightArticle,
+  getRelatedInsights,
+  insightArticles,
+} from '@/lib/insights';
 
 /** Split text on URLs and render them as anchor tags. */
 function linkifyText(text?: string) {
@@ -115,6 +121,13 @@ export default async function InsightArticlePage({ params }: PageProps) {
   const article = getInsightArticle(slug);
   if (!article) notFound();
 
+  const related = getRelatedInsights(slug, 3);
+  // Guides / team / race reports push to marketplace hubs; press stays quieter.
+  const showHubLinks =
+    article.category !== 'Press';
+  const backHref = article.category === 'Press' ? '/press' : '/insights';
+  const backLabel = article.category === 'Press' ? 'Back to Press' : 'Back to Insights';
+
   const formatDate = (value: string) => {
     const parts = value.split('-');
     if (parts.length !== 3) return value;
@@ -124,6 +137,12 @@ export default async function InsightArticlePage({ params }: PageProps) {
   return (
     <>
       <ArticleJsonLd article={article} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Insights', href: '/insights' },
+          { name: article.title, href: `/insights/${article.slug}` },
+        ]}
+      />
       <NavBar />
       <main className="min-h-screen bg-black text-foreground">
         {/* Hero */}
@@ -142,6 +161,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
         <section className="px-6 md:px-12 lg:px-20 max-w-3xl mx-auto -mt-32 relative z-10">
           <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-8">
             {formatDate(article.date)}
+            {article.category ? ` · ${article.category}` : ''}
           </p>
           <h1 className="text-[28px] md:text-[40px] lg:text-[48px] leading-[1.15] text-white font-light tracking-tight mb-6">
             {article.title}
@@ -262,12 +282,14 @@ export default async function InsightArticlePage({ params }: PageProps) {
               </a>
             </div>
           )}
+
+          <RelatedInsights articles={related} showHubLinks={showHubLinks} />
         </section>
 
-        {/* Back to press */}
+        {/* Back nav */}
         <section className="px-6 md:px-12 lg:px-20 max-w-3xl mx-auto pb-20">
           <Link
-            href="/press"
+            href={backHref}
             className="inline-flex items-center gap-2 group"
           >
             <svg
@@ -284,7 +306,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
               />
             </svg>
             <span className="text-[11px] uppercase tracking-[0.3em] text-white/40 group-hover:text-white/80 transition-colors duration-300">
-              Back to Press
+              {backLabel}
             </span>
           </Link>
         </section>

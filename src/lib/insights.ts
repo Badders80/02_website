@@ -1771,3 +1771,42 @@ export const insightArticles: InsightArticle[] = [
 export function getInsightArticle(slug: string): InsightArticle | undefined {
   return insightArticles.find((a) => a.slug === slug);
 }
+
+/** Same-category first, then recent others — for Related Articles blocks. */
+export function getRelatedInsights(slug: string, limit = 3): InsightArticle[] {
+  const current = getInsightArticle(slug);
+  if (!current) return [];
+
+  const others = insightArticles.filter((a) => a.slug !== slug);
+  const sameCategory = others.filter(
+    (a) => a.category && current.category && a.category === current.category
+  );
+  const remainder = others.filter((a) => !sameCategory.some((s) => s.slug === a.slug));
+
+  const byDateDesc = (a: InsightArticle, b: InsightArticle) =>
+    b.date.localeCompare(a.date);
+
+  return [...sameCategory.sort(byDateDesc), ...remainder.sort(byDateDesc)].slice(
+    0,
+    limit
+  );
+}
+
+/** Hub links shown under guides / educational pages (not Manolo-specific). */
+export const insightHubLinks = [
+  {
+    href: "/marketplace",
+    label: "Browse marketplace",
+    description: "Current thoroughbred campaigns and ownership terms",
+  },
+  {
+    href: "/learn/returns",
+    label: "How returns work",
+    description: "Prize money, pro-rata shares, and quarterly settlement",
+  },
+  {
+    href: "/faq",
+    label: "FAQ",
+    description: "Costs, risks, KYC, and how digital-syndication works",
+  },
+] as const;

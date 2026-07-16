@@ -1,4 +1,4 @@
-# Continue — Manolo: 1 unit held; terms polish; docs then go-live
+# Continue — SEO phase 2 in flight; Manolo listing (Alex)
 
 **Boot order:** this file → `../../docs/next-session-notes.md` → execute Next action.  
 **Do not** open `GAME_PLAN.md` or list the monorepo first.  
@@ -7,40 +7,38 @@
 
 ## Last action
 
-2026-07-13 session 2 closed (/end).  
-Live pay + fulfill + webhook + MyStable + terms hierarchy v1.  
-Founder holds 1 unit (paid $294; new list **$225** / rate **$75** after $5 snap).  
-Manolo: **12 mo** from **2026-08-01**. Kill-switch **OFF**.  
-UI baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`.
+2026-07-16 — SEO Phase 2 started on branch `seo-phase2-internal-links` (no deploy yet):
+- Related Articles + Next-steps hubs on insights (marketplace / returns / FAQ)
+- BreadcrumbList JSON-LD on insights + `/learn/returns`
+- `llms.txt` polish (cite list, preferred language, anti-hallucination)
+- Phase 1 verified **live** (www, sitemap prune, llms, returns)
+
+Alex working **I Stole A Manolo listing** separately — do not collide on marketplace horse page / horses.json / terms modal.
 
 ## Next action
 
-**SEO relay (Kimi K2.7 Code) — run first:**
-1. Read `relay/2026-07-13-seo-phase1-llms-content.md` — full spec.
-2. Branch `seo-phase1-content`, execute all 4 parts (crawl fixes → llms.txt → /learn/returns → guide deepening).
-3. Build, commit, do NOT deploy — Alex reviews diff.
-
-**Then Manolo/commercial:**
-4. Local iterate investment terms / purchase UX (prefer local over push spam).  
-5. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
-6. Optional: purchase qty → % of horse.  
-7. Controlled open remaining lots only when docs ready.  
-8. Do **not** refund founder unit unless asked.
+1. **Review + merge** `seo-phase2-internal-links` when build is clean (Alex or agent).  
+2. **Deploy** after review — then re-curl `/llms.txt` + sample insight HTML for Related block.  
+3. **Manolo (Alex):** listing content / docs; agent stays off that surface unless asked.  
+4. After Manolo listing stable: schema offer honesty (`InStock` vs kill-switch + lifecycle) — only then.  
+5. Controlled open remaining lots only when PDS/SA ready. Kill-switch stays **OFF** until founder intent.
 
 ## Why
 
-Money path proven; commercial clarity + legal docs gate public open.
+Phase 1 crawl/content foundation is live. Remaining SEO leverage is internal graph + listing depth (Manolo first), not more crawl rewrites.
 
 ## Open threads
 
+- Thin press/race report triage (merge or leave)  
 - PDF e-sign deferred  
-- Server-side KYC later  
 - Nellie / TML draft  
-- Rotate chat-exposed `sk_live` if still needed  
+- GSC baseline if credentials available  
 
 ## Do not
 
 - Casual `PURCHASES_ENABLED=true` without docs  
+- Re-run Phase 1 crawl fixes (done + live)  
+- Touch Manolo listing files while Alex owns that track  
 - Refund / wipe holdings without ask  
 - GAME_PLAN as boot  
 
@@ -48,7 +46,8 @@ Money path proven; commercial clarity + legal docs gate public open.
 
 | What | Path |
 |------|------|
-| Terms UI | `src/components/marketplace/InvestmentTermsModal.tsx` |
-| Pricing snap | `src/lib/pricing.ts` |
-| Fulfill | `src/lib/checkout-fulfill.ts` |
-| Baseline UI | `relay/2026-07-13-investment-terms-ui-baseline.md` |
+| Related insights | `src/components/seo/RelatedInsights.tsx` |
+| Breadcrumbs | `src/components/seo/BreadcrumbJsonLd.tsx` |
+| Insights page | `src/app/insights/[slug]/page.tsx` |
+| llms.txt | `public/llms.txt` |
+| SEO Phase 1 relay (done) | `relay/2026-07-13-seo-phase1-llms-content.md` |
