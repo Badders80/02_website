@@ -13,32 +13,43 @@
   <style>
     body, table, td, p, a { -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
     img { -ms-interpolation-mode: bicubic; max-width: 100%; height: auto; display: block; }
-    table { border-collapse: collapse; }
+    table { border-collapse: collapse; width: 100%; }
     * { box-sizing: border-box; }
     .masthead-mobile { display: none !important; max-height: 0 !important; overflow: hidden !important; mso-hide: all; }
+
+    /* Fluid text width — follow container, wrap long lines */
+    .email-shell { width: 100% !important; max-width: 600px !important; }
+    .body-text, .lead-text, .quote-text, p, h1, h2, h3, h4, li, a, blockquote, cite {
+      max-width: 100% !important;
+      overflow-wrap: anywhere;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+    img { max-width: 100% !important; height: auto !important; }
+    .quote-block, .faq-card, .revisit-block { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
     @media only screen and (max-width: 600px) {
       .outer-padding { padding: 16px 12px !important; }
       .container-padding,
       .quote-padding,
       .tactical-padding,
       .signoff-padding,
-      .footer-padding { padding-left: 24px !important; padding-right: 24px !important; }
-      .headline-text { font-size: 34px !important; line-height: 1.12 !important; }
-      .tactical-title { font-size: 28px !important; }
-      .tactical-subtitle { font-size: 18px !important; }
+      .footer-padding { padding-left: 20px !important; padding-right: 20px !important; }
+      .headline-text { font-size: 32px !important; line-height: 1.12 !important; }
+      .tactical-title, .faq-title { font-size: 28px !important; }
+      .tactical-subtitle, .faq-subtitle { font-size: 18px !important; }
       .lead-text { font-size: 17px !important; text-align: left !important; }
       .body-text { text-align: left !important; }
       .quote-text { font-size: 22px !important; line-height: 1.4 !important; }
-      .tactical-badge-cell { display: block !important; width: 100% !important; text-align: left !important; padding-left: 0 !important; padding-top: 8px !important; }
-      .tactical-badge { white-space: normal !important; }
+      .faq-inner { padding: 20px 16px !important; }
+      .faq-card { padding: 16px 16px !important; }
       .footer-logo-cell { display: block !important; width: 100% !important; text-align: left !important; }
-      .footer-social-cell { display: block !important; width: 100% !important; text-align: center !important; }
-      .footer-social-cell { padding-top: 20px !important; }
+      .footer-social-cell { display: block !important; width: 100% !important; text-align: center !important; padding-top: 20px !important; }
       .footer-social-table { margin: 0 auto !important; }
       .masthead-desktop { display: none !important; max-height: 0 !important; overflow: hidden !important; mso-hide: all; }
       .masthead-mobile { display: table !important; max-height: none !important; overflow: visible !important; width: 100% !important; }
+      .masthead-mobile { display: table !important; max-height: none !important; overflow: visible !important; width: 100% !important; }
     }
-  </style>
+</style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f2ee; font-family: 'Inter', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
   <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0; max-width: 0; opacity: 0; overflow: hidden;">
@@ -49,7 +60,7 @@
     <tr>
       <td class="outer-padding" align="center" style="padding: 28px 16px;">
 
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.08);">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="email-shell" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.08);">
 
           <!-- Header -->
           <tr>
@@ -131,76 +142,45 @@
             </td>
           </tr>
 
-          <!-- Quote -->
-          <tr>
-            <td class="quote-padding" style="padding: 20px 48px 20px 48px; background-color: #ffffff;">
-              
-    <div class="quote-block" style="width: 100%; margin: 36px 0; display: flex; align-items: stretch;">
-        <div style="width: 1.5px; min-width: 1.5px; background-color: #d4a964;"></div>
-        <div style="background-color: #fafafa; padding: 30px 32px; flex-grow: 1;">
-            <div style="width: 100%; margin-bottom: 18px;">
-                <blockquote style="font-family: 'Times New Roman', Times, serif; font-size: 28px; font-style: italic; line-height: 1.5; color: #1a1a1a; margin: 0; text-align: left; letter-spacing: -0.01em;">
-                    “She has run some superb races for us this season, but her safety and well-being must come first. We've caught this early, and a good spell in the paddock is the right choice to let her heal naturally.”
-                </blockquote>
-            </div>
-            <div style="text-align: left; padding-top: 12px;">
-                <cite style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #888888; text-transform: uppercase; letter-spacing: 2px; display: block;">
-                    — Alex Baddeley, <span style="color:#000;">Evolution Stables</span>
-                </cite>
-            </div>
-        </div>
-    </div>
-    
-            </td>
-          </tr>
-
-          <!-- Tactical Analysis -->
+<!-- FAQ (dark block) -->
           <tr>
             <td class="tactical-padding" style="background-color: #050505; padding: 48px 48px 48px 48px;">
-              
-  <div class="container-padding" style="width:100%;background-color:#050505;padding:48px 48px;margin-bottom:0;">
-    <div style="width:100%;margin-bottom:32px;padding-left:32px;">
-      <p style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px;">Why This Sets Up Well</p>
-      <h2 style="font-family:'Playfair Display', serif;font-size:36px;font-weight:400;line-height:1.1;color:#ffffff;letter-spacing:-0.5px;">Tactical Analysis</h2>
-      <p style="font-family:'Playfair Display', serif;font-size:36px;font-weight:400;line-height:1.1;color:#666666;letter-spacing:-0.5px;">for her recovery & return.</p>
+
+  <div class="container-padding faq-inner" style="width:100%;max-width:100%;background-color:#050505;padding:48px 48px;margin:0;box-sizing:border-box;">
+    <div style="width:100%;max-width:100%;margin:0 0 28px 0;box-sizing:border-box;">
+      <p style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#555;margin:0 0 10px 0;">Owner Briefing</p>
+      <h2 class="faq-title" style="font-family:'Playfair Display', serif;font-size:36px;font-weight:400;line-height:1.15;color:#ffffff;letter-spacing:-0.5px;margin:0;max-width:100%;">Frequently Asked Questions</h2>
+      <p class="faq-subtitle" style="font-family:'Playfair Display', serif;font-size:22px;font-weight:400;line-height:1.25;color:#666666;letter-spacing:-0.3px;margin:8px 0 0 0;max-width:100%;">Injury, recovery, and return.</p>
     </div>
 
-    <div style="width:100%;background:#0a0a0a;border-radius:12px;border:1px solid #222222;overflow:hidden;display:flex;flex-wrap:wrap;">
-        <div class="grid-cell" style="flex: 1 1 50%; padding: 28px; border-right: 1px solid #222222; border-bottom: 1px solid #222222; box-sizing: border-box;">
-            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin-bottom:9px;">01</div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-                <h4 style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#ffffff;margin:0;">Injury & Welfare</h4>
-                <span style="border:1px solid #333;color:#888;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;">Third Carpal</span>
-            </div>
-            <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:#888;margin:0;">Localized bone stress in her knee joint (third carpal bone). Caught early by Wexford Stables; no surgery required, just natural paddock rest.</p>
-        </div>
-        <div class="grid-cell" style="flex: 1 1 50%; padding: 28px; border-bottom: 1px solid #222222; box-sizing: border-box;">
-            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin-bottom:9px;">02</div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-                <h4 style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#ffffff;margin:0;">Paddock Spell</h4>
-                <span style="border:1px solid #333;color:#888;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;">2–3 Months</span>
-            </div>
-            <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:#888;margin:0;">Spelling at Kylie Bax's farm (Bax Bloodstock) for complete rest, 5-star personal care, and natural bone remineralization.</p>
-        </div>
-        <div class="grid-cell" style="flex: 1 1 50%; padding: 28px; border-right: 1px solid #222222; box-sizing: border-box;">
-            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin-bottom:9px;">03</div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-                <h4 style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#ffffff;margin:0;">Return Timeline</h4>
-                <span style="border:1px solid #333;color:#888;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;">2 Months Pre-training</span>
-            </div>
-            <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:#888;margin:0;">Taking a 'ready when she's ready' approach. Following her spell, she will complete 2 months of pre-training, conditioning, gallops, and trials.</p>
-        </div>
-        <div class="grid-cell" style="flex: 1 1 50%; padding: 28px; box-sizing: border-box;">
-            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin-bottom:9px;">04</div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-                <h4 style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#ffffff;margin:0;">Paddock Updates</h4>
-                <span style="border:1px solid #333;color:#888;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;">Bax Bloodstock</span>
-            </div>
-            <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:#888;margin:0;">While update frequency will naturally adjust without weekly trackwork, we will share regular paddock photos and progress reports until she rejoins Wexford Stables.</p>
-        </div>
+    <div style="width:100%;max-width:100%;box-sizing:border-box;">
+      <div class="faq-card" style="width:100%;max-width:100%;background:#0a0a0a;border:1px solid #222222;border-radius:12px;padding:22px 24px;margin:0 0 12px 0;box-sizing:border-box;">
+        <p style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin:0 0 8px 0;letter-spacing:0.08em;">01</p>
+        <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#ffffff;margin:0 0 8px 0;max-width:100%;">How serious is the injury?</p>
+        <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:#aaaaaa;margin:0;max-width:100%;"><strong style="color:#d4a964;">Moderate.</strong> Localized bone stress in her knee joint (third carpal bone)—not a fracture or tear. Caught early by Wexford Stables; no surgery required—natural paddock rest.</p>
+      </div>
+      <div class="faq-card" style="width:100%;max-width:100%;background:#0a0a0a;border:1px solid #222222;border-radius:12px;padding:22px 24px;margin:0 0 12px 0;box-sizing:border-box;">
+        <p style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin:0 0 8px 0;letter-spacing:0.08em;">02</p>
+        <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#ffffff;margin:0 0 8px 0;max-width:100%;">What happens now?</p>
+        <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:#aaaaaa;margin:0;max-width:100%;"><strong style="color:#d4a964;">Horse welfare comes first.</strong> Continuing on a stressed knee through heavy winter turf risks a more severe fracture. Ending her campaign now protects her long-term racing career.</p>
+      </div>
+      <div class="faq-card" style="width:100%;max-width:100%;background:#0a0a0a;border:1px solid #222222;border-radius:12px;padding:22px 24px;margin:0 0 12px 0;box-sizing:border-box;">
+        <p style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin:0 0 8px 0;letter-spacing:0.08em;">03</p>
+        <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#ffffff;margin:0 0 8px 0;max-width:100%;">When will she return?</p>
+        <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:#aaaaaa;margin:0 0 8px 0;max-width:100%;">Ready when she is ready:</p>
+        <ul style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:#aaaaaa;margin:0;padding-left:20px;max-width:100%;">
+          <li style="margin-bottom:4px;"><strong style="color:#ffffff;">2–3 months:</strong> paddock spell at Bax Bloodstock</li>
+          <li><strong style="color:#ffffff;">~2 months:</strong> pre-training build-up (canters, gallops, trials)</li>
+        </ul>
+      </div>
+      <div class="faq-card" style="width:100%;max-width:100%;background:#0a0a0a;border:1px solid #222222;border-radius:12px;padding:22px 24px;margin:0;box-sizing:border-box;">
+        <p style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:#444;margin:0 0 8px 0;letter-spacing:0.08em;">04</p>
+        <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#ffffff;margin:0 0 8px 0;max-width:100%;">Where is she spelling, and what updates can we expect?</p>
+        <p style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:#aaaaaa;margin:0;max-width:100%;">Kylie Bax's farm (Bax Bloodstock). Update frequency will ease without weekly trackwork; we will share paddock photos and vet progress until she rejoins Wexford Stables.</p>
+      </div>
     </div>
   </div>
-    
+
             </td>
           </tr>
 
@@ -230,33 +210,13 @@
             </td>
           </tr>
 
-          
-          <!-- FAQ (full content on main email) -->
+
+          <!-- Closing body -->
           <tr>
-            <td class="container-padding" style="background-color: #ffffff; padding: 8px 48px 0 48px; text-align: left;">
-<div style="margin-top: 12px; margin-bottom: 8px;">
-  <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 400; color: #000000; margin: 0 0 16px 0;">Frequently Asked Questions</h3>
-  <div style="background-color: #fafafa; border-left: 2px solid #d4a964; padding: 20px 24px; margin-bottom: 16px; border-radius: 4px;">
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #000000; margin: 0 0 6px 0;">How serious is the injury?</p>
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #333333; margin: 0; line-height: 1.6;"><strong>Moderate.</strong> Localized bone stress in her knee joint (third carpal bone)—not a fracture or tear. Caught early by Wexford Stables; no surgery required—natural paddock rest.</p>
-  </div>
-  <div style="background-color: #fafafa; border-left: 2px solid #d4a964; padding: 20px 24px; margin-bottom: 16px; border-radius: 4px;">
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #000000; margin: 0 0 6px 0;">What happens now?</p>
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #333333; margin: 0; line-height: 1.6;"><strong>Horse welfare comes first.</strong> Continuing on a stressed knee through heavy winter turf risks a more severe fracture. Ending her campaign now protects her long-term racing career.</p>
-  </div>
-  <div style="background-color: #fafafa; border-left: 2px solid #d4a964; padding: 20px 24px; margin-bottom: 16px; border-radius: 4px;">
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #000000; margin: 0 0 6px 0;">When will she return?</p>
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #333333; margin: 0 0 10px 0; line-height: 1.6;">Ready when she is ready:</p>
-    <ul style="font-family: 'Inter', sans-serif; font-size: 14px; color: #333333; margin: 0; padding-left: 20px; line-height: 1.6;">
-      <li><strong>2–3 months:</strong> paddock spell at Bax Bloodstock</li>
-      <li><strong>~2 months:</strong> pre-training build-up (canters, gallops, trials)</li>
-    </ul>
-  </div>
-  <div style="background-color: #fafafa; border-left: 2px solid #d4a964; padding: 20px 24px; margin-bottom: 0; border-radius: 4px;">
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #000000; margin: 0 0 6px 0;">Where is she spelling, and what updates can we expect?</p>
-    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #333333; margin: 0; line-height: 1.6;">Kylie Bax's farm (Bax Bloodstock). Update frequency will ease without weekly trackwork; we will share paddock photos and vet progress until she rejoins Wexford Stables.</p>
-  </div>
-</div>
+            <td class="container-padding" style="background-color: #ffffff; padding: 20px 48px 8px 48px; text-align: left;">
+              <p class="body-text" style="margin: 0; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 400; line-height: 1.75; color: #1a1a1a; text-align: justify; max-width: 100%;">
+                She has run some superb races for us this season, but her safety and well-being must come first. We've caught this early, and a good spell in the paddock is the right choice to let her heal naturally.
+              </p>
             </td>
           </tr>
 
