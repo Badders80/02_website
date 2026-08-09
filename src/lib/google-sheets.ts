@@ -3,7 +3,10 @@ import path from "path";
 import fs from "fs";
 import { lotTotalNzd } from "./pricing";
 
-const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg";
+/** Ops rebuild 2026-08-05. Prefer GOOGLE_SPREADSHEET_ID env (Vercel). */
+const SPREADSHEET_ID =
+  process.env.GOOGLE_SPREADSHEET_ID ||
+  "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I";
 /** Runtime ops inventory tab. Default `hlts` (not the sync template name "Inventory"). Override via GOOGLE_SHEETS_INVENTORY_TAB. */
 const INVENTORY_TAB = process.env.GOOGLE_SHEETS_INVENTORY_TAB || "hlts";
 // Tab titles must match the live spreadsheet exactly (case-sensitive).

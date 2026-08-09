@@ -70,9 +70,11 @@ export default function PurchasePage(props: PurchasePageProps) {
   const [pdsAgreed, setPdsAgreed] = useState(false);
   const [pdsScrolled, setPdsScrolled] = useState(false);
   const [pdsScrollable, setPdsScrollable] = useState(false);
+  const [pdsSignedAt, setPdsSignedAt] = useState<string | null>(null);
   const [saAgreed, setSaAgreed] = useState(false);
   const [saScrolled, setSaScrolled] = useState(false);
   const [saScrollable, setSaScrollable] = useState(false);
+  const [saSignedAt, setSaSignedAt] = useState<string | null>(null);
   const [agreementSubStep, setAgreementSubStep] = useState<1 | 2>(1);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -284,6 +286,18 @@ export default function PurchasePage(props: PurchasePageProps) {
           // Same-origin; server appends Stripe session_id placeholder
           success_url: `${window.location.origin}/marketplace/${props.horseSlug}/confirm?success=true`,
           cancel_url: `${window.location.origin}/marketplace/${props.horseSlug}/purchase`,
+          // In-app e-sign acknowledgements (PDS then SA)
+          e_sign: {
+            signature_name: signatureName,
+            pds_agreed: pdsAgreed,
+            sa_agreed: saAgreed,
+            pds_signed_at: pdsSignedAt,
+            sa_signed_at: saSignedAt,
+            pds_doc: props.hasPds ? `/documents/${props.horseSlug}/pds.pdf` : null,
+            sa_doc: props.hasSa
+              ? `/documents/${props.horseSlug}/syndicate-agreement.pdf`
+              : null,
+          },
         }),
       });
 
@@ -521,9 +535,13 @@ export default function PurchasePage(props: PurchasePageProps) {
                             setPdsScrolled(true);
                           }
                         }}
-                        className="h-64 overflow-y-auto bg-black/40 rounded-lg p-4 text-[11px] font-light text-white/50 leading-relaxed border border-white/[0.04] scroll-smooth"
+                        className="h-[28rem] overflow-y-auto bg-black/40 rounded-lg border border-white/[0.04] scroll-smooth"
                       >
-                        <embed src={`/documents/${props.horseSlug}/pds.pdf`} type="application/pdf" className="w-full min-h-[14rem] h-full" />
+                        <iframe
+                          title={`${props.horseName} Product Disclosure Statement`}
+                          src={`/documents/${props.horseSlug}/pds.pdf#view=FitH`}
+                          className="w-full min-h-[40rem] h-[40rem] bg-white rounded-lg"
+                        />
                       </div>
                     ) : (
                       <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-white/60 leading-relaxed">
@@ -571,17 +589,27 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </p>
                     </div>
 
-                    <label className={`flex items-center gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
+                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
                       <input
                         type="checkbox"
                         checked={pdsAgreed}
                         disabled={!pdsScrolled}
-                        onChange={(e) => setPdsAgreed(e.target.checked)}
-                        className="w-4 h-4 rounded accent-[#d4a964]"
+                        onChange={(e) => {
+                          setPdsAgreed(e.target.checked);
+                          setPdsSignedAt(e.target.checked ? new Date().toISOString() : null);
+                        }}
+                        className="w-4 h-4 mt-0.5 rounded accent-[#d4a964] shrink-0"
                       />
-                      {props.hasPds
-                        ? "I have read and agree to the terms of the Product Disclosure Statement"
-                        : "I acknowledge the interim PDS notice and agree to receive the final PDS after allocation"}
+                      <span>
+                        {props.hasPds
+                          ? "I have read the Product Disclosure Statement for this syndicate and electronically sign / agree to its terms (e-sign 1 of 2)."
+                          : "I acknowledge the interim PDS notice and agree to receive the final PDS after allocation"}
+                        {pdsSignedAt && (
+                          <span className="block text-[10px] text-white/40 mt-1">
+                            Signed {new Date(pdsSignedAt).toLocaleString()} as {signatureName}
+                          </span>
+                        )}
+                      </span>
                     </label>
                   </div>
 
@@ -641,9 +669,13 @@ export default function PurchasePage(props: PurchasePageProps) {
                             setSaScrolled(true);
                           }
                         }}
-                        className="h-64 overflow-y-auto bg-black/40 rounded-lg p-4 text-[11px] font-light text-white/50 leading-relaxed border border-white/[0.04] scroll-smooth"
+                        className="h-[28rem] overflow-y-auto bg-black/40 rounded-lg border border-white/[0.04] scroll-smooth"
                       >
-                        <embed src={`/documents/${props.horseSlug}/syndicate-agreement.pdf`} type="application/pdf" className="w-full min-h-[14rem] h-full" />
+                        <iframe
+                          title={`${props.horseName} Syndicate Agreement`}
+                          src={`/documents/${props.horseSlug}/syndicate-agreement.pdf#view=FitH`}
+                          className="w-full min-h-[40rem] h-[40rem] bg-white rounded-lg"
+                        />
                       </div>
                     ) : (
                       <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-white/60 leading-relaxed">
@@ -690,17 +722,27 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </p>
                     </div>
 
-                    <label className={`flex items-center gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
+                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
                       <input
                         type="checkbox"
                         checked={saAgreed}
                         disabled={!saScrolled}
-                        onChange={(e) => setSaAgreed(e.target.checked)}
-                        className="w-4 h-4 rounded accent-[#d4a964]"
+                        onChange={(e) => {
+                          setSaAgreed(e.target.checked);
+                          setSaSignedAt(e.target.checked ? new Date().toISOString() : null);
+                        }}
+                        className="w-4 h-4 mt-0.5 rounded accent-[#d4a964] shrink-0"
                       />
-                      {props.hasSa
-                        ? "I have read and agree to the terms of the Syndicate Agreement"
-                        : "I acknowledge the interim syndicate terms and agree to receive the final agreement after allocation"}
+                      <span>
+                        {props.hasSa
+                          ? "I have read the Syndicate Agreement for this syndicate and electronically sign / agree to its terms (e-sign 2 of 2)."
+                          : "I acknowledge the interim syndicate terms and agree to receive the final agreement after allocation"}
+                        {saSignedAt && (
+                          <span className="block text-[10px] text-white/40 mt-1">
+                            Signed {new Date(saSignedAt).toLocaleString()} as {signatureName}
+                          </span>
+                        )}
+                      </span>
                     </label>
                   </div>
 
@@ -730,8 +772,9 @@ export default function PurchasePage(props: PurchasePageProps) {
 
                   {/* Compliance Notice */}
                   <p className="text-[10.5px] font-light leading-relaxed text-white/45 text-center bg-white/[0.02] border border-white/[0.05] rounded-xl p-3">
-                    Payment records your holding and sends a welcome email. Final signed PDS/SA
-                    delivery is deferred until the e-sign pipeline ships.
+                    {props.hasPds && props.hasSa
+                      ? "You must e-sign the PDS and the Syndicate Agreement (two steps) before checkout. Your KYC name is recorded with each acknowledgement; payment then records your holding."
+                      : "Payment records your holding and sends a welcome email. Final signed PDS/SA delivery follows when legal documents are published."}
                   </p>
                 </div>
               )}

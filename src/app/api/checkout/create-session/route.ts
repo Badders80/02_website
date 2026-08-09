@@ -37,7 +37,7 @@ function ensureSessionIdPlaceholder(url: string): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { user_id: bodyUserId, hlt_id, shares_to_buy, user_email } = body;
+    const { user_id: bodyUserId, hlt_id, shares_to_buy, user_email, e_sign } = body;
     // Client bypass_kyc is ignored — never used to open sales or skip gates.
 
     // Verify caller via Firebase ID token (sent as Bearer)
@@ -68,6 +68,20 @@ export async function POST(request: NextRequest) {
         { error: 'Missing required parameters: user_id, hlt_id, shares_to_buy' },
         { status: 400 }
       );
+    }
+
+    // Require sequential e-sign acknowledgements when client sends the e_sign block
+    // (PurchaseFlow always sends it after PDS + SA steps).
+    if (e_sign != null) {
+      if (!e_sign.pds_agreed || !e_sign.sa_agreed) {
+        return NextResponse.json(
+          {
+            error:
+              'Product Disclosure Statement and Syndicate Agreement must both be e-signed before checkout.',
+          },
+          { status: 400 }
+        );
+      }
     }
 
     const staticHlt = findStaticHlt(hlts, hlt_id);
@@ -177,6 +191,12 @@ export async function POST(request: NextRequest) {
         shares_to_buy: String(sharesQty),
         price_per_share_nzd: String(pricePerShareNzd),
         horse_microchip: body.horse_microchip || '',
+        // In-app e-sign (PDS then SA) — Stripe metadata values must be strings ≤500 chars
+        e_sign_name: String(e_sign?.signature_name || '').slice(0, 200),
+        e_sign_pds: e_sign?.pds_agreed ? 'true' : 'false',
+        e_sign_sa: e_sign?.sa_agreed ? 'true' : 'false',
+        e_sign_pds_at: String(e_sign?.pds_signed_at || '').slice(0, 40),
+        e_sign_sa_at: String(e_sign?.sa_signed_at || '').slice(0, 40),
       },
       success_url: ensureSessionIdPlaceholder(successUrl),
       cancel_url: cancelUrl,

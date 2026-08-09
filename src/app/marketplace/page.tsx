@@ -81,9 +81,9 @@ type MarketplaceSourceRow = {
   has_terms_sheet?: boolean;
   marketplace_visible?: boolean | string | null;
   price_per_share_nzd?: number | string | null;
-  trainer_location?: string;
-  trainer_stable?: string;
-  trainer_contact_name?: string;
+  trainer_location?: string | null;
+  trainer_stable?: string | null;
+  trainer_contact_name?: string | null;
   pedigree?: string;
   image_path?: string;
   story?: string;
@@ -166,7 +166,7 @@ async function loadMarketplaceSource(): Promise<MarketplaceSourceRow[]> {
       err?.message || err
     );
   }
-  return hltsData as MarketplaceSourceRow[];
+  return hltsData as unknown as MarketplaceSourceRow[];
 }
 
 function mapToCampaign(hlt: MarketplaceSourceRow): Campaign {

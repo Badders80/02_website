@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-08-04T23:58:55Z",
+  "document_date": "2026-08-05",
+  "is_placeholder": true,
+  "gaps": [
+    "has_terms_sheet false until final PDF published"
+  ],
+  "sources": {
+    "website_slug": "tml-x-yearn",
+    "evolution_slug": "turn-me-loose-x-yearn",
+    "evolution_profile_used": true
+  },
+  "issuer": {
+    "promoter": "Evolution Stables Ltd",
+    "nzbn": "9429050177875",
+    "manager": "Evolution Stables",
+    "contact_email": "alex@evolutionstables.nz",
+    "contact_phone": "+64 21 0828 0901",
+    "site": "https://www.evolutionstables.nz",
+    "digital_partner": "Tokinvest (VARA, Dubai)",
+    "regulatory": "NZTR Bloodstock Syndication Code of Practice"
+  },
+  "identity": {
+    "slug": "tml-x-yearn",
+    "legal_horse_name": "Turn Me Loose x Yearn (unnamed)",
+    "display_name": "TML x Yearn",
+    "sex": "filly",
+    "colour": "Bay",
+    "foaling_date": "2023-08-17",
+    "sire_name": "Turn Me Loose",
+    "dam_name": "Yearn",
+    "microchip": "985125000128426",
+    "life_number": "NZ00460867",
+    "loveracing_id": "460867",
+    "breeder": "C W Kwok",
+    "identity_status": "verified",
+    "breeding_url": "https://loveracing.nz/Breeding/460867/Yearn-NZ-2013-2023.aspx",
+    "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=460867",
+    "trainer_name": "Stephen Gray Racing",
+    "trainer_stable": "Stephen Gray Racing",
+    "trainer_location": "Palmerston North NZ",
+    "story": "A 2yo filly by Group 1-winning sire Turn Me Loose, in pre-training at Copper Belt Lodge with Stephen Gray. Precocious speed meets 24 years of Singapore know-how.",
+    "pedigree": "Filly / Turn Me Loose x Yearn",
+    "next_up": "Pre-training"
+  },
+  "commercial": {
+    "owner_name": "B.A.X Bloodstock",
+    "leasehold_stake_pct": 5.0,
+    "shares_total": 20,
+    "shares_sold": 0,
+    "lot_pct": 0.25,
+    "lease_period_months": 36,
+    "lease_start_date": "2026-09-01",
+    "lease_end_date": "2029-08-01",
+    "owner_rate_per_1pct_month": 70,
+    "platform_fee_pct": 5,
+    "price_per_share_nzd": 661.5,
+    "investor_return_pct": 75,
+    "campaign_status": "draft",
+    "listing_status": "draft",
+    "has_terms_sheet": false
+  },
+  "narrative": {
+    "about_horse": "A 2YO bay filly by Group 1 sire Turn Me Loose out of the Group 2-winning mare Yearn, currently in early education with Stephen Gray at Copper Belt Lodge, Palmerston North.\n\nThis filly combines a proven Group 1 sire line with a multiple-stakes-performed dam. Turn Me Loose has already produced a Group 1 winner (Licketysplit) and 89 winners from his first crops. Yearn was a high-class race mare with 7 wins and nearly $340,000 in prizemoney, including the Group 2 Auckland Thoroughbred Breeders Stakes and placings in the Group 1 Thorndon Mile and Group 2 Rich Hill Mile.\n\nBred by C W Kwok and offered at the 2025 Karaka National Yearling Sales Series (Lot 413, account Windsor Park Stud) before being withdrawn \u2014 retained for racing rather than sale. The filly is registered on the NZTR Stud Book with full identification (microchip, brands, DNA typing).",
+    "race_schedule_expectation": "Early education / pre-training. Syndicate members receive updates via Evolution channels as the horse progresses toward trials and racing.",
+    "risks_extra": ""
+  }
+}

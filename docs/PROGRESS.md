@@ -1,8 +1,9 @@
 # 02_website — Progress (Diary)
 
-**Last updated:** 2026-07-13 (/end session 2)  
-**Current phase:** Manolo 1 unit held; terms UX polish; docs before public open  
-**Money:** `PURCHASES_ENABLED` unset (kill-switch OFF)  
+**Last updated:** 2026-08-05 (Sprint 1 close)  
+**Current phase:** Sprint 1 closed — Nellie `coming_soon` + LIVE pack; TML data ready, pack deferred; Sheet rebuild live on Vercel  
+**Money:** `PURCHASES_ENABLED` unset (kill-switch OFF); Manolo 0/20 sold  
+
 **Blockers:** Legal PDS/SA still stubs; public open gated on docs
 
 > ⛔ **Not the “what’s next” file.** This is history.  
@@ -26,6 +27,7 @@
 
 | Date | Focus | Outcome | Notes |
 |------|-------|---------|-------|
+| 2026-08-05 | Two-horse soft-list sprint 1 | **Closed** | Nellie coming_soon + LIVE pack; Sheet rebuild; secrets vault; wizard + e-sign; TML pack deferred |
 | 2026-07-13 | Manolo live pay + fulfill + MyStable + terms hierarchy | **Shipped** | [log](logs/2026-07-13.md) session 2 · webhook + recover · $225 list |
 | 2026-07-13 | Go-live catalog + Manolo trial prep + session protocol | **Shipped** | [log](logs/2026-07-13.md) |
 | 2026-07-13 | Session wrap | **Notes** | Trial still next; boot hardened; islands have continue+STATE |

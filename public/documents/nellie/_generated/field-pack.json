@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-08-04T23:58:55Z",
+  "document_date": "2026-08-05",
+  "is_placeholder": true,
+  "gaps": [
+    "microchip / NZTR identity pending",
+    "identity_status unregistered \u2014 use nickname + sire x dam honestly",
+    "has_terms_sheet false until final PDF published"
+  ],
+  "sources": {
+    "website_slug": "nellie",
+    "evolution_slug": "almanzor-x-night-danza",
+    "evolution_profile_used": true
+  },
+  "issuer": {
+    "promoter": "Evolution Stables Ltd",
+    "nzbn": "9429050177875",
+    "manager": "Evolution Stables",
+    "contact_email": "alex@evolutionstables.nz",
+    "contact_phone": "+64 21 0828 0901",
+    "site": "https://www.evolutionstables.nz",
+    "digital_partner": "Tokinvest (VARA, Dubai)",
+    "regulatory": "NZTR Bloodstock Syndication Code of Practice"
+  },
+  "identity": {
+    "slug": "nellie",
+    "legal_horse_name": "Almanzor x Night Danza (unnamed)",
+    "display_name": "Nellie",
+    "sex": "filly",
+    "colour": "",
+    "foaling_date": "2023-11-01",
+    "sire_name": "Almanzor (FR)",
+    "dam_name": "Night Danza (by Danzero)",
+    "microchip": "",
+    "life_number": "",
+    "loveracing_id": "",
+    "breeder": "B.A.X Bloodstock",
+    "identity_status": "unregistered",
+    "breeding_url": "https://loveracing.nz/Breeding/250867/Night-Danza-AUS-2006.aspx",
+    "performance_profile_url": "",
+    "trainer_name": "Logan Racing",
+    "trainer_stable": "Logan Racing",
+    "trainer_location": "Cambridge NZ",
+    "story": "An Almanzor filly from the Night Danza family. In pre-training at Logan Racing \u2014 a coming-soon addition to the Evolution Stables portfolio.",
+    "pedigree": "Filly / Almanzor (FR) x Night Danza (by Danzero)",
+    "next_up": "Pre-training"
+  },
+  "commercial": {
+    "owner_name": "B.A.X Bloodstock",
+    "leasehold_stake_pct": 5.0,
+    "shares_total": 20,
+    "shares_sold": 0,
+    "lot_pct": 0.25,
+    "lease_period_months": 36,
+    "lease_start_date": "2026-09-01",
+    "lease_end_date": "2029-08-01",
+    "owner_rate_per_1pct_month": 70,
+    "platform_fee_pct": 5,
+    "price_per_share_nzd": 661.5,
+    "investor_return_pct": 75,
+    "campaign_status": "draft",
+    "listing_status": "draft",
+    "has_terms_sheet": false
+  },
+  "narrative": {
+    "about_horse": "A 2YO filly by Almanzor out of Night Danza, currently in early education with Logan Racing. This horse is listed on the B.A.X Bloodstock website as \"coming soon\" \u2014 not yet named, identified by sire x dam combination.",
+    "race_schedule_expectation": "Early education / pre-training. Syndicate members receive updates via Evolution channels as the horse progresses toward trials and racing.",
+    "risks_extra": ""
+  }
+}

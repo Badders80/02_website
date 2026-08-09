@@ -1,54 +1,26 @@
-# Continue — Manolo: 1 unit held; terms polish; docs then go-live
+# Continue — Replaced Tokinvest Section on Homepage
 
 **Boot order:** this file → `../../docs/next-session-notes.md` → execute Next action.  
-**Do not** open `GAME_PLAN.md` or list the monorepo first.  
-**Start here file:** `../00_START_HERE.md`  
-**Protocol:** `../../docs/SESSION_PROTOCOL.md`
+**Sprint plan:** `../../docs/plans/2026-08-05-two-horse-list-go-live.md`  
 
 ## Last action
 
-2026-07-13 session 2 closed (/end).  
-Live pay + fulfill + webhook + MyStable + terms hierarchy v1.  
-Founder holds 1 unit (paid $294; new list **$225** / rate **$75** after $5 snap).  
-Manolo: **12 mo** from **2026-08-01**. Kill-switch **OFF**.  
-UI baseline: `relay/2026-07-13-investment-terms-ui-baseline.md`.
+2026-08-09: **Tokinvest section replaced on homepage (DigitalSyndicationSection.tsx)**.
+- Section Kicker: `REGULATED MARKETPLACE`.
+- Section Headline: **"Transformation Powered by Regulation"** (with *Regulation* highlighted in `#00E599`).
+- Lead Paragraph: *"Evolution Stables operates as an Authorised Syndicator — delivering regulated, financial-grade infrastructure built for modern racehorse owners."*
+- 3 Pillars: *Discover Opportunities*, *Trade with Confidence*, *Real-Time Insight*.
+- Kept 100% of other page sections untouched in their exact original order.
+- Production build verified (`85/85` pages compiled cleanly).
 
 ## Next action
 
-**SEO relay (Kimi K2.7 Code) — run first:**
-1. Read `relay/2026-07-13-seo-phase1-llms-content.md` — full spec.
-2. Branch `seo-phase1-content`, execute all 4 parts (crawl fixes → llms.txt → /learn/returns → guide deepening).
-3. Build, commit, do NOT deploy — Alex reviews diff.
-
-**Then Manolo/commercial:**
-4. Local iterate investment terms / purchase UX (prefer local over push spam).  
-5. Finalise Manolo PDS + SA under `public/documents/i-stole-a-manolo/`.  
-6. Optional: purchase qty → % of horse.  
-7. Controlled open remaining lots only when docs ready.  
-8. Do **not** refund founder unit unless asked.
-
-## Why
-
-Money path proven; commercial clarity + legal docs gate public open.
-
-## Open threads
-
-- PDF e-sign deferred  
-- Server-side KYC later  
-- Nellie / TML draft  
-- Rotate chat-exposed `sk_live` if still needed  
+1. Share Interest Signups **Editor** with `evolution-web-admin@evolution-engine.iam.gserviceaccount.com` so primary sheet writes stick.
+2. **TML soft-list** / Syndicate OS when ready.
+3. Optional: commit updated section component to git.
 
 ## Do not
 
-- Casual `PURCHASES_ENABLED=true` without docs  
-- Refund / wipe holdings without ask  
-- GAME_PLAN as boot  
-
-## Key paths
-
-| What | Path |
-|------|------|
-| Terms UI | `src/components/marketplace/InvestmentTermsModal.tsx` |
-| Pricing snap | `src/lib/pricing.ts` |
-| Fulfill | `src/lib/checkout-fulfill.ts` |
-| Baseline UI | `relay/2026-07-13-investment-terms-ui-baseline.md` |
+- Re-introduce Tokinvest branding or marketplace mentions  
+- Re-embed email form inside About scroll content  
+- Post bare `/` for paid/social campaigns — always use `?source=<key>`  

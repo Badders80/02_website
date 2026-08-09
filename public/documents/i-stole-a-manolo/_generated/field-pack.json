@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-08-04T23:42:29Z",
+  "document_date": "2026-08-05",
+  "is_placeholder": true,
+  "gaps": [],
+  "issuer": {
+    "promoter": "Evolution Stables Ltd",
+    "nzbn": "9429050177875",
+    "manager": "Evolution Stables",
+    "contact_email": "alex@evolutionstables.nz",
+    "contact_phone": "+64 21 0828 0901",
+    "site": "https://www.evolutionstables.nz",
+    "digital_partner": "Tokinvest (VARA, Dubai)",
+    "regulatory": "NZTR Bloodstock Syndication Code of Practice"
+  },
+  "identity": {
+    "slug": "i-stole-a-manolo",
+    "legal_horse_name": "I Stole A Manolo",
+    "display_name": "I Stole A Manolo",
+    "sex": "filly",
+    "colour": "Bay",
+    "foaling_date": "2023-08-30",
+    "sire_name": "Satono Aladdin (JPN)",
+    "dam_name": "Canuhandleajandal (NZ)",
+    "microchip": "985125000139219",
+    "life_number": "NZ00451442",
+    "loveracing_id": "451442",
+    "breeder": "Goldeye Trust",
+    "identity_status": "verified",
+    "breeding_url": "https://loveracing.nz/Breeding/451442/I-Stole-A-Manolo-NZ-2023.aspx",
+    "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=451442",
+    "trainer_name": "Wexford Stables",
+    "trainer_stable": "Wexford Stables",
+    "trainer_location": "Matamata NZ",
+    "story": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
+    "pedigree": "Filly / Bay / Satono Aladdin x Canuhandleajandal",
+    "next_up": "Trial (Sep)"
+  },
+  "commercial": {
+    "owner_name": "B.A.X Bloodstock Achieving Xcellence Limited",
+    "leasehold_stake_pct": 5.0,
+    "shares_total": 20,
+    "shares_sold": 0,
+    "lot_pct": 0.25,
+    "lease_period_months": 12,
+    "lease_start_date": "2026-08-01",
+    "lease_end_date": "2027-07-01",
+    "owner_rate_per_1pct_month": 70,
+    "platform_fee_pct": 5,
+    "price_per_share_nzd": 225,
+    "investor_return_pct": 75,
+    "campaign_status": "listed",
+    "listing_status": "active",
+    "has_terms_sheet": false
+  },
+  "narrative": {
+    "about_horse": "A stylish grey filly with a pedigree suggesting middle-distance strength. Currently spelling after early breaking-in.",
+    "race_schedule_expectation": "Trial (Sep)",
+    "risks_extra": ""
+  }
+}

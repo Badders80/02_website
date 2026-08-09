@@ -1,37 +1,40 @@
 {
-  "_comment": "Google Sheets configuration for inventory sync. Create a Google Sheet for each entity, then paste the sheet ID (from the URL) here. gid=0 is the first tab. Run: python scripts/sync_inventory.py",
+  "_comment": "Google Sheets config. 2026-08-05: rebuild sheet (old 1WENj… not visible to alex@ gws). Point Vercel GOOGLE_SPREADSHEET_ID here only after sharing with the production service account.",
   "sheets": {
+    "active_spreadsheet_id": "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I",
+    "active_spreadsheet_url": "https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit",
+    "legacy_spreadsheet_id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
     "horses": {
-      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
-      "gid": "0",
-      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=0"
+      "id": "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I",
+      "gid": "1342391480",
+      "url": "https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit#gid=1342391480"
     },
     "hlts": {
-      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
-      "gid": "1445514591",
-      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=1445514591"
+      "id": "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I",
+      "gid": "963872640",
+      "url": "https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit#gid=963872640"
     },
     "trainers": {
-      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
-      "gid": "1763205967",
-      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=1763205967"
+      "id": "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I",
+      "gid": "310620413",
+      "url": "https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit#gid=310620413"
     },
     "owners": {
-      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
-      "gid": "1650400118",
-      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=1650400118"
+      "id": "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I",
+      "gid": "1179642984",
+      "url": "https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit#gid=1179642984"
     },
     "holdings": {
-      "id": "1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg",
-      "gid": "2099258130",
-      "url": "https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit#gid=2099258130"
+      "id": "1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I",
+      "gid": "327772863",
+      "url": "https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit#gid=327772863"
     }
   },
   "_sheet_templates": {
-    "horses": "name, slug, microchip, life_number, loveracing_id, foaling_date, sex, colour, sire_name, dam_name, breeder, status, image_path, story, trainer_name, trainer_stable, trainer_location, wins, placed, next_up",
-    "hlts": "horse_microchip, horse_name, horse_slug, owner_name, trainer_name, trainer_stable, trainer_location, lease_period_months, lease_start_date, leasehold_stake_pct, investor_return_pct, syndicate_price_nzd, shares_total, shares_sold, price_per_share_nzd, listing_status, marketplace_visible, image_path, story, pedigree, wins, placed, next_up",
+    "horses": "name, slug, microchip, life_number, loveracing_id, foaling_date, sex, colour, sire_name, dam_name, breeder, status, identity_status, image_path, story, trainer_name, trainer_stable, trainer_location, wins, placed, next_up, breeding_url, performance_profile_url, display_name",
+    "hlts": "horse_slug, horse_name, listing_status, campaign_status, price_per_share_nzd, owner_rate_per_1pct_month, platform_fee_pct, shares_total, shares_sold, leasehold_stake_pct, lease_period_months, lease_start_date, investor_return_pct, marketplace_visible, trainer_name, trainer_stable, trainer_location, wins, placed, next_up, loveracing_id, image_path, story, pedigree, has_terms_sheet, horse_microchip, owner_name",
     "trainers": "name, stable_name, location, email",
     "owners": "name, email, type",
-    "holdings": "user_email, hlt_id, shares_owned, purchase_date, kyc_status"
+    "holdings": "purchase_id, timestamp, user_email, horse_slug, shares_owned, purchase_price_total_nzd, signed_pds_url, signed_sa_url, kyc_status, utm_source, utm_campaign"
   }
 }

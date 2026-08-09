@@ -1,5 +1,6 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { CtaLeadModal } from "@/components/CtaLeadModal";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
@@ -10,10 +11,40 @@ import { FAQSection } from "@/components/sections/FAQSection";
 import { FixedBg } from "@/components/ui/FixedBg";
 import { GrassBg } from "@/components/ui/GrassBg";
 
-export default function HomePage() {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+function firstParam(
+  sp: Record<string, string | string[] | undefined>,
+  key: string
+): string {
+  const v = sp[key];
+  if (Array.isArray(v)) return v[0] || "";
+  return v || "";
+}
+
+/** LinkedIn / campaign links: CTA in first paint. Organic: delayed modal. */
+function isCampaignLanding(sp: Record<string, string | string[] | undefined>) {
+  return Boolean(
+    firstParam(sp, "source") ||
+      firstParam(sp, "utm_source") ||
+      firstParam(sp, "campaign") ||
+      firstParam(sp, "campaign_key") ||
+      firstParam(sp, "utm_campaign")
+  );
+}
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const forceInstant = isCampaignLanding(sp);
+
   return (
     <>
       <NavBar />
+      <CtaLeadModal forceInstant={forceInstant} />
       <main className="text-foreground">
         <h1 className="sr-only">
           Evolution Stables — Digital Racehorse Ownership
@@ -25,7 +56,7 @@ export default function HomePage() {
 
         <AboutSection />
 
-        <section className="px-0 md:px-0 m-0 p-0 border-none" data-cta-overlay="off">
+        <section className="px-0 md:px-0 m-0 p-0 border-none">
           <FixedBg
             src="/images/content/background/hooves-black-white.jpg"
             height="h-[50vh]"
@@ -35,7 +66,7 @@ export default function HomePage() {
 
         <HowItWorksSection />
 
-        <section className="px-0 md:px-0 m-0 p-0 border-none" data-cta-overlay="off">
+        <section className="px-0 md:px-0 m-0 p-0 border-none">
           <FixedBg
             src="/images/content/background/landscape-digital-overlay.jpg"
             height="h-[50vh]"

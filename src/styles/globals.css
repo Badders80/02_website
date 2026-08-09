@@ -300,3 +300,14 @@ body::after {
     pointer-events: none;
   }
 }
+
+/* CTA lead modal open: soft dim on page — scroll stays live (no overflow lock) */
+body.cta-overlay-open main {
+  filter: blur(6px) brightness(0.55);
+  transition: filter 0.35s ease;
+}
+
+/* Keep nav crisp above the dimmed page; modal lives on body via portal */
+body.cta-overlay-open nav {
+  filter: none;
+}

@@ -24,6 +24,12 @@ Then answer or execute **Next action**.
 - Parent `evo_01/` listing unless cross-vertical  
 - Chat history as SSOT  
 
+## Secrets (locked)
+
+- Local: **`.env.local` only** · Prod: **Vercel only**  
+- Never scatter `.env.production*` / vercel pulls at root → use `.secrets/archive/`  
+- Check: `just secrets-check` · Details: `.secrets/README.md` · AGENTS law 8
+
 ## End of session
 
 Say: **update the end of session notes**  

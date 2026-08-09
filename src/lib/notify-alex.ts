@@ -26,7 +26,9 @@ export async function notifyAlexOfInterest(params: NotifyParams): Promise<void> 
   const notifyEmail = process.env.NOTIFY_EMAIL || "alex@evolutionstables.nz";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.evolutionstables.nz";
 
-  const defaultSheetUrl = `https://docs.google.com/spreadsheets/d/1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg/edit`;
+  const defaultSheetUrl = `https://docs.google.com/spreadsheets/d/${
+    process.env.LEADS_SPREADSHEET_ID || '1r1tLSTKIrcjxfn6NPGIfnmmj9GGebKXat8EZXMTHEyk'
+  }/edit`;
   const sheetLink = sheetUrl || defaultSheetUrl;
 
   const sourceLabel = source === "logged-in" ? "Logged-in investor" : "Guest (not signed in)";

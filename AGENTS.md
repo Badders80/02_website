@@ -49,30 +49,36 @@ Shortcut file: [`00_START_HERE.md`](00_START_HERE.md) (same rule).
 5. **Lifecycle** — first-class `campaign_status` on sheet. Code: `src/lib/campaign-status.ts`.  
 6. **TML not TLM** — Turn Me Loose → slug `tml-x-yearn`.  
 7. **No commercial fiction** — no $1500 defaults, no 100-share fake inventory.  
-8. **Minimal secrets in code** — Stripe/Firebase secrets in Vercel only.  
+8. **Secrets layout (locked)** — Local: only **`.env.local`**. Prod: **Vercel env only**. Never write `.env.production*`, `.env.vercel-*`, `.env.review-*`, `vercel-env.json`, or `*key*.json` at the website root. Dumps go in **`.secrets/archive/`** (gitignored). Template: `.env.local.example` only. Pull: `vercel env pull .env.local --environment=development` (or production into a temp path under `.secrets/`, not the root). See `.secrets/README.md`.  
 9. **Sheet tab casing** — `hlts`, `holdings`, `leads`, `communications` (lowercase).  
 10. **gws** — sheet edits via `gws` CLI when credentials available.
 
 ---
 
-## Current phase (2026-07-13)
+## Current phase (2026-08-05)
 
-**Phase: Manolo controlled payment trial**  
-Site live; catalog honest; **I Stole A Manolo** `listed` @ $294 list lot; money **closed**.
+**Phase: Soft-list Nellie + TML; legal docs generator; Sheet ops rebuild**  
+Site live; money **closed** (`PURCHASES_ENABLED` off). Manolo payment path was **workflow-tested** then inventory reset to **0 units sold** (static). Founder test hold is not a live inventory truth.
 
 | Component | Status |
 |-----------|--------|
-| Marketplace (live Sheets) | ✅ Live |
+| Marketplace (Sheets + static fallback) | ✅ Built — confirm live spreadsheet access |
 | Pricing model + `pricing.ts` | ✅ Live |
 | 6-state lifecycle | ✅ Live |
 | Hard-close / eligibility | ✅ Live |
 | KYC + Checkout routes | ✅ Built; money kill-switched |
 | Payment health | ✅ `/api/diagnostics/payment-health` |
-| Manolo trial E2E | ⏳ Not run — next |
+| Manolo | `listed` · **0/20 sold** · docs stubs/placeholders |
+| Nellie / TML | Soft-list path: `coming_soon*` when flipped (still `draft` until Phase 3) |
+| PDS/SA generator | 🟡 Parallel workstream |
 | PDF e-sign | ⏸️ Deferred |
-| Nellie / TML | `draft` (hidden) |
 
 GCP Cloud Functions / WIF = **retired**. Do not revive.
+
+**Listing policy (replaces old Manolo-trial gate):**
+- Soft-show (`coming_soon` / `coming_soon_details`) is OK while money is off.
+- Hard list (`listed`) requires honest catalog + stock + rates; purchases still need kill-switch + eligibility.
+- Public **money open** is gated on real PDS/SA (not placeholders), not on “hide every other horse until Manolo E2E.”
 
 ---
 
@@ -89,7 +95,11 @@ Firebase Auth  →  Stripe Identity (KYC)  →  Stripe Checkout  →  webhook
                                                               → SMTP email
 ```
 
-Spreadsheet: `1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg`
+**Spreadsheet (ops rebuild 2026-08-05):** `1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I`  
+https://docs.google.com/spreadsheets/d/1MJvs2zcPsZ6ek_M2LhRP4jecoyheA7Rrkq8EY-8E08I/edit  
+
+Legacy ID (may still be on Vercel until switched): `1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg` — not visible to alex@ gws; do not assume it is current.  
+Config: `scripts/sheets_config.json`. Runtime: `GOOGLE_SPREADSHEET_ID` env.
 
 ---
 
@@ -124,8 +134,13 @@ Spreadsheet: `1WENj4ZCcjRIyHiVdP2lP7YkpFGc9i_Yy5tYFzysCXhg`
 
 ## Do not
 
-- Set `PURCHASES_ENABLED=true` without founder intent + E2E plan  
+- Set `PURCHASES_ENABLED=true` without founder intent + E2E plan + legal docs intent  
 - Reintroduce TLM spelling or Inventory tab default  
 - Invent owner rates or lot prices  
-- Open Nellie/TML until Manolo trial done  
+- Soft-hide Nellie/TML solely because Manolo was used for payment path testing  
+- Hard-list or enable money without deliberate status flip + kill-switch decision  
 - Treat June WIF/GCP docs as current  
+- Treat placeholder `pds.pdf` / `sa.pdf` as final legal docs  
+- Scatter secrets: no extra `.env.*` pulls at repo root; no key JSON dumps next to `package.json`  
+- Commit `.env.local`, `.secrets/`, or service-account JSON
+
