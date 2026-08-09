@@ -1,18 +1,14 @@
-# Continue — Replaced Tokinvest in MarketplaceSection & Pushed to Remote
+# Continue — Fixed Marketplace Horse Images & Full Site Image Audit
 
 **Boot order:** this file → `../../docs/next-session-notes.md` → execute Next action.  
 **Sprint plan:** `../../docs/plans/2026-08-05-two-horse-list-go-live.md`  
 
 ## Last action
 
-2026-08-09: **Tokinvest removed from REGULATED MARKETPLACE section in `MarketplaceSection.tsx` & committed/pushed**.
-- Updated `MarketplaceSection.tsx`:
-  - Headline: **"Transformation Powered by Regulation"** (with *Regulation* highlighted in `#00E599`).
-  - Description: *"Evolution Stables operates as an Authorised Syndicator — delivering regulated, financial-grade infrastructure built for modern racehorse owners."*
-  - Card 2 (*Trade with Confidence*): Updated to *"Our regulated platform ensures secure transactions, compliant ownership records, and integrated settlements..."*.
-  - Removed external Tokinvest CTA button link.
-- Synchronized `homepage.json`.
-- Committed and pushed to `main` (`https://github.com/Badders80/02_website.git`).
+2026-08-10: **Fixed broken horse images on Marketplace & performed full website image audit**.
+- **Root Cause:** Linux case-sensitivity on Vercel prod caused 404s when loading `first-gear-BG.png` vs `FirstGear-BG.png`, `prudentia-BG.png` vs `prudentia.png`, `hottathanafantasy-BG.png` vs `Hottathan-BG.png`, and `i-stole-a-manolo-BG.png` vs `IStole-BG.png`.
+- **Fix:** Created exact lowercase aliased copies in `public/images/content/horses/` and resolved all 65 image references across the entire codebase (`0 missing`).
+- **Build:** Verified full Next.js production build (`85/85` pages compiled cleanly).
 
 ## Next action
 
