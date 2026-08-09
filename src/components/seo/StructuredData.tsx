@@ -52,7 +52,7 @@ export function StructuredData({ pressArticles = [] }: StructuredDataProps) {
       "New Zealand racing",
       "NZTR",
       "regulated investment",
-      "Tokinvest",
+      "authorised syndicator",
       "Singularry",
     ],
     // Add press mentions if provided

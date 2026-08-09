@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Evolution Stables",
   },
   description:
-    "Own thoroughbreds through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated real-world asset investing powered by Tokinvest.",
+    "Own thoroughbreds through digital-syndication. Evolution Stables makes racehorse ownership accessible, transparent, and liquid. Regulated digital-syndication for modern racehorse owners.",
   keywords: [
     "racehorse ownership",
     "digital syndication",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "fractional ownership",
     "New Zealand racing",
     "NZTR",
-    "Tokinvest",
+    "authorised syndicator",
     "regulated investment",
     "horse racing investment",
   ],
