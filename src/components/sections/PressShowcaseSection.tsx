@@ -129,9 +129,9 @@ export function PressShowcaseSection() {
 
   const partners = [
     {
-      name: 'Investing.com',
-      src: '/images/partners/investing-com.png',
-      wrapperClass: 'w-[155px] h-[31px] sm:w-[175px] sm:h-[35px] md:w-[185px] md:h-[37px] lg:w-[210px] lg:h-[42px]'
+      name: 'Trackside NZ',
+      src: '/images/partners/trackside-nz.png',
+      wrapperClass: 'w-[155px] h-[37px] sm:w-[185px] sm:h-[44px] md:w-[200px] md:h-[48px] lg:w-[230px] lg:h-[55px]'
     },
     {
       name: 'BusinessDesk',
@@ -144,14 +144,9 @@ export function PressShowcaseSection() {
       wrapperClass: 'w-[175px] h-[33px] sm:w-[200px] sm:h-[38px] md:w-[215px] md:h-[40px] lg:w-[245px] lg:h-[46px]'
     },
     {
-      name: 'Tokinvest',
-      src: '/images/partners/tokinvest-light.png',
-      wrapperClass: 'w-[125px] h-[31px] sm:w-[140px] sm:h-[35px] md:w-[150px] md:h-[37px] lg:w-[175px] lg:h-[42px]'
-    },
-    {
-      name: 'Trackside NZ',
-      src: '/images/partners/trackside-nz.png',
-      wrapperClass: 'w-[155px] h-[37px] sm:w-[185px] sm:h-[44px] md:w-[200px] md:h-[48px] lg:w-[230px] lg:h-[55px]'
+      name: 'Investing.com',
+      src: '/images/partners/investing-com.png',
+      wrapperClass: 'w-[155px] h-[31px] sm:w-[175px] sm:h-[35px] md:w-[185px] md:h-[37px] lg:w-[210px] lg:h-[42px]'
     },
     {
       name: 'NZTR',
@@ -452,7 +447,7 @@ export function PressShowcaseSection() {
           <div ref={featuredHeaderRef} className="pb-6">
             <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 lg:grid lg:grid-cols-6 lg:gap-x-16 lg:gap-y-12 lg:justify-items-center">
               {partners.map((partner, index) => {
-                const colSpanClass = index >= 6 ? 'lg:col-span-3' : 'lg:col-span-2';
+                const colSpanClass = index < 3 ? 'lg:col-span-2' : 'lg:col-span-3';
                 return (
                   <div
                     key={partner.name}
