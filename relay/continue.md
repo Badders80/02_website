@@ -8,7 +8,7 @@
 2026-08-10: **Fixed broken horse images on Marketplace & performed full website image audit**.
 - **Root Cause:** Linux case-sensitivity on Vercel prod caused 404s when loading `first-gear-BG.png` vs `FirstGear-BG.png`, `prudentia-BG.png` vs `prudentia.png`, `hottathanafantasy-BG.png` vs `Hottathan-BG.png`, and `i-stole-a-manolo-BG.png` vs `IStole-BG.png`.
 - **Fix:** Created exact lowercase aliased copies in `public/images/content/horses/` and resolved all 65 image references across the entire codebase (`0 missing`).
-- **Build:** Verified full Next.js production build (`85/85` pages compiled cleanly).
+- **Build & Push:** Verified full Next.js production build (`85/85` pages compiled cleanly). Committed & pushed to `main` (`d1d0d93`).
 
 ## Next action
 
