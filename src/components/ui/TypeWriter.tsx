@@ -23,6 +23,14 @@ export function TypeWriter({
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
+    // Respect reduced-motion — skip animation, show full text immediately
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplayedText(text);
+      setCurrentIndex(text.length);
+      setIsComplete(true);
+      return;
+    }
+
     if (loop && isComplete) {
       const loopDelay = setTimeout(() => {
         setDisplayedText('');

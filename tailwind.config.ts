@@ -20,6 +20,10 @@ export default {
         gold: "var(--brand-gold)",
         "gold-hover": "var(--brand-gold-hover)",
         
+        // Accent (single source of truth for gold — used by all primitives)
+        "accent": "var(--brand-gold)",
+        "accent-hover": "var(--brand-gold-hover)",
+        
         // Status colors (admin)
         "status-draft": "rgba(161,161,170,0.1)",
         "status-reviewed": "rgba(212,169,100,0.1)",
