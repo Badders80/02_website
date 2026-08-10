@@ -20,6 +20,7 @@ interface PedigreeTableProps {
   horseName: string;
   sireName: string;
   damName: string;
+  damSireName?: string;
   sex: string;
   colour: string;
   age?: number;
@@ -249,6 +250,7 @@ export function PedigreeTable({
   horseName,
   sireName,
   damName,
+  damSireName,
   sex,
   colour,
   age,
@@ -278,6 +280,12 @@ export function PedigreeTable({
 
   return (
     <div className="space-y-6">
+      {damSireName && (
+        <div className="inline-flex items-center gap-2 text-xs text-zinc-300 bg-zinc-900/60 border border-zinc-800 rounded-lg px-3.5 py-2">
+          <span className="text-amber-400 font-semibold uppercase text-[10px] tracking-wider">Broodmare Sire</span>
+          <span className="text-white font-medium">{damSireName}</span>
+        </div>
+      )}
       {hasFullPedigree && (
         <div className="flex gap-2">
           {(["tree", "dam-line", "sire-line"] as const).map((v) => (

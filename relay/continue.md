@@ -5,15 +5,15 @@
 
 ## Last action
 
-2026-08-10: **Fixed broken horse images on Marketplace & performed full website image audit**.
-- **Root Cause:** Linux case-sensitivity on Vercel prod caused 404s when loading `first-gear-BG.png` vs `FirstGear-BG.png`, `prudentia-BG.png` vs `prudentia.png`, `hottathanafantasy-BG.png` vs `Hottathan-BG.png`, and `i-stole-a-manolo-BG.png` vs `IStole-BG.png`.
-- **Fix:** Created exact lowercase aliased copies in `public/images/content/horses/` and resolved all 65 image references across the entire codebase (`0 missing`).
-- **Build & Push:** Verified full Next.js production build (`85/85` pages compiled cleanly). Committed & pushed to `main` (`d1d0d93`).
+2026-08-10: **Updated campaign status badges for First Gear, Prudentia, and Hottathanafantasy to Fully Subscribed**.
+- **Change:** Set `campaign_status` to `fully_subscribed`, `shares_sold` to `20`, and `marketplace_visible` to `true` across `src/data/hlts.json`.
+- **Verification:** Verified full Next.js production build (`85/85` pages compiled cleanly).
 
 ## Next action
 
-1. Share Interest Signups **Editor** with `evolution-web-admin@evolution-engine.iam.gserviceaccount.com` so primary sheet writes stick.
-2. **TML soft-list** / Syndicate OS when ready.
+1. Ensure Google Sheet `hlts` tab reflects `fully_subscribed` status for First Gear, Prudentia, and Hottathanafantasy.
+2. Share Interest Signups **Editor** with `evolution-web-admin@evolution-engine.iam.gserviceaccount.com` so primary sheet writes stick.
+3. **TML soft-list** / Syndicate OS when ready.
 
 ## Do not
 

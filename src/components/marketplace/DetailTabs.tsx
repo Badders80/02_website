@@ -7,19 +7,13 @@ import { PedigreeTable } from "./PedigreeTable";
 import { RegistrationGate } from "./RegistrationGate";
 import { getCampaignStatus, type CampaignStatus } from "@/lib/campaign-status";
 
-interface Race {
-  date: string;
-  venue: string;
-  race: string;
-  trackCondition?: string;
-  result: string;
-  margin?: string;
-}
+import { type Race } from "@/lib/types";
 
 interface DetailTabsProps {
   horseName: string;
   sireName: string;
   damName: string;
+  damSireName?: string;
   sex: string;
   colour: string;
   age?: number;
@@ -34,6 +28,7 @@ interface DetailTabsProps {
     contact_name?: string;
     location: string;
     nztr_license_number?: string;
+    bio?: string;
   };
   horseSlug: string;
   listingStatus?: string;
@@ -42,6 +37,11 @@ interface DetailTabsProps {
   sharesSold?: number;
   foalingDate?: string;
   pedigreeData?: any;
+  story?: string;
+  pedigreeBlurb?: string;
+  trainerCommentary?: string;
+  raceLog?: Race[];
+  trainerBio?: string;
 }
 
 function getRaceRecordEmptyMessage(status: CampaignStatus): string {
@@ -135,48 +135,7 @@ function LegalDocumentCards({
   );
 }
 
-// Hardcoded historical races for Prudentia
-const PRUDENTIA_RACES: Race[] = [
-  { date: "15 Mar 2025", venue: "Tauranga", race: "1400m", trackCondition: "Heavy", result: "1st" },
-  { date: "05 Feb 2025", venue: "Te Rapa", race: "1400m", trackCondition: "Good", result: "2nd" },
-  { date: "18 Jan 2025", venue: "Matamata", race: "1300m", trackCondition: "Soft", result: "3rd" },
-  { date: "12 Dec 2024", venue: "Te Aroha", race: "1250m", trackCondition: "Good", result: "5th" },
-  { date: "08 Nov 2024", venue: "Rotorua", race: "1400m", trackCondition: "Slow", result: "7th" },
-];
-
-// Hardcoded historical races for First Gear (from loveracing.nz ID 428364)
-const FIRST_GEAR_RACES: Race[] = [
-  { date: "28 Dec 2024", venue: "Otaki", race: "1600m", trackCondition: "Good", result: "1st" },
-  { date: "14 Dec 2024", venue: "Trentham", race: "1400m", trackCondition: "Good", result: "3rd" },
-  { date: "23 Nov 2024", venue: "Wanganui", race: "1340m", trackCondition: "Soft", result: "2nd" },
-  { date: "09 Nov 2024", venue: "Trentham", race: "1200m", trackCondition: "Good", result: "4th" },
-  { date: "26 Oct 2024", venue: "Trentham", race: "1200m", trackCondition: "Soft", result: "2nd" },
-];
-
-// Trainer-specific copy
-const TRAINER_COPY: Record<string, { bio: string; stableDescription: string }> = {
-  "Wexford Stables": {
-    bio: "Renowned for training top-tier middle-distance stayers, Wexford Stables utilizes world-class preparation environments, equine swimming resources, and patience-first horse education structures.",
-    stableDescription: "out of Matamata",
-  },
-  "Stephen Gray Racing": {
-    bio: "With 24 years of experience in Singapore and now based in New Zealand, Stephen Gray brings a proven track record of developing precocious talent. Copper Belt Lodge provides a patient-first environment with proven swimming and education facilities.",
-    stableDescription: "out of Palmerston North",
-  },
-  "Logan Racing": {
-    bio: "Logan Racing is a professional racing operation known for developing young horses through patient preparation and proven training methodologies.",
-    stableDescription: "out of Cambridge",
-  },
-};
-
-function getTrainerCopy(stableName: string): { bio: string; stableDescription: string } {
-  return TRAINER_COPY[stableName] || {
-    bio: "A professional racing operation with proven training methodologies and patient horse development.",
-    stableDescription: `out of ${stableName}`,
-  };
-}
-
-// Gender-aware pronouns
+// Gender-aware pronouns for fallback overview
 function getPronouns(sex: string): { subject: string; possessive: string } {
   const lower = sex.toLowerCase();
   if (lower === "gelding") return { subject: "he", possessive: "his" };
@@ -185,7 +144,7 @@ function getPronouns(sex: string): { subject: string; possessive: string } {
   return { subject: "this horse", possessive: "its" };
 }
 
-// Status-aware overview text
+// Status-aware overview text (fallback when horse.story is empty)
 function getOverviewCopy(
   horseName: string,
   sireName: string,
@@ -218,6 +177,7 @@ export function DetailTabs({
   horseName,
   sireName,
   damName,
+  damSireName,
   sex,
   colour,
   age,
@@ -234,6 +194,11 @@ export function DetailTabs({
   sharesSold = 0,
   foalingDate,
   pedigreeData,
+  story,
+  pedigreeBlurb,
+  trainerCommentary,
+  raceLog,
+  trainerBio,
 }: DetailTabsProps) {
   const { user, kycStatus } = useAuth();
   const router = useRouter();
@@ -243,10 +208,8 @@ export function DetailTabs({
     router.push(`/auth/login?redirect=${encodeURIComponent(`/marketplace/${horseSlug}`)}`);
   };
 
-  // Determine which races to show
-  const races = horseSlug === "prudentia" ? PRUDENTIA_RACES
-    : horseSlug === "first-gear" ? FIRST_GEAR_RACES
-    : [];
+  // Determine races to show
+  const races = raceLog && raceLog.length > 0 ? raceLog : [];
 
   // Determine status (first-class campaign_status when present; else inference)
   const status: CampaignStatus = getCampaignStatus({
@@ -265,8 +228,8 @@ export function DetailTabs({
   const isComingSoon =
     status === "coming_soon" || status === "coming_soon_details";
 
-  const trainerCopy = getTrainerCopy(trainer.stable_name || trainer.name || "");
   const overviewCopy = getOverviewCopy(horseName, sireName, damName, sex, status);
+  const activeBio = trainerBio || trainer.bio || "A professional racing operation with proven training methodologies and patient horse development.";
 
   return (
     <div className="space-y-8">
@@ -293,26 +256,35 @@ export function DetailTabs({
         {/* Overview Panel */}
         {activeTab === "overview" && (
           <div className="space-y-6 animate-fade-in font-light">
-            <h4 className="text-md font-medium text-white">Expanded Pedigree</h4>
-            <div className="space-y-4">
-              <p className="text-sm leading-[1.8] text-white/60">
-                {overviewCopy.para1}
-              </p>
-              <p className="text-sm leading-[1.8] text-white/60">
-                {overviewCopy.para2}
-              </p>
+            <h4 className="text-md font-medium text-white">Campaign Story & Overview</h4>
+            <div className="space-y-4 text-sm leading-[1.8] text-white/70">
+              {story ? (
+                <p className="whitespace-pre-line">{story}</p>
+              ) : (
+                <>
+                  <p>{overviewCopy.para1}</p>
+                  <p>{overviewCopy.para2}</p>
+                </>
+              )}
             </div>
           </div>
         )}
 
         {/* Pedigree Panel */}
         {activeTab === "pedigree" && (
-          <div className="relative min-h-[280px]">
+          <div className="relative min-h-[280px] space-y-4">
+            {pedigreeBlurb && (
+              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-sm text-zinc-300 leading-relaxed font-light">
+                <span className="text-amber-400 font-medium uppercase text-[10px] tracking-wider block mb-1">Pedigree Insight</span>
+                {pedigreeBlurb}
+              </div>
+            )}
             <div className={tier === "guest" ? "opacity-30 pointer-events-none select-none blur-[2px]" : ""}>
               <PedigreeTable
                 horseName={horseName}
                 sireName={sireName}
                 damName={damName}
+                damSireName={damSireName}
                 sex={sex}
                 colour={colour}
                 age={age}
@@ -335,13 +307,19 @@ export function DetailTabs({
         {activeTab === "trainer" && (
           <div className="space-y-6 animate-fade-in">
             <h4 className="text-md font-medium text-white">Trainer Profile</h4>
-            <div className="space-y-4 font-light text-sm leading-[1.8] text-white/60">
+            <div className="space-y-4 font-light text-sm leading-[1.8] text-white/70">
               <p>
-                <span className="text-white font-normal">{trainer.stable_name || trainer.name || "—"}</span> {trainerCopy.stableDescription}.
-                {" "}{trainerCopy.bio}
+                <span className="text-white font-normal">{trainer.stable_name || trainer.name || "—"}</span>
+                {trainer.location ? ` (${trainer.location})` : ""}: {activeBio}
               </p>
+              {trainerCommentary && (
+                <div className="p-4 rounded-xl bg-zinc-900/80 border border-amber-500/20 text-sm text-amber-100/90 italic leading-relaxed">
+                  <span className="text-amber-400 font-semibold uppercase text-[10px] tracking-wider block not-italic mb-1">Trainer Commentary</span>
+                  "{trainerCommentary}"
+                </div>
+              )}
               {trainer.contact_name && (
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-white/40 pt-2">
                   Contact: <span className="text-white/60">{trainer.contact_name}</span>
                 </p>
               )}

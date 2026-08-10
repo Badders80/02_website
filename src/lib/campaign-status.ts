@@ -172,7 +172,7 @@ export const STATUS_INFO: Record<CampaignStatus, StatusInfo> = {
     showPrice: false,
   },
   completed: {
-    label: "Term Completed",
+    label: "Completed",
     badgeClass: "bg-blue-600/20 border-blue-400/40 text-blue-200",
     dotClass: "bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]",
     canPurchase: false,

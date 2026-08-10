@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-08-10T10:18:43Z",
+  "document_date": "2026-08-10",
+  "is_placeholder": true,
+  "gaps": [
+    "has_terms_sheet false until final PDF published"
+  ],
+  "sources": {
+    "website_slug": "prudentia",
+    "evolution_slug": "prudentia",
+    "evolution_profile_used": true
+  },
+  "issuer": {
+    "promoter": "Evolution Stables Ltd",
+    "nzbn": "9429050177875",
+    "manager": "Evolution Stables",
+    "contact_email": "alex@evolutionstables.nz",
+    "contact_phone": "+64 21 0828 0901",
+    "site": "https://www.evolutionstables.nz",
+    "digital_partner": "Tokinvest (VARA, Dubai)",
+    "regulatory": "NZTR Bloodstock Syndication Code of Practice"
+  },
+  "identity": {
+    "slug": "prudentia",
+    "legal_horse_name": "Prudentia (NZ)",
+    "display_name": "Prudentia (NZ)",
+    "sex": "Mare",
+    "colour": "Bay",
+    "foaling_date": "2021-11-13",
+    "sire_name": "Proisir (AUS)",
+    "dam_name": "Little Bit Irish (NZ)",
+    "dam_sire_name": "",
+    "pedigree_blurb": "Proven middle-distance pedigree profile.",
+    "microchip": 985125000126462,
+    "life_number": "NZ427416",
+    "loveracing_id": "427416",
+    "breeder": "goldeye-trust",
+    "identity_status": "verified",
+    "breeding_url": "https://loveracing.nz/Breeding/427416/Prudentia-NZ-2021.aspx",
+    "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=427416",
+    "trainer_name": "Wexford Stables",
+    "trainer_stable": "Wexford Stables",
+    "trainer_location": "Matamata, New Zealand",
+    "story": "Prudentia is a New Zealand-bred four-year-old mare by Proisir, trained from Matamata by Lance O'Sullivan and Andrew Scott at Wexford Stables. She has already recorded a maiden victory and performed across a range of distances and track conditions.\n\nHer win came over 1400 metres at Tauranga, where she handled testing Heavy conditions to score decisively. Since breaking her maiden, she has stepped into Rating 65 Benchmark company, continuing her preparation against stronger opposition. Her race record reflects early progression through maiden grade and exposure to open competition within New Zealand's domestic programme.",
+    "pedigree": "Mare / Proisir (AUS) x Little Bit Irish (NZ)",
+    "next_up": "TBD"
+  },
+  "commercial": {
+    "owner_name": "B.A.X Bloodstock Achieving Xcellence Limited",
+    "leasehold_stake_pct": 5.0,
+    "shares_total": 20,
+    "shares_sold": 20,
+    "lot_pct": 0.25,
+    "lease_period_months": 18,
+    "lease_start_date": "2026-01-01",
+    "lease_end_date": "2027-06-01",
+    "owner_rate_per_1pct_month": null,
+    "platform_fee_pct": null,
+    "price_per_share_nzd": 292.5,
+    "investor_return_pct": 75,
+    "campaign_status": null,
+    "listing_status": "active",
+    "has_terms_sheet": null
+  },
+  "narrative": {
+    "about_horse": "Prudentia is a New Zealand-bred four-year-old mare by Proisir, trained from Matamata by Lance O'Sullivan and Andrew Scott at Wexford Stables. She has already recorded a maiden victory and performed across a range of distances and track conditions.\n\nHer win came over 1400 metres at Tauranga, where she handled testing Heavy conditions to score decisively. Since breaking her maiden, she has stepped into Rating 65 Benchmark company, continuing her preparation against stronger opposition. Her race record reflects early progression through maiden grade and exposure to open competition within New Zealand's domestic programme.",
+    "race_schedule_expectation": "TBD",
+    "trainer_commentary": "Work has been pleasing in the mornings.",
+    "risks_extra": ""
+  }
+}

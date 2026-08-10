@@ -44,7 +44,7 @@ function closedCopy(status?: CampaignStatus): { title: string; body: string } {
   }
   if (status === "completed") {
     return {
-      title: "Term Completed",
+      title: "Completed",
       body: "This campaign has completed. New allocations are not available.",
     };
   }

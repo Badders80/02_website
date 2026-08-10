@@ -2,6 +2,7 @@ import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { RightColumnActionPanel } from "@/components/marketplace/RightColumnActionPanel";
 import { DetailTabs } from "@/components/marketplace/DetailTabs";
+import { HeroPillarsGrid } from "@/components/marketplace/HeroPillarsGrid";
 import { GuestProfileGate } from "@/components/marketplace/GuestProfileGate";
 import { CampaignStatusBadge } from "@/components/marketplace/CampaignStatusBadge";
 import Image from "next/image";
@@ -32,34 +33,48 @@ function getGalleryImages(slug: string, coverUrl?: string): string[] {
     .slice(0, 6);
 }
 
-// Racing freshness calculator (NZTR Love Racing records)
-const getRacingFreshness = (slug: string) => {
+// Dynamic Racing freshness calculator (from horse.race_log or slug)
+const getRacingFreshness = (horseOrSlug: any) => {
   const currentDate = new Date();
-  const lastRaceDates: Record<string, string> = {
-    "prudentia": "2026-06-27",
-    "first-gear": "2026-01-02",
-  };
-  
-  if (slug in lastRaceDates) {
-    const lastRaceDate = new Date(lastRaceDates[slug]);
-    const diffTime = Math.abs(currentDate.getTime() - lastRaceDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return {
-      label: "Days Since Last Race",
-      value: `${diffDays} Days`,
-      subtext: `Last raced: ${lastRaceDates[slug]} (Love Racing Record)`,
-    };
-  } else {
-    const targetDate = new Date("2026-09-04");
-    const diffTime = targetDate.getTime() - currentDate.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const displayDays = diffDays > 0 ? diffDays : 0;
-    return {
-      label: "Countdown to Debut",
-      value: `${displayDays} Days`,
-      subtext: "Estimated preparation cycle remaining",
-    };
+  const horse = typeof horseOrSlug === "object" ? horseOrSlug : (horsesData as any[]).find((h) => h.slug === horseOrSlug);
+  if (horse?.race_log && Array.isArray(horse.race_log) && horse.race_log.length > 0) {
+    const dates = horse.race_log
+      .map((r: any) => (r.date ? new Date(r.date).getTime() : 0))
+      .filter((t: number) => !isNaN(t) && t > 0);
+    if (dates.length > 0) {
+      const maxDate = new Date(Math.max(...dates));
+      const diffTime = Math.abs(currentDate.getTime() - maxDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return {
+        label: "Days Since Last Race",
+        value: `${diffDays} Days`,
+        subtext: `Last raced: ${maxDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })} (Love Racing Record)`,
+      };
+    }
   }
+  // Try next_up date for horses with no race log
+  const nextUp = horse?.next_up;
+  if (nextUp && nextUp !== "TBD") {
+    const targetDate = new Date(nextUp);
+    if (!isNaN(targetDate.getTime())) {
+      const diffTime = targetDate.getTime() - currentDate.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) {
+        return {
+          label: "Countdown to Debut",
+          value: `${diffDays} Days`,
+          subtext: `Target: ${targetDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}`,
+        };
+      }
+      return {
+        label: "Next Up",
+        value: "Due",
+        subtext: `${targetDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}`,
+      };
+    }
+  }
+  // No race log and no next_up — hide badge gracefully
+  return null;
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -74,9 +89,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: `${horseName} | Marketplace`,
     description: story.substring(0, 160),
     other: {
-      "racing-freshness-label": freshness.label,
-      "racing-freshness-value": freshness.value,
-      "racing-freshness-subtext": freshness.subtext,
+      "racing-freshness-label": freshness?.label ?? "",
+      "racing-freshness-value": freshness?.value ?? "",
+      "racing-freshness-subtext": freshness?.subtext ?? "",
     },
     alternates: {
       canonical: `/marketplace/${id}`,
@@ -104,6 +119,7 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
   const trainer = hltRecord.trainer;
   const sharePrice = hltRecord.share_price_cents / 100;
   const sharesAvailable = hltRecord.shares_total - hltRecord.shares_sold;
+  const freshness = getRacingFreshness(hltRecord.id);
 
   // Wikidata and Wikipedia entity linkage for Wexford and Stephen Gray
   const trainerSameAs = trainer?.stable_name === "Wexford Stables"
@@ -130,14 +146,14 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
       sameAs: trainerSameAs.length > 0 ? trainerSameAs : undefined,
     } : undefined,
     // Injecting freshness indicator inside the structured data
-    additionalProperty: [
+    additionalProperty: freshness ? [
       {
         "@type": "PropertyValue",
         name: "racing-freshness-status",
-        value: getRacingFreshness(hltRecord.id).value,
-        description: getRacingFreshness(hltRecord.id).label
+        value: freshness.value,
+        description: freshness.label
       }
-    ],
+    ] : undefined,
     offers: {
       "@type": "Offer",
       url: `https://www.evolutionstables.nz/marketplace/${hltRecord.id}`,
@@ -422,6 +438,9 @@ export default async function CampaignDetailPage({ params }: Props) {
                 );
               })()}
 
+              {/* Hero Pillars Grid */}
+              <HeroPillarsGrid pillars={horseData?.hero_pillars} />
+
               {/* Section C: The Story */}
               <section className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
@@ -434,8 +453,8 @@ export default async function CampaignDetailPage({ params }: Props) {
                   {horse?.name ? `${horse.name}.` : "Athlete Profile."}
                 </h1>
                 <div className="text-[14px] leading-[1.85] font-light text-white/70 space-y-4">
-                  {horse?.story ? (
-                    horse.story.split("\n\n").map((para: string, idx: number) => (
+                  {horseData?.story || horse?.story ? (
+                    (horseData?.story || horse?.story).split("\n\n").map((para: string, idx: number) => (
                       <p key={idx}>{para}</p>
                     ))
                   ) : (
@@ -450,6 +469,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                   horseName={horse?.name || "Racehorse"}
                   sireName={horse?.sire_name || ""}
                   damName={horse?.dam_name || ""}
+                  damSireName={horseData?.dam_sire_name}
                   sex={horse?.sex || ""}
                   colour={horse?.colour || ""}
                   age={horse?.age}
@@ -464,6 +484,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                     contact_name: horseData?.trainer_contact_name || "",
                     location: trainer.location,
                     nztr_license_number: trainer.nztr_license_number || "",
+                    bio: trainer.bio,
                   }}
                   horseSlug={hltRecord.id}
                   listingStatus={listingStatus}
@@ -472,6 +493,11 @@ export default async function CampaignDetailPage({ params }: Props) {
                   sharesSold={hltRecord.shares_sold}
                   foalingDate={horseData?.foaling_date}
                   pedigreeData={(pedigreesData as any)[hltRecord.id] || null}
+                  story={horseData?.story || horse?.story}
+                  pedigreeBlurb={horseData?.pedigree_blurb}
+                  trainerCommentary={horseData?.trainer_commentary}
+                  raceLog={horseData?.race_log}
+                  trainerBio={trainer.bio}
                 />
               </section>
             </div>

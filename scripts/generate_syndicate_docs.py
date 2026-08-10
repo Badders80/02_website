@@ -149,9 +149,13 @@ def build_pack(slug: str) -> dict:
         # keep both
         pass
 
-    short_story = hlt.get("story") or horse.get("story") or ""
+    short_story = horse.get("story") or ""
     about = evo.get("about") or short_story
     next_up = hlt.get("next_up") or horse.get("next_up") or ""
+    dam_sire_name = horse.get("dam_sire_name") or ""
+    pedigree_blurb = horse.get("pedigree_blurb") or ""
+    trainer_commentary = horse.get("trainer_commentary") or ""
+
     if next_up.lower() in ("", "pre-training"):
         race_expectation = (
             "Early education / pre-training. Syndicate members receive updates via "
@@ -171,6 +175,10 @@ def build_pack(slug: str) -> dict:
         gaps.append("identity_status unregistered — use nickname + sire x dam honestly")
     if not about or len(about) < 80:
         gaps.append("thin narrative — expand about_horse before legal PDF")
+    if not pedigree_blurb:
+        gaps.append("missing pedigree_blurb (optional MC override)")
+    if not trainer_commentary:
+        gaps.append("missing trainer_commentary (optional MC override)")
     if hlt.get("has_terms_sheet") is not True:
         gaps.append("has_terms_sheet false until final PDF published")
 
@@ -194,6 +202,8 @@ def build_pack(slug: str) -> dict:
             "foaling_date": horse.get("foaling_date"),
             "sire_name": horse.get("sire_name"),
             "dam_name": horse.get("dam_name"),
+            "dam_sire_name": dam_sire_name,
+            "pedigree_blurb": pedigree_blurb,
             "microchip": horse.get("microchip") or hlt.get("horse_microchip") or "",
             "life_number": horse.get("life_number") or "",
             "loveracing_id": horse.get("loveracing_id") or "",
@@ -228,6 +238,7 @@ def build_pack(slug: str) -> dict:
         "narrative": {
             "about_horse": about,
             "race_schedule_expectation": race_expectation,
+            "trainer_commentary": trainer_commentary,
             "risks_extra": "",
         },
     }
@@ -329,6 +340,7 @@ Applications via Evolution Stables / the marketplace. Identity verification may 
 | Sex / colour | {idn.get("sex") or "—"} / {idn.get("colour") or "—"} |
 | Foaled | {idn.get("foaling_date") or "—"} |
 | Sire / Dam | {idn.get("sire_name") or "—"} × {idn.get("dam_name") or "—"} |
+| Broodmare Sire | {idn.get("dam_sire_name") or "—"} |
 | Microchip | {idn.get("microchip") or "Pending registration"} |
 | Life number | {idn.get("life_number") or "—"} |
 | loveracing.nz | {idn.get("loveracing_id") or "—"} |
@@ -338,6 +350,10 @@ Applications via Evolution Stables / the marketplace. Identity verification may 
 
 ### Narrative
 {pack["narrative"]["about_horse"] or "_Add horse narrative._"}
+
+{f"**Pedigree Insight:** {idn.get('pedigree_blurb')}" if idn.get('pedigree_blurb') else ""}
+
+{f"**Trainer Commentary:** \"{pack['narrative'].get('trainer_commentary')}\"" if pack['narrative'].get('trainer_commentary') else ""}
 
 ### Programme / expectation
 {pack["narrative"]["race_schedule_expectation"]}
@@ -378,6 +394,13 @@ A Syndicate is formed under the New Zealand Thoroughbred Racing Inc. ("NZTR") Bl
 
 ## 2. Object
 The object of the Syndicate is to lease and race **{legal}** as a recreational pursuit, with all syndicate members holding digital leasehold shares for a fixed **{months}-month** term, as described in the Product Disclosure Statement.
+
+**Sire / Dam:** {idn.get("sire_name") or "—"} × {idn.get("dam_name") or "—"}  
+**Broodmare Sire:** {idn.get("dam_sire_name") or "—"}
+
+{f"**Pedigree Insight:** {idn.get('pedigree_blurb')}" if idn.get('pedigree_blurb') else ""}
+
+{f"**Trainer Commentary:** \"{pack['narrative'].get('trainer_commentary')}\"" if pack['narrative'].get('trainer_commentary') else ""}
 
 ## 3. Agreement and Parties
 This Agreement is binding on the Promoter ({iss["promoter"]}), the Syndicate Manager ({iss["manager"]}), and each Shareholder as defined in the Product Disclosure Statement. By applying (including digitally), each Shareholder agrees to be bound by this Agreement and the PDS. This Agreement may only be altered by special resolution (75% of shareholding) and must not increase a Shareholder’s liability beyond what is disclosed in the PDS.
