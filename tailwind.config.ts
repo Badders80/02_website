@@ -24,6 +24,17 @@ export default {
         "accent": "var(--brand-gold)",
         "accent-hover": "var(--brand-gold-hover)",
         
+        // Supplementary neutrals (Better Stack)
+        "muted-steel": "var(--muted-steel)",
+        "steel-border": "var(--steel-border)",
+        "frost": "var(--frost)",
+        "pure-white": "var(--pure-white)",
+        
+        // Status colour shortcuts (for Badge primitive)
+        "success": "var(--color-success)",
+        "warning": "var(--color-warning)",
+        "error": "var(--color-error)",
+        
         // Status colors (admin)
         "status-draft": "rgba(161,161,170,0.1)",
         "status-reviewed": "rgba(212,169,100,0.1)",
