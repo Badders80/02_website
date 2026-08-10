@@ -35,6 +35,11 @@ export default {
         "warning": "var(--color-warning)",
         "error": "var(--color-error)",
         
+        // Elevation system
+        "canvas": "var(--elevation-canvas)",
+        "surface-base": "var(--elevation-surface)",
+        "raised": "var(--elevation-raised)",
+        
         // Status colors (admin)
         "status-draft": "rgba(161,161,170,0.1)",
         "status-reviewed": "rgba(212,169,100,0.1)",
