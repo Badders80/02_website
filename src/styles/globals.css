@@ -38,6 +38,10 @@
   --elevation-surface: var(--color-surface);      /* cards, one step up */
   --elevation-raised: var(--color-surface-alt);   /* elevated cards, inputs */
   
+  /* Page layout */
+  --max-width-page: 1200px;
+  --max-width-narrow: 760px;
+  
   /* Brand */
   --brand-gold: #d4a964;
   --brand-gold-hover: #c49a5a;

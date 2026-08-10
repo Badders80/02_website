@@ -108,6 +108,10 @@ export default {
       transitionTimingFunction: {
         DEFAULT: "ease-out",
       },
+      maxWidth: {
+        page: "var(--max-width-page)",
+        narrow: "var(--max-width-narrow)",
+      },
       spacing: {
         // Component spacing
         "card": "24px",
