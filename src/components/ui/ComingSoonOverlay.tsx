@@ -38,10 +38,10 @@ export function ComingSoonOverlay({
     <div className={`relative ${className}`}>
       {/* Glassmorphic frosted overlay */}
       <div
-        className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl bg-black/40 backdrop-blur-md border border-white/[0.06]"
+        className="absolute inset-0 z-20 flex items-center justify-center rounded-lg bg-canvas/40 backdrop-blur-md border border-border"
         style={{ backdropFilter: "blur(12px) saturate(140%)" }}
       >
-        <span className="text-[14px] font-medium tracking-[0.3em] uppercase text-white/80">
+        <span className="text-sm font-medium tracking-[0.3em] uppercase text-frost">
           {label}
         </span>
       </div>
