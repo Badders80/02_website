@@ -48,3 +48,8 @@ scripts/*.pem
 
 # Image backups — never commit raw backups
 public/images/images_backup/
+
+# Agent/tool directories — not for repo
+.continue/
+.claude/
+.hermes/

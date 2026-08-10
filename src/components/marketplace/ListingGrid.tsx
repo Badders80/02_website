@@ -29,10 +29,9 @@ interface Campaign {
 
 interface ListingGridProps {
   initialCampaigns: Campaign[];
-  isSandbox?: boolean;
 }
 
-export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGridProps) {
+export function ListingGrid({ initialCampaigns }: ListingGridProps) {
   const [filter, setFilter] = useState<"all" | "available" | "coming_soon">("all");
 
   const filteredCampaigns = initialCampaigns.filter((camp) => {
@@ -43,7 +42,7 @@ export function ListingGrid({ initialCampaigns, isSandbox = false }: ListingGrid
   });
 
   const getDetailPath = (id: string) => {
-    return isSandbox ? `/sandbox/marketplace/${id}` : `/marketplace/${id}`;
+    return `/marketplace/${id}`;
   };
 
   const showFeatured =

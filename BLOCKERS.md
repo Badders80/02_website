@@ -36,32 +36,13 @@ TypeScript compiles clean.
 
 ---
 
-### 3. Stripe Route Rewrite — 🔴 TODO
+### 3. Stripe Route Rewrite — ✅ RESOLVED
 
-**Status:** Not started
-**What's needed:** Install `stripe` server package and rewrite four Next.js API routes to call Stripe directly instead of proxying through GCP:
+**Status:** Complete. `stripe` server package installed. Checkout and KYC routes call Stripe directly. Webhook routes verify Stripe signatures directly.
 
-| Route | Current (dead — forwards to GCP) | Target |
-|---|---|---|
-| `src/app/api/kyc/create-session/route.ts` | `getGcpIdentityToken()` → `fetch(${KYC_API_BASE}/create-session)` | Call `stripe.identity.VerificationSession.create()` directly |
-| `src/app/api/checkout/create-session/route.ts` | `getGcpIdentityToken()` → `fetch(${PAYMENTS_API_BASE}/create-session)` | Call `stripe.checkout.Session.create()` directly |
-| `src/app/api/kyc/callback/route.ts` | Uses GCP auth for Stripe webhook | Verify Stripe signature directly |
-| `src/app/api/checkout/webhook/route.ts` | Uses GCP auth for Stripe webhook | Verify Stripe signature directly |
+### 4. Marketplace/MyStable Rewire — ✅ RESOLVED
 
-**Additional GCP-coupled routes (dormant-ify):** `api/proxy/[...path]/`, `api/diagnostics/wif/`, `api/applications/submit/`, `api/applications/list/` — all import `gcp-auth.ts`, all dead.
-
-**Prerequisite:** `stripe` server SDK is NOT installed. Only `@stripe/stripe-js` (client) is in package.json. Must `npm install stripe` first.
-
-**Handoff:** User provides `STRIPE_SECRET_KEY` for Vercel env vars. Currently the secret key lives in GCP env — needs to move to Vercel.
-
-**ETA:** 2-3 hours
-
----
-
-### 4. Marketplace/MyStable Rewire — 🔴 TODO
-
-**Status:** Not started
-**What's needed:** Rewire two pages to read from local JSON instead of dead API calls:
+**Status:** Complete. Marketplace and mystable pages read from local JSON (`src/data/hlts.json`). `src/lib/api.ts` deleted.
 
 | Page | Current (dead) | Target |
 |---|---|---|

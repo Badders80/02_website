@@ -254,7 +254,7 @@ export default async function MarketplacePage() {
         </section>
 
         {/* Dynamic Listing Grid Component */}
-        <ListingGrid initialCampaigns={campaigns} isSandbox={false} />
+        <ListingGrid initialCampaigns={campaigns} />
       </main>
       <Footer minimal={true} />
     </>

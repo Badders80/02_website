@@ -9,9 +9,9 @@
 
 ## Overview
 
-The frontend (`02_website/`) runs on Vercel as a Next.js app. GCP Cloud Functions are retired (billing delinquent). The target architecture is: local JSON data synced from Google Sheets, Firebase Auth client-side, Stripe direct via Next.js API routes. **None of the target infrastructure exists yet** — this document describes the target state and what needs to change to get there.
+The frontend (`02_website/`) runs on Vercel as a Next.js app. GCP Cloud Functions are retired (billing delinquent). The target architecture is: local JSON data synced from Google Sheets, Firebase Auth client-side, Stripe direct via Next.js API routes.
 
-**Current state:** API calls in `src/lib/api.ts` hit dead GCP endpoints and fall back to mock data via try/catch. Stripe routes proxy through GCP (also dead). `src/data/` does not exist. `scripts/sync_inventory.py` does not exist. The `stripe` server package is not installed.
+**Current state:** `src/data/` exists with horses.json, hlts.json, trainers.json, owners.json, holdings.json. `scripts/sync_inventory.py` exists and syncs from Google Sheets. `stripe` server package is installed. Stripe checkout/webhook routes are live and call Stripe directly. Marketplace and mystable pages read from local JSON. `src/lib/api.ts` and `src/lib/gcp-auth.ts` have been deleted (dead GCP code). Admin pages archived to `.archive/`. Sandbox pages deleted.
 
 **Target architecture:**
 ```
