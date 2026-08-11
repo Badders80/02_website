@@ -182,24 +182,24 @@ export default function PurchasePage(props: PurchasePageProps) {
     return (
       <>
         <NavBar />
-        <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
+        <main className="min-h-screen bg-canvas text-pure-white font-sans pt-32 pb-24">
           <div className="mx-auto max-w-2xl px-6 sm:px-10 lg:px-12">
-            <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
-              <Link href="/marketplace" className="hover:text-white/60 transition">
+            <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              <Link href="/marketplace" className="hover:text-frost transition">
                 Marketplace
               </Link>
               <span>/</span>
               <Link
                 href={`/marketplace/${props.horseSlug}`}
-                className="hover:text-white/60 transition"
+                className="hover:text-frost transition"
               >
                 {props.horseName}
               </Link>
               <span>/</span>
-              <span className="text-white/60">Buy</span>
+              <span className="text-frost">Buy</span>
             </div>
             <div className="flex items-center gap-4 mb-10">
-              <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-white/[0.06] overflow-hidden relative flex-shrink-0">
+              <div className="w-14 h-14 rounded-xl bg-surface-base border border-border overflow-hidden relative flex-shrink-0">
                 {props.horseImage && (
                   <img
                     src={props.horseImage}
@@ -209,22 +209,22 @@ export default function PurchasePage(props: PurchasePageProps) {
                 )}
               </div>
               <div>
-                <h1 className="text-[24px] font-light text-white tracking-tight">
+                <h1 className="text-[24px] font-light text-heading tracking-tight">
                   {props.horseName}
                 </h1>
-                <p className="text-[12px] text-white/40">
+                <p className="text-[12px] text-muted-foreground">
                   {STATUS_INFO[campaignStatus]?.label || "Coming Soon"}
                 </p>
               </div>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 text-center space-y-4">
-              <p className="text-lg font-light text-white/60">{closed.title}</p>
-              <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
+            <div className="rounded-2xl border border-border bg-surface-base p-12 text-center space-y-4">
+              <p className="text-lg font-light text-frost">{closed.title}</p>
+              <p className="text-sm font-light text-muted-foreground max-w-md mx-auto leading-relaxed">
                 {props.closedReason || closed.body}
               </p>
               <Link
                 href={`/marketplace/${props.horseSlug}`}
-                className="inline-block rounded-full border border-white/10 text-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
+                className="inline-block rounded-full border border-white/10 text-pure-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
               >
                 ← Back to {props.horseName}
               </Link>
@@ -238,7 +238,7 @@ export default function PurchasePage(props: PurchasePageProps) {
 
   if (authLoading || !user || kycStatus !== "verified") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-canvas text-pure-white">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]"></div>
       </div>
     );
@@ -323,27 +323,27 @@ export default function PurchasePage(props: PurchasePageProps) {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
+      <main className="min-h-screen bg-canvas text-pure-white font-sans pt-32 pb-24">
         <div className="mx-auto max-w-2xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
-          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
-            <Link href="/marketplace" className="hover:text-white/60 transition">Marketplace</Link>
+          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <Link href="/marketplace" className="hover:text-frost transition">Marketplace</Link>
             <span>/</span>
-            <Link href={`/marketplace/${props.horseSlug}`} className="hover:text-white/60 transition">{props.horseName}</Link>
+            <Link href={`/marketplace/${props.horseSlug}`} className="hover:text-frost transition">{props.horseName}</Link>
             <span>/</span>
-            <span className="text-white/60">Buy</span>
+            <span className="text-frost">Buy</span>
           </div>
 
           {/* Horse header */}
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-white/[0.06] overflow-hidden relative flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl bg-surface-base border border-border overflow-hidden relative flex-shrink-0">
               {props.horseImage && (
                 <img src={props.horseImage} alt={props.horseName} className="w-full h-full object-cover" />
               )}
             </div>
             <div>
-              <h1 className="text-[24px] font-light text-white tracking-tight">{props.horseName}</h1>
-              <p className="text-[12px] text-white/40">
+              <h1 className="text-[24px] font-light text-heading tracking-tight">{props.horseName}</h1>
+              <p className="text-[12px] text-muted-foreground">
                 {inventoryLoading
                   ? "Loading..."
                   : purchasable
@@ -359,14 +359,14 @@ export default function PurchasePage(props: PurchasePageProps) {
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]"></div>
             </div>
           ) : !purchasable || sharesAvailable === 0 ? (
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 text-center space-y-4">
-              <p className="text-lg font-light text-white/60">{closed.title}</p>
-              <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
+            <div className="rounded-2xl border border-border bg-surface-base p-12 text-center space-y-4">
+              <p className="text-lg font-light text-frost">{closed.title}</p>
+              <p className="text-sm font-light text-muted-foreground max-w-md mx-auto leading-relaxed">
                 {inventory?.eligibility_reason || props.closedReason || closed.body}
               </p>
               <Link
                 href={`/marketplace/${props.horseSlug}`}
-                className="inline-block rounded-full border border-white/10 text-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
+                className="inline-block rounded-full border border-white/10 text-pure-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
               >
                 ← Back to {props.horseName}
               </Link>
@@ -378,7 +378,7 @@ export default function PurchasePage(props: PurchasePageProps) {
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center gap-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium ${
-                  step >= s ? "bg-[#d4a964] text-black" : "bg-white/[0.04] text-white/30 border border-white/[0.06]"
+                  step >= s ? "bg-[#d4a964] text-black" : "bg-white/[0.04] text-muted-foreground border border-border"
                 }`}>
                   {s}
                 </div>
@@ -390,15 +390,15 @@ export default function PurchasePage(props: PurchasePageProps) {
           {/* Step 1: Amount selector */}
           {step === 1 && (
             <div className="space-y-8">
-              <h2 className="text-[18px] font-light text-white">How many units?</h2>
+              <h2 className="text-[18px] font-light text-heading">How many units?</h2>
 
-              <div className="flex items-center justify-between border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
+              <div className="flex items-center justify-between border border-border bg-surface-base rounded-2xl p-6">
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-white/30 mb-1">Quantity</p>
-                  <p className="text-[13px] font-medium text-white tabular-nums">
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Quantity</p>
+                  <span className="text-[13px] font-medium text-pure-white tabular-nums">
                     {percentStake}% of the horse
-                  </p>
-                  <p className="text-[11px] font-light text-white/40 mt-0.5">
+                  </span>
+                  <p className="text-[11px] font-light text-muted-foreground mt-0.5">
                     {sharesToBuy} unit{sharesToBuy === 1 ? "" : "s"} · of {Number(totalLeasePercent) || "—"}% syndicate stake
                   </p>
                 </div>
@@ -406,16 +406,16 @@ export default function PurchasePage(props: PurchasePageProps) {
                   <button
                     type="button"
                     onClick={() => setSharesToBuy(Math.max(1, sharesToBuy - 1))}
-                    className="w-11 h-11 rounded-lg border border-white/[0.06] bg-white/[0.02] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.05] transition text-lg"
+                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-white/[0.05] transition text-lg"
                     disabled={sharesToBuy <= 1}
                   >
                     −
                   </button>
-                  <span className="text-[20px] font-medium text-white min-w-[32px] text-center">{sharesToBuy}</span>
+                  <span className="text-[20px] font-medium text-heading min-w-[32px] text-center">{sharesToBuy}</span>
                   <button
                     type="button"
                     onClick={() => setSharesToBuy(Math.min(sharesAvailable, sharesToBuy + 1))}
-                    className="w-11 h-11 rounded-lg border border-white/[0.06] bg-white/[0.02] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.05] transition text-lg"
+                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-white/[0.05] transition text-lg"
                     disabled={sharesToBuy >= sharesAvailable}
                   >
                     +
@@ -423,9 +423,9 @@ export default function PurchasePage(props: PurchasePageProps) {
                 </div>
               </div>
 
-              <div className="flex justify-between items-baseline border-t border-white/[0.06] pt-4">
-                <span className="text-[13px] font-light text-white/50">Total</span>
-                <span className="text-[22px] font-medium text-[#d4a964]">
+              <div className="flex justify-between items-baseline border-t border-border pt-4">
+                <span className="text-[13px] font-light text-muted-foreground">Total</span>
+                <span className="text-[22px] font-medium text-accent">
                   ${totalPriceNzd.toLocaleString()} NZD
                 </span>
               </div>
@@ -443,28 +443,28 @@ export default function PurchasePage(props: PurchasePageProps) {
           {/* Step 2: Summary */}
           {step === 2 && (
             <div className="space-y-8">
-              <h2 className="text-[18px] font-light text-white">Summary</h2>
+              <h2 className="text-[18px] font-light text-heading">Summary</h2>
 
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4 text-[14px] font-light">
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Units</span>
-                  <span className="text-white font-medium">{sharesToBuy}</span>
+              <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4 text-[14px] font-light">
+                <div className="flex justify-between border-b border-border pb-3">
+                  <span className="text-muted-foreground">Units</span>
+                  <span className="text-pure-white font-medium">{sharesToBuy}</span>
                 </div>
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Purchase amount</span>
-                  <span className="text-white font-medium">${totalPriceNzd.toLocaleString()} NZD</span>
+                <div className="flex justify-between border-b border-border pb-3">
+                  <span className="text-muted-foreground">Purchase amount</span>
+                  <span className="text-pure-white font-medium">${totalPriceNzd.toLocaleString()} NZD</span>
                 </div>
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Of the horse</span>
-                  <span className="text-white font-medium">{percentStake}%</span>
+                <div className="flex justify-between border-b border-border pb-3">
+                  <span className="text-muted-foreground">Of the horse</span>
+                  <span className="text-pure-white font-medium">{percentStake}%</span>
                 </div>
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="text-white/40">Investor return</span>
+                <div className="flex justify-between border-b border-border pb-3">
+                  <span className="text-muted-foreground">Investor return</span>
                   <span className="text-[#34D399] font-medium">{investorReturnPct}% gross stakes won</span>
                 </div>
                 <div className="flex justify-between pb-1">
-                  <span className="text-white/40">Lease period</span>
-                  <span className="text-white font-medium">{leasePeriodMonths} months</span>
+                  <span className="text-muted-foreground">Lease period</span>
+                  <span className="text-pure-white font-medium">{leasePeriodMonths} months</span>
                 </div>
               </div>
 
@@ -472,7 +472,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-white hover:bg-white/5 transition"
+                  className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-pure-white hover:bg-white/5 transition"
                 >
                   Back
                 </button>
@@ -491,10 +491,10 @@ export default function PurchasePage(props: PurchasePageProps) {
           {step === 3 && (
             <div className="space-y-8">
               <div className="flex items-center justify-between">
-                <h2 className="text-[18px] font-light text-white">
+                <h2 className="text-[18px] font-light text-heading">
                   Agreement ({agreementSubStep === 1 ? "1/2 — PDS" : "2/2 — Syndicate Agreement"})
                 </h2>
-                <span className="text-[11px] text-white/40 uppercase tracking-wider">
+                <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
                   Step 3.{agreementSubStep}
                 </span>
               </div>
@@ -502,11 +502,11 @@ export default function PurchasePage(props: PurchasePageProps) {
               {/* Sub-step 3.1: PDS Review — Stage 1 allows proceed without final legal PDFs */}
               {agreementSubStep === 1 && (
                 <div className="space-y-6">
-                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
+                  <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[14px] font-medium text-white">Product Disclosure Statement</p>
-                        <p className="text-[11px] text-white/40 mt-0.5">
+                        <p className="text-[14px] font-medium text-heading">Product Disclosure Statement</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
                           {props.hasPds
                             ? pdsScrollable
                               ? "Please scroll to the bottom to acknowledge"
@@ -519,7 +519,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           href={`/documents/${props.horseSlug}/pds.pdf`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] uppercase tracking-wider text-white/60 hover:text-white transition"
+                          className="text-[10px] uppercase tracking-wider text-frost hover:text-pure-white transition"
                         >
                           Open ↗
                         </a>
@@ -535,7 +535,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                             setPdsScrolled(true);
                           }
                         }}
-                        className="h-[28rem] overflow-y-auto bg-black/40 rounded-lg border border-white/[0.04] scroll-smooth"
+                        className="h-[28rem] overflow-y-auto bg-canvas/40 rounded-lg border border-border scroll-smooth"
                       >
                         <iframe
                           title={`${props.horseName} Product Disclosure Statement`}
@@ -544,7 +544,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                         />
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-white/60 leading-relaxed">
+                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-frost leading-relaxed">
                         <p className="text-amber-200/90 font-medium text-[11px] uppercase tracking-wider">
                           Interim disclosure (Stage 1)
                         </p>
@@ -567,29 +567,29 @@ export default function PurchasePage(props: PurchasePageProps) {
                           }
                           setPdsScrolled(true);
                         }}
-                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
+                        className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-frost transition py-1"
                       >
                         {pdsScrollable ? "Skip to End ↓" : "Mark as reviewed ↓"}
                       </button>
                     )}
 
                     {/* Pre-populated Signature block */}
-                    <div className="space-y-2.5 pt-2 border-t border-white/[0.04]">
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-white/40">
+                    <div className="space-y-2.5 pt-2 border-t border-border">
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                         Acknowledged by (KYC Auto-filled)
                       </label>
                       <input
                         type="text"
                         readOnly
                         value={signatureName}
-                        className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-sm text-white/50 cursor-not-allowed select-none"
+                        className="w-full bg-surface-base border border-white/10 rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed select-none"
                       />
-                      <p className="text-[10px] text-white/40 leading-relaxed">
+                      <p className="text-[10px] text-muted-foreground leading-relaxed">
                         Your verified legal name has been recorded for this agreement.
                       </p>
                     </div>
 
-                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
+                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-frost" : "text-muted-foreground cursor-not-allowed"}`}>
                       <input
                         type="checkbox"
                         checked={pdsAgreed}
@@ -605,7 +605,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           ? "I have read the Product Disclosure Statement for this syndicate and electronically sign / agree to its terms (e-sign 1 of 2)."
                           : "I acknowledge the interim PDS notice and agree to receive the final PDS after allocation"}
                         {pdsSignedAt && (
-                          <span className="block text-[10px] text-white/40 mt-1">
+                          <span className="block text-[10px] text-muted-foreground mt-1">
                             Signed {new Date(pdsSignedAt).toLocaleString()} as {signatureName}
                           </span>
                         )}
@@ -617,7 +617,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                     <button
                       type="button"
                       onClick={() => { setStep(2); setAgreementSubStep(1); }}
-                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-white hover:bg-white/5 transition"
+                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-pure-white hover:bg-white/5 transition"
                     >
                       Back
                     </button>
@@ -636,11 +636,11 @@ export default function PurchasePage(props: PurchasePageProps) {
               {/* Sub-step 3.2: SA Review — Stage 1 allows proceed without final legal PDFs */}
               {agreementSubStep === 2 && (
                 <div className="space-y-6">
-                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
+                  <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[14px] font-medium text-white">Syndicate Agreement</p>
-                        <p className="text-[11px] text-white/40 mt-0.5">
+                        <p className="text-[14px] font-medium text-heading">Syndicate Agreement</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
                           {props.hasSa
                             ? saScrollable
                               ? "Please scroll to the bottom to acknowledge"
@@ -653,7 +653,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           href={`/documents/${props.horseSlug}/syndicate-agreement.pdf`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] uppercase tracking-wider text-white/60 hover:text-white transition"
+                          className="text-[10px] uppercase tracking-wider text-frost hover:text-pure-white transition"
                         >
                           Open ↗
                         </a>
@@ -669,7 +669,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                             setSaScrolled(true);
                           }
                         }}
-                        className="h-[28rem] overflow-y-auto bg-black/40 rounded-lg border border-white/[0.04] scroll-smooth"
+                        className="h-[28rem] overflow-y-auto bg-canvas/40 rounded-lg border border-border scroll-smooth"
                       >
                         <iframe
                           title={`${props.horseName} Syndicate Agreement`}
@@ -678,7 +678,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                         />
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-white/60 leading-relaxed">
+                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-frost leading-relaxed">
                         <p className="text-amber-200/90 font-medium text-[11px] uppercase tracking-wider">
                           Interim agreement (Stage 1)
                         </p>
@@ -700,29 +700,29 @@ export default function PurchasePage(props: PurchasePageProps) {
                           }
                           setSaScrolled(true);
                         }}
-                        className="text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition py-1"
+                        className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-frost transition py-1"
                       >
                         {saScrollable ? "Skip to End ↓" : "Mark as reviewed ↓"}
                       </button>
                     )}
 
                     {/* Pre-populated Signature block */}
-                    <div className="space-y-2.5 pt-2 border-t border-white/[0.04]">
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-white/40">
+                    <div className="space-y-2.5 pt-2 border-t border-border">
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                         Acknowledged by (KYC Auto-filled)
                       </label>
                       <input
                         type="text"
                         readOnly
                         value={signatureName}
-                        className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-sm text-white/50 cursor-not-allowed select-none"
+                        className="w-full bg-surface-base border border-white/10 rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed select-none"
                       />
-                      <p className="text-[10px] text-white/40 leading-relaxed">
+                      <p className="text-[10px] text-muted-foreground leading-relaxed">
                         Your verified legal name has been recorded for this agreement.
                       </p>
                     </div>
 
-                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-white/70" : "text-white/30 cursor-not-allowed"}`}>
+                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-frost" : "text-muted-foreground cursor-not-allowed"}`}>
                       <input
                         type="checkbox"
                         checked={saAgreed}
@@ -738,7 +738,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           ? "I have read the Syndicate Agreement for this syndicate and electronically sign / agree to its terms (e-sign 2 of 2)."
                           : "I acknowledge the interim syndicate terms and agree to receive the final agreement after allocation"}
                         {saSignedAt && (
-                          <span className="block text-[10px] text-white/40 mt-1">
+                          <span className="block text-[10px] text-muted-foreground mt-1">
                             Signed {new Date(saSignedAt).toLocaleString()} as {signatureName}
                           </span>
                         )}
@@ -756,7 +756,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                     <button
                       type="button"
                       onClick={() => setAgreementSubStep(1)}
-                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-white hover:bg-white/5 transition"
+                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-pure-white hover:bg-white/5 transition"
                     >
                       Back
                     </button>
@@ -771,7 +771,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                   </div>
 
                   {/* Compliance Notice */}
-                  <p className="text-[10.5px] font-light leading-relaxed text-white/45 text-center bg-white/[0.02] border border-white/[0.05] rounded-xl p-3">
+                  <p className="text-[10.5px] font-light leading-relaxed text-muted-foreground text-center bg-surface-base border border-white/[0.05] rounded-xl p-3">
                     {props.hasPds && props.hasSa
                       ? "You must e-sign the PDS and the Syndicate Agreement (two steps) before checkout. Your KYC name is recorded with each acknowledgement; payment then records your holding."
                       : "Payment records your holding and sends a welcome email. Final signed PDS/SA delivery follows when legal documents are published."}
