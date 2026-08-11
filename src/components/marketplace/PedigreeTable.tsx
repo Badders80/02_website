@@ -112,12 +112,12 @@ function PedigreeNode({
           tier === "subject"
             ? "min-h-[48px] border-[#c5a059]/40 bg-[#14110c] shadow-[0_0_18px_rgba(197,160,89,0.08)]"
             : isEmpty
-              ? "min-h-[40px] border-white/[0.04] bg-[#0c0c0c] opacity-40"
+              ? "min-h-[40px] border-border bg-[#0c0c0c] opacity-40"
               : tier === "parent"
                 ? "min-h-[46px] border-white/12 bg-[#111] hover:border-white/35"
                 : tier === "grand"
                   ? "min-h-[44px] border-white/10 bg-[#111] hover:border-white/30"
-                  : "min-h-[40px] border-white/[0.08] bg-[#0e0e0e] opacity-80 hover:border-white/25 hover:opacity-95"
+                  : "min-h-[40px] border-border bg-[#0e0e0e] opacity-80 hover:border-white/25 hover:opacity-95"
         }`}
       >
         {stemIn && (
@@ -137,12 +137,12 @@ function PedigreeNode({
         <span
           className={`block w-full whitespace-normal break-words leading-snug line-clamp-2 ${
             tier === "subject"
-              ? "text-[13px] font-medium text-white"
+              ? "text-[13px] font-medium text-heading"
               : tier === "parent"
-                ? "text-[11px] font-medium text-white/90"
+                ? "text-[11px] font-medium text-heading"
                 : tier === "grand"
-                  ? "text-[10px] font-normal text-white/80"
-                  : "text-[9.5px] font-light text-white/70"
+                  ? "text-[10px] font-normal text-frost"
+                  : "text-[9.5px] font-light text-frost"
           }`}
           title={parsed.name}
         >
@@ -150,7 +150,7 @@ function PedigreeNode({
         </span>
         {meta && (
           <span
-            className={`mt-0.5 block font-light tracking-wide text-white/45 ${
+            className={`mt-0.5 block font-light tracking-wide text-muted-foreground ${
               tier === "great" ? "text-[8px]" : "text-[9px]"
             }`}
           >
@@ -160,12 +160,12 @@ function PedigreeNode({
       </div>
       {/* Out of flow — cannot shift pill or stem mid-line */}
       {legend && !isEmpty && (
-        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[9px] font-light uppercase tracking-[0.08em] text-white/30">
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[9px] font-light uppercase tracking-[0.08em] text-muted-foreground">
           {legend}
         </span>
       )}
       {sublabel && (
-        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[10px] font-light capitalize text-white/40">
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[10px] font-light capitalize text-muted-foreground">
           {sublabel}
         </span>
       )}
@@ -281,9 +281,9 @@ export function PedigreeTable({
   return (
     <div className="space-y-6">
       {damSireName && (
-        <div className="inline-flex items-center gap-2 text-xs text-zinc-300 bg-zinc-900/60 border border-zinc-800 rounded-lg px-3.5 py-2">
+        <div className="inline-flex items-center gap-2 text-xs text-zinc-300 bg-surface-base/60 border border-zinc-800 rounded-lg px-3.5 py-2">
           <span className="text-amber-400 font-semibold uppercase text-[10px] tracking-wider">Broodmare Sire</span>
-          <span className="text-white font-medium">{damSireName}</span>
+          <span className="text-heading font-medium">{damSireName}</span>
         </div>
       )}
       {hasFullPedigree && (
@@ -295,8 +295,8 @@ export function PedigreeTable({
               onClick={() => setView(v)}
               className={`text-[10px] uppercase tracking-widest font-light px-3 py-1.5 rounded-full border transition-all ${
                 view === v
-                  ? "border-[#d4a964]/30 text-[#d4a964] bg-[#d4a964]/5"
-                  : "border-white/[0.06] text-white/40 hover:text-white/60"
+                  ? "border-[#d4a964]/30 text-accent bg-[#d4a964]/5"
+                  : "border-border text-muted-foreground hover:text-frost"
               }`}
             >
               {v === "tree" ? "Pedigree" : v.replace("-", " ")}
@@ -306,7 +306,7 @@ export function PedigreeTable({
       )}
 
       {view === "tree" && (
-        <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-5 md:p-8 overflow-x-auto">
+        <div className="border border-border bg-surface-base rounded-2xl p-5 md:p-8 overflow-x-auto">
           {/*
             4-gen editorial grid:
             - horse tracks: fixed pills, centred
@@ -379,21 +379,21 @@ export function PedigreeTable({
             <NodeCell fullName={tree.damDamDam} tier="great" stemIn className="col-start-7 row-start-8" />
           </div>
 
-          <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
-            <span className="text-white/40">
-              Sex: <span className="text-white/80 capitalize">{sex || "—"}</span>
+          <div className="mt-8 pt-6 border-t border-border flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
+            <span className="text-muted-foreground">
+              Sex: <span className="text-frost capitalize">{sex || "—"}</span>
             </span>
-            <span className="text-white/40">
-              Colour: <span className="text-white/80 capitalize">{colour || "—"}</span>
+            <span className="text-muted-foreground">
+              Colour: <span className="text-frost capitalize">{colour || "—"}</span>
             </span>
             {age && (
-              <span className="text-white/40">
-                Age: <span className="text-white/80">{age} Years</span>
+              <span className="text-muted-foreground">
+                Age: <span className="text-frost">{age} Years</span>
               </span>
             )}
             {formattedFoalingDate && (
-              <span className="text-white/40">
-                Foaled: <span className="text-white/80">{formattedFoalingDate}</span>
+              <span className="text-muted-foreground">
+                Foaled: <span className="text-frost">{formattedFoalingDate}</span>
               </span>
             )}
             {breedingUrl && (
@@ -401,7 +401,7 @@ export function PedigreeTable({
                 href={breedingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#d4a964] hover:underline ml-auto"
+                className="text-accent hover:underline ml-auto"
               >
                 Full Breeding Record ↗
               </a>
@@ -411,15 +411,15 @@ export function PedigreeTable({
       )}
 
       {view === "dam-line" && hasFullPedigree && damLine.length > 0 && (
-        <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
+        <div className="border border-border bg-surface-base rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h5 className="text-xs uppercase tracking-wider text-white/45">Dam Line</h5>
+            <h5 className="text-xs uppercase tracking-wider text-muted-foreground">Dam Line</h5>
             {damLineUrl && (
               <a
                 href={damLineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] text-[#d4a964] hover:underline uppercase tracking-widest"
+                className="text-[10px] text-accent hover:underline uppercase tracking-widest"
               >
                 Full Dam Line ↗
               </a>
@@ -436,10 +436,10 @@ export function PedigreeTable({
                     i < damLine.length - 1 ? "border-b border-white/[0.03]" : ""
                   }`}
                 >
-                  <span className="text-white/30 w-6 text-right">{i + 1}.</span>
-                  <span className="text-white/70 flex-1 truncate">{parsedMare.name}</span>
-                  <span className="text-white/30 text-[10px]">by</span>
-                  <span className="text-white/50 flex-1 truncate">{parsedSire.name}</span>
+                  <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
+                  <span className="text-frost flex-1 truncate">{parsedMare.name}</span>
+                  <span className="text-muted-foreground text-[10px]">by</span>
+                  <span className="text-muted-foreground flex-1 truncate">{parsedSire.name}</span>
                 </div>
               );
             })}
@@ -448,15 +448,15 @@ export function PedigreeTable({
       )}
 
       {view === "sire-line" && hasFullPedigree && sireLine.length > 0 && (
-        <div className="border border-white/[0.06] bg-white/[0.01] rounded-2xl p-6">
+        <div className="border border-border bg-surface-base rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h5 className="text-xs uppercase tracking-wider text-white/45">Sire Line</h5>
+            <h5 className="text-xs uppercase tracking-wider text-muted-foreground">Sire Line</h5>
             {sireLineUrl && (
               <a
                 href={sireLineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] text-[#d4a964] hover:underline uppercase tracking-widest"
+                className="text-[10px] text-accent hover:underline uppercase tracking-widest"
               >
                 Full Sire Line ↗
               </a>
@@ -473,10 +473,10 @@ export function PedigreeTable({
                     i < sireLine.length - 1 ? "border-b border-white/[0.03]" : ""
                   }`}
                 >
-                  <span className="text-white/30 w-6 text-right">{i + 1}.</span>
-                  <span className="text-white/70 flex-1 truncate">{parsedSire.name}</span>
-                  <span className="text-white/30 text-[10px]">from</span>
-                  <span className="text-white/50 flex-1 truncate">{parsedDam.name}</span>
+                  <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
+                  <span className="text-frost flex-1 truncate">{parsedSire.name}</span>
+                  <span className="text-muted-foreground text-[10px]">from</span>
+                  <span className="text-muted-foreground flex-1 truncate">{parsedDam.name}</span>
                 </div>
               );
             })}
