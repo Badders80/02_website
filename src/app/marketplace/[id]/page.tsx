@@ -342,21 +342,21 @@ export default async function CampaignDetailPage({ params }: Props) {
     <>
       <ProductJsonLd hltRecord={hltRecord} />
       <NavBar />
-      <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
+      <main className="dot-grid min-h-screen bg-canvas text-white font-sans pt-32 pb-24 selection:bg-accent selection:text-black">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-12">
           
           {/* Breadcrumb Navigation */}
-          <div className="mb-10 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-white/30">
+          <div className="mb-10 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Link href="/marketplace" className="hover:text-white/60 transition duration-300">
+              <Link href="/marketplace" className="hover:text-frost transition duration-300">
                 Marketplace
               </Link>
               <span>/</span>
-              <span className="text-white/60">{horse?.name || "Campaign"}</span>
+              <span className="text-frost">{horse?.name || "Campaign"}</span>
             </div>
             <Link 
               href="/marketplace" 
-              className="flex items-center gap-1.5 text-[#d4a964] hover:text-white/80 transition duration-300 normal-case tracking-normal text-[12px] font-medium"
+              className="flex items-center gap-1.5 text-accent hover:text-frost transition duration-300 normal-case tracking-normal text-[12px] font-medium"
             >
               <span>←</span> Back to Marketplace
             </Link>
@@ -384,31 +384,31 @@ export default async function CampaignDetailPage({ params }: Props) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                   </>
                 ) : (
-                  <div className="flex h-full items-center justify-center text-white/20 text-xs font-light bg-zinc-900">
+                  <div className="flex h-full items-center justify-center text-muted-foreground text-xs font-light bg-surface-base">
                     Photo incoming
                   </div>
                 )}
               </div>
 
               {/* Section B: Pedigree & Specifications */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/[0.01] border border-white/[0.06] rounded-2xl p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-surface-base border border-border rounded-2xl p-6">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-1">Sex</p>
-                  <p className="text-[14px] font-medium text-white capitalize">{horse?.sex || "—"}</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Sex</p>
+                  <p className="text-[14px] font-medium text-pure-white capitalize">{horse?.sex || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-1">Colour</p>
-                  <p className="text-[14px] font-medium text-white">{horse?.colour || "—"}</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Colour</p>
+                  <p className="text-[14px] font-medium text-pure-white">{horse?.colour || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-1">Sire</p>
-                  <p className="text-[14px] font-medium text-white truncate" title={horse?.sire_name}>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Sire</p>
+                  <p className="text-[14px] font-medium text-pure-white truncate" title={horse?.sire_name}>
                     {horse?.sire_name || "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-1">Dam</p>
-                  <p className="text-[14px] font-medium text-white truncate" title={horse?.dam_name}>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Dam</p>
+                  <p className="text-[14px] font-medium text-pure-white truncate" title={horse?.dam_name}>
                     {horse?.dam_name || "—"}
                   </p>
                 </div>
@@ -423,7 +423,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                     {galleryImages.map((src, i) => (
                       <div
                         key={src}
-                        className="relative aspect-[4/3] rounded-xl border border-white/[0.04] bg-white/[0.01] overflow-hidden group"
+                        className="relative aspect-[4/3] rounded-xl border border-border bg-surface-base overflow-hidden group"
                       >
                         <Image
                           src={src}
@@ -444,15 +444,15 @@ export default async function CampaignDetailPage({ params }: Props) {
               {/* Section C: The Story */}
               <section className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-white/30">
+                  <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-muted-foreground">
                     The story
                   </p>
                   <CampaignStatusBadge status={status} />
                 </div>
-                <h1 className="text-[24px] font-light text-white tracking-tight leading-tight">
+                <h1 className="text-[24px] font-light text-heading tracking-tight leading-tight">
                   {horse?.name ? `${horse.name}.` : "Athlete Profile."}
                 </h1>
-                <div className="text-[14px] leading-[1.85] font-light text-white/70 space-y-4">
+                <div className="text-[14px] leading-[1.85] font-light text-frost space-y-4">
                   {horseData?.story || horse?.story ? (
                     (horseData?.story || horse?.story).split("\n\n").map((para: string, idx: number) => (
                       <p key={idx}>{para}</p>
@@ -464,7 +464,7 @@ export default async function CampaignDetailPage({ params }: Props) {
               </section>
 
               {/* Section D: Dynamic Tabs (Details, Trainer, Record, Documents) */}
-              <section className="border-t border-white/[0.06] pt-12">
+              <section className="border-t border-border pt-12">
                 <DetailTabs
                   horseName={horse?.name || "Racehorse"}
                   sireName={horse?.sire_name || ""}
