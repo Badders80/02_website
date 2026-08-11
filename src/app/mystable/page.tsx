@@ -395,17 +395,17 @@ export default function MyStablePage() {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground font-sans selection:bg-white/10 selection:text-white relative">
+      <main className="min-h-screen bg-canvas text-foreground font-sans selection:bg-white/10 selection:text-pure-white relative">
         {/* Glassmorphic Gated Overlay */}
         {!user && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-[6px] px-6 py-20">
-            <div className="rounded-3xl border border-white/[0.08] bg-[#0A0A0F]/65 backdrop-blur-2xl p-8 max-w-md w-full text-center space-y-6 shadow-[0_0_50px_rgba(0,0,0,0.85)] animate-fade-in pointer-events-auto">
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-canvas/45 backdrop-blur-[6px] px-6 py-20">
+            <div className="rounded-3xl border border-border bg-[#0A0A0F]/65 backdrop-blur-2xl p-8 max-w-md w-full text-center space-y-6 shadow-[0_0_50px_rgba(0,0,0,0.85)] animate-fade-in pointer-events-auto">
               <div className="w-14 h-14 rounded-full bg-[#d4a964]/10 border border-[#d4a964]/20 flex items-center justify-center mx-auto text-2xl">
                 🔑
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-light text-white tracking-tight">Unlock Your Stable</h3>
-                <p className="text-sm font-light text-white/50 leading-relaxed">
+                <h3 className="text-2xl font-light text-heading tracking-tight">Unlock Your Stable</h3>
+                <p className="text-sm font-light text-muted-foreground leading-relaxed">
                   Log in to manage active holdings, track real-time equine valuations, and listen to morning preparations at Wexford Stables.
                 </p>
               </div>
@@ -422,7 +422,7 @@ export default function MyStablePage() {
                 
                 <Link
                   href="/auth/login?redirect=/mystable"
-                  className="block w-full text-center border border-white/10 text-white hover:bg-white/5 transition-all py-3.5 rounded-full text-[11px] font-medium uppercase tracking-widest active:scale-[0.98]"
+                  className="block w-full text-center border border-white/10 text-pure-white hover:bg-white/5 transition-all py-3.5 rounded-full text-[11px] font-medium uppercase tracking-widest active:scale-[0.98]"
                 >
                   Sign In with Email
                 </Link>
@@ -434,14 +434,14 @@ export default function MyStablePage() {
         <div className={!user ? "blur-[12px] pointer-events-none select-none opacity-45 transition-all duration-700" : "transition-all duration-700"}>
           {/* Header */}
           <section className="pt-40 pb-16 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-6">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-6">
               Evolution Stables
             </p>
-            <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6 leading-[1.1]">
+            <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-heading mb-6 leading-[1.1]">
               MyStable
             </h1>
-            <p className="text-[18px] leading-[1.85] font-light text-white/65 max-w-2xl">
-              Welcome, <span className="text-white font-normal">{user?.email || "Guest"}</span>. This is your personal dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking morning preparations.
+            <p className="text-[18px] leading-[1.85] font-light text-pure-white/65 max-w-2xl">
+              Welcome, <span className="text-pure-white font-normal">{user?.email || "Guest"}</span>. This is your personal dashboard for managing active racehorse ownership, viewing pedigree charts, and tracking morning preparations.
             </p>
           </section>
 
@@ -462,7 +462,7 @@ export default function MyStablePage() {
                 <button
                   type="button"
                   onClick={() => void fetchLiveHoldings()}
-                  className="text-[11px] uppercase tracking-wider text-[#d4a964] hover:text-white transition"
+                  className="text-[11px] uppercase tracking-wider text-accent hover:text-pure-white transition"
                 >
                   Refresh holdings
                 </button>
@@ -472,7 +472,7 @@ export default function MyStablePage() {
 
           {/* C7: Tab Navigation */}
           <div className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto mb-8">
-            <div className="flex gap-1 border-b border-white/[0.06]">
+            <div className="flex gap-1 border-b border-border">
               {([
                 { key: "overview", label: "Overview" },
                 { key: "inbox", label: "Investor Inbox" },
@@ -484,8 +484,8 @@ export default function MyStablePage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`px-5 py-3 text-[12px] font-medium uppercase tracking-widest border-b-2 transition-all ${
                     activeTab === tab.key
-                      ? "border-[#d4a964] text-white"
-                      : "border-transparent text-white/40 hover:text-white/60"
+                      ? "border-[#d4a964] text-pure-white"
+                      : "border-transparent text-muted-foreground hover:text-frost"
                   }`}
                 >
                   {tab.label}
@@ -499,8 +499,8 @@ export default function MyStablePage() {
           <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
             <div className="space-y-6">
               <div>
-                <h2 className="text-[20px] font-light text-white mb-1">Investor Inbox</h2>
-                <p className="text-xs font-light text-white/40">Communications from Evolution Stables — welcome messages, syndicate notices, and monthly updates</p>
+                <h2 className="text-[20px] font-light text-heading mb-1">Investor Inbox</h2>
+                <p className="text-xs font-light text-muted-foreground">Communications from Evolution Stables — welcome messages, syndicate notices, and monthly updates</p>
               </div>
 
               {communicationsLoading ? (
@@ -508,15 +508,15 @@ export default function MyStablePage() {
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
                 </div>
               ) : communicationsError ? (
-                <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                <div className="rounded-xl border border-border p-8 text-center text-xs font-light text-muted-foreground">
                   Unable to load communications. Please check back later.
                 </div>
               ) : communications.length === 0 ? (
-                <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                <div className="rounded-xl border border-border p-8 text-center text-xs font-light text-muted-foreground">
                   No communications yet. You will receive a welcome message here after your first acquisition.
                 </div>
               ) : (
-                <div className="space-y-8 relative border-l border-white/[0.08] pl-6 ml-3">
+                <div className="space-y-8 relative border-l border-border pl-6 ml-3">
                   {communications.map((comm, idx) => {
                     const key = `${comm.timestamp}-${idx}`;
                     const isExpanded = expandedComm === key;
@@ -526,16 +526,16 @@ export default function MyStablePage() {
                         <div className="flex justify-between items-start gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-3">
-                              <span className="text-[10px] font-medium uppercase tracking-wider text-[#d4a964]">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-accent">
                                 {comm.category || "notice"}
                               </span>
-                              <span className="text-xs font-light text-white/30">
+                              <span className="text-xs font-light text-muted-foreground">
                                 {new Date(comm.timestamp).toLocaleDateString("en-NZ", { year: "numeric", month: "short", day: "numeric" })}
                               </span>
                             </div>
-                            <h4 className="text-md font-medium text-white mt-1">{comm.subject}</h4>
+                            <h4 className="text-md font-medium text-heading mt-1">{comm.subject}</h4>
                             {!isExpanded && comm.snippet && (
-                              <p className="text-xs font-light text-white/50 mt-1">{comm.snippet}</p>
+                              <p className="text-xs font-light text-muted-foreground mt-1">{comm.snippet}</p>
                             )}
                           </div>
                         </div>
@@ -543,14 +543,14 @@ export default function MyStablePage() {
                           <button
                             type="button"
                             onClick={() => setExpandedComm(isExpanded ? null : key)}
-                            className="text-[11px] uppercase tracking-wider text-white/40 hover:text-white/60 transition"
+                            className="text-[11px] uppercase tracking-wider text-muted-foreground hover:text-frost transition"
                           >
                             {isExpanded ? "Collapse" : "Read more"}
                           </button>
                         )}
                         {isExpanded && comm.body_html && (
                           <div
-                            className="rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 text-xs font-light text-white/60 leading-relaxed max-w-xl prose prose-invert"
+                            className="rounded-xl border border-border bg-surface-base p-4 text-xs font-light text-frost leading-relaxed max-w-xl prose prose-invert"
                             dangerouslySetInnerHTML={{ __html: comm.body_html }}
                           />
                         )}
@@ -568,8 +568,8 @@ export default function MyStablePage() {
           <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-24">
             <div className="space-y-6">
               <div>
-                <h2 className="text-[20px] font-light text-white mb-1">Documents</h2>
-                <p className="text-xs font-light text-white/40">Your signed agreements and disclosure documents</p>
+                <h2 className="text-[20px] font-light text-heading mb-1">Documents</h2>
+                <p className="text-xs font-light text-muted-foreground">Your signed agreements and disclosure documents</p>
               </div>
 
               {liveHoldingsLoading ? (
@@ -577,18 +577,18 @@ export default function MyStablePage() {
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
                 </div>
               ) : liveHoldingsError ? (
-                <div className="rounded-xl border border-white/[0.06] p-8 text-center space-y-4">
-                  <p className="text-xs font-light text-white/40">Unable to load live holdings data. Data may be delayed.</p>
+                <div className="rounded-xl border border-border p-8 text-center space-y-4">
+                  <p className="text-xs font-light text-muted-foreground">Unable to load live holdings data. Data may be delayed.</p>
                   <button
                     type="button"
                     onClick={() => void fetchLiveHoldings()}
-                    className="text-[11px] uppercase tracking-wider text-[#d4a964] hover:text-white transition"
+                    className="text-[11px] uppercase tracking-wider text-accent hover:text-pure-white transition"
                   >
                     Retry
                   </button>
                 </div>
               ) : liveHoldings.length === 0 ? (
-                <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                <div className="rounded-xl border border-border p-8 text-center text-xs font-light text-muted-foreground">
                   No holdings found. Your documents will appear here after your first acquisition.
                 </div>
               ) : (
@@ -600,54 +600,54 @@ export default function MyStablePage() {
                     return (
                       <div
                         key={h.purchase_id}
-                        className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-4"
+                        className="rounded-xl border border-border bg-surface-base p-6 space-y-4"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="text-md font-medium text-white">{horseName}</h3>
-                            <p className="text-xs text-white/40 mt-0.5">
+                            <h3 className="text-md font-medium text-heading">{horseName}</h3>
+                            <p className="text-xs text-muted-foreground mt-0.5">
                               {h.shares_owned} shares · ${(h.purchase_price_total_nzd || 0).toLocaleString()} NZD
                             </p>
                           </div>
                           {!hasDocs && (
-                            <span className="text-[10px] uppercase tracking-wider text-white/30 border border-white/10 rounded-full px-3 py-1">
+                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground border border-white/10 rounded-full px-3 py-1">
                               Documents processing
                             </span>
                           )}
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <p className="text-[10px] uppercase tracking-wider text-white/30">Product Disclosure Statement</p>
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Product Disclosure Statement</p>
                             {h.signed_pds_url ? (
                               <a
                                 href={h.signed_pds_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-xs text-[#d4a964] hover:underline"
+                                className="text-xs text-accent hover:underline"
                               >
                                 View PDS ↗
                               </a>
                             ) : (
-                              <p className="text-xs text-white/30">Pending</p>
+                              <p className="text-xs text-muted-foreground">Pending</p>
                             )}
                           </div>
                           <div className="space-y-2">
-                            <p className="text-[10px] uppercase tracking-wider text-white/30">Syndicate Agreement</p>
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Syndicate Agreement</p>
                             {h.signed_sa_url ? (
                               <a
                                 href={h.signed_sa_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-xs text-[#d4a964] hover:underline"
+                                className="text-xs text-accent hover:underline"
                               >
                                 View SA ↗
                               </a>
                             ) : (
-                              <p className="text-xs text-white/30">Pending</p>
+                              <p className="text-xs text-muted-foreground">Pending</p>
                             )}
                           </div>
                         </div>
-                        <p className="text-[10px] font-light text-white/30 leading-relaxed pt-2 border-t border-white/[0.04]">
+                        <p className="text-[10px] font-light text-muted-foreground leading-relaxed pt-2 border-t border-border">
                           Acquired {new Date(h.timestamp).toLocaleDateString("en-NZ", { year: "numeric", month: "long", day: "numeric" })}
                         </p>
                       </div>
@@ -669,11 +669,11 @@ export default function MyStablePage() {
           )}
 
           {loadingData || liveHoldingsLoading ? (
-            <div className="text-center py-20 text-white/30 text-sm font-light">Loading holdings and update timelines...</div>
+            <div className="text-center py-20 text-muted-foreground text-sm font-light">Loading holdings and update timelines...</div>
           ) : holdings.length === 0 ? (
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-16 text-center space-y-6">
-              <p className="text-lg font-light text-white/60">No active ownership stakes found</p>
-              <p className="text-sm font-light text-white/40 max-w-md mx-auto leading-relaxed">
+            <div className="rounded-2xl border border-border bg-surface-base p-16 text-center space-y-6">
+              <p className="text-lg font-light text-frost">No active ownership stakes found</p>
+              <p className="text-sm font-light text-muted-foreground max-w-md mx-auto leading-relaxed">
                 {liveHoldingsError
                   ? "We could not reach live holdings. Try refresh, or check back shortly."
                   : "You haven\u2019t acquired any racehorse units yet. Head over to our marketplace to browse open syndicates and start your ownership journey."}
@@ -683,7 +683,7 @@ export default function MyStablePage() {
                   <button
                     type="button"
                     onClick={() => void fetchLiveHoldings()}
-                    className="inline-block rounded-full border border-white/15 text-white px-8 py-3 text-[11px] font-medium uppercase tracking-widest hover:bg-white/5 transition-colors"
+                    className="inline-block rounded-full border border-white/15 text-pure-white px-8 py-3 text-[11px] font-medium uppercase tracking-widest hover:bg-white/5 transition-colors"
                   >
                     Retry
                   </button>
@@ -703,8 +703,8 @@ export default function MyStablePage() {
                 {/* Active Horses List */}
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-[20px] font-light text-white mb-1">My Horses</h2>
-                    <p className="text-xs font-light text-white/40">Active bloodstock ownership in campaign</p>
+                    <h2 className="text-[20px] font-light text-heading mb-1">My Horses</h2>
+                    <p className="text-xs font-light text-muted-foreground">Active bloodstock ownership in campaign</p>
                   </div>
 
                   <div className="space-y-4">
@@ -716,11 +716,11 @@ export default function MyStablePage() {
                       return (
                         <div
                           key={holding.id}
-                          className="group relative rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-all duration-300"
+                          className="group relative rounded-xl border border-border bg-surface-base p-6 hover:bg-surface-base transition-all duration-300"
                         >
                           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
                             <div className="flex gap-4 items-center">
-                              <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/[0.06] overflow-hidden relative flex-shrink-0">
+                              <div className="w-12 h-12 rounded-xl bg-surface-base border border-border overflow-hidden relative flex-shrink-0">
                                 {horse?.image_url ? (
                                   <Image
                                     src={horse.image_url}
@@ -729,33 +729,33 @@ export default function MyStablePage() {
                                     className="object-cover"
                                   />
                                 ) : (
-                                  <div className="flex h-full items-center justify-center text-white/20 text-[9px] font-light">
+                                  <div className="flex h-full items-center justify-center text-muted-foreground text-[9px] font-light">
                                     N/A
                                   </div>
                                 )}
                               </div>
                               <div>
-                                <h3 className="text-md font-medium text-white group-hover:text-[#d4a964] transition-colors">
+                                <h3 className="text-md font-medium text-heading group-hover:text-accent transition-colors">
                                   {horse?.name || "Racehorse"}
                                 </h3>
-                                <p className="text-xs text-white/40 mt-0.5">
+                                <p className="text-xs text-muted-foreground mt-0.5">
                                   {horse?.sex || "N/A"} · Trainer: {trainer?.name || "Unassigned"}
                                 </p>
                               </div>
                             </div>
                             <div className="flex sm:text-right flex-row sm:flex-col justify-between sm:justify-start gap-4">
                               <div>
-                                <p className="text-xs text-white/30 uppercase tracking-wider">Lots</p>
-                                <p className="text-sm font-semibold text-white">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wider">Lots</p>
+                                <p className="text-sm font-semibold text-pure-white">
                                   {holding.shares_owned}
-                                  <span className="text-white/40 font-normal text-xs ml-1">
+                                  <span className="text-muted-foreground font-normal text-xs ml-1">
                                     ({holding.percentage_owned}% of campaign)
                                   </span>
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs text-white/30 uppercase tracking-wider">Acquisition</p>
-                                <p className="text-sm font-semibold text-white">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wider">Acquisition</p>
+                                <p className="text-sm font-semibold text-pure-white">
                                   $
                                   {(holding.purchase_price_cents / 100).toLocaleString(
                                     "en-NZ",
@@ -766,8 +766,8 @@ export default function MyStablePage() {
                               </div>
                             </div>
                           </div>
-                          <div className="pt-2 border-t border-white/[0.04] flex justify-between items-center">
-                            <p className="text-[10px] text-white/30">
+                          <div className="pt-2 border-t border-border flex justify-between items-center">
+                            <p className="text-[10px] text-muted-foreground">
                               Acquired{" "}
                               {new Date(holding.created_at).toLocaleDateString("en-NZ", {
                                 year: "numeric",
@@ -777,7 +777,7 @@ export default function MyStablePage() {
                             </p>
                             <Link
                               href={`/marketplace/${holding.hlt_id}`}
-                              className="text-[11px] text-[#d4a964] hover:text-white transition"
+                              className="text-[11px] text-accent hover:text-pure-white transition"
                             >
                               View horse →
                             </Link>
@@ -791,16 +791,16 @@ export default function MyStablePage() {
                 {/* Campaign Updates Storytelling Feed */}
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-[20px] font-light text-white mb-1">Stable Logs & Feed</h2>
-                    <p className="text-xs font-light text-white/40">Behind-the-scenes logs, workout recordings, and trial reviews</p>
+                    <h2 className="text-[20px] font-light text-heading mb-1">Stable Logs & Feed</h2>
+                    <p className="text-xs font-light text-muted-foreground">Behind-the-scenes logs, workout recordings, and trial reviews</p>
                   </div>
 
                   {updates.length === 0 ? (
-                    <div className="rounded-xl border border-white/[0.06] p-8 text-center text-xs font-light text-white/40">
+                    <div className="rounded-xl border border-border p-8 text-center text-xs font-light text-muted-foreground">
                       No stable logs posted yet. Check back later for morning trackwork recordings.
                     </div>
                   ) : (
-                    <div className="space-y-8 relative border-l border-white/[0.08] pl-6 ml-3">
+                    <div className="space-y-8 relative border-l border-border pl-6 ml-3">
                       {updates.map((update) => (
                         <div key={update.id} className="relative space-y-3">
                           {/* Timeline Dot */}
@@ -808,19 +808,19 @@ export default function MyStablePage() {
                           
                           <div className="flex justify-between items-start gap-4">
                             <div>
-                              <span className="text-[10px] font-medium uppercase tracking-wider text-[#d4a964]">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-accent">
                                 {update.horse_name}
                               </span>
-                              <h4 className="text-md font-medium text-white mt-1">
+                              <h4 className="text-md font-medium text-heading mt-1">
                                 {update.title}
                               </h4>
                             </div>
-                            <span className="text-xs font-light text-white/30 whitespace-nowrap">
+                            <span className="text-xs font-light text-muted-foreground whitespace-nowrap">
                               {update.content_date}
                             </span>
                           </div>
 
-                          <div className="rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 text-xs font-light text-white/60 leading-relaxed max-w-xl">
+                          <div className="rounded-xl border border-border bg-surface-base p-4 text-xs font-light text-frost leading-relaxed max-w-xl">
                             {update.full_text}
                           </div>
                         </div>
@@ -833,23 +833,23 @@ export default function MyStablePage() {
               {/* Right Column: Financial Overview & Actions */}
               <div className="space-y-8">
                 {/* Total Investment */}
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-1">
-                  <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Total Investment</p>
-                  <p className="text-[28px] font-light text-white">${totalInvestmentNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
-                  <p className="text-xs text-white/30 font-light">Acquisition value across {holdings.length} {holdings.length === 1 ? "holding" : "holdings"}</p>
+                <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-1">
+                  <p className="text-[11px] font-light tracking-wider uppercase text-muted-foreground">Total Investment</p>
+                  <p className="text-[28px] font-light text-pure-white">${totalInvestmentNzd.toLocaleString(undefined, {maximumFractionDigits: 0})} NZD</p>
+                  <p className="text-xs text-muted-foreground font-light">Acquisition value across {holdings.length} {holdings.length === 1 ? "holding" : "holdings"}</p>
                 </div>
 
                 {/* Quick Links */}
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-4">
-                  <p className="text-[11px] font-light tracking-wider uppercase text-white/30">Registry Actions</p>
-                  <div className="space-y-3 text-xs font-light text-white/60">
-                    <Link href="/marketplace" className="block hover:text-white transition">
+                <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
+                  <p className="text-[11px] font-light tracking-wider uppercase text-muted-foreground">Registry Actions</p>
+                  <div className="space-y-3 text-xs font-light text-frost">
+                    <Link href="/marketplace" className="block hover:text-pure-white transition">
                       Browse Open Campaigns →
                     </Link>
-                    <Link href="/stables" className="block hover:text-white transition">
+                    <Link href="/stables" className="block hover:text-pure-white transition">
                       View Trainer Stable Yards →
                     </Link>
-                    <a href="/docs/sa" className="block hover:text-white transition">
+                    <a href="/docs/sa" className="block hover:text-pure-white transition">
                       Standard Syndicate Agreements →
                     </a>
                   </div>
