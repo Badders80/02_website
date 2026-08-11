@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { LogoCarousel, type LogoItem } from "@/components/ui/LogoCarousel";
 import pressData from "@/dna/content/press.json";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -127,51 +128,15 @@ export function PressShowcaseSection() {
     });
   }, [rightArticles, shouldRotate, startIndex, visibleCount]);
 
-  const partners = [
-    {
-      name: 'Trackside NZ',
-      src: '/images/partners/trackside-nz.png',
-      wrapperClass: 'w-[155px] h-[37px] sm:w-[185px] sm:h-[44px] md:w-[200px] md:h-[48px] lg:w-[230px] lg:h-[55px]'
-    },
-    {
-      name: 'BusinessDesk',
-      src: '/images/partners/businessdesk.jpg',
-      wrapperClass: 'w-[155px] h-[31px] sm:w-[185px] sm:h-[37px] md:w-[200px] md:h-[40px] lg:w-[230px] lg:h-[46px]'
-    },
-    {
-      name: 'Singularity',
-      src: '/images/partners/singularry.webp',
-      wrapperClass: 'w-[175px] h-[33px] sm:w-[200px] sm:h-[38px] md:w-[215px] md:h-[40px] lg:w-[245px] lg:h-[46px]'
-    },
-    {
-      name: 'Investing.com',
-      src: '/images/partners/investing-com.png',
-      wrapperClass: 'w-[155px] h-[31px] sm:w-[175px] sm:h-[35px] md:w-[185px] md:h-[37px] lg:w-[210px] lg:h-[42px]'
-    },
-    {
-      name: 'NZTR',
-      src: '/images/partners/nztr-white.png',
-      wrapperClass: 'w-[145px] h-[40px] sm:w-[165px] sm:h-[45px] md:w-[180px] md:h-[50px] lg:w-[205px] lg:h-[57px]'
-    },
-    {
-      name: 'Stephen Grey Racing',
-      src: '/images/partners/stephen-grey-racing.png',
-      wrapperClass: 'w-[145px] h-[40px] sm:w-[165px] sm:h-[45px] md:w-[180px] md:h-[50px] lg:w-[205px] lg:h-[57px]'
-    },
-    {
-      name: 'Arabian Business',
-      src: '/images/partners/arabian-business.png',
-      wrapperClass: 'w-[100px] h-[36px] sm:w-[110px] sm:h-[40px] md:w-[125px] md:h-[45px] lg:w-[145px] lg:h-[52px]'
-    },
+  const partnerLogos: LogoItem[] = [
+    { name: "Trackside NZ", src: "/images/partners/trackside-nz.png" },
+    { name: "Business Desk", src: "/images/partners/businessdesk.jpg" },
+    { name: "Singularry", src: "/images/partners/singularry.webp" },
+    { name: "Investing.com", src: "/images/partners/investing-com.png" },
+    { name: "NZTR", src: "/images/partners/nztr-white.png" },
+    { name: "Stephen Grey Racing", src: "/images/partners/stephen-grey-racing.png" },
+    { name: "Arabian Business", src: "/images/partners/arabian-business.png" },
   ];
-  const logoAdjustments: Record<string, string> = {
-    'BusinessDesk': 'scale-110',
-    'Singularity': 'scale-110',
-    'Trackside NZ': 'scale-115',
-    'NZTR': 'scale-110',
-    'Stephen Grey Racing': 'scale-105',
-    'Arabian Business': 'scale-110 brightness-125',
-  };
 
   const formatDate = (value: string) => {
     const parts = value.split('-');
@@ -441,30 +406,11 @@ export function PressShowcaseSection() {
 
         {/* As Featured In Section - On Bottom */}
         <div>
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-muted-foreground mb-12">
             AS FEATURED IN
           </p>
           <div ref={featuredHeaderRef} className="pb-6">
-            <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 lg:grid lg:grid-cols-6 lg:gap-x-16 lg:gap-y-12 lg:justify-items-center">
-              {partners.map((partner, index) => {
-                const colSpanClass = index < 3 ? 'lg:col-span-2' : 'lg:col-span-3';
-                return (
-                  <div
-                    key={partner.name}
-                    className={`partner-logo-wrapper relative opacity-90 hover:opacity-100 transition-opacity duration-500 ${partner.wrapperClass} ${colSpanClass}`}
-                  >
-                    <Image
-                      src={partner.src}
-                      alt={partner.name}
-                      fill
-                      className={`object-contain filter brightness(0) invert(1) ${
-                        logoAdjustments[partner.name] ?? ''
-                      }`}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+            <LogoCarousel logos={partnerLogos} speed={30} logoHeight={28} />
           </div>
         </div>
       </div>
