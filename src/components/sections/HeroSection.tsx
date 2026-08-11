@@ -71,7 +71,7 @@ export function HeroSection({
           sizes="100vw"
           className="object-cover"
         />
-        <div className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: 0.35 }} />
+        <div className="pointer-events-none absolute inset-0 bg-canvas" style={{ opacity: 0.35 }} />
       </div>
 
       <div ref={contentRef} className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-start gap-4 px-8 pb-16 md:px-12">
