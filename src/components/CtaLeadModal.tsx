@@ -187,12 +187,12 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
         className="absolute inset-0 z-10 flex items-center justify-center p-4"
       >
         <div className={`pointer-events-auto relative w-full max-w-[760px] text-center ${enterClass}`}>
-          <div className="relative rounded-xl border border-white/20 bg-black/95 px-8 py-10 shadow-[0_0_120px_rgba(0,0,0,0.98)] md:px-12 md:py-12">
+          <div className="relative rounded-xl border border-border bg-black/95 px-8 py-10 shadow-[0_0_120px_rgba(0,0,0,0.98)] md:px-12 md:py-12">
             <button
               type="button"
               onClick={close}
               aria-label="Dismiss"
-              className="absolute top-4 right-4 z-10 flex h-8 w-8 cursor-pointer items-center justify-center text-2xl leading-none text-white/50 transition-colors hover:text-white"
+              className="absolute top-4 right-4 z-10 flex h-8 w-8 cursor-pointer items-center justify-center text-2xl leading-none text-muted-foreground transition-colors hover:text-white"
             >
               ×
             </button>
@@ -206,7 +206,7 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
 
             <div className="mx-auto mt-0 w-full max-w-[620px]">
               <form onSubmit={handleSubmit} className="group relative">
-                <div className="relative flex w-full flex-col items-stretch gap-2 transition-all duration-500 md:flex-row md:items-center md:gap-0 md:overflow-hidden md:rounded-full md:border md:border-white/[0.12] md:bg-zinc-900/80 md:p-1.5 group-focus-within:border-white/40 group-focus-within:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                <div className="relative flex w-full flex-col items-stretch gap-2 transition-all duration-500 md:flex-row md:items-center md:gap-0 md:overflow-hidden md:rounded-full md:border md:border-border md:bg-surface-base/80 md:p-1.5 group-focus-within:border-white/40 group-focus-within:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                   <div className="pointer-events-none absolute inset-0 opacity-20 mix-blend-overlay transition-opacity duration-700 group-hover:opacity-40 group-focus-within:opacity-40">
                     <div className="h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent blur-xl animate-border-shimmer" />
                   </div>
@@ -217,14 +217,14 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email address"
                     required
-                    className="relative z-10 w-full rounded-full border border-white/[0.06] bg-zinc-900/80 py-3 pl-6 pr-6 text-sm font-light text-white placeholder:text-white/30 focus:outline-none md:flex-1 md:border-0 md:bg-transparent md:pr-32"
+                    className="relative z-10 w-full rounded-full border border-border bg-surface-base/80 py-3 pl-6 pr-6 text-sm font-light text-white placeholder:text-muted-foreground focus:outline-none md:flex-1 md:border-0 md:bg-transparent md:pr-32"
                     aria-label="Email address"
                     disabled={isSubmitting}
                   />
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="relative static w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] px-6 py-2.5 text-[11px] font-light uppercase tracking-wider text-white backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] hover:border-white/40 disabled:cursor-not-allowed md:absolute md:right-1.5 md:top-1/2 md:z-20 md:w-auto md:-translate-y-1/2"
+                    className="relative static w-full cursor-pointer overflow-hidden rounded-full border border-border bg-surface-base px-6 py-2.5 text-[11px] font-light uppercase tracking-wider text-white backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] hover:border-white/40 disabled:cursor-not-allowed md:absolute md:right-1.5 md:top-1/2 md:z-20 md:w-auto md:-translate-y-1/2"
                   >
                     <div className="pointer-events-none absolute inset-0">
                       <div className="absolute -inset-x-1/2 -inset-y-4 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-30 blur-xl animate-border-shimmer" />

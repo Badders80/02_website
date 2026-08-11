@@ -79,28 +79,28 @@ export default function ReturnsPage() {
       <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
-          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
-            <Link href="/" className="hover:text-white/60 transition duration-300">
+          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <Link href="/" className="hover:text-frost transition duration-300">
               Home
             </Link>
             <span>/</span>
-            <span className="text-white/60">Returns</span>
+            <span className="text-frost">Returns</span>
           </div>
 
           {/* Header */}
           <div className="mb-16 space-y-4">
-            <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a964]">
+            <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-accent">
               Ownership Explainer
             </p>
             <h1 className="text-[36px] font-light tracking-tight text-white md:text-[48px] leading-tight">
               How Racehorse Ownership Returns Work
             </h1>
-            <p className="text-[16px] leading-[1.8] font-light text-white/60 max-w-2xl">
+            <p className="text-[16px] leading-[1.8] font-light text-frost max-w-2xl">
               Prize money in New Zealand thoroughbred racing flows from the track, through the official settlement process, and back to owners in proportion to what they own. Here is how that works for Evolution Stables investors.
             </p>
           </div>
 
-          <div className="space-y-12 text-[15px] leading-[1.85] font-light text-white/70">
+          <div className="space-y-12 text-[15px] leading-[1.85] font-light text-frost">
             <section className="space-y-4">
               <h2 className="text-[20px] font-light text-white tracking-tight">
                 The source of returns: NZTR prize money
@@ -180,26 +180,26 @@ export default function ReturnsPage() {
             </section>
           </div>
 
-          <div className="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
-            <p className="text-[12px] font-light text-white/30 leading-[1.8]">
+          <div className="mt-16 pt-8 border-t border-border space-y-4">
+            <p className="text-[12px] font-light text-muted-foreground leading-[1.8]">
               This page is for informational purposes only and does not constitute financial, legal, or tax advice. Racehorse ownership and digital-syndication carry risk, including the risk of loss. Read the offering documents and consult a professional adviser before subscribing.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
               <Link
                 href="/marketplace"
-                className="text-[11px] uppercase tracking-[0.2em] text-[#d4a964] hover:text-white transition duration-300"
+                className="text-[11px] uppercase tracking-[0.2em] text-accent hover:text-white transition duration-300"
               >
                 View Marketplace →
               </Link>
               <Link
                 href="/insights/how-prize-money-works-in-nz-racing"
-                className="text-[11px] uppercase tracking-[0.2em] text-[#d4a964] hover:text-white transition duration-300"
+                className="text-[11px] uppercase tracking-[0.2em] text-accent hover:text-white transition duration-300"
               >
                 How Prize Money Works →
               </Link>
               <Link
                 href="/insights/racehorse-syndication-explained-nz"
-                className="text-[11px] uppercase tracking-[0.2em] text-[#d4a964] hover:text-white transition duration-300"
+                className="text-[11px] uppercase tracking-[0.2em] text-accent hover:text-white transition duration-300"
               >
                 Syndication Explained →
               </Link>

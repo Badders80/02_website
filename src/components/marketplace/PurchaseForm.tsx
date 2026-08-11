@@ -106,7 +106,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
           </svg>
         </div>
         <h3 className="text-[18px] font-medium text-white">Interest Registered!</h3>
-        <p className="text-[13px] leading-relaxed text-white/60">
+        <p className="text-[13px] leading-relaxed text-frost">
           We have received your request to acquire {sharesToBuy} units in {horseName}. Our team will contact you shortly to finalize your onboarding.
         </p>
       </div>
@@ -116,14 +116,14 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
   return (
     <div className="space-y-6">
       {/* Main Widget Card */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+      <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-6">
         
         {/* Price & Availability */}
         <div className="flex items-baseline justify-between">
-          <span className="text-[15px] font-medium text-[#d4a964]">
+          <span className="text-[15px] font-medium text-accent">
             ${pricePerShareNzd.toLocaleString()} NZD
           </span>
-          <span className="text-[13px] font-light text-white/50">
+          <span className="text-[13px] font-light text-muted-foreground">
             {sharesAvailable} / {hlt.shares_total} units available
           </span>
         </div>
@@ -131,10 +131,10 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
         {sharesAvailable > 0 ? (
           <div className="space-y-6">
             {/* Stepper Quantity Selector */}
-            <div className="flex items-center justify-between border border-white/[0.06] bg-black/40 rounded-xl p-4">
+            <div className="flex items-center justify-between border border-border bg-canvas/40 rounded-xl p-4">
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-white/30 mb-0.5">Quantity</p>
-                <p className="text-[12px] font-light text-white/50">
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Quantity</p>
+                <p className="text-[12px] font-light text-muted-foreground">
                   {totalPercentOwned.toFixed(2)}% total stake
                 </p>
               </div>
@@ -142,7 +142,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
                 <button
                   type="button"
                   onClick={() => setSharesToBuy(Math.max(1, sharesToBuy - 1))}
-                  className="w-11 h-11 rounded-lg border border-white/[0.06] bg-white/[0.02] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.05] transition-all text-lg select-none"
+                  className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all text-lg select-none"
                   disabled={sharesToBuy <= 1}
                 >
                   −
@@ -153,7 +153,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
                 <button
                   type="button"
                   onClick={() => setSharesToBuy(Math.min(sharesAvailable, sharesToBuy + 1))}
-                  className="w-11 h-11 rounded-lg border border-white/[0.06] bg-white/[0.02] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.05] transition-all text-lg select-none"
+                  className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all text-lg select-none"
                   disabled={sharesToBuy >= sharesAvailable}
                 >
                   +
@@ -162,9 +162,9 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
             </div>
 
             {/* Live-Calculated Total */}
-            <div className="flex justify-between items-baseline border-t border-white/[0.06] pt-4">
-              <span className="text-[13px] font-light text-white/50">Total stake price</span>
-              <span className="text-[18px] font-medium text-[#d4a964]">
+            <div className="flex justify-between items-baseline border-t border-border pt-4">
+              <span className="text-[13px] font-light text-muted-foreground">Total stake price</span>
+              <span className="text-[18px] font-medium text-accent">
                 ${totalPriceNzd.toLocaleString()} NZD
               </span>
             </div>
@@ -183,24 +183,24 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
           type="button"
           onClick={handleAction}
           disabled={isButtonDisabled()}
-          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 disabled:border disabled:border-white/10 disabled:text-white/30 disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
+          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 disabled:border disabled:border-border disabled:text-muted-foreground disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
         >
           {getButtonText()}
         </button>
 
         {/* Exemption Microcopy */}
-        <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
+        <p className="text-[10px] font-light leading-relaxed text-muted-foreground text-center">
           All acquisitions are subject to NZTR syndication rules and FMA equine exemptions.
         </p>
       </div>
 
       {/* Compliance / Legal Links (Bottom) */}
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] tracking-wider text-white/30">
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] tracking-wider text-muted-foreground">
         <a
           href={getDocUrl("sa")}
           target="_blank"
           rel="noreferrer"
-          className="hover:text-white/60 transition"
+          className="hover:text-frost transition"
         >
           Syndication Agreement
         </a>
@@ -209,7 +209,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
           href={getDocUrl("term_sheet")}
           target="_blank"
           rel="noreferrer"
-          className="hover:text-white/60 transition"
+          className="hover:text-frost transition"
         >
           Terms of Acquisition
         </a>
@@ -218,7 +218,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
           href="/privacy"
           target="_blank"
           rel="noreferrer"
-          className="hover:text-white/60 transition"
+          className="hover:text-frost transition"
         >
           Privacy Policy
         </a>

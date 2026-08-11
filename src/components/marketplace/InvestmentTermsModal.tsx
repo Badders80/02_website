@@ -151,10 +151,10 @@ export function InvestmentTermsModal({
   const termRow = (label: string, value: ReactNode, last = false) => (
     <div
       className={`flex justify-between gap-4 ${
-        last ? "pb-1" : "border-b border-white/[0.06] pb-3.5"
+        last ? "pb-1" : "border-b border-border pb-3.5"
       }`}
     >
-      <span className="text-white/40 shrink-0 max-w-[55%] leading-snug">
+      <span className="text-muted-foreground shrink-0 max-w-[55%] leading-snug">
         {label}
       </span>
       <span className="text-white font-medium text-right leading-snug">
@@ -175,23 +175,23 @@ export function InvestmentTermsModal({
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md px-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-canvas/60 backdrop-blur-md px-4"
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
+            className="relative max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-3xl border border-border bg-surface-base backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-white/40 hover:text-white/80 transition text-xl"
+              className="absolute top-4 right-4 text-muted-foreground hover:text-frost transition text-xl"
             >
               ✕
             </button>
 
             <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
                 Digital-Syndication Terms
               </p>
               <h3 className="text-[22px] font-light text-white tracking-tight">
@@ -202,31 +202,31 @@ export function InvestmentTermsModal({
             {/* Hero: price + minimum investment */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {listRatePer1Pct != null && listRatePer1Pct > 0 && (
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+                <div className="rounded-2xl border border-border bg-surface-base p-4 space-y-1">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                     Price
                   </p>
                   <p className="text-[28px] font-light text-white tracking-tight leading-none">
                     ${formatMoney(listRatePer1Pct)}
-                    <span className="text-[13px] text-white/50 font-light ml-1">
+                    <span className="text-[13px] text-muted-foreground font-light ml-1">
                       NZD
                     </span>
                   </p>
                   <p className="text-[11px] font-light text-white/45 leading-snug pt-1">
                     per month
                   </p>
-                  <p className="text-[11px] font-light text-white/40 leading-snug">
+                  <p className="text-[11px] font-light text-muted-foreground leading-snug">
                     Based on 1% investment
                   </p>
                 </div>
               )}
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+              <div className="rounded-2xl border border-border bg-surface-base p-4 space-y-1">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                   Minimum investment
                 </p>
                 <p className="text-[28px] font-light text-white tracking-tight leading-none">
                   ${formatMoney(pricePerShareNzd)}
-                  <span className="text-[13px] text-white/50 font-light ml-1">
+                  <span className="text-[13px] text-muted-foreground font-light ml-1">
                     NZD
                   </span>
                 </p>
@@ -239,7 +239,7 @@ export function InvestmentTermsModal({
             </div>
 
             {/* Secondary: lease, stake, return */}
-            <div className="space-y-4 text-[13px] font-light border-t border-white/[0.06] pt-5">
+            <div className="space-y-4 text-[13px] font-light border-t border-border pt-5">
               {termRow(
                 "Lease period",
                 months > 0 ? `${months} months` : "—"
@@ -250,7 +250,7 @@ export function InvestmentTermsModal({
                 stakeAvailablePct > 0 ? (
                   <span className="inline-flex flex-col items-end gap-0.5">
                     <span>{formatPct(stakeAvailablePct)}%</span>
-                    <span className="text-[11px] font-light text-white/40">
+                    <span className="text-[11px] font-light text-muted-foreground">
                       Based on total ownership
                     </span>
                   </span>
@@ -267,8 +267,8 @@ export function InvestmentTermsModal({
               )}
             </div>
 
-            <div className="space-y-2 border-t border-white/[0.06] pt-5">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+            <div className="space-y-2 border-t border-border pt-5">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 Returns explained
               </p>
               <p className="text-[11px] font-light text-white/35 leading-relaxed">
@@ -278,7 +278,7 @@ export function InvestmentTermsModal({
                 {/* TODO: wire real returns explainer page */}
                 <a
                   href="/learn/returns"
-                  className="text-white/55 underline underline-offset-2 hover:text-white/80 transition"
+                  className="text-muted-foreground underline underline-offset-2 hover:text-frost transition"
                 >
                   Learn more about how returns work
                 </a>
@@ -286,13 +286,13 @@ export function InvestmentTermsModal({
             </div>
 
             {readOnly ? (
-              <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
+              <p className="text-[11px] font-light text-muted-foreground leading-relaxed text-center">
                 Terms preview — this offering is not yet open for acquisition.
               </p>
             ) : (
               <>
                 {kycStatus !== "verified" && (
-                  <p className="text-[11px] font-light text-white/40 leading-relaxed text-center">
+                  <p className="text-[11px] font-light text-muted-foreground leading-relaxed text-center">
                     {kycStatus === "pending"
                       ? "Your identity verification is in progress. Click Buy now to check status."
                       : "Identity verification is required before you can buy units."}
@@ -314,7 +314,7 @@ export function InvestmentTermsModal({
                   {kycLoading ? "Starting verification..." : "Buy now"}
                 </button>
 
-                <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
+                <p className="text-[10px] font-light leading-relaxed text-muted-foreground text-center">
                   All acquisitions are subject to NZTR syndication rules and
                   FMA equine exemptions.
                 </p>

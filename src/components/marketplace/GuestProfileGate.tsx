@@ -21,8 +21,8 @@ export function GuestProfileGate({ horseName, horseSlug, children }: GuestProfil
   if (loading) {
     return (
       <div className="space-y-12 animate-pulse">
-        <div className="aspect-[16/10] rounded-2xl bg-white/[0.03]" />
-        <div className="h-24 rounded-2xl bg-white/[0.02]" />
+        <div className="aspect-[16/10] rounded-2xl bg-surface-base" />
+        <div className="h-24 rounded-2xl bg-surface-base" />
         <div className="space-y-3">
           <div className="h-4 bg-white/5 rounded w-1/3" />
           <div className="h-4 bg-white/5 rounded w-full" />

@@ -71,12 +71,12 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
           </svg>
         </div>
         <h3 className="text-[18px] font-medium text-white">Application Submitted!</h3>
-        <p className="text-[14px] text-white/60">
+        <p className="text-[14px] text-frost">
           We've received your application for {horseName}. Our team will review it and contact you at {formData.email} shortly.
         </p>
         <button
           onClick={() => setSuccess(false)}
-          className="text-[11px] uppercase tracking-wider text-white/40 hover:text-white/70 transition"
+          className="text-[11px] uppercase tracking-wider text-muted-foreground hover:text-frost transition"
         >
           Submit another application
         </button>
@@ -87,12 +87,12 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Main Widget Card */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+      <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-6">
         
         {/* Header */}
         <div>
           <h3 className="text-[16px] font-light text-white tracking-tight">Apply for Ownership</h3>
-          <p className="text-[12px] text-white/40 mt-1">
+          <p className="text-[12px] text-muted-foreground mt-1">
             Submit an application to own a stake in {horseName}
           </p>
         </div>
@@ -100,7 +100,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
         {/* Contact Information */}
         <div className="space-y-4">
           <div>
-            <label className="block text-[10px] uppercase tracking-wider text-white/30 mb-2">
+            <label className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
               Full Name
             </label>
             <input
@@ -108,12 +108,12 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-black/40 border border-white/[0.06] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors"
+              className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors"
               placeholder="John Doe"
             />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-wider text-white/30 mb-2">
+            <label className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
               Email Address
             </label>
             <input
@@ -121,7 +121,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-black/40 border border-white/[0.06] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors"
+              className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors"
               placeholder="john@example.com"
             />
           </div>
@@ -129,14 +129,14 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
 
         {/* Units Requested */}
         <div>
-          <label className="block text-[10px] uppercase tracking-wider text-white/30 mb-2">
+          <label className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
             Units Requested
           </label>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setFormData({ ...formData, units_requested: Math.max(1, formData.units_requested - 1) })}
-              className="w-10 h-10 rounded-lg border border-white/[0.06] bg-white/[0.02] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.05] transition-all"
+              className="w-10 h-10 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all"
               disabled={formData.units_requested <= 1}
             >
               −
@@ -147,25 +147,25 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
             <button
               type="button"
               onClick={() => setFormData({ ...formData, units_requested: formData.units_requested + 1 })}
-              className="w-10 h-10 rounded-lg border border-white/[0.06] bg-white/[0.02] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.05] transition-all"
+              className="w-10 h-10 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all"
             >
               +
             </button>
           </div>
-          <p className="text-[10px] text-white/30 mt-2">
+          <p className="text-[10px] text-muted-foreground mt-2">
             Minimum 1 unit, Maximum 10 units per application
           </p>
         </div>
 
         {/* Optional Message */}
         <div>
-          <label className="block text-[10px] uppercase tracking-wider text-white/30 mb-2">
+          <label className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
             Message (Optional)
           </label>
           <textarea
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full bg-black/40 border border-white/[0.06] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors resize-none"
+            className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors resize-none"
             placeholder="Why are you interested in this horse?"
             rows={3}
           />
@@ -182,13 +182,13 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
         <button
           type="submit"
           disabled={isSubmitting || !user}
-          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#c49954] disabled:border disabled:border-white/10 disabled:text-white/30 disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
+          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#c49954] disabled:border disabled:border-border disabled:text-muted-foreground disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
         >
           {isSubmitting ? "Submitting..." : "Submit Application"}
         </button>
 
         {/* Info */}
-        <p className="text-[10px] font-light leading-relaxed text-white/20 text-center">
+        <p className="text-[10px] font-light leading-relaxed text-muted-foreground text-center">
           Applications are reviewed by our team. You will receive an email notification when your application is processed.
         </p>
       </div>

@@ -174,15 +174,15 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
       <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
         <div className="mx-auto max-w-2xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
-          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
-            <Link href="/marketplace" className="hover:text-white/60 transition">Marketplace</Link>
+          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <Link href="/marketplace" className="hover:text-frost transition">Marketplace</Link>
             <span>/</span>
-            <Link href={`/marketplace/${horseSlug}`} className="hover:text-white/60 transition">{horseName}</Link>
+            <Link href={`/marketplace/${horseSlug}`} className="hover:text-frost transition">{horseName}</Link>
             <span>/</span>
-            <span className="text-white/60">Verification</span>
+            <span className="text-frost">Verification</span>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 space-y-8 text-center">
+          <div className="rounded-2xl border border-border bg-surface-base p-12 space-y-8 text-center">
             {/* Status icon */}
             <div className="flex justify-center">
               {statusState === "verified" ? (
@@ -205,7 +205,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
               <h1 className="text-[24px] font-light text-white tracking-tight">
                 {statusState === "verified" ? "Verified" : statusState === "processing" ? "Identity Verification" : "Verification Issue"}
               </h1>
-              <p className="text-[14px] font-light text-white/50 leading-relaxed max-w-md mx-auto">
+              <p className="text-[14px] font-light text-muted-foreground leading-relaxed max-w-md mx-auto">
                 {statusMsg}
               </p>
             </div>
@@ -235,7 +235,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                 <button
                   type="button"
                   onClick={() => setLeadFormOpen(true)}
-                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-white hover:bg-white/5 transition"
+                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-border text-white hover:bg-white/5 transition"
                 >
                   Register for Manual Assistance
                 </button>
@@ -255,7 +255,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                 <button
                   type="button"
                   onClick={() => setLeadFormOpen(true)}
-                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-white hover:bg-white/5 transition"
+                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-border text-white hover:bg-white/5 transition"
                 >
                   Register for Manual Assistance
                 </button>
@@ -264,10 +264,10 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
 
             {/* Lead capture form */}
             {leadFormOpen && !leadSubmitted && (
-              <div className="border-t border-white/[0.06] pt-8 space-y-4 text-left">
+              <div className="border-t border-border pt-8 space-y-4 text-left">
                 <div>
                   <p className="text-[14px] font-medium text-white mb-2">Manual Assistance Request</p>
-                  <p className="text-[12px] font-light text-white/40 leading-relaxed">
+                  <p className="text-[12px] font-light text-muted-foreground leading-relaxed">
                     If you&apos;re having trouble with automated verification, our team will contact you to complete it manually.
                   </p>
                 </div>
@@ -277,14 +277,14 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                     placeholder="Your name"
                     value={leadName}
                     onChange={(e) => setLeadName(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#d4a964]/30"
+                    className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#d4a964]/30"
                   />
                   <input
                     type="email"
                     placeholder="Email address"
                     value={leadEmail || user.email || ""}
                     onChange={(e) => setLeadEmail(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#d4a964]/30"
+                    className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#d4a964]/30"
                   />
                   <button
                     type="button"
@@ -299,7 +299,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
             )}
 
             {leadSubmitted && (
-              <div className="border-t border-white/[0.06] pt-8">
+              <div className="border-t border-border pt-8">
                 <p className="text-[13px] font-light text-emerald-400">
                   ✓ Request submitted. Our team will contact you within 24 hours.
                 </p>
@@ -308,7 +308,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
 
             <Link
               href={`/marketplace/${horseSlug}`}
-              className="block text-center text-[11px] uppercase tracking-widest text-white/40 hover:text-white/60 transition"
+              className="block text-center text-[11px] uppercase tracking-widest text-muted-foreground hover:text-frost transition"
             >
               ← Back to {horseName}
             </Link>

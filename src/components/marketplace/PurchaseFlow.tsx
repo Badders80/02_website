@@ -224,7 +224,7 @@ export default function PurchasePage(props: PurchasePageProps) {
               </p>
               <Link
                 href={`/marketplace/${props.horseSlug}`}
-                className="inline-block rounded-full border border-white/10 text-pure-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
+                className="inline-block rounded-full border border-border text-pure-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
               >
                 ← Back to {props.horseName}
               </Link>
@@ -366,7 +366,7 @@ export default function PurchasePage(props: PurchasePageProps) {
               </p>
               <Link
                 href={`/marketplace/${props.horseSlug}`}
-                className="inline-block rounded-full border border-white/10 text-pure-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
+                className="inline-block rounded-full border border-border text-pure-white hover:bg-white/5 transition px-8 py-3 text-[11px] font-medium uppercase tracking-widest"
               >
                 ← Back to {props.horseName}
               </Link>
@@ -378,7 +378,7 @@ export default function PurchasePage(props: PurchasePageProps) {
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center gap-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium ${
-                  step >= s ? "bg-[#d4a964] text-black" : "bg-white/[0.04] text-muted-foreground border border-border"
+                  step >= s ? "bg-[#d4a964] text-black" : "bg-surface-base text-muted-foreground border border-border"
                 }`}>
                   {s}
                 </div>
@@ -406,7 +406,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                   <button
                     type="button"
                     onClick={() => setSharesToBuy(Math.max(1, sharesToBuy - 1))}
-                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-white/[0.05] transition text-lg"
+                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-surface-base transition text-lg"
                     disabled={sharesToBuy <= 1}
                   >
                     −
@@ -415,7 +415,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                   <button
                     type="button"
                     onClick={() => setSharesToBuy(Math.min(sharesAvailable, sharesToBuy + 1))}
-                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-white/[0.05] transition text-lg"
+                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-surface-base transition text-lg"
                     disabled={sharesToBuy >= sharesAvailable}
                   >
                     +
@@ -472,7 +472,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-pure-white hover:bg-white/5 transition"
+                  className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-border text-pure-white hover:bg-white/5 transition"
                 >
                   Back
                 </button>
@@ -582,7 +582,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                         type="text"
                         readOnly
                         value={signatureName}
-                        className="w-full bg-surface-base border border-white/10 rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed select-none"
+                        className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed select-none"
                       />
                       <p className="text-[10px] text-muted-foreground leading-relaxed">
                         Your verified legal name has been recorded for this agreement.
@@ -617,7 +617,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                     <button
                       type="button"
                       onClick={() => { setStep(2); setAgreementSubStep(1); }}
-                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-pure-white hover:bg-white/5 transition"
+                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-border text-pure-white hover:bg-white/5 transition"
                     >
                       Back
                     </button>
@@ -715,7 +715,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                         type="text"
                         readOnly
                         value={signatureName}
-                        className="w-full bg-surface-base border border-white/10 rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed select-none"
+                        className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed select-none"
                       />
                       <p className="text-[10px] text-muted-foreground leading-relaxed">
                         Your verified legal name has been recorded for this agreement.
@@ -756,7 +756,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                     <button
                       type="button"
                       onClick={() => setAgreementSubStep(1)}
-                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-pure-white hover:bg-white/5 transition"
+                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-border text-pure-white hover:bg-white/5 transition"
                     >
                       Back
                     </button>

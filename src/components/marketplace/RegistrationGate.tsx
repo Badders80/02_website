@@ -16,10 +16,10 @@ export function RegistrationGate({
   className = "",
 }: RegistrationGateProps) {
   return (
-    <div className={`rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6 ${className}`}>
+    <div className={`rounded-2xl border border-border bg-surface-base p-8 space-y-6 ${className}`}>
       <div>
         {horseName && (
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-3">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
             {horseName}
           </p>
         )}
@@ -27,7 +27,7 @@ export function RegistrationGate({
           {title}
         </h4>
       </div>
-      <p className="text-[12px] font-light text-white/50 leading-relaxed">
+      <p className="text-[12px] font-light text-muted-foreground leading-relaxed">
         {description}
       </p>
       <div className="space-y-3">
@@ -38,7 +38,7 @@ export function RegistrationGate({
         >
           Sign In / Register
         </button>
-        <p className="text-[10px] text-white/30 text-center font-light">
+        <p className="text-[10px] text-muted-foreground text-center font-light">
           It takes less than a minute
         </p>
       </div>

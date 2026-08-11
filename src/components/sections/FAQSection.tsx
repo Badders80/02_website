@@ -101,7 +101,7 @@ export function FAQSection() {
     <section ref={sectionRef} id="faq" className="py-56 bg-black text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
         {/* Section Label — static */}
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-muted-foreground">
           FAQ
         </p>
 
@@ -116,7 +116,7 @@ export function FAQSection() {
 
         <div ref={bodyRef}>
           {/* Description */}
-          <p className="text-[18px] leading-[1.7] font-light text-white/50 mb-24 max-w-xl">
+          <p className="text-[18px] leading-[1.7] font-light text-muted-foreground mb-24 max-w-xl">
             A considered guide to the essentials — how digital-syndication works, what it means for ownership, and where Evolution Stables fits in.
           </p>
         </div>
@@ -132,9 +132,9 @@ export function FAQSection() {
             return (
               <div
                 key={index}
-                className={`transition-all duration-300 ${index === 0 ? 'border-t border-white/[0.08]' : ''}`}
+                className={`transition-all duration-300 ${index === 0 ? 'border-t border-border' : ''}`}
               >
-                <div className="py-8 border-b border-white/[0.08] transition-all duration-300 ease-out hover:border-white/[0.12]">
+                <div className="py-8 border-b border-border transition-all duration-300 ease-out hover:border-border">
                   <button
                     onClick={() => toggleQuestion(index)}
                     className="w-full text-left cursor-pointer group relative focus:outline-none"
@@ -153,8 +153,8 @@ export function FAQSection() {
                       {/* Plus icon that rotates 45 degrees to a cross */}
                       <svg
                         className={`h-5 w-5 shrink-0 transition-all duration-300 ease-out ${
-                          isOpen ? 'rotate-45 text-[#d4a964]' : 'rotate-0 text-white/40'
-                        } group-hover:text-[#d4a964]`}
+                          isOpen ? 'rotate-45 text-accent' : 'rotate-0 text-muted-foreground'
+                        } group-hover:text-accent`}
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -178,7 +178,7 @@ export function FAQSection() {
                         className="overflow-hidden"
                       >
                         <div 
-                          className="text-base leading-relaxed font-light max-w-2xl pt-4 pb-2 text-white/60"
+                          className="text-base leading-relaxed font-light max-w-2xl pt-4 pb-2 text-frost"
                         >
                           {item.answer}
                         </div>

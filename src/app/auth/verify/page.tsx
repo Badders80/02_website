@@ -192,7 +192,7 @@ export default function VerifyPage() {
           <p className="mt-2 text-sm text-muted">Identity Verification</p>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-white/[0.06] bg-panel p-6">
+        <div className="mt-8 rounded-2xl border border-border bg-panel p-6">
           {/* Status display */}
           <div className="mb-6 text-center">
             <div className={`mb-2 text-lg font-semibold ${config.color}`}>

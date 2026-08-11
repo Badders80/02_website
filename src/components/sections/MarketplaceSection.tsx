@@ -80,17 +80,17 @@ export function MarketplaceSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="marketplace" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="marketplace" className="py-56 bg-canvas text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         <div>
           {/* Original Regulated Marketplace Label */}
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-muted-foreground">
             REGULATED MARKETPLACE
           </p>
 
           <div ref={headerRef}>
             {/* Headline */}
-            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
+            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-heading font-light tracking-tight mb-6">
               Transformation Powered
               <br />
               by <span className="text-[#00E599]">Regulation</span>
@@ -99,7 +99,7 @@ export function MarketplaceSection() {
 
           <div ref={bodyRef}>
             {/* Description */}
-            <p className="text-[16px] leading-[1.7] font-light text-white/65 mb-16 max-w-3xl">
+            <p className="text-[16px] leading-[1.7] font-light text-muted-foreground mb-16 max-w-3xl">
               Evolution Stables operates as an Authorised Syndicator — delivering regulated, financial-grade infrastructure built for modern racehorse owners.
             </p>
           </div>
@@ -111,12 +111,12 @@ export function MarketplaceSection() {
             {/* Card 1 - Discover Opportunities */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-white/[0.08]" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-raised" />
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
-                    className="h-8 w-8 text-white/60 transition-colors duration-500 group-hover:text-white"
+                    className="h-8 w-8 text-frost transition-colors duration-500 group-hover:text-heading"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.5}
@@ -136,7 +136,7 @@ export function MarketplaceSection() {
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
                     </span>
                   </h4>
-                  <p className="text-[15px] leading-[1.7] font-light text-white/50 transition-colors duration-500 group-hover:text-white/80">
+                  <p className="text-[15px] leading-[1.7] font-light text-muted-foreground transition-colors duration-500 group-hover:text-frost">
                     Explore available syndications and short-term leases — all
                     clearly structured, fully transparent, and ready to invest
                     in with confidence.
@@ -148,12 +148,12 @@ export function MarketplaceSection() {
             {/* Card 2 - Trade with Confidence */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-white/[0.08]" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-raised" />
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
-                    className="h-8 w-8 text-white/60 transition-colors duration-500 group-hover:text-white"
+                    className="h-8 w-8 text-frost transition-colors duration-500 group-hover:text-heading"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.5}
@@ -173,7 +173,7 @@ export function MarketplaceSection() {
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
                     </span>
                   </h4>
-                  <p className="text-[15px] leading-[1.7] font-light text-white/50 transition-colors duration-500 group-hover:text-white/80">
+                  <p className="text-[15px] leading-[1.7] font-light text-muted-foreground transition-colors duration-500 group-hover:text-frost">
                     Our regulated platform ensures secure transactions,
                     compliant ownership records, and integrated settlements — so
                     every trade is safe, clear, and straightforward.
@@ -185,12 +185,12 @@ export function MarketplaceSection() {
             {/* Card 3 - Real-Time Insight */}
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-white/[0.08]" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-raised" />
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
-                    className="h-8 w-8 text-white/60 transition-colors duration-500 group-hover:text-white"
+                    className="h-8 w-8 text-frost transition-colors duration-500 group-hover:text-heading"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.5}
@@ -215,7 +215,7 @@ export function MarketplaceSection() {
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
                     </span>
                   </h4>
-                  <p className="text-[15px] leading-[1.7] font-light text-white/50 transition-colors duration-500 group-hover:text-white/80">
+                  <p className="text-[15px] leading-[1.7] font-light text-muted-foreground transition-colors duration-500 group-hover:text-frost">
                     Follow your horses, track performance, and manage your
                     positions in real time — with ownership data, updates, and
                     key information always at your fingertips.

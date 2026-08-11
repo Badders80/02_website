@@ -151,7 +151,7 @@ export function HowItWorksSection() {
                     </p>
                   </div>
                   {/* Arrow icon */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground group-hover:text-frost group-hover:border-white/30 transition-colors duration-300">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground group-hover:text-frost group-hover:border-steel-border transition-colors duration-300">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
                     </svg>
@@ -160,7 +160,7 @@ export function HowItWorksSection() {
               </div>
 
               {/* Bottom — description (darker tone) */}
-              <div className="p-6 relative overflow-hidden lg:flex-1 bg-black/40">
+              <div className="p-6 relative overflow-hidden lg:flex-1 bg-canvas/40">
                 <p className="text-[14px] leading-[1.8] font-light text-muted-foreground group-hover:text-frost transition-colors duration-500">
                   {card.description}
                 </p>

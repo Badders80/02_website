@@ -63,7 +63,7 @@ export function OnboardingFlow({ hasHoldings }: OnboardingFlowProps) {
                   ? "border-[#21B981]/20 bg-[#21B981]/[0.03]"
                   : status === "in_progress"
                   ? "border-[#f59e0b]/20 bg-[#f59e0b]/[0.03]"
-                  : "border-white/[0.06] bg-white/[0.02]"
+                  : "border-border bg-surface-base"
               }`}
             >
               {/* Status badge */}
@@ -95,7 +95,7 @@ export function OnboardingFlow({ hasHoldings }: OnboardingFlowProps) {
               {/* Label + description */}
               <div className="flex-1 flex flex-col justify-center py-4">
                 <p className="text-base font-light text-white tracking-tight">{step.label}</p>
-                <p className="text-xs font-light text-white/40 leading-relaxed mt-2">
+                <p className="text-xs font-light text-muted-foreground leading-relaxed mt-2">
                   {step.description}
                 </p>
               </div>

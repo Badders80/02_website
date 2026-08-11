@@ -200,7 +200,7 @@ export function PressShowcaseSection() {
       <div className="max-w-5xl mx-auto px-12 md:px-16 lg:px-20 w-full space-y-24">
         {/* News and Updates Section - On Top */}
         <div>
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-muted-foreground">
             NEWS AND UPDATES
           </p>
           <div ref={newsHeaderRef} className="grid grid-cols-1 lg:grid-cols-[6fr,4fr] gap-0">
@@ -213,15 +213,15 @@ export function PressShowcaseSection() {
               <div className="space-y-8 max-w-2xl">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="flex items-center gap-4">
-                    <span className="text-xs uppercase tracking-[0.3em] text-white/40 transition-colors group-hover:text-white">
+                    <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-white">
                       {formatDate(leadArticle.date)}
                     </span>
                     <div className="h-px w-8 bg-white/10" />
-                    <span className="text-xs uppercase tracking-[0.3em] text-white/60 transition-colors group-hover:text-white">
+                    <span className="text-xs uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-white">
                       {leadArticle.publisher}
                     </span>
                   </div>
-                  <div className="text-xs uppercase tracking-[0.3em] text-white/40 transition-colors group-hover:text-white">
+                  <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-white">
                     <span className="relative inline-flex items-center gap-2 overflow-hidden">
                       <span className="relative z-10">Read the full story here</span>
                       <span className="relative z-10">→</span>
@@ -246,11 +246,11 @@ export function PressShowcaseSection() {
                   )}
                 </div>
 
-                <h3 className="text-3xl md:text-4xl font-light leading-[1.15] tracking-tight text-white/90 transition-colors duration-300 group-hover:text-white">
+                <h3 className="text-3xl md:text-4xl font-light leading-[1.15] tracking-tight text-heading transition-colors duration-300 group-hover:text-white">
                   {leadArticle.title}
                 </h3>
 
-                <p className="text-[15px] md:text-[17px] font-light leading-[1.7] text-white/55 transition-colors duration-300 group-hover:text-white/65">
+                <p className="text-[15px] md:text-[17px] font-light leading-[1.7] text-muted-foreground transition-colors duration-300 group-hover:text-muted-foreground">
                   {leadArticle.excerpt}
                 </p>
               </div>
@@ -294,8 +294,8 @@ export function PressShowcaseSection() {
                       <div
                         key={`${article.url}-${index}`}
                         ref={index === 0 ? itemRef : undefined}
-                        className={`transition-all duration-300 ease-out hover:border-white/[0.12] ${
-                          isLast ? '' : 'border-b border-white/[0.08]'
+                        className={`transition-all duration-300 ease-out hover:border-border ${
+                          isLast ? '' : 'border-b border-border'
                         }`}
                       >
                         <button
@@ -304,17 +304,17 @@ export function PressShowcaseSection() {
                         >
                           <div className="flex items-center justify-between gap-6">
                             <div className="flex flex-col gap-2">
-                              <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
                                 {article.publisher}
                               </span>
-                              <span className="text-[15px] md:text-[16px] font-light text-white/90 line-clamp-2">
+                              <span className="text-[15px] md:text-[16px] font-light text-heading line-clamp-2">
                                 {article.title}
                               </span>
                             </div>
                             <svg
                               className={`h-4 w-4 shrink-0 transition-all duration-300 ease-out ${
-                                isOpen ? 'rotate-45 text-white/70' : 'rotate-0 text-white/30'
-                              } group-hover:text-white/70`}
+                                isOpen ? 'rotate-45 text-frost' : 'rotate-0 text-muted-foreground'
+                              } group-hover:text-frost`}
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
@@ -336,11 +336,11 @@ export function PressShowcaseSection() {
                             }`}
                           >
                             <div className="flex items-center gap-4">
-                              <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
                                 {formatDate(article.date)}
                               </span>
                               <div className="h-px w-6 bg-white/10" />
-                              <span className="text-[10px] uppercase tracking-[0.3em] text-white/60">
+                              <span className="text-[10px] uppercase tracking-[0.3em] text-frost">
                                 {article.publisher}
                               </span>
                             </div>
@@ -369,12 +369,12 @@ export function PressShowcaseSection() {
                               rel="noopener noreferrer"
                               className="block"
                             >
-                              <h4 className="text-[17px] md:text-[19px] font-light leading-tight tracking-tight text-white/90 hover:text-white transition-colors">
+                              <h4 className="text-[17px] md:text-[19px] font-light leading-tight tracking-tight text-heading hover:text-white transition-colors">
                                 {article.title}
                               </h4>
                             </a>
 
-                            <p className="text-[14px] md:text-[15px] font-light leading-[1.7] text-white/55 line-clamp-4">
+                            <p className="text-[14px] md:text-[15px] font-light leading-[1.7] text-muted-foreground line-clamp-4">
                               {article.excerpt}
                             </p>
                           </div>
@@ -388,7 +388,7 @@ export function PressShowcaseSection() {
               <div className="mt-10">
                 <Link
                   href="/press"
-                  className="text-xs uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors group"
+                  className="text-xs uppercase tracking-[0.3em] text-muted-foreground hover:text-white transition-colors group"
                 >
                   <span className="relative inline-flex items-center gap-2 overflow-hidden">
                     <span className="relative z-10">View All Press Coverage</span>

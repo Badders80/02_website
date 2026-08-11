@@ -110,9 +110,9 @@ function LoginForm() {
       {/* Left Pane: Authentication Form */}
       <div className="flex w-full min-h-screen items-center justify-center px-6 py-16 lg:w-1/2">
         <div className="w-full max-w-sm">
-          <div className="rounded-3xl border border-white/[0.06] bg-panel p-8 shadow-xl backdrop-blur-md">
+          <div className="rounded-3xl border border-border bg-panel p-8 shadow-xl backdrop-blur-md">
             {/* Logo Watermark inside the overall card container */}
-            <div className="flex justify-center mb-8 border-b border-white/[0.06] pb-6">
+            <div className="flex justify-center mb-8 border-b border-border pb-6">
               <Link href="/" className="group block focus:outline-none">
                 <Image
                   src={LOGOS.simple.grey}
@@ -125,7 +125,7 @@ function LoginForm() {
               </Link>
             </div>
 
-            <h2 className="text-[14px] font-[300] tracking-[0.2em] uppercase text-white/90 mb-6">
+            <h2 className="text-[14px] font-[300] tracking-[0.2em] uppercase text-heading mb-6">
               {mode === "signin" ? "Sign In" : "Create Account"}
             </h2>
 
@@ -140,7 +140,7 @@ function LoginForm() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={googleLoading}
-              className="mt-4 w-full flex items-center justify-center gap-3 rounded-xl bg-zinc-900/80 text-white border border-white/15 font-medium py-3 px-4 transition-colors duration-200 hover:bg-zinc-800/80 hover:border-white/30 hover:text-white hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-4 w-full flex items-center justify-center gap-3 rounded-xl bg-surface-base/80 text-white border border-border font-medium py-3 px-4 transition-colors duration-200 hover:bg-surface-base/80 hover:border-steel-border hover:text-white hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {googleLoading ? (
                 <span className="flex items-center gap-2 text-gray-900">
@@ -176,32 +176,32 @@ function LoginForm() {
             </button>
 
             <div className="my-6 flex items-center">
-              <div className="flex-1 border-t border-white/[0.06]" />
-              <span className="px-4 text-sm text-white/40">or</span>
-              <div className="flex-1 border-t border-white/[0.06]" />
+              <div className="flex-1 border-t border-border" />
+              <span className="px-4 text-sm text-muted-foreground">or</span>
+              <div className="flex-1 border-t border-border" />
             </div>
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-5">
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.25em] text-white/40 mb-2 font-[300]">Email Address</label>
+                <label className="block text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 font-[300]">Email Address</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full h-11 rounded-xl border border-white/10 bg-white/5 px-4 text-sm text-white placeholder:text-white/30 focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all duration-200"
+                  className="block w-full h-11 rounded-xl border border-border bg-white/5 px-4 text-sm text-white placeholder:text-muted-foreground focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all duration-200"
                   placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.25em] text-white/40 mb-2 font-[300]">Password</label>
+                <label className="block text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 font-[300]">Password</label>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full h-11 rounded-xl border border-white/10 bg-white/5 px-4 text-sm text-white placeholder:text-white/30 focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all duration-200"
+                  className="block w-full h-11 rounded-xl border border-border bg-white/5 px-4 text-sm text-white placeholder:text-muted-foreground focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all duration-200"
                   placeholder="••••••••"
                 />
               </div>
@@ -210,7 +210,7 @@ function LoginForm() {
                 <GlowPillButton
                   type="submit"
                   disabled={loading}
-                  className="w-full text-center !bg-zinc-900/80 hover:!bg-zinc-800/80 !border-white/15 hover:!border-white/30 !text-white/80 hover:!text-white"
+                  className="w-full text-center !bg-surface-base/80 hover:!bg-surface-base/80 !border-border hover:!border-steel-border !text-frost hover:!text-white"
                   wrapperClassName="w-full"
                 >
                   {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}

@@ -27,7 +27,7 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
         <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
           <div className="mx-auto max-w-2xl px-6 text-center">
             <h1 className="text-[28px] font-light text-white mb-4">Campaign not found</h1>
-            <Link href="/marketplace" className="text-[#d4a964] text-sm">← Back to Marketplace</Link>
+            <Link href="/marketplace" className="text-accent text-sm">← Back to Marketplace</Link>
           </div>
         </main>
         <Footer />
@@ -55,7 +55,7 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
             <h1 className="text-[32px] font-light text-white tracking-tight">
               {success === "true" ? "Purchase complete." : "Purchase confirmation"}
             </h1>
-            <p className="text-[15px] font-light text-white/50 leading-relaxed max-w-md mx-auto">
+            <p className="text-[15px] font-light text-muted-foreground leading-relaxed max-w-md mx-auto">
               {success === "true"
                 ? `Your unit(s) in ${horseName} are recorded. A welcome note is on its way — check MyStable for your holding.`
                 : "If you completed payment, your holding will show in MyStable. If you cancelled, no charge was made."}
@@ -64,9 +64,9 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
 
           {/* What happens next */}
           {success === "true" && (
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-4 text-left max-w-md mx-auto">
-              <p className="text-[11px] uppercase tracking-[0.2em] text-white/30">What happens next</p>
-              <div className="space-y-3 text-[13px] font-light text-white/50 leading-relaxed">
+            <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-4 text-left max-w-md mx-auto">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">What happens next</p>
+              <div className="space-y-3 text-[13px] font-light text-muted-foreground leading-relaxed">
                 <p>• Welcome email with your holding details</p>
                 <p>• Units appear in MyStable once payment is fulfilled</p>
                 <p>• Quarterly investor reports on the reporting cycle</p>
@@ -85,7 +85,7 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
             </Link>
             <Link
               href={`/marketplace/${id}`}
-              className="text-center py-3.5 px-8 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-white/10 text-white hover:bg-white/5 transition"
+              className="text-center py-3.5 px-8 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] border border-border text-white hover:bg-white/5 transition"
             >
               Back to {horseName}
             </Link>

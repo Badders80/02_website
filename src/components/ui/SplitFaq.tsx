@@ -37,7 +37,7 @@ export function SplitFaq({ items, className = "" }: SplitFaqProps) {
               borderTopColor: index === 0 ? 'rgba(255, 255, 255, 0.08)' : undefined
             }}
           >
-            <div className="py-8 border-b border-white/[0.08] transition-all duration-300 ease-out hover:border-white/[0.12]">
+            <div className="py-8 border-b border-border transition-all duration-300 ease-out hover:border-border">
               <button
                 onClick={() => toggleQuestion(index)}
                 className="w-full text-left cursor-pointer group relative"
@@ -52,8 +52,8 @@ export function SplitFaq({ items, className = "" }: SplitFaqProps) {
                   </div>
                   <svg
                     className={`h-5 w-5 shrink-0 transition-all duration-300 ease-out ${
-                      isOpen ? 'rotate-45 text-[#d4a964]' : 'rotate-0 text-white/40'
-                    } group-hover:text-[#d4a964]`}
+                      isOpen ? 'rotate-45 text-accent' : 'rotate-0 text-muted-foreground'
+                    } group-hover:text-accent`}
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"

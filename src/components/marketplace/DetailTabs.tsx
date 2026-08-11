@@ -378,7 +378,7 @@ export function DetailTabs({
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                       race.result.toLowerCase() === "1st"
                         ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                        : "bg-white/[0.04] text-frost"
+                        : "bg-surface-base text-frost"
                     }`}>
                       {race.result}
                     </span>

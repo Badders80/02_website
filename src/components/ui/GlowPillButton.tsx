@@ -9,7 +9,7 @@ type GlowPillButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const baseButtonClasses =
-  'relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-6 py-2.5 text-[11px] font-light tracking-wider uppercase text-frost transition-all duration-300 hover:text-pure-white hover:scale-105 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent/50 bg-white/[0.03] hover:bg-white/[0.06] border border-border hover:border-steel-border overflow-hidden disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:text-frost';
+  'relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-6 py-2.5 text-[11px] font-light tracking-wider uppercase text-frost transition-all duration-300 hover:text-pure-white hover:scale-105 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent/50 bg-surface-base hover:bg-white/[0.06] border border-border hover:border-steel-border overflow-hidden disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:text-frost';
 
 export const GlowPillButton = React.forwardRef<HTMLButtonElement, GlowPillButtonProps>(
   ({ children, wrapperClassName, shimmer = true, className, type = 'button', ...rest }, ref) => {

@@ -206,7 +206,7 @@ export function NavBar() {
           {/* Hamburger Menu - shown only when content overflows */}
           <button
             type="button"
-            className={`h-11 w-11 items-center justify-center text-secondary/90 transition-all duration-300 hover:text-pure-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-lg hover:bg-white/[0.04] ${isCompact ? 'flex' : 'hidden'}`}
+            className={`h-11 w-11 items-center justify-center text-secondary/90 transition-all duration-300 hover:text-pure-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-lg hover:bg-surface-base ${isCompact ? 'flex' : 'hidden'}`}
             onClick={() => setIsMenuOpen((prev) => !prev)}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -254,7 +254,7 @@ export function NavBar() {
                       setIsMenuOpen(false);
                       window.location.reload();
                     }}
-                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-center text-sm text-frost font-medium hover:bg-white/[0.08] hover:text-pure-white transition-colors"
+                    className="w-full rounded-full bg-surface-base px-4 py-3 text-center text-sm text-frost font-medium hover:bg-raised hover:text-pure-white transition-colors"
                   >
                     Sign Out
                   </button>
