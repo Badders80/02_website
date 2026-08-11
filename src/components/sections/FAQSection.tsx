@@ -178,7 +178,7 @@ export function FAQSection() {
                         className="overflow-hidden"
                       >
                         <div 
-                          className="text-base leading-relaxed font-light max-w-2xl pt-4 pb-2 text-frost"
+                          className="text-base leading-relaxed font-light max-w-2xl pt-4 pb-2 text-foreground"
                         >
                           {item.answer}
                         </div>

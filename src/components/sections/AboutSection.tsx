@@ -67,7 +67,7 @@ export const AboutSection = () => {
         </div>
 
         <div ref={bodyRef} className="mt-6 space-y-8">
-          <p className="text-[16px] font-light leading-[1.7] text-frost">
+          <p className="text-[16px] font-light leading-[1.7] text-foreground">
             Racehorse ownership has changed. Evolution Stables removes the barriers that once made it
             complex and inaccessible — opening the door for first-timers and seasoned fans alike to not
             just watch, but own the experience.

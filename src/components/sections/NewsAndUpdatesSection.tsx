@@ -51,7 +51,7 @@ export function NewsAndUpdatesSection() {
                   <h3 className="text-2xl md:text-3xl font-light text-white mb-4 group-hover:text-gold transition-colors">
                     {leadArticle.title}
                   </h3>
-                  <p className="text-[15px] leading-[1.7] font-light text-frost">
+                  <p className="text-[15px] leading-[1.7] font-light text-foreground">
                     {leadArticle.excerpt}
                   </p>
                 </div>

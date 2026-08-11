@@ -121,7 +121,7 @@ export function HowItWorksSection() {
             </h2>
           </div>
           <div ref={bodyRef}>
-            <p className="text-[16px] leading-[1.7] font-light text-frost">
+            <p className="text-[16px] leading-[1.7] font-light text-foreground">
               At Evolution Stables, we understand that ownership is the lifeblood of racing — and strengthening it benefits every part of the industry.
             </p>
           </div>

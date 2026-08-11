@@ -84,7 +84,7 @@ export default function ReturnsPage() {
               Home
             </Link>
             <span>/</span>
-            <span className="text-frost">Returns</span>
+            <span className="text-foreground">Returns</span>
           </div>
 
           {/* Header */}
@@ -95,12 +95,12 @@ export default function ReturnsPage() {
             <h1 className="text-[36px] font-light tracking-tight text-white md:text-[48px] leading-tight">
               How Racehorse Ownership Returns Work
             </h1>
-            <p className="text-[16px] leading-[1.8] font-light text-frost max-w-2xl">
+            <p className="text-[16px] leading-[1.8] font-light text-foreground max-w-2xl">
               Prize money in New Zealand thoroughbred racing flows from the track, through the official settlement process, and back to owners in proportion to what they own. Here is how that works for Evolution Stables investors.
             </p>
           </div>
 
-          <div className="space-y-12 text-[15px] leading-[1.85] font-light text-frost">
+          <div className="space-y-12 text-[15px] leading-[1.85] font-light text-foreground">
             <section className="space-y-4">
               <h2 className="text-[20px] font-light text-white tracking-tight">
                 The source of returns: NZTR prize money

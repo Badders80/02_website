@@ -179,7 +179,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
             <span>/</span>
             <Link href={`/marketplace/${horseSlug}`} className="hover:text-frost transition">{horseName}</Link>
             <span>/</span>
-            <span className="text-frost">Verification</span>
+            <span className="text-foreground">Verification</span>
           </div>
 
           <div className="rounded-2xl border border-border bg-surface-base p-12 space-y-8 text-center">

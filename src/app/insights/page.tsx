@@ -62,7 +62,7 @@ export default function InsightsHubPage() {
             <h1 className="text-[36px] font-light tracking-tight text-heading md:text-[48px] leading-tight">
               Racehorse Ownership, Explained
             </h1>
-            <p className="text-[16px] leading-[1.8] font-light text-frost max-w-2xl">
+            <p className="text-[16px] leading-[1.8] font-light text-foreground max-w-2xl">
               Guides, press coverage, race reports, and thought leadership from Evolution Stables. Learn how digital-syndication works, what ownership costs, and how prize money reaches owners.
             </p>
           </div>

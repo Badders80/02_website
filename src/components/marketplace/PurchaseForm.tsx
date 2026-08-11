@@ -106,7 +106,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
           </svg>
         </div>
         <h3 className="text-[18px] font-medium text-white">Interest Registered!</h3>
-        <p className="text-[13px] leading-relaxed text-frost">
+        <p className="text-[13px] leading-relaxed text-foreground">
           We have received your request to acquire {sharesToBuy} units in {horseName}. Our team will contact you shortly to finalize your onboarding.
         </p>
       </div>
@@ -142,7 +142,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
                 <button
                   type="button"
                   onClick={() => setSharesToBuy(Math.max(1, sharesToBuy - 1))}
-                  className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all text-lg select-none"
+                  className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-foreground hover:text-white hover:bg-surface-base transition-all text-lg select-none"
                   disabled={sharesToBuy <= 1}
                 >
                   −
@@ -153,7 +153,7 @@ export function PurchaseForm({ hlt, horseName }: PurchaseFormProps) {
                 <button
                   type="button"
                   onClick={() => setSharesToBuy(Math.min(sharesAvailable, sharesToBuy + 1))}
-                  className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all text-lg select-none"
+                  className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-foreground hover:text-white hover:bg-surface-base transition-all text-lg select-none"
                   disabled={sharesToBuy >= sharesAvailable}
                 >
                   +

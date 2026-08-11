@@ -352,7 +352,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                 Marketplace
               </Link>
               <span>/</span>
-              <span className="text-frost">{horse?.name || "Campaign"}</span>
+              <span className="text-foreground">{horse?.name || "Campaign"}</span>
             </div>
             <Link 
               href="/marketplace" 
@@ -452,7 +452,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                 <h1 className="text-[24px] font-light text-heading tracking-tight leading-tight">
                   {horse?.name ? `${horse.name}.` : "Athlete Profile."}
                 </h1>
-                <div className="text-[14px] leading-[1.85] font-light text-frost space-y-4">
+                <div className="text-[14px] leading-[1.85] font-light text-foreground space-y-4">
                   {horseData?.story || horse?.story ? (
                     (horseData?.story || horse?.story).split("\n\n").map((para: string, idx: number) => (
                       <p key={idx}>{para}</p>

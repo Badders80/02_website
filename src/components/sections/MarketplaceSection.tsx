@@ -116,7 +116,7 @@ export function MarketplaceSection() {
               <div className="space-y-12">
                 <div>
                   <svg
-                    className="h-8 w-8 text-frost transition-colors duration-500 group-hover:text-heading"
+                    className="h-8 w-8 text-foreground transition-colors duration-500 group-hover:text-heading"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.5}
@@ -153,7 +153,7 @@ export function MarketplaceSection() {
               <div className="space-y-12">
                 <div>
                   <svg
-                    className="h-8 w-8 text-frost transition-colors duration-500 group-hover:text-heading"
+                    className="h-8 w-8 text-foreground transition-colors duration-500 group-hover:text-heading"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.5}
@@ -190,7 +190,7 @@ export function MarketplaceSection() {
               <div className="space-y-12">
                 <div>
                   <svg
-                    className="h-8 w-8 text-frost transition-colors duration-500 group-hover:text-heading"
+                    className="h-8 w-8 text-foreground transition-colors duration-500 group-hover:text-heading"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.5}

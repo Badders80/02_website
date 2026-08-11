@@ -101,12 +101,12 @@ export function DigitalSyndicationSection() {
             </h2>
 
             {/* Lead Paragraph 1 */}
-            <p ref={body1Ref} className="text-[16px] leading-[1.7] font-light text-frost">
+            <p ref={body1Ref} className="text-[16px] leading-[1.7] font-light text-foreground">
               Syndication has always been the heartbeat of racehorse ownership — sharing risk, reward, and the thrill of the sport. But the way people participate has changed.
             </p>
 
             {/* Lead Paragraph 2 */}
-            <p ref={body2Ref} className="text-[16px] leading-[1.7] font-light text-frost">
+            <p ref={body2Ref} className="text-[16px] leading-[1.7] font-light text-foreground">
               Our digital-syndication model builds on that legacy — lowering barriers, increasing transparency, and unlocking new ways for owners, investors, and fans to participate — without replacing what works.
             </p>
           </div>

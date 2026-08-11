@@ -224,7 +224,7 @@ export function RightColumnActionPanel({
               <h4 className="text-[15px] font-medium tracking-wide text-heading">
                 Complete Verification
               </h4>
-              <p className="text-[11px] leading-relaxed text-frost font-light">
+              <p className="text-[11px] leading-relaxed text-foreground font-light">
                 Verify your identity to view pricing, lease structures, and returns for {horseName}.
               </p>
               <button
@@ -266,7 +266,7 @@ export function RightColumnActionPanel({
               <h4 className="text-[15px] font-medium tracking-wide text-heading">
                 Complete Verification
               </h4>
-              <p className="text-[11px] leading-relaxed text-frost font-light">
+              <p className="text-[11px] leading-relaxed text-foreground font-light">
                 Verify your identity to view investment terms and acquire shares in {horseName}.
               </p>
               <button
@@ -612,7 +612,7 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
 
       {submitted ? (
         <div className="py-3 text-center">
-          <p className="text-[12px] font-light text-frost leading-relaxed">
+          <p className="text-[12px] font-light text-foreground leading-relaxed">
             You&apos;re on the list. We&apos;ll contact you when {horseName} opens for acquisition.
           </p>
         </div>

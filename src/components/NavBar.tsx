@@ -164,7 +164,7 @@ export function NavBar() {
               >
                 <Link
                   href={link.href}
-                  className="relative inline-flex items-center whitespace-nowrap px-2.5 py-4 text-[12px] font-[300] tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-sm text-frost hover:text-heading"
+                  className="relative inline-flex items-center whitespace-nowrap px-2.5 py-4 text-[12px] font-[300] tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-sm text-foreground hover:text-heading"
                 >
                   <span className="relative z-10">{link.label}</span>
                 </Link>
@@ -254,7 +254,7 @@ export function NavBar() {
                       setIsMenuOpen(false);
                       window.location.reload();
                     }}
-                    className="w-full rounded-full bg-surface-base px-4 py-3 text-center text-sm text-frost font-medium hover:bg-raised hover:text-pure-white transition-colors"
+                    className="w-full rounded-full bg-surface-base px-4 py-3 text-center text-sm text-foreground font-medium hover:bg-raised hover:text-pure-white transition-colors"
                   >
                     Sign Out
                   </button>

@@ -202,7 +202,7 @@ export default function BrandGuidelinesPage() {
             </p>
             <a
               href="/_assets/brand/deploy/website/"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-frost hover:text-heading hover:border-white/[0.24] hover:bg-raised transition-all duration-500 text-[12px] uppercase tracking-[0.2em]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground hover:text-heading hover:border-white/[0.24] hover:bg-raised transition-all duration-500 text-[12px] uppercase tracking-[0.2em]"
             >
               <Download className="w-4 h-4" />
               Download Assets
@@ -227,7 +227,7 @@ export default function BrandGuidelinesPage() {
               </div>
               <div>
                 <SectionLabel>Tagline</SectionLabel>
-                <p className="text-[24px] md:text-[30px] font-light text-frost tracking-tight mb-4">
+                <p className="text-[24px] md:text-[30px] font-light text-foreground tracking-tight mb-4">
                   “{TAGLINE}”
                 </p>
                 <p className="text-[14px] leading-[1.7] text-white/55">
@@ -509,7 +509,7 @@ export default function BrandGuidelinesPage() {
                 </div>
                 <div>
                   <p className="text-[11px] text-muted-foreground mb-2 font-mono">Data — 14px / Mono / 1.5</p>
-                  <p className="text-[14px] leading-[1.5] font-mono text-frost">
+                  <p className="text-[14px] leading-[1.5] font-mono text-foreground">
                     0.8m win · soft ground · final 600m 33.42s
                   </p>
                 </div>
@@ -530,7 +530,7 @@ export default function BrandGuidelinesPage() {
                 <h3 className="text-[11px] uppercase tracking-[0.2em] text-gold mb-6">We Are</h3>
                 <ul className="space-y-3">
                   {weAre.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-[14px] text-frost">
+                    <li key={item} className="flex items-start gap-3 text-[14px] text-foreground">
                       <Check className="w-4 h-4 text-gold shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </li>
@@ -541,7 +541,7 @@ export default function BrandGuidelinesPage() {
                 <h3 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-6">We Are Not</h3>
                 <ul className="space-y-3">
                   {weAreNot.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-[14px] text-frost">
+                    <li key={item} className="flex items-start gap-3 text-[14px] text-foreground">
                       <span className="text-muted-foreground shrink-0">✕</span>
                       <span>{item}</span>
                     </li>
@@ -631,7 +631,7 @@ export default function BrandGuidelinesPage() {
                         <p className="text-[11px] text-muted-foreground mt-0.5">{token.usage}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[12px] font-mono text-frost">{token.value}</p>
+                        <p className="text-[12px] font-mono text-foreground">{token.value}</p>
                       </div>
                     </div>
                   ))}
@@ -644,7 +644,7 @@ export default function BrandGuidelinesPage() {
                   <p className="text-[14px] leading-[1.7] text-white/55 mb-4">
                     All layouts, component padding, and margins align to an 8px grid.
                   </p>
-                  <div className="grid grid-cols-4 gap-2 font-mono text-[11px] text-frost">
+                  <div className="grid grid-cols-4 gap-2 font-mono text-[11px] text-foreground">
                     {['8px', '16px', '24px', '32px', '48px', '64px', '96px', '128px'].map((s) => (
                       <div key={s} className="rounded-sm bg-surface-base py-2 text-center">{s}</div>
                     ))}
@@ -653,7 +653,7 @@ export default function BrandGuidelinesPage() {
 
                 <div className="rounded-sm border border-border bg-surface-base p-6 md:p-8">
                   <SectionLabel>Asset Paths</SectionLabel>
-                  <div className="space-y-2 font-mono text-[12px] text-frost">
+                  <div className="space-y-2 font-mono text-[12px] text-foreground">
                     <p>/images/brand/lockups/{'{color}'}/lockup-horizontal-{'{color}'}.svg</p>
                     <p>/images/brand/lockups/{'{color}'}/lockup-vertical-{'{color}'}.svg</p>
                     <p>/images/brand/monograms/{'{color}'}/monogram-{'{color}'}.svg</p>

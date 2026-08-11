@@ -151,7 +151,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                         </div>
                         <div>
                           <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">next up</p>
-                          <p className="text-[13px] font-light text-frost">{camp.stats.nextUp}</p>
+                          <p className="text-[13px] font-light text-foreground">{camp.stats.nextUp}</p>
                         </div>
                       </div>
                     )}
@@ -160,7 +160,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                   <div className="pt-6">
                     <Link
                       href={getDetailPath(camp.id)}
-                      className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.2em] uppercase text-frost group-hover:text-heading transition-colors duration-300"
+                      className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.2em] uppercase text-foreground group-hover:text-heading transition-colors duration-300"
                     >
                       <span>Explore Offering</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -214,7 +214,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                   <div className="pt-6">
                     <Link
                       href={getDetailPath(camp.id)}
-                      className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase text-frost group-hover:text-heading transition-colors duration-300"
+                      className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase text-foreground group-hover:text-heading transition-colors duration-300"
                     >
                       <span>Explore Offering</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>

@@ -71,7 +71,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
           </svg>
         </div>
         <h3 className="text-[18px] font-medium text-white">Application Submitted!</h3>
-        <p className="text-[14px] text-frost">
+        <p className="text-[14px] text-foreground">
           We've received your application for {horseName}. Our team will review it and contact you at {formData.email} shortly.
         </p>
         <button
@@ -136,7 +136,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
             <button
               type="button"
               onClick={() => setFormData({ ...formData, units_requested: Math.max(1, formData.units_requested - 1) })}
-              className="w-10 h-10 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all"
+              className="w-10 h-10 rounded-lg border border-border bg-surface-base flex items-center justify-center text-foreground hover:text-white hover:bg-surface-base transition-all"
               disabled={formData.units_requested <= 1}
             >
               −
@@ -147,7 +147,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
             <button
               type="button"
               onClick={() => setFormData({ ...formData, units_requested: formData.units_requested + 1 })}
-              className="w-10 h-10 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-white hover:bg-surface-base transition-all"
+              className="w-10 h-10 rounded-lg border border-border bg-surface-base flex items-center justify-center text-foreground hover:text-white hover:bg-surface-base transition-all"
             >
               +
             </button>

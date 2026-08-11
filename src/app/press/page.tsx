@@ -93,7 +93,7 @@ export default function PressPage() {
           <h1 className="text-[36px] md:text-[56px] leading-[1.1] text-heading font-light tracking-tight mb-6">
             Press & Coverage
           </h1>
-          <p className="text-[16px] leading-[1.7] font-light text-frost max-w-2xl">
+          <p className="text-[16px] leading-[1.7] font-light text-foreground max-w-2xl">
             Stay updated with our latest announcements and media features as we bridge the gap between traditional equine excellence and modern digital syndication.
           </p>
         </section>
@@ -118,7 +118,7 @@ export default function PressPage() {
                           {formatDate(featuredArticle.date)}
                         </span>
                         <div className="h-px w-6 bg-surface-base/50" />
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-heading">
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-foreground transition-colors group-hover:text-heading">
                           {featuredArticle.publisher}
                         </span>
                       </div>
@@ -193,7 +193,7 @@ export default function PressPage() {
                         {formatDate(article.date)}
                       </span>
                       <div className="h-px w-6 bg-surface-base/50" />
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-heading">
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-foreground transition-colors group-hover:text-heading">
                         {article.publisher}
                       </span>
                     </div>

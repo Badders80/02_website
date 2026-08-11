@@ -550,7 +550,7 @@ export default function MyStablePage() {
                         )}
                         {isExpanded && comm.body_html && (
                           <div
-                            className="rounded-xl border border-border bg-surface-base p-4 text-xs font-light text-frost leading-relaxed max-w-xl prose prose-invert"
+                            className="rounded-xl border border-border bg-surface-base p-4 text-xs font-light text-foreground leading-relaxed max-w-xl prose prose-invert"
                             dangerouslySetInnerHTML={{ __html: comm.body_html }}
                           />
                         )}
@@ -672,7 +672,7 @@ export default function MyStablePage() {
             <div className="text-center py-20 text-muted-foreground text-sm font-light">Loading holdings and update timelines...</div>
           ) : holdings.length === 0 ? (
             <div className="rounded-2xl border border-border bg-surface-base p-16 text-center space-y-6">
-              <p className="text-lg font-light text-frost">No active ownership stakes found</p>
+              <p className="text-lg font-light text-foreground">No active ownership stakes found</p>
               <p className="text-sm font-light text-muted-foreground max-w-md mx-auto leading-relaxed">
                 {liveHoldingsError
                   ? "We could not reach live holdings. Try refresh, or check back shortly."
@@ -820,7 +820,7 @@ export default function MyStablePage() {
                             </span>
                           </div>
 
-                          <div className="rounded-xl border border-border bg-surface-base p-4 text-xs font-light text-frost leading-relaxed max-w-xl">
+                          <div className="rounded-xl border border-border bg-surface-base p-4 text-xs font-light text-foreground leading-relaxed max-w-xl">
                             {update.full_text}
                           </div>
                         </div>
@@ -842,7 +842,7 @@ export default function MyStablePage() {
                 {/* Quick Links */}
                 <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
                   <p className="text-[11px] font-light tracking-wider uppercase text-muted-foreground">Registry Actions</p>
-                  <div className="space-y-3 text-xs font-light text-frost">
+                  <div className="space-y-3 text-xs font-light text-foreground">
                     <Link href="/marketplace" className="block hover:text-pure-white transition">
                       Browse Open Campaigns →
                     </Link>

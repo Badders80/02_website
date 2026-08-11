@@ -196,7 +196,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                 {props.horseName}
               </Link>
               <span>/</span>
-              <span className="text-frost">Buy</span>
+              <span className="text-foreground">Buy</span>
             </div>
             <div className="flex items-center gap-4 mb-10">
               <div className="w-14 h-14 rounded-xl bg-surface-base border border-border overflow-hidden relative flex-shrink-0">
@@ -218,7 +218,7 @@ export default function PurchasePage(props: PurchasePageProps) {
               </div>
             </div>
             <div className="rounded-2xl border border-border bg-surface-base p-12 text-center space-y-4">
-              <p className="text-lg font-light text-frost">{closed.title}</p>
+              <p className="text-lg font-light text-foreground">{closed.title}</p>
               <p className="text-sm font-light text-muted-foreground max-w-md mx-auto leading-relaxed">
                 {props.closedReason || closed.body}
               </p>
@@ -331,7 +331,7 @@ export default function PurchasePage(props: PurchasePageProps) {
             <span>/</span>
             <Link href={`/marketplace/${props.horseSlug}`} className="hover:text-frost transition">{props.horseName}</Link>
             <span>/</span>
-            <span className="text-frost">Buy</span>
+            <span className="text-foreground">Buy</span>
           </div>
 
           {/* Horse header */}
@@ -360,7 +360,7 @@ export default function PurchasePage(props: PurchasePageProps) {
             </div>
           ) : !purchasable || sharesAvailable === 0 ? (
             <div className="rounded-2xl border border-border bg-surface-base p-12 text-center space-y-4">
-              <p className="text-lg font-light text-frost">{closed.title}</p>
+              <p className="text-lg font-light text-foreground">{closed.title}</p>
               <p className="text-sm font-light text-muted-foreground max-w-md mx-auto leading-relaxed">
                 {inventory?.eligibility_reason || props.closedReason || closed.body}
               </p>
@@ -406,7 +406,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                   <button
                     type="button"
                     onClick={() => setSharesToBuy(Math.max(1, sharesToBuy - 1))}
-                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-surface-base transition text-lg"
+                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-foreground hover:text-pure-white hover:bg-surface-base transition text-lg"
                     disabled={sharesToBuy <= 1}
                   >
                     −
@@ -415,7 +415,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                   <button
                     type="button"
                     onClick={() => setSharesToBuy(Math.min(sharesAvailable, sharesToBuy + 1))}
-                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-frost hover:text-pure-white hover:bg-surface-base transition text-lg"
+                    className="w-11 h-11 rounded-lg border border-border bg-surface-base flex items-center justify-center text-foreground hover:text-pure-white hover:bg-surface-base transition text-lg"
                     disabled={sharesToBuy >= sharesAvailable}
                   >
                     +
@@ -519,7 +519,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           href={`/documents/${props.horseSlug}/pds.pdf`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] uppercase tracking-wider text-frost hover:text-pure-white transition"
+                          className="text-[10px] uppercase tracking-wider text-foreground hover:text-pure-white transition"
                         >
                           Open ↗
                         </a>
@@ -544,7 +544,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                         />
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-frost leading-relaxed">
+                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-foreground leading-relaxed">
                         <p className="text-amber-200/90 font-medium text-[11px] uppercase tracking-wider">
                           Interim disclosure (Stage 1)
                         </p>
@@ -589,7 +589,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </p>
                     </div>
 
-                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-frost" : "text-muted-foreground cursor-not-allowed"}`}>
+                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${pdsScrolled ? "text-foreground" : "text-muted-foreground cursor-not-allowed"}`}>
                       <input
                         type="checkbox"
                         checked={pdsAgreed}
@@ -653,7 +653,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           href={`/documents/${props.horseSlug}/syndicate-agreement.pdf`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] uppercase tracking-wider text-frost hover:text-pure-white transition"
+                          className="text-[10px] uppercase tracking-wider text-foreground hover:text-pure-white transition"
                         >
                           Open ↗
                         </a>
@@ -678,7 +678,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                         />
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-frost leading-relaxed">
+                      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-2 text-[12px] font-light text-foreground leading-relaxed">
                         <p className="text-amber-200/90 font-medium text-[11px] uppercase tracking-wider">
                           Interim agreement (Stage 1)
                         </p>
@@ -722,7 +722,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </p>
                     </div>
 
-                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-frost" : "text-muted-foreground cursor-not-allowed"}`}>
+                    <label className={`flex items-start gap-3 text-[12px] font-light pt-2 ${saScrolled ? "text-foreground" : "text-muted-foreground cursor-not-allowed"}`}>
                       <input
                         type="checkbox"
                         checked={saAgreed}

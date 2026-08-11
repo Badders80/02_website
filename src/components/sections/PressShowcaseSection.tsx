@@ -217,7 +217,7 @@ export function PressShowcaseSection() {
                       {formatDate(leadArticle.date)}
                     </span>
                     <div className="h-px w-8 bg-white/10" />
-                    <span className="text-xs uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-heading">
+                    <span className="text-xs uppercase tracking-[0.3em] text-foreground transition-colors group-hover:text-heading">
                       {leadArticle.publisher}
                     </span>
                   </div>
@@ -313,7 +313,7 @@ export function PressShowcaseSection() {
                             </div>
                             <svg
                               className={`h-4 w-4 shrink-0 transition-all duration-300 ease-out ${
-                                isOpen ? 'rotate-45 text-frost' : 'rotate-0 text-muted-foreground'
+                                isOpen ? 'rotate-45 text-foreground' : 'rotate-0 text-muted-foreground'
                               } group-hover:text-frost`}
                               viewBox="0 0 24 24"
                               fill="none"
@@ -340,7 +340,7 @@ export function PressShowcaseSection() {
                                 {formatDate(article.date)}
                               </span>
                               <div className="h-px w-6 bg-white/10" />
-                              <span className="text-[10px] uppercase tracking-[0.3em] text-frost">
+                              <span className="text-[10px] uppercase tracking-[0.3em] text-foreground">
                                 {article.publisher}
                               </span>
                             </div>

@@ -111,18 +111,18 @@ export function Footer({ minimal = false }: FooterProps) {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href={footerData.links.privacy}
-                className="leading-tight font-extralight text-frost hover:text-heading transition-colors"
+                className="leading-tight font-extralight text-foreground hover:text-heading transition-colors"
               >
                 Privacy Policy
               </Link>
               <Link
                 href={footerData.links.terms}
-                className="leading-tight font-extralight text-frost hover:text-heading transition-colors"
+                className="leading-tight font-extralight text-foreground hover:text-heading transition-colors"
               >
                 Terms of Service
               </Link>
             </div>
-            <p className="text-xs leading-tight font-extralight text-frost">
+            <p className="text-xs leading-tight font-extralight text-foreground">
               {footerData.copyright}
             </p>
           </div>
@@ -135,7 +135,7 @@ export function Footer({ minimal = false }: FooterProps) {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition flex items-center text-frost hover:text-heading"
+                className="transition flex items-center text-foreground hover:text-heading"
                 aria-label={social.ariaLabel}
               >
                 {social.icon === "X" && (

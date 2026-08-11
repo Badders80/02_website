@@ -257,7 +257,7 @@ export function DetailTabs({
         {activeTab === "overview" && (
           <div className="space-y-6 animate-fade-in font-light">
             <h4 className="text-md font-medium text-heading">Campaign Story & Overview</h4>
-            <div className="space-y-4 text-sm leading-[1.8] text-frost">
+            <div className="space-y-4 text-sm leading-[1.8] text-foreground">
               {story ? (
                 <p className="whitespace-pre-line">{story}</p>
               ) : (
@@ -307,7 +307,7 @@ export function DetailTabs({
         {activeTab === "trainer" && (
           <div className="space-y-6 animate-fade-in">
             <h4 className="text-md font-medium text-heading">Trainer Profile</h4>
-            <div className="space-y-4 font-light text-sm leading-[1.8] text-frost">
+            <div className="space-y-4 font-light text-sm leading-[1.8] text-foreground">
               <p>
                 <span className="text-heading font-normal">{trainer.stable_name || trainer.name || "—"}</span>
                 {trainer.location ? ` (${trainer.location})` : ""}: {activeBio}
@@ -320,7 +320,7 @@ export function DetailTabs({
               )}
               {trainer.contact_name && (
                 <p className="text-xs text-muted-foreground pt-2">
-                  Contact: <span className="text-frost">{trainer.contact_name}</span>
+                  Contact: <span className="text-foreground">{trainer.contact_name}</span>
                 </p>
               )}
             </div>
@@ -372,13 +372,13 @@ export function DetailTabs({
                     className="flex justify-between items-center border-b border-border pb-3 text-sm font-light"
                   >
                     <div className="space-y-1">
-                      <p className="text-frost">{race.venue} · <span className="text-muted-foreground text-xs">{race.date}</span></p>
+                      <p className="text-foreground">{race.venue} · <span className="text-muted-foreground text-xs">{race.date}</span></p>
                       <p className="text-xs text-muted-foreground">{race.race} {race.trackCondition ? `(${race.trackCondition})` : ""}</p>
                     </div>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                       race.result.toLowerCase() === "1st"
                         ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                        : "bg-surface-base text-frost"
+                        : "bg-surface-base text-foreground"
                     }`}>
                       {race.result}
                     </span>
@@ -411,28 +411,28 @@ export function DetailTabs({
                 <DocumentsAccessOverlay>
                   {isComingSoon ? (
                     <>
-                      <p className="text-[18px] font-light tracking-tight text-frost">Coming Soon</p>
+                      <p className="text-[18px] font-light tracking-tight text-foreground">Coming Soon</p>
                       <p className="mt-2 text-[11px] font-light text-muted-foreground leading-relaxed">
                         Documents will be available when this offering goes live.
                       </p>
                     </>
                   ) : tier === "guest" ? (
                     <>
-                      <p className="text-[15px] font-medium tracking-tight text-frost">Register to Access</p>
+                      <p className="text-[15px] font-medium tracking-tight text-foreground">Register to Access</p>
                       <p className="mt-2 text-[11px] font-light text-muted-foreground leading-relaxed">
                         Create an account and complete verification to view legal documents.
                       </p>
                     </>
                   ) : tier === "auth" ? (
                     <>
-                      <p className="text-[15px] font-medium tracking-tight text-frost">Verification Required</p>
+                      <p className="text-[15px] font-medium tracking-tight text-foreground">Verification Required</p>
                       <p className="mt-2 text-[11px] font-light text-muted-foreground leading-relaxed">
                         Complete identity verification to access legal disclosures and documents.
                       </p>
                     </>
                   ) : (
                     <>
-                      <p className="text-[15px] font-medium tracking-tight text-frost">Restricted: Investors Only</p>
+                      <p className="text-[15px] font-medium tracking-tight text-foreground">Restricted: Investors Only</p>
                       <p className="mt-2 text-[11px] font-light text-muted-foreground leading-relaxed">
                         Documents for this campaign are restricted to verified investors.
                       </p>

@@ -159,7 +159,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
               />
             </div>
             <div>
-              <p className="text-[14px] text-frost font-light">{article.author}</p>
+              <p className="text-[14px] text-foreground font-light">{article.author}</p>
               <p className="text-[11px] text-muted-foreground tracking-wider uppercase">{article.authorTitle}</p>
             </div>
           </div>
@@ -186,7 +186,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
               if (block.type === 'quote') {
                 return (
                   <blockquote key={i} className="border-l-2 border-border pl-6 py-4 my-8">
-                    <p className="text-[20px] md:text-[24px] font-light italic text-frost leading-relaxed">
+                    <p className="text-[20px] md:text-[24px] font-light italic text-foreground leading-relaxed">
                       {block.text}
                     </p>
                   </blockquote>

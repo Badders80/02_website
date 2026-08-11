@@ -141,8 +141,8 @@ function PedigreeNode({
               : tier === "parent"
                 ? "text-[11px] font-medium text-heading"
                 : tier === "grand"
-                  ? "text-[10px] font-normal text-frost"
-                  : "text-[9.5px] font-light text-frost"
+                  ? "text-[10px] font-normal text-foreground"
+                  : "text-[9.5px] font-light text-foreground"
           }`}
           title={parsed.name}
         >
@@ -381,19 +381,19 @@ export function PedigreeTable({
 
           <div className="mt-8 pt-6 border-t border-border flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
             <span className="text-muted-foreground">
-              Sex: <span className="text-frost capitalize">{sex || "—"}</span>
+              Sex: <span className="text-foreground capitalize">{sex || "—"}</span>
             </span>
             <span className="text-muted-foreground">
-              Colour: <span className="text-frost capitalize">{colour || "—"}</span>
+              Colour: <span className="text-foreground capitalize">{colour || "—"}</span>
             </span>
             {age && (
               <span className="text-muted-foreground">
-                Age: <span className="text-frost">{age} Years</span>
+                Age: <span className="text-foreground">{age} Years</span>
               </span>
             )}
             {formattedFoalingDate && (
               <span className="text-muted-foreground">
-                Foaled: <span className="text-frost">{formattedFoalingDate}</span>
+                Foaled: <span className="text-foreground">{formattedFoalingDate}</span>
               </span>
             )}
             {breedingUrl && (
@@ -437,7 +437,7 @@ export function PedigreeTable({
                   }`}
                 >
                   <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-frost flex-1 truncate">{parsedMare.name}</span>
+                  <span className="text-foreground flex-1 truncate">{parsedMare.name}</span>
                   <span className="text-muted-foreground text-[10px]">by</span>
                   <span className="text-muted-foreground flex-1 truncate">{parsedSire.name}</span>
                 </div>
@@ -474,7 +474,7 @@ export function PedigreeTable({
                   }`}
                 >
                   <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-frost flex-1 truncate">{parsedSire.name}</span>
+                  <span className="text-foreground flex-1 truncate">{parsedSire.name}</span>
                   <span className="text-muted-foreground text-[10px]">from</span>
                   <span className="text-muted-foreground flex-1 truncate">{parsedDam.name}</span>
                 </div>

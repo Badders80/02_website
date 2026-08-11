@@ -41,7 +41,7 @@ export function ComingSoonOverlay({
         className="absolute inset-0 z-20 flex items-center justify-center rounded-lg bg-canvas/40 backdrop-blur-md border border-border"
         style={{ backdropFilter: "blur(12px) saturate(140%)" }}
       >
-        <span className="text-sm font-medium tracking-[0.3em] uppercase text-frost">
+        <span className="text-sm font-medium tracking-[0.3em] uppercase text-foreground">
           {label}
         </span>
       </div>

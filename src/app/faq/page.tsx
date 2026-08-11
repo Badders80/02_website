@@ -35,7 +35,7 @@ export default function FAQPage() {
         <div className="mx-auto max-w-3xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
           <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span className="text-frost">FAQ</span>
+            <span className="text-foreground">FAQ</span>
           </div>
 
           {/* Header */}
@@ -46,7 +46,7 @@ export default function FAQPage() {
             <h1 className="text-[36px] font-light tracking-tight text-heading md:text-[48px] leading-tight">
               Frequently Asked Questions
             </h1>
-            <p className="text-[16px] leading-[1.8] font-light text-frost max-w-2xl">
+            <p className="text-[16px] leading-[1.8] font-light text-foreground max-w-2xl">
               Everything you need to know about racehorse ownership through Evolution Stables — how it works, what it costs, and what to expect.
             </p>
           </div>
@@ -58,7 +58,7 @@ export default function FAQPage() {
                 <h2 className="text-[20px] font-light text-heading tracking-tight leading-tight">
                   {item.question}
                 </h2>
-                <p className="text-[15px] leading-[1.85] font-light text-frost">
+                <p className="text-[15px] leading-[1.85] font-light text-foreground">
                   {item.answer}
                 </p>
               </div>

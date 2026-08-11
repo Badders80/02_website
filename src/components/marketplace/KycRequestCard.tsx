@@ -67,7 +67,7 @@ export function KycRequestCard({ horseName }: KycRequestCardProps) {
   return (
     <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-6">
       <h3 className="text-[16px] font-light text-white tracking-tight">Identity Verification</h3>
-      <p className="text-[13px] font-light text-frost leading-relaxed">
+      <p className="text-[13px] font-light text-foreground leading-relaxed">
         Complete verification to purchase shares in {horseName}. This secure process helps protect your account
         and ensures compliance with financial regulations.
       </p>

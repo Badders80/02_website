@@ -29,7 +29,7 @@ export function HeroPillarsGrid({ pillars }: HeroPillarsGridProps) {
           <div className="text-[11px] font-bold uppercase tracking-wider text-accent/90 mb-1">
             {pillar.category}
           </div>
-          <div className="text-sm font-medium text-frost group-hover:text-heading transition-colors">
+          <div className="text-sm font-medium text-foreground group-hover:text-heading transition-colors">
             {pillar.value}
           </div>
         </div>

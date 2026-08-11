@@ -210,7 +210,7 @@ function LoginForm() {
                 <GlowPillButton
                   type="submit"
                   disabled={loading}
-                  className="w-full text-center !bg-surface-base/80 hover:!bg-surface-base/80 !border-border hover:!border-steel-border !text-frost hover:!text-heading"
+                  className="w-full text-center !bg-surface-base/80 hover:!bg-surface-base/80 !border-border hover:!border-steel-border !text-foreground hover:!text-heading"
                   wrapperClassName="w-full"
                 >
                   {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
