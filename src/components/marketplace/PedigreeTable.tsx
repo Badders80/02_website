@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import { buildPedigreeTree } from "@/lib/pedigree-tree";
-import type { PedigreeCrossLine } from "@/lib/pedigree-tree";
-
-interface PedigreeEntry {
-  mare?: string;
-  sire?: string;
-  dam?: string;
-}
+import type { PedigreeCrossLine, PedigreeEntry } from "@/lib/pedigree-tree";
 
 interface PedigreeData {
   dam_line?: PedigreeEntry[];
@@ -427,8 +421,8 @@ export function PedigreeTable({
           </div>
           <div className="space-y-0">
             {damLine.map((entry, i) => {
-              const parsedMare = parseHorseName(entry.mare || "");
-              const parsedSire = parseHorseName(entry.sire || "");
+              const parsedMare = parseHorseName(entry.name || "");
+              const parsedSire = parseHorseName(entry.partner?.name || "");
               return (
                 <div
                   key={i}
@@ -464,8 +458,8 @@ export function PedigreeTable({
           </div>
           <div className="space-y-0">
             {sireLine.map((entry, i) => {
-              const parsedSire = parseHorseName(entry.sire || "");
-              const parsedDam = parseHorseName(entry.dam || "");
+              const parsedSire = parseHorseName(entry.name || "");
+              const parsedDam = parseHorseName(entry.partner?.name || "");
               return (
                 <div
                   key={i}

@@ -1,7 +1,12 @@
-interface PedigreeEntry {
-  mare?: string;
-  sire?: string;
-  dam?: string;
+export interface PedigreeEntry {
+  name: string;
+  country?: string;
+  year?: string;
+  partner?: {
+    name: string;
+    country?: string;
+    year?: string;
+  };
 }
 
 export interface PedigreeCrossLine {
@@ -29,6 +34,22 @@ export interface PedigreeTreeNodes {
   damDamDam: string;
 }
 
+export function formatPedigreeName(entry?: PedigreeEntry | null): string {
+  if (!entry || !entry.name) return "—";
+  let full = entry.name;
+  if (entry.country) full += ` (${entry.country})`;
+  if (entry.year) full += ` ${entry.year}`;
+  return full;
+}
+
+export function formatPartnerName(entry?: PedigreeEntry | null): string {
+  if (!entry?.partner || !entry.partner.name) return "—";
+  let full = entry.partner.name;
+  if (entry.partner.country) full += ` (${entry.partner.country})`;
+  if (entry.partner.year) full += ` ${entry.partner.year}`;
+  return full;
+}
+
 export function buildPedigreeTree(
   sireName: string,
   damName: string,
@@ -41,17 +62,17 @@ export function buildPedigreeTree(
     horse: horseName,
     sire: sireName,
     dam: damName,
-    sireSire: sireLine[1]?.sire || "—",
-    sireDam: sireLine[0]?.dam || "—",
-    damSire: damLine[0]?.sire || "—",
-    damDam: damLine[1]?.mare || "—",
-    sireSireSire: sireLine[2]?.sire || "—",
-    sireSireDam: sireLine[1]?.dam || "—",
+    sireSire: formatPedigreeName(sireLine[1]),
+    sireDam: formatPartnerName(sireLine[0]),
+    damSire: formatPartnerName(damLine[0]),
+    damDam: formatPedigreeName(damLine[1]),
+    sireSireSire: formatPedigreeName(sireLine[2]),
+    sireSireDam: formatPartnerName(sireLine[1]),
     sireDamSire: crossLine?.sire_dam_sire || "—",
     sireDamDam: crossLine?.sire_dam_dam || "—",
     damSireSire: crossLine?.dam_sire_sire || "—",
     damSireDam: crossLine?.dam_sire_dam || "—",
-    damDamSire: damLine[1]?.sire || "—",
-    damDamDam: damLine[2]?.mare || "—",
+    damDamSire: formatPartnerName(damLine[1]),
+    damDamDam: formatPedigreeName(damLine[2]),
   };
 }
