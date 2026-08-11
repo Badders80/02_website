@@ -179,11 +179,11 @@ function ProductJsonLd({ hltRecord }: { hltRecord: any }) {
 }
 
 export const runtime = "nodejs";
-/** Live Sheets ops for status/price/stock — do not SSG stale commercial state. */
-export const dynamic = "force-dynamic";
+/** ISR: 60s revalidation — cached HTML served instantly, regen in background. */
+export const revalidate = 60;
 export const dynamicParams = true;
 
-// Known static IDs for build tooling; runtime still force-dynamic for live ops.
+// Known static IDs for build tooling; ISR revalidates live data at runtime.
 export async function generateStaticParams() {
   return (hltsData as any[]).map((hlt) => ({ id: hlt.horse_slug || hlt.id }));
 }

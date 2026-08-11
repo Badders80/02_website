@@ -11,8 +11,8 @@ import { readInventoryList } from "@/lib/google-sheets";
 import hltsData from "@/data/hlts.json";
 
 export const runtime = "nodejs";
-/** Live Sheets ops — do not SSG stale commercial state. */
-export const dynamic = "force-dynamic";
+/** ISR: 60s revalidation — cached HTML served instantly, regen in background. */
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Marketplace",
