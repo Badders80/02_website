@@ -52,22 +52,22 @@ export const AboutSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-black py-56 text-foreground" id="about">
+    <section ref={sectionRef} className="bg-canvas py-56 text-foreground" id="about">
       <div className="mx-auto w-full max-w-6xl px-12 md:px-16 lg:px-20">
         <div>
-          <p className="mb-12 text-[11px] font-light uppercase tracking-[0.2em] text-white/30">
+          <p className="mb-12 text-[11px] font-light uppercase tracking-[0.2em] text-muted-foreground">
             ABOUT
           </p>
 
           <div ref={headerRef}>
-            <h2 className="mb-8 text-[36px] font-light leading-[1.1] tracking-tight text-white md:text-[48px]">
+            <h2 className="mb-8 text-[36px] font-light leading-[1.1] tracking-tight text-heading md:text-[48px]">
               Own the Experience
             </h2>
           </div>
         </div>
 
         <div ref={bodyRef} className="mt-6 space-y-8">
-          <p className="text-[16px] font-light leading-[1.7] text-white/65">
+          <p className="text-[16px] font-light leading-[1.7] text-frost">
             Racehorse ownership has changed. Evolution Stables removes the barriers that once made it
             complex and inaccessible — opening the door for first-timers and seasoned fans alike to not
             just watch, but own the experience.
