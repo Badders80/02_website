@@ -84,10 +84,10 @@ export function DigitalSyndicationSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="digital-syndication" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="digital-syndication" className="py-56 bg-canvas text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         {/* Section Label */}
-        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+        <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-muted-foreground">
           OUR MODEL
         </p>
 
@@ -96,17 +96,17 @@ export function DigitalSyndicationSection() {
           {/* LEFT COLUMN */}
           <div className="space-y-8">
             {/* Headline */}
-            <h2 ref={headerRef} className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight">
+            <h2 ref={headerRef} className="text-[36px] md:text-[48px] leading-[1.1] text-heading font-light tracking-tight">
               Digital Syndication
             </h2>
 
             {/* Lead Paragraph 1 */}
-            <p ref={body1Ref} className="text-[16px] leading-[1.7] font-light text-white/65">
+            <p ref={body1Ref} className="text-[16px] leading-[1.7] font-light text-frost">
               Syndication has always been the heartbeat of racehorse ownership — sharing risk, reward, and the thrill of the sport. But the way people participate has changed.
             </p>
 
             {/* Lead Paragraph 2 */}
-            <p ref={body2Ref} className="text-[16px] leading-[1.7] font-light text-white/65">
+            <p ref={body2Ref} className="text-[16px] leading-[1.7] font-light text-frost">
               Our digital-syndication model builds on that legacy — lowering barriers, increasing transparency, and unlocking new ways for owners, investors, and fans to participate — without replacing what works.
             </p>
           </div>
@@ -134,14 +134,14 @@ export function DigitalSyndicationSection() {
                       />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-[300] tracking-[0.05em] uppercase text-white mb-3 relative overflow-hidden">
+                      <h4 className="text-[14px] font-[300] tracking-[0.05em] uppercase text-heading mb-3 relative overflow-hidden">
                         <span className="relative inline-block">
                           {benefit.title}
                           {/* Dark overlay sweep - left to right only, instant disappear on unhover */}
                           <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-transparent -translate-x-full opacity-0 group-hover:translate-x-full group-hover:opacity-100 group-hover:transition-all group-hover:duration-700 group-hover:ease-in-out transition-none" />
                         </span>
                       </h4>
-                      <p className="text-[15px] leading-[1.6] font-light text-white/50 group-hover:text-white/70 transition-colors duration-500">
+                      <p className="text-[15px] leading-[1.6] font-light text-muted-foreground group-hover:text-frost transition-colors duration-500">
                         {benefit.description}
                       </p>
                     </div>
