@@ -2,7 +2,7 @@
 """
 sync_inventory.py — Commercial State & HLT Inventory Sync
 
-Reads exported sidecars (horse_meta_export.json, lease_export.json) from _tools/mission-control/admin/
+Reads exported sidecars (horse_meta_export.json, lease_export.json) from 01_evolution/mission-control/admin/
 and generates website src/data/hlts.json.
 
 Usage:
@@ -17,7 +17,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 WEBSITE_DIR = SCRIPT_DIR.parent
 DATA_DIR = WEBSITE_DIR / "src" / "data"
-TOOLS_ADMIN_DIR = WEBSITE_DIR.parent / "_tools" / "mission-control" / "admin"
+TOOLS_ADMIN_DIR = WEBSITE_DIR.parent / "01_evolution" / "mission-control" / "admin"
 
 HORSE_META_PATH = TOOLS_ADMIN_DIR / "horse_meta_export.json"
 LEASE_EXPORT_PATH = TOOLS_ADMIN_DIR / "lease_export.json"
