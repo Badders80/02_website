@@ -54,7 +54,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
   return (
     <div className="space-y-12">
       {/* Filter tabs */}
-      <div className="flex justify-start border-b border-white/[0.04] pb-4 gap-8 max-w-6xl mx-auto px-12 md:px-16 lg:px-20 select-none">
+      <div className="flex justify-start border-b border-border pb-4 gap-8 max-w-6xl mx-auto px-12 md:px-16 lg:px-20 select-none">
         {([
           { key: "all", label: "All Horses" },
           { key: "available", label: "Available" },
@@ -66,13 +66,13 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
             onClick={() => setFilter(tab.key)}
             className={`text-[10px] uppercase tracking-[0.2em] font-medium transition-all duration-300 relative py-1 cursor-pointer ${
               filter === tab.key
-                ? "text-white"
-                : "text-white/40 hover:text-white/70"
+                ? "text-heading"
+                : "text-muted-foreground hover:text-frost"
             }`}
           >
             {tab.label}
             {filter === tab.key && (
-              <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-white animate-fade-in" />
+              <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-pure-white animate-fade-in" />
             )}
           </button>
         ))}
@@ -81,7 +81,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
       {/* Campaign List */}
       <section className="px-12 md:px-16 lg:px-20 max-w-6xl mx-auto pb-32 space-y-6">
         {filteredCampaigns.length === 0 && (
-          <div className="text-center py-20 text-white/30 text-sm font-light">
+          <div className="text-center py-20 text-muted-foreground text-sm font-light">
             No horses in this category.
           </div>
         )}
@@ -104,7 +104,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
             return (
               <article
                 key={camp.id}
-                className="group flex flex-col md:flex-row gap-8 md:gap-12 items-stretch bg-white/[0.01] backdrop-blur-md border border-white/[0.04] hover:border-white/[0.08] rounded-3xl p-6 md:p-8 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:bg-white/[0.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+                className="group flex flex-col md:flex-row gap-8 md:gap-12 items-stretch bg-surface-base backdrop-blur-md border border-border hover:border-border rounded-3xl p-6 md:p-8 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:bg-surface-base hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
               >
                 {/* Media Column */}
                 <Link
@@ -120,7 +120,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                       className={`object-contain ${camp.imageScale} opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100`}
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-canvas/40 via-transparent to-transparent pointer-events-none" />
                     <StatusBadge />
                   </div>
                 </Link>
@@ -129,29 +129,29 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                 <div className="flex flex-col justify-end w-full md:w-[40%] py-2 pr-0 md:pr-6 md:order-first">
                   <div className="space-y-4 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
                     <div>
-                      <h3 className="text-[32px] md:text-[36px] font-light tracking-tight text-white leading-none transition-colors duration-300">
+                      <h3 className="text-[32px] md:text-[36px] font-light tracking-tight text-heading leading-none transition-colors duration-300">
                         {camp.horse.name}
                       </h3>
                     </div>
 
-                    <p className="text-[14px] leading-[1.85] font-light text-zinc-400">
+                    <p className="text-[14px] leading-[1.85] font-light text-muted-foreground">
                       {camp.horse.story}
                     </p>
 
                     {/* Hover stats — only for available horses */}
                     {camp.status === "listed" && (
-                      <div className="grid grid-cols-3 gap-4 border-t border-white/[0.06] pt-4 opacity-0 max-h-0 overflow-hidden pointer-events-none transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:max-h-20 group-hover:pointer-events-auto">
+                      <div className="grid grid-cols-3 gap-4 border-t border-border pt-4 opacity-0 max-h-0 overflow-hidden pointer-events-none transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:max-h-20 group-hover:pointer-events-auto">
                         <div>
-                          <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 mb-0.5">wins</p>
-                          <p className="text-[15px] font-medium text-white">{camp.stats.wins}</p>
+                          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">wins</p>
+                          <p className="text-[15px] font-medium text-heading">{camp.stats.wins}</p>
                         </div>
                         <div>
-                          <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 mb-0.5">placed</p>
-                          <p className="text-[15px] font-medium text-white">{camp.stats.placed}</p>
+                          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">placed</p>
+                          <p className="text-[15px] font-medium text-heading">{camp.stats.placed}</p>
                         </div>
                         <div>
-                          <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 mb-0.5">next up</p>
-                          <p className="text-[13px] font-light text-zinc-300">{camp.stats.nextUp}</p>
+                          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">next up</p>
+                          <p className="text-[13px] font-light text-frost">{camp.stats.nextUp}</p>
                         </div>
                       </div>
                     )}
@@ -160,7 +160,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                   <div className="pt-6">
                     <Link
                       href={getDetailPath(camp.id)}
-                      className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.2em] uppercase text-white/60 group-hover:text-white transition-colors duration-300"
+                      className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.2em] uppercase text-frost group-hover:text-heading transition-colors duration-300"
                     >
                       <span>Explore Offering</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -174,7 +174,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
             return (
               <article
                 key={camp.id}
-                className="group flex flex-col md:flex-row gap-6 md:gap-8 items-stretch bg-white/[0.005] backdrop-blur-md border border-white/[0.03] hover:border-white/[0.06] rounded-3xl p-5 md:p-6 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-white/[0.015] hover:shadow-[0_0_30px_rgba(255,255,255,0.01),0_15px_30px_rgba(0,0,0,0.4)]"
+                className="group flex flex-col md:flex-row gap-6 md:gap-8 items-stretch bg-surface-base backdrop-blur-md border border-border hover:border-border rounded-3xl p-5 md:p-6 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-surface-base hover:shadow-[0_0_30px_rgba(255,255,255,0.01),0_15px_30px_rgba(0,0,0,0.4)]"
               >
                 {/* Media Column */}
                 <Link
@@ -190,7 +190,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                       className={`object-contain ${camp.imageScale} opacity-90 transition-transform duration-[2400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:opacity-100`}
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-canvas/40 via-transparent to-transparent pointer-events-none" />
                     <StatusBadge />
                   </div>
                 </Link>
@@ -199,12 +199,12 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                 <div className="flex flex-col justify-end w-full md:w-[60%] py-2 pr-0 md:pr-6 md:order-first">
                   <div className="space-y-3 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
                     <div>
-                      <h3 className="text-[26px] font-light tracking-tight text-white/90 leading-none transition-colors duration-300 group-hover:text-white">
+                      <h3 className="text-[26px] font-light tracking-tight text-heading leading-none transition-colors duration-300 group-hover:text-heading">
                         {camp.horse.name}
                       </h3>
                     </div>
 
-                    <p className="text-[13px] leading-[1.8] font-light text-zinc-400">
+                    <p className="text-[13px] leading-[1.8] font-light text-muted-foreground">
                       {camp.horse.story}
                     </p>
 
@@ -214,7 +214,7 @@ export function ListingGrid({ initialCampaigns }: ListingGridProps) {
                   <div className="pt-6">
                     <Link
                       href={getDetailPath(camp.id)}
-                      className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase text-white/60 group-hover:text-white transition-colors duration-300"
+                      className="inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] uppercase text-frost group-hover:text-heading transition-colors duration-300"
                     >
                       <span>Explore Offering</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
