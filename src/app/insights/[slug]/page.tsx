@@ -125,7 +125,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
     <>
       <ArticleJsonLd article={article} />
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground">
+      <main className="min-h-screen bg-canvas text-foreground">
         {/* Hero */}
         <section className="relative h-[60vh] min-h-[400px] w-full overflow-hidden">
           <Image
@@ -143,7 +143,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
           <p className="text-[11px] font-light tracking-[0.2em] uppercase text-muted-foreground mb-8">
             {formatDate(article.date)}
           </p>
-          <h1 className="text-[28px] md:text-[40px] lg:text-[48px] leading-[1.15] text-white font-light tracking-tight mb-6">
+          <h1 className="text-[28px] md:text-[40px] lg:text-[48px] leading-[1.15] text-heading font-light tracking-tight mb-6">
             {article.title}
           </h1>
           <p className="text-[16px] md:text-[18px] font-light text-muted-foreground mb-8 leading-relaxed">

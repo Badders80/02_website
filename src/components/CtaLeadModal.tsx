@@ -176,7 +176,7 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
   const modal = (
     <div className="cta-lead-modal pointer-events-none fixed inset-0 z-[9990]" role="presentation">
       <div
-        className={`absolute inset-0 z-0 bg-black/55 backdrop-blur-[2px] ${enterClass}`}
+        className={`absolute inset-0 z-0 bg-canvas/55 backdrop-blur-[2px] ${enterClass}`}
         aria-hidden="true"
       />
 
@@ -187,7 +187,7 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
         className="absolute inset-0 z-10 flex items-center justify-center p-4"
       >
         <div className={`pointer-events-auto relative w-full max-w-[760px] text-center ${enterClass}`}>
-          <div className="relative rounded-xl border border-border bg-black/95 px-8 py-10 shadow-[0_0_120px_rgba(0,0,0,0.98)] md:px-12 md:py-12">
+          <div className="relative rounded-xl border border-border bg-canvas/95 px-8 py-10 shadow-[0_0_120px_rgba(0,0,0,0.98)] md:px-12 md:py-12">
             <button
               type="button"
               onClick={close}

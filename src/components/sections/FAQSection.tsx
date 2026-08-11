@@ -98,7 +98,7 @@ export function FAQSection() {
   };
 
   return (
-    <section ref={sectionRef} id="faq" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="faq" className="py-56 bg-canvas text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
         {/* Section Label — static */}
         <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-muted-foreground">
@@ -107,7 +107,7 @@ export function FAQSection() {
 
         <div ref={headerRef}>
           {/* Headline */}
-          <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-6">
+          <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-heading font-light tracking-tight mb-6">
             Understanding
             <br />
             Digital-Syndication

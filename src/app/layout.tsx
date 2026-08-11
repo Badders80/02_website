@@ -95,7 +95,7 @@ export default function RootLayout({
       <head>
         <StructuredData pressArticles={getPressArticlesForStructuredData()} />
       </head>
-      <body className="min-h-screen bg-black text-foreground antialiased relative" suppressHydrationWarning>
+      <body className="min-h-screen bg-canvas text-foreground antialiased relative" suppressHydrationWarning>
         <SmoothScrollProvider>
           <AuthProvider>{children}</AuthProvider>
         </SmoothScrollProvider>

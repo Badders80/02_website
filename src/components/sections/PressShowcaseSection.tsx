@@ -196,7 +196,7 @@ export function PressShowcaseSection() {
   }
 
   return (
-    <section ref={sectionRef} className="relative bg-black text-white overflow-hidden py-24 bloomberg-showcase">
+    <section ref={sectionRef} className="relative bg-canvas text-white overflow-hidden py-24 bloomberg-showcase">
       <div className="max-w-5xl mx-auto px-12 md:px-16 lg:px-20 w-full space-y-24">
         {/* News and Updates Section - On Top */}
         <div>
@@ -208,20 +208,20 @@ export function PressShowcaseSection() {
               href={leadArticle.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative pr-0 lg:pr-12 py-8 flex flex-col justify-center bg-black hover:bg-black/95 transition-colors duration-300 cursor-pointer"
+              className="group relative pr-0 lg:pr-12 py-8 flex flex-col justify-center bg-canvas hover:bg-canvas/95 transition-colors duration-300 cursor-pointer"
             >
               <div className="space-y-8 max-w-2xl">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="flex items-center gap-4">
-                    <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-white">
+                    <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-heading">
                       {formatDate(leadArticle.date)}
                     </span>
                     <div className="h-px w-8 bg-white/10" />
-                    <span className="text-xs uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-white">
+                    <span className="text-xs uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-heading">
                       {leadArticle.publisher}
                     </span>
                   </div>
-                  <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-white">
+                  <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-heading">
                     <span className="relative inline-flex items-center gap-2 overflow-hidden">
                       <span className="relative z-10">Read the full story here</span>
                       <span className="relative z-10">→</span>
@@ -246,7 +246,7 @@ export function PressShowcaseSection() {
                   )}
                 </div>
 
-                <h3 className="text-3xl md:text-4xl font-light leading-[1.15] tracking-tight text-heading transition-colors duration-300 group-hover:text-white">
+                <h3 className="text-3xl md:text-4xl font-light leading-[1.15] tracking-tight text-heading transition-colors duration-300 group-hover:text-heading">
                   {leadArticle.title}
                 </h3>
 
@@ -256,7 +256,7 @@ export function PressShowcaseSection() {
               </div>
             </a>
 
-            <div className="relative bg-black flex flex-col pl-0 lg:pl-12 py-8">
+            <div className="relative bg-canvas flex flex-col pl-0 lg:pl-12 py-8">
               <div
                 className={`relative overflow-x-hidden ${
                   shouldRotate ? (openArticleUrl ? 'overflow-y-auto' : 'overflow-hidden') : ''

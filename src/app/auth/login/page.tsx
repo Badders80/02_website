@@ -106,7 +106,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-black text-white">
+    <div className="flex min-h-screen w-full bg-canvas text-heading">
       {/* Left Pane: Authentication Form */}
       <div className="flex w-full min-h-screen items-center justify-center px-6 py-16 lg:w-1/2">
         <div className="w-full max-w-sm">
@@ -210,7 +210,7 @@ function LoginForm() {
                 <GlowPillButton
                   type="submit"
                   disabled={loading}
-                  className="w-full text-center !bg-surface-base/80 hover:!bg-surface-base/80 !border-border hover:!border-steel-border !text-frost hover:!text-white"
+                  className="w-full text-center !bg-surface-base/80 hover:!bg-surface-base/80 !border-border hover:!border-steel-border !text-frost hover:!text-heading"
                   wrapperClassName="w-full"
                 >
                   {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}

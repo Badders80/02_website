@@ -20,7 +20,7 @@ export function NewsAndUpdatesSection() {
   const remainingArticles = articles.slice(1);
 
   return (
-    <section id="news" className="py-24 bg-black">
+    <section id="news" className="py-24 bg-canvas">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20">
         <p className="text-[10px] font-mono tracking-[0.2em] uppercase mb-12 text-muted-foreground">
           NEWS AND UPDATES

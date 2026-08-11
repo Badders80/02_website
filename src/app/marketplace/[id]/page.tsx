@@ -342,7 +342,7 @@ export default async function CampaignDetailPage({ params }: Props) {
     <>
       <ProductJsonLd hltRecord={hltRecord} />
       <NavBar />
-      <main className="dot-grid min-h-screen bg-canvas text-white font-sans pt-32 pb-24 selection:bg-accent selection:text-black">
+      <main className="dot-grid min-h-screen bg-canvas text-heading font-sans pt-32 pb-24 selection:bg-accent selection:text-black">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-12">
           
           {/* Breadcrumb Navigation */}

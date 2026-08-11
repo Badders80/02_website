@@ -24,7 +24,7 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
     return (
       <>
         <NavBar />
-        <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
+        <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24">
           <div className="mx-auto max-w-2xl px-6 text-center">
             <h1 className="text-[28px] font-light text-white mb-4">Campaign not found</h1>
             <Link href="/marketplace" className="text-accent text-sm">← Back to Marketplace</Link>
@@ -40,7 +40,7 @@ export default async function ConfirmPage({ params, searchParams }: Props) {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
+      <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24">
         <div className="mx-auto max-w-2xl px-6 sm:px-10 lg:px-12 text-center space-y-8">
           {/* Success icon */}
           {success === "true" && (

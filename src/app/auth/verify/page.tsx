@@ -183,7 +183,7 @@ export default function VerifyPage() {
   const showStartButton = kycStatus === "none" || kycStatus === "canceled" || kycStatus === "requires_input";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black px-4">
+    <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="w-full max-w-md">
         <div className="text-center">
           <Link href="/" className="font-display text-2xl font-bold text-gold">

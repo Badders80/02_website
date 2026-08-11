@@ -378,11 +378,11 @@ export default function PurchasePage(props: PurchasePageProps) {
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center gap-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium ${
-                  step >= s ? "bg-[#d4a964] text-black" : "bg-surface-base text-muted-foreground border border-border"
+                  step >= s ? "bg-accent text-black" : "bg-surface-base text-muted-foreground border border-border"
                 }`}>
                   {s}
                 </div>
-                {s < 3 && <div className={`w-12 h-[1px] ${step > s ? "bg-[#d4a964]" : "bg-white/[0.06]"}`} />}
+                {s < 3 && <div className={`w-12 h-[1px] ${step > s ? "bg-accent" : "bg-border"}`} />}
               </div>
             ))}
           </div>
@@ -764,7 +764,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                       type="button"
                       onClick={handleStripeCheckout}
                       disabled={!pdsAgreed || !saAgreed || isRedirecting}
-                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                      className="flex-1 text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-accent text-black hover:bg-accent/90 disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       {isRedirecting ? "Redirecting..." : "Buy now"}
                     </button>

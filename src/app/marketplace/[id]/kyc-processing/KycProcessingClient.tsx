@@ -162,7 +162,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
 
   if (authLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-canvas text-heading">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
       </div>
     );
@@ -171,7 +171,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24">
+      <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24">
         <div className="mx-auto max-w-2xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
           <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">

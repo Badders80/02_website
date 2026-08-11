@@ -50,7 +50,7 @@ export default async function HomePage({
           Evolution Stables — Digital Racehorse Ownership
         </h1>
 
-        <div className="w-full bg-black px-0 shadow-[0_0_80px_RGBA(0,0,0,0.35)] m-0 p-0 border-none max-w-none">
+        <div className="w-full bg-canvas px-0 shadow-[0_0_80px_RGBA(0,0,0,0.35)] m-0 p-0 border-none max-w-none">
           <HeroSection />
         </div>
 
@@ -86,7 +86,7 @@ export default async function HomePage({
 
         <MarketplaceSection />
 
-        <section id="get-started" className="bg-black">
+        <section id="get-started" className="bg-canvas">
           <GrassBg src="/images/content/background/hooves-on-grass.png" alt="Hooves on grass background" />
         </section>
 
