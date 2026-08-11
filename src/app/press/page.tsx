@@ -84,16 +84,16 @@ export default function PressPage() {
     <>
       <PressJsonLd />
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground">
+      <main className="min-h-screen bg-canvas text-foreground">
         {/* Header */}
         <section className="pt-32 pb-20 px-12 md:px-16 lg:px-20 max-w-5xl mx-auto">
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-12">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase text-muted-foreground mb-12">
             Evolution Stables
           </p>
-          <h1 className="text-[36px] md:text-[56px] leading-[1.1] text-white font-light tracking-tight mb-6">
+          <h1 className="text-[36px] md:text-[56px] leading-[1.1] text-heading font-light tracking-tight mb-6">
             Press & Coverage
           </h1>
-          <p className="text-[16px] leading-[1.7] font-light text-white/65 max-w-2xl">
+          <p className="text-[16px] leading-[1.7] font-light text-frost max-w-2xl">
             Stay updated with our latest announcements and media features as we bridge the gap between traditional equine excellence and modern digital syndication.
           </p>
         </section>
@@ -109,35 +109,35 @@ export default function PressPage() {
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] overflow-hidden hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-500">
+                <div className="rounded-sm border border-border bg-surface-base overflow-hidden hover:border-border hover:bg-surface-base transition-all duration-500">
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
                     {/* Left: Content */}
                     <div className="p-8 md:p-12 lg:col-span-7 flex flex-col justify-center order-2 lg:order-1">
                       <div className="flex items-center gap-4 mb-6">
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 transition-colors group-hover:text-white">
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-heading">
                           {formatDate(featuredArticle.date)}
                         </span>
-                        <div className="h-px w-6 bg-white/10" />
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-white/60 transition-colors group-hover:text-white">
+                        <div className="h-px w-6 bg-surface-base/50" />
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-heading">
                           {featuredArticle.publisher}
                         </span>
                       </div>
                       
-                      <h2 className="text-3xl md:text-4xl font-light leading-snug tracking-tight text-white/90 mb-6 group-hover:text-white transition-colors duration-300">
+                      <h2 className="text-3xl md:text-4xl font-light leading-snug tracking-tight text-heading mb-6 group-hover:text-heading transition-colors duration-300">
                         {featuredArticle.title}
                       </h2>
                       
-                      <p className="text-[15px] md:text-[17px] font-light leading-[1.7] text-white/55 transition-colors duration-300 group-hover:text-white/65 mb-8 line-clamp-4">
+                      <p className="text-[15px] md:text-[17px] font-light leading-[1.7] text-muted-foreground transition-colors duration-300 group-hover:text-frost mb-8 line-clamp-4">
                         {featuredArticle.excerpt}
                       </p>
                       
                       <div className="pt-2">
                         <span className="inline-flex items-center gap-2">
-                          <span className="text-xs uppercase tracking-[0.3em] bg-gradient-to-r from-white/40 via-white to-white/40 bg-[length:200%_auto] bg-clip-text text-transparent animate-bolt-shimmer transition-all duration-700">
+                          <span className="text-xs uppercase tracking-[0.3em] bg-gradient-to-r from-pure-white/40 via-pure-white to-pure-white/40 bg-[length:200%_auto] bg-clip-text text-transparent animate-bolt-shimmer transition-all duration-700">
                             Read Full Article
                           </span>
                           <svg
-                            className="w-3 h-3 text-white/30 group-hover:text-white group-hover:translate-x-1 transition-all duration-500"
+                            className="w-3 h-3 text-muted-foreground group-hover:text-heading group-hover:translate-x-1 transition-all duration-500"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -154,7 +154,7 @@ export default function PressPage() {
                     </div>
                     
                     {/* Right: Image */}
-                    <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[400px] lg:col-span-5 w-full overflow-hidden bg-white/5 transition-all duration-700 order-1 lg:order-2">
+                    <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[400px] lg:col-span-5 w-full overflow-hidden bg-surface-base/50 transition-all duration-700 order-1 lg:order-2">
                       {featuredArticle.imageUrl ? (
                         <Image
                           src={featuredArticle.imageUrl}
@@ -164,11 +164,11 @@ export default function PressPage() {
                           priority
                         />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-white/10 font-medium tracking-widest uppercase text-xs">
+                        <div className="absolute inset-0 flex items-center justify-center text-heading/10 font-medium tracking-widest uppercase text-xs">
                           {featuredArticle.publisher}
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
+                      <div className="absolute inset-0 bg-canvas/20 group-hover:bg-transparent transition-colors duration-700" />
                     </div>
                   </div>
                 </div>
@@ -186,34 +186,34 @@ export default function PressPage() {
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <div className="h-full rounded-sm border border-white/[0.06] bg-white/[0.02] p-8 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-500 flex flex-col justify-between">
+                <div className="h-full rounded-sm border border-border bg-surface-base p-8 hover:border-border hover:bg-surface-base transition-all duration-500 flex flex-col justify-between">
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 transition-colors group-hover:text-white">
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-heading">
                         {formatDate(article.date)}
                       </span>
-                      <div className="h-px w-6 bg-white/10" />
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-white/60 transition-colors group-hover:text-white">
+                      <div className="h-px w-6 bg-surface-base/50" />
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-frost transition-colors group-hover:text-heading">
                         {article.publisher}
                       </span>
                     </div>
 
-                    <h3 className="text-xl md:text-2xl font-light leading-snug tracking-tight text-white/90 group-hover:text-white transition-colors duration-300 line-clamp-3">
+                    <h3 className="text-xl md:text-2xl font-light leading-snug tracking-tight text-heading group-hover:text-heading transition-colors duration-300 line-clamp-3">
                       {article.title}
                     </h3>
 
-                    <p className="text-[14px] md:text-[15px] font-light leading-[1.7] text-white/55 transition-colors duration-300 group-hover:text-white/65 line-clamp-4">
+                    <p className="text-[14px] md:text-[15px] font-light leading-[1.7] text-muted-foreground transition-colors duration-300 group-hover:text-frost line-clamp-4">
                       {article.excerpt}
                     </p>
                   </div>
 
                   <div className="pt-8">
                     <span className="inline-flex items-center gap-2">
-                      <span className="text-xs uppercase tracking-[0.3em] bg-gradient-to-r from-white/40 via-white to-white/40 bg-[length:200%_auto] bg-clip-text text-transparent animate-bolt-shimmer transition-all duration-700">
+                      <span className="text-xs uppercase tracking-[0.3em] bg-gradient-to-r from-pure-white/40 via-pure-white to-pure-white/40 bg-[length:200%_auto] bg-clip-text text-transparent animate-bolt-shimmer transition-all duration-700">
                         Read Full Article
                       </span>
                       <svg
-                        className="w-3 h-3 text-white/30 group-hover:text-white group-hover:translate-x-1 transition-all duration-500"
+                        className="w-3 h-3 text-muted-foreground group-hover:text-heading group-hover:translate-x-1 transition-all duration-500"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"

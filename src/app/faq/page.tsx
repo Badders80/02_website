@@ -31,22 +31,22 @@ export default function FAQPage() {
     <>
       <FAQStructuredData items={faqItems} />
       <NavBar />
-      <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
+      <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24 selection:bg-accent selection:text-canvas">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
-          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/30">
-            <span className="text-white/60">FAQ</span>
+          <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="text-frost">FAQ</span>
           </div>
 
           {/* Header */}
           <div className="mb-16 space-y-4">
-            <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a964]">
+            <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-accent">
               Questions
             </p>
-            <h1 className="text-[36px] font-light tracking-tight text-white md:text-[48px] leading-tight">
+            <h1 className="text-[36px] font-light tracking-tight text-heading md:text-[48px] leading-tight">
               Frequently Asked Questions
             </h1>
-            <p className="text-[16px] leading-[1.8] font-light text-white/60 max-w-2xl">
+            <p className="text-[16px] leading-[1.8] font-light text-frost max-w-2xl">
               Everything you need to know about racehorse ownership through Evolution Stables — how it works, what it costs, and what to expect.
             </p>
           </div>
@@ -54,11 +54,11 @@ export default function FAQPage() {
           {/* FAQ Items */}
           <div className="space-y-12">
             {faqItems.map((item, idx) => (
-              <div key={idx} className="space-y-4 border-b border-white/[0.06] pb-12">
-                <h2 className="text-[20px] font-light text-white tracking-tight leading-tight">
+              <div key={idx} className="space-y-4 border-b border-border pb-12">
+                <h2 className="text-[20px] font-light text-heading tracking-tight leading-tight">
                   {item.question}
                 </h2>
-                <p className="text-[15px] leading-[1.85] font-light text-white/70">
+                <p className="text-[15px] leading-[1.85] font-light text-frost">
                   {item.answer}
                 </p>
               </div>
@@ -67,12 +67,12 @@ export default function FAQPage() {
 
           {/* CTA */}
           <div className="mt-16 space-y-6 text-center">
-            <p className="text-[14px] font-light text-white/50">
+            <p className="text-[14px] font-light text-muted-foreground">
               Still have questions?
             </p>
             <a
               href="/marketplace"
-              className="inline-block text-[11px] uppercase tracking-[0.2em] text-[#d4a964] border border-[#d4a964]/30 px-8 py-4 rounded-full hover:bg-[#d4a964]/10 transition duration-300"
+              className="inline-block text-[11px] uppercase tracking-[0.2em] text-accent border border-accent/30 px-8 py-4 rounded-full hover:bg-accent/10 transition duration-300"
             >
               Explore the Marketplace
             </a>

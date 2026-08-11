@@ -19,7 +19,7 @@ export default function TermsPage() {
             Terms of Service
           </h1>
 
-          <div className="mt-12 space-y-8 text-white/70 font-light leading-relaxed">
+          <div className="mt-12 space-y-8 text-frost font-light leading-relaxed">
             <section>
               <h2 className="text-2xl font-light text-foreground mb-4">1. Acceptance of Terms</h2>
               <p>

@@ -218,6 +218,17 @@ function LoginForm() {
               </div>
             </form>
 
+            {mode === "signin" && (
+              <div className="mt-4 text-center">
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-frost transition-colors duration-200"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            )}
+
             <div className="mt-6 text-center">
               <button
                 type="button"
@@ -254,7 +265,7 @@ function LoginForm() {
 // Wrapper required by Next.js for useSearchParams() (avoids prerender bailout / suspense boundary error)
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-black text-white">Loading login...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-canvas text-foreground">Loading login...</div>}>
       <LoginForm />
     </Suspense>
   );

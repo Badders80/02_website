@@ -52,17 +52,17 @@ export default function InsightsHubPage() {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-white font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
+      <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24 selection:bg-accent selection:text-canvas">
         <div className="mx-auto max-w-5xl px-6 sm:px-10 lg:px-12">
           {/* Header */}
           <div className="mb-16 space-y-4">
-            <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a964]">
+            <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-accent">
               Insights
             </p>
-            <h1 className="text-[36px] font-light tracking-tight text-white md:text-[48px] leading-tight">
+            <h1 className="text-[36px] font-light tracking-tight text-heading md:text-[48px] leading-tight">
               Racehorse Ownership, Explained
             </h1>
-            <p className="text-[16px] leading-[1.8] font-light text-white/60 max-w-2xl">
+            <p className="text-[16px] leading-[1.8] font-light text-frost max-w-2xl">
               Guides, press coverage, race reports, and thought leadership from Evolution Stables. Learn how digital-syndication works, what ownership costs, and how prize money reaches owners.
             </p>
           </div>
@@ -75,10 +75,10 @@ export default function InsightsHubPage() {
             return (
               <section key={category} className="mb-20">
                 <div className="mb-8 space-y-2">
-                  <h2 className="text-[24px] font-light text-white tracking-tight">
+                  <h2 className="text-[24px] font-light text-heading tracking-tight">
                     {categoryLabels[category]}
                   </h2>
-                  <p className="text-[13px] leading-[1.7] font-light text-white/40 max-w-2xl">
+                  <p className="text-[13px] leading-[1.7] font-light text-muted-foreground max-w-2xl">
                     {categoryDescriptions[category]}
                   </p>
                 </div>
@@ -88,10 +88,10 @@ export default function InsightsHubPage() {
                     <Link
                       key={article.slug}
                       href={`/insights/${article.slug}`}
-                      className="group space-y-4 rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 hover:border-white/[0.12] transition duration-300"
+                      className="group space-y-4 rounded-2xl border border-border bg-surface-base p-6 hover:border-border transition duration-300"
                     >
                       {article.heroImage && (
-                        <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-zinc-900">
+                        <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-surface-base">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={article.heroImage}
@@ -102,19 +102,19 @@ export default function InsightsHubPage() {
                       )}
                       <div className="space-y-2">
                         {article.category && (
-                          <span className="text-[9px] uppercase tracking-[0.2em] text-[#d4a964]">
+                          <span className="text-[9px] uppercase tracking-[0.2em] text-accent">
                             {article.category}
                           </span>
                         )}
-                        <h3 className="text-[15px] font-light text-white leading-tight group-hover:text-[#d4a964] transition duration-300">
+                        <h3 className="text-[15px] font-light text-heading leading-tight group-hover:text-accent transition duration-300">
                           {article.title}
                         </h3>
                         {article.excerpt && (
-                          <p className="text-[12px] leading-[1.7] font-light text-white/50 line-clamp-2">
+                          <p className="text-[12px] leading-[1.7] font-light text-muted-foreground line-clamp-2">
                             {article.excerpt}
                           </p>
                         )}
-                        <p className="text-[10px] text-white/30">
+                        <p className="text-[10px] text-muted-foreground">
                           {article.date}
                         </p>
                       </div>
