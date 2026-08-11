@@ -324,6 +324,12 @@ body::after {
   }
 }
 
+/* Logo carousel scroll animation */
+@keyframes logo-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* CTA lead modal open: soft dim on page — scroll stays live (no overflow lock) */
 body.cta-overlay-open main {
   filter: blur(6px) brightness(0.55);
