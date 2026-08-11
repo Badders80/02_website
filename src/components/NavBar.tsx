@@ -115,8 +115,8 @@ export function NavBar() {
     <nav
       className={`fixed inset-x-0 top-0 z-[9999] w-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
         isSolid
-          ? 'bg-black/80 text-white'
-          : 'bg-black/40 text-white'
+          ? 'bg-canvas/80 text-heading'
+          : 'bg-canvas/40 text-heading'
       } ${visible ? 'opacity-100 translate-y-0' : '-translate-y-4 opacity-0'}`}
       style={{
         backdropFilter: 'blur(32px) saturate(160%)',
@@ -164,14 +164,11 @@ export function NavBar() {
               >
                 <Link
                   href={link.href}
-                  className="relative inline-flex items-center whitespace-nowrap px-2.5 py-4 text-[12px] font-[300] tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-sm"
-                  style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
+                  className="relative inline-flex items-center whitespace-nowrap px-2.5 py-4 text-[12px] font-[300] tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-sm text-frost hover:text-heading"
                 >
                   <span className="relative z-10">{link.label}</span>
                 </Link>
-                <span className="absolute bottom-2 left-2.5 right-2.5 h-[0.5px] origin-left scale-x-0 bg-[#d4a964] transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-x-100" />
+                <span className="absolute bottom-2 left-2.5 right-2.5 h-[0.5px] origin-left scale-x-0 bg-accent transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-x-100" />
               </div>
             ))}
           </div>
@@ -183,7 +180,7 @@ export function NavBar() {
             <div className={`h-10 w-32 bg-white/5 rounded-full animate-pulse ${isCompact ? 'hidden' : 'lg:block'}`} />
           ) : user ? (
             <div className={`items-center gap-4 ${isCompact ? 'hidden' : 'lg:flex'}`}>
-              <span className="text-[12px] font-[300] tracking-[0.15em] uppercase text-white/50">
+              <span className="text-[12px] font-[300] tracking-[0.15em] uppercase text-muted-foreground">
                 Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
               </span>
               <GlowPillButton
@@ -209,7 +206,7 @@ export function NavBar() {
           {/* Hamburger Menu - shown only when content overflows */}
           <button
             type="button"
-            className={`h-11 w-11 items-center justify-center text-secondary/90 transition-all duration-300 hover:text-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-lg hover:bg-white/[0.04] ${isCompact ? 'flex' : 'hidden'}`}
+            className={`h-11 w-11 items-center justify-center text-secondary/90 transition-all duration-300 hover:text-pure-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary/50 rounded-lg hover:bg-white/[0.04] ${isCompact ? 'flex' : 'hidden'}`}
             onClick={() => setIsMenuOpen((prev) => !prev)}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -229,13 +226,13 @@ export function NavBar() {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="bg-black/80 border-t border-white/[0.06]">
+        <div className="bg-canvas/80 border-t border-border">
           <div className="space-y-1 px-6 py-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="group block rounded-xl px-4 py-3.5 text-[14px] font-light tracking-wide uppercase text-white transition-all duration-300 hover:bg-white/10 hover:text-white active:scale-[0.98]"
+                className="group block rounded-xl px-4 py-3.5 text-[14px] font-light tracking-wide uppercase text-heading transition-all duration-300 hover:bg-white/10 hover:text-heading active:scale-[0.98]"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="relative">
@@ -248,7 +245,7 @@ export function NavBar() {
             <div className="space-y-3 pt-6 border-t border-white/[0.05] mt-4">
               {user ? (
                 <div className="space-y-3">
-                  <div className="px-4 py-2 text-xs uppercase tracking-wider text-white/40">
+                  <div className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground">
                     Hi, {user?.displayName?.split(' ')[0] || 'Alex'}
                   </div>
                   <button
@@ -257,7 +254,7 @@ export function NavBar() {
                       setIsMenuOpen(false);
                       window.location.reload();
                     }}
-                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-center text-sm text-white/60 font-medium hover:bg-white/[0.08] hover:text-white transition-colors"
+                    className="w-full rounded-full bg-white/[0.04] px-4 py-3 text-center text-sm text-frost font-medium hover:bg-white/[0.08] hover:text-pure-white transition-colors"
                   >
                     Sign Out
                   </button>

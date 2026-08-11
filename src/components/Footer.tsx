@@ -65,14 +65,14 @@ export function Footer({ minimal = false }: FooterProps) {
   };
 
   return (
-    <footer className="relative bg-black overflow-hidden">
+    <footer className="relative bg-canvas overflow-hidden">
       <div className="mx-auto flex max-w-6xl flex-col px-8 pt-16 pb-12 md:px-16 md:pt-24 md:pb-16">
         {/* Hero Tagline - Centerpiece */}
         {!minimal && (
           <div className="flex flex-col items-center justify-center text-center py-16 md:py-24 animate-fade-in">
             <div className="max-w-4xl space-y-8">
               <div ref={containerRef} className="flex flex-col items-center gap-4">
-                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight flex flex-col items-center gap-3">
+                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-light text-heading tracking-tight flex flex-col items-center gap-3">
                   {/* Row 1: The Future of Ownership */}
                   <span style={line1Style} className="inline-block">
                     The Future of <span className="text-gold">Ownership</span>
@@ -85,14 +85,14 @@ export function Footer({ minimal = false }: FooterProps) {
                         opacity: startCursor && showCursor ? 1 : 0,
                         transition: "opacity 150ms",
                       }}
-                      className="ml-1 text-white/50 animate-fade-in"
+                      className="ml-1 text-muted-foreground animate-fade-in"
                     >
                       |
                     </span>
                   </span>
                 </h2>
               </div>
-              <p className="text-[11px] md:text-[12px] font-light tracking-[0.15em] uppercase text-white/40">
+              <p className="text-[11px] md:text-[12px] font-light tracking-[0.15em] uppercase text-muted-foreground">
                 {footerData.tagline.subtitle}
               </p>
             </div>
@@ -111,18 +111,18 @@ export function Footer({ minimal = false }: FooterProps) {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href={footerData.links.privacy}
-                className="leading-tight font-extralight text-white/60 hover:text-white transition-colors"
+                className="leading-tight font-extralight text-frost hover:text-heading transition-colors"
               >
                 Privacy Policy
               </Link>
               <Link
                 href={footerData.links.terms}
-                className="leading-tight font-extralight text-white/60 hover:text-white transition-colors"
+                className="leading-tight font-extralight text-frost hover:text-heading transition-colors"
               >
                 Terms of Service
               </Link>
             </div>
-            <p className="text-xs leading-tight font-extralight text-white/60">
+            <p className="text-xs leading-tight font-extralight text-frost">
               {footerData.copyright}
             </p>
           </div>
@@ -135,7 +135,7 @@ export function Footer({ minimal = false }: FooterProps) {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition flex items-center text-white/60 hover:text-white"
+                className="transition flex items-center text-frost hover:text-heading"
                 aria-label={social.ariaLabel}
               >
                 {social.icon === "X" && (
