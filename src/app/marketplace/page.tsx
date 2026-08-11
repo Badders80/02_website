@@ -239,16 +239,16 @@ export default async function MarketplacePage() {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground font-sans selection:bg-white/10 selection:text-white">
+      <main className="dot-grid min-h-screen bg-canvas text-foreground font-sans selection:bg-white/10 selection:text-white">
         {/* Hero Header Section */}
         <section className="pt-40 pb-16 px-12 md:px-16 lg:px-20 max-w-6xl mx-auto">
-          <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-white/30 mb-6">
+          <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-muted-foreground mb-6">
             Evolution Stables
           </p>
-          <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-white mb-6 leading-[1.1]">
+          <h1 className="text-[36px] md:text-[48px] font-light tracking-tight text-heading mb-6 leading-[1.1]">
             Ownership, evolved.
           </h1>
-          <p className="text-[18px] leading-[1.85] font-light text-white/50 max-w-2xl">
+          <p className="text-[18px] leading-[1.85] font-light text-muted-foreground max-w-2xl">
             The moments. The access. The stable. Acquire a stake in elite thoroughbreds, backed by legally binding leases, and track your stable&apos;s performance directly on-site.
           </p>
         </section>
