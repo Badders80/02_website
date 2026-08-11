@@ -49,11 +49,11 @@ const backupPalettes = [
 ];
 
 const logoColors = [
-  { label: 'White', bg: 'bg-black', monogram: '/images/brand/monograms/white/monogram-white.svg', lockup: '/images/brand/lockups/white/lockup-horizontal-white.svg' },
-  { label: 'Muted Grey', bg: 'bg-black', monogram: '/images/brand/monograms/black/monogram-black.svg', lockup: '/images/brand/wordmarks/grey/wordmark-muted-grey.svg' },
-  { label: 'Border Grey', bg: 'bg-black', monogram: '/images/brand/monograms/white/monogram-white.svg', lockup: '/images/brand/wordmarks/grey/wordmark-border-grey.svg' },
+  { label: 'White', bg: 'bg-canvas', monogram: '/images/brand/monograms/white/monogram-white.svg', lockup: '/images/brand/lockups/white/lockup-horizontal-white.svg' },
+  { label: 'Muted Grey', bg: 'bg-canvas', monogram: '/images/brand/monograms/black/monogram-black.svg', lockup: '/images/brand/wordmarks/grey/wordmark-muted-grey.svg' },
+  { label: 'Border Grey', bg: 'bg-canvas', monogram: '/images/brand/monograms/white/monogram-white.svg', lockup: '/images/brand/wordmarks/grey/wordmark-border-grey.svg' },
   { label: 'Black', bg: 'bg-white', monogram: '/images/brand/monograms/black/monogram-black.svg', lockup: '/images/brand/lockups/black/lockup-horizontal-black.svg' },
-  { label: 'Gold', bg: 'bg-black', monogram: '/images/brand/monograms/gold/monogram-gold.svg', lockup: '/images/brand/lockups/gold/lockup-horizontal-gold.svg' },
+  { label: 'Gold', bg: 'bg-canvas', monogram: '/images/brand/monograms/gold/monogram-gold.svg', lockup: '/images/brand/lockups/gold/lockup-horizontal-gold.svg' },
 ];
 
 const vocabulary = [
@@ -128,7 +128,7 @@ function ColorCard({
   const isLight = hex.toLowerCase() === '#ffffff' || hex.toLowerCase() === '#f8f5f0' || hex.toLowerCase() === '#f5f5f5' || hex.toLowerCase() === '#e5e5e5';
 
   return (
-    <div className={`group rounded-sm border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-500 ${className || ''}`}>
+    <div className={`group rounded-sm border border-border bg-surface-base hover:border-border hover:bg-white/[0.04] transition-all duration-500 ${className || ''}`}>
       <div
         className="h-24 rounded-t-sm relative cursor-pointer flex items-center justify-center"
         style={{ backgroundColor: hex }}
@@ -138,9 +138,9 @@ function ColorCard({
         </span>
       </div>
       <div className="p-4">
-        <p className="text-sm font-light text-white/90">{name}</p>
-        <p className="text-xs font-mono text-white/50 mt-1">{hex}</p>
-        {usage && <p className="text-xs text-white/40 mt-2 leading-relaxed">{usage}</p>}
+        <p className="text-sm font-light text-heading">{name}</p>
+        <p className="text-xs font-mono text-muted-foreground mt-1">{hex}</p>
+        {usage && <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{usage}</p>}
       </div>
     </div>
   );
@@ -154,7 +154,7 @@ function SideNav() {
           <li key={section.id}>
             <a
               href={`#${section.id}`}
-              className="text-[11px] uppercase tracking-[0.2em] text-white/40 hover:text-white transition-colors duration-300 block py-1"
+              className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-white transition-colors duration-300 block py-1"
             >
               {section.label}
             </a>
@@ -175,7 +175,7 @@ function SectionHeading({ children, className }: { children: React.ReactNode; cl
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-4">
+    <h3 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
       {children}
     </h3>
   );
@@ -185,13 +185,13 @@ export default function BrandGuidelinesPage() {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-black text-foreground">
+      <main className="min-h-screen bg-canvas text-foreground">
         <SideNav />
 
         {/* Hero */}
-        <header className="border-b border-white/[0.06]">
+        <header className="border-b border-border">
           <div className="max-w-5xl mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-32">
-            <p className="text-[11px] font-light tracking-[0.2em] uppercase text-white/30 mb-10">
+            <p className="text-[11px] font-light tracking-[0.2em] uppercase text-muted-foreground mb-10">
               {BRAND_NAME}
             </p>
             <h1 className="text-[36px] md:text-[56px] leading-[1.1] text-white font-light tracking-tight mb-6">
@@ -202,7 +202,7 @@ export default function BrandGuidelinesPage() {
             </p>
             <a
               href="/_assets/brand/deploy/website/"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.12] text-white/80 hover:text-white hover:border-white/[0.24] hover:bg-white/[0.04] transition-all duration-500 text-[12px] uppercase tracking-[0.2em]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-frost hover:text-white hover:border-white/[0.24] hover:bg-white/[0.04] transition-all duration-500 text-[12px] uppercase tracking-[0.2em]"
             >
               <Download className="w-4 h-4" />
               Download Assets
@@ -212,7 +212,7 @@ export default function BrandGuidelinesPage() {
 
         <div className="max-w-5xl mx-auto px-6 md:px-12 lg:px-20">
           {/* Brand Essentials */}
-          <section id="brand-essentials" className="py-20 md:py-28 border-b border-white/[0.06]">
+          <section id="brand-essentials" className="py-20 md:py-28 border-b border-border">
             <SectionHeading className="mb-12">Brand Essentials</SectionHeading>
 
             <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16">
@@ -227,7 +227,7 @@ export default function BrandGuidelinesPage() {
               </div>
               <div>
                 <SectionLabel>Tagline</SectionLabel>
-                <p className="text-[24px] md:text-[30px] font-light text-white/80 tracking-tight mb-4">
+                <p className="text-[24px] md:text-[30px] font-light text-frost tracking-tight mb-4">
                   “{TAGLINE}”
                 </p>
                 <p className="text-[14px] leading-[1.7] text-white/55">
@@ -246,10 +246,10 @@ export default function BrandGuidelinesPage() {
                 ].map((attr) => (
                   <div
                     key={attr.title}
-                    className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-500"
+                    className="rounded-sm border border-border bg-surface-base p-6 hover:border-border hover:bg-white/[0.04] transition-all duration-500"
                   >
                     <h4 className="text-[15px] font-light text-white mb-2">{attr.title}</h4>
-                    <p className="text-[13px] leading-[1.6] text-white/50">{attr.desc}</p>
+                    <p className="text-[13px] leading-[1.6] text-muted-foreground">{attr.desc}</p>
                   </div>
                 ))}
               </div>
@@ -257,14 +257,14 @@ export default function BrandGuidelinesPage() {
           </section>
 
           {/* Logo System */}
-          <section id="logo-system" className="py-20 md:py-28 border-b border-white/[0.06]">
+          <section id="logo-system" className="py-20 md:py-28 border-b border-border">
             <SectionHeading className="mb-12">Logo System</SectionHeading>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
               {logoColors.map((color) => (
                 <div
                   key={color.label}
-                  className={`rounded-sm border border-white/[0.06] p-8 flex flex-col items-center justify-center min-h-[220px] ${color.bg}`}
+                  className={`rounded-sm border border-border p-8 flex flex-col items-center justify-center min-h-[220px] ${color.bg}`}
                 >
                   <div className="relative h-10 w-auto mb-6">
                     <Image
@@ -275,7 +275,7 @@ export default function BrandGuidelinesPage() {
                       className="h-full w-auto"
                     />
                   </div>
-                  <p className={`text-[11px] uppercase tracking-[0.2em] ${color.bg === 'bg-white' ? 'text-black/50' : 'text-white/50'}`}>
+                  <p className={`text-[11px] uppercase tracking-[0.2em] ${color.bg === 'bg-white' ? 'text-black/50' : 'text-muted-foreground'}`}>
                     {color.label}
                   </p>
                 </div>
@@ -288,7 +288,7 @@ export default function BrandGuidelinesPage() {
                 <p className="text-[14px] leading-[1.7] text-white/55 mb-6">
                   Maintain clear space around the logo equal to the height of the “E” in Evolution. Do not crowd it with text, borders, or imagery.
                 </p>
-                <div className="inline-block rounded-sm border border-dashed border-white/[0.12] p-8 bg-white/[0.02]">
+                <div className="inline-block rounded-sm border border-dashed border-border p-8 bg-surface-base">
                   <div className="border border-dashed border-gold/60 p-6">
                     <div className="relative h-12 w-auto">
                       <Image
@@ -367,7 +367,7 @@ export default function BrandGuidelinesPage() {
                   { label: 'No rotation', style: { transform: 'rotate(12deg)' } },
                   { label: 'No low opacity (primary)', style: { opacity: 0.4 } },
                 ].map((misuse, i) => (
-                  <div key={i} className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 relative">
+                  <div key={i} className="rounded-sm border border-border bg-surface-base p-6 relative">
                     <div className="flex items-center justify-center h-16">
                       <div className="relative h-8 w-auto" style={misuse.style}>
                         <Image
@@ -379,11 +379,11 @@ export default function BrandGuidelinesPage() {
                         />
                       </div>
                     </div>
-                    <p className="text-[11px] text-white/40 text-center mt-4 uppercase tracking-[0.15em]">
+                    <p className="text-[11px] text-muted-foreground text-center mt-4 uppercase tracking-[0.15em]">
                       {misuse.label}
                     </p>
                     <div className="absolute top-3 right-3 w-5 h-5 border border-white/20 rounded-full flex items-center justify-center">
-                      <span className="text-white/50 text-xs">✕</span>
+                      <span className="text-muted-foreground text-xs">✕</span>
                     </div>
                   </div>
                 ))}
@@ -392,7 +392,7 @@ export default function BrandGuidelinesPage() {
           </section>
 
           {/* Colour Palette */}
-          <section id="color-palette" className="py-20 md:py-28 border-b border-white/[0.06]">
+          <section id="color-palette" className="py-20 md:py-28 border-b border-border">
             <SectionHeading className="mb-2">Colour Palette</SectionHeading>
             <p className="text-[14px] text-white/55 mb-10">Click any swatch to copy the HEX value.</p>
 
@@ -411,7 +411,7 @@ export default function BrandGuidelinesPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4">
                   <ColorCard {...goldAccent} />
                 </div>
-                <p className="text-[13px] leading-[1.7] text-white/50 mt-4">
+                <p className="text-[13px] leading-[1.7] text-muted-foreground mt-4">
                   Gold is reserved for monograms and premium structural details. Never use it for body text or standard wording.
                 </p>
               </div>
@@ -420,15 +420,15 @@ export default function BrandGuidelinesPage() {
                 <SectionLabel>Backup Palettes (Opt-in per campaign)</SectionLabel>
                 <div className="grid md:grid-cols-3 gap-4">
                   {backupPalettes.map((palette) => (
-                    <div key={palette.name} className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-5">
+                    <div key={palette.name} className="rounded-sm border border-border bg-surface-base p-5">
                       <div className="flex gap-2 mb-4">
                         <div className="h-10 flex-1 rounded-t-sm" style={{ backgroundColor: palette.bg }} />
                         <div className="h-10 flex-1 rounded-t-sm" style={{ backgroundColor: palette.surface }} />
                         <div className="h-10 flex-1 rounded-t-sm" style={{ backgroundColor: palette.fg }} />
                       </div>
                       <p className="text-sm font-light text-white mb-1">{palette.name}</p>
-                      <p className="text-[11px] text-white/40 uppercase tracking-[0.15em] mb-3">{palette.note}</p>
-                      <div className="space-y-1 font-mono text-[11px] text-white/50">
+                      <p className="text-[11px] text-muted-foreground uppercase tracking-[0.15em] mb-3">{palette.note}</p>
+                      <div className="space-y-1 font-mono text-[11px] text-muted-foreground">
                         <p>bg {palette.bg}</p>
                         <p>surface {palette.surface}</p>
                         <p>fg {palette.fg}</p>
@@ -441,7 +441,7 @@ export default function BrandGuidelinesPage() {
           </section>
 
           {/* Typography */}
-          <section id="typography" className="py-20 md:py-28 border-b border-white/[0.06]">
+          <section id="typography" className="py-20 md:py-28 border-b border-border">
             <SectionHeading className="mb-12">Typography</SectionHeading>
 
             <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16">
@@ -482,34 +482,34 @@ export default function BrandGuidelinesPage() {
 
             <div>
               <SectionLabel>Type Scale</SectionLabel>
-              <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 md:p-10 space-y-8">
-                <div className="border-b border-white/[0.06] pb-6">
-                  <p className="text-[11px] text-white/40 mb-2 font-mono">H1 — 56px / Light / -0.02em</p>
+              <div className="rounded-sm border border-border bg-surface-base p-6 md:p-10 space-y-8">
+                <div className="border-b border-border pb-6">
+                  <p className="text-[11px] text-muted-foreground mb-2 font-mono">H1 — 56px / Light / -0.02em</p>
                   <p className="text-[36px] md:text-[56px] leading-[1.1] font-light tracking-tight text-white">
                     Own the future of racing
                   </p>
                 </div>
-                <div className="border-b border-white/[0.06] pb-6">
-                  <p className="text-[11px] text-white/40 mb-2 font-mono">H2 — 36px / Light / -0.02em</p>
+                <div className="border-b border-border pb-6">
+                  <p className="text-[11px] text-muted-foreground mb-2 font-mono">H2 — 36px / Light / -0.02em</p>
                   <p className="text-[28px] md:text-[36px] leading-[1.2] font-light tracking-tight text-white">
                     Digital-syndication, refined
                   </p>
                 </div>
-                <div className="border-b border-white/[0.06] pb-6">
-                  <p className="text-[11px] text-white/40 mb-2 font-mono">H3 — 24px / Light / -0.02em</p>
+                <div className="border-b border-border pb-6">
+                  <p className="text-[11px] text-muted-foreground mb-2 font-mono">H3 — 24px / Light / -0.02em</p>
                   <p className="text-[22px] md:text-[24px] font-light tracking-tight text-white">
                     Heritage-led ownership
                   </p>
                 </div>
-                <div className="border-b border-white/[0.06] pb-6">
-                  <p className="text-[11px] text-white/40 mb-2 font-mono">Body — 16px / Light / 1.7</p>
+                <div className="border-b border-border pb-6">
+                  <p className="text-[11px] text-muted-foreground mb-2 font-mono">Body — 16px / Light / 1.7</p>
                   <p className="text-[16px] leading-[1.7] font-light text-white/65">
                     We speak with the Private Banker Standard: professional but not stuffy, analytical but not cold, confident but not arrogant, and visionary but grounded.
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-white/40 mb-2 font-mono">Data — 14px / Mono / 1.5</p>
-                  <p className="text-[14px] leading-[1.5] font-mono text-white/80">
+                  <p className="text-[11px] text-muted-foreground mb-2 font-mono">Data — 14px / Mono / 1.5</p>
+                  <p className="text-[14px] leading-[1.5] font-mono text-frost">
                     0.8m win · soft ground · final 600m 33.42s
                   </p>
                 </div>
@@ -518,7 +518,7 @@ export default function BrandGuidelinesPage() {
           </section>
 
           {/* Voice & Tone */}
-          <section id="voice-tone" className="py-20 md:py-28 border-b border-white/[0.06]">
+          <section id="voice-tone" className="py-20 md:py-28 border-b border-border">
             <SectionHeading className="mb-12">Voice & Tone</SectionHeading>
 
             <p className="text-[16px] md:text-[18px] leading-[1.7] font-light text-white/65 max-w-3xl mb-12">
@@ -526,23 +526,23 @@ export default function BrandGuidelinesPage() {
             </p>
 
             <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-16">
-              <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-8">
+              <div className="rounded-sm border border-border bg-surface-base p-8">
                 <h3 className="text-[11px] uppercase tracking-[0.2em] text-gold mb-6">We Are</h3>
                 <ul className="space-y-3">
                   {weAre.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-[14px] text-white/70">
+                    <li key={item} className="flex items-start gap-3 text-[14px] text-frost">
                       <Check className="w-4 h-4 text-gold shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-8">
-                <h3 className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-6">We Are Not</h3>
+              <div className="rounded-sm border border-border bg-surface-base p-8">
+                <h3 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-6">We Are Not</h3>
                 <ul className="space-y-3">
                   {weAreNot.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-[14px] text-white/70">
-                      <span className="text-white/40 shrink-0">✕</span>
+                    <li key={item} className="flex items-start gap-3 text-[14px] text-frost">
+                      <span className="text-muted-foreground shrink-0">✕</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -555,16 +555,16 @@ export default function BrandGuidelinesPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-white/[0.08]">
+                    <tr className="border-b border-border">
                       <th className="py-3 pr-4 text-[11px] uppercase tracking-[0.2em] text-gold font-normal">Approved Term</th>
-                      <th className="py-3 pl-4 text-[11px] uppercase tracking-[0.2em] text-white/50 font-normal">Banned / Discouraged</th>
+                      <th className="py-3 pl-4 text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-normal">Banned / Discouraged</th>
                     </tr>
                   </thead>
                   <tbody>
                     {vocabulary.map((row) => (
-                      <tr key={row.approved} className="border-b border-white/[0.06]">
-                        <td className="py-3 pr-4 text-[14px] text-white/90">{row.approved}</td>
-                        <td className="py-3 pl-4 text-[14px] text-white/40">{row.banned}</td>
+                      <tr key={row.approved} className="border-b border-border">
+                        <td className="py-3 pr-4 text-[14px] text-heading">{row.approved}</td>
+                        <td className="py-3 pl-4 text-[14px] text-muted-foreground">{row.banned}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -574,9 +574,9 @@ export default function BrandGuidelinesPage() {
 
             <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-16">
               {writingRules.map((item) => (
-                <div key={item.rule} className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6">
+                <div key={item.rule} className="rounded-sm border border-border bg-surface-base p-6">
                   <p className="text-[14px] font-light text-white mb-2">{item.rule}</p>
-                  <p className="text-[13px] text-white/50">“{item.example}”</p>
+                  <p className="text-[13px] text-muted-foreground">“{item.example}”</p>
                 </div>
               ))}
             </div>
@@ -585,12 +585,12 @@ export default function BrandGuidelinesPage() {
               <SectionLabel>Translation Formulas</SectionLabel>
               <div className="space-y-4">
                 {translations.map((t, i) => (
-                  <div key={i} className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 md:p-8">
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-3">Before</p>
+                  <div key={i} className="rounded-sm border border-border bg-surface-base p-6 md:p-8">
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Before</p>
                     <p className="text-[14px] leading-[1.6] text-white/55 mb-4">{t.before}</p>
                     <div className="h-px bg-white/[0.06] mb-4" />
                     <p className="text-[11px] uppercase tracking-[0.2em] text-gold mb-3">After</p>
-                    <p className="text-[14px] leading-[1.6] text-white/90">{t.after}</p>
+                    <p className="text-[14px] leading-[1.6] text-heading">{t.after}</p>
                   </div>
                 ))}
               </div>
@@ -598,7 +598,7 @@ export default function BrandGuidelinesPage() {
           </section>
 
           {/* CTA Logic */}
-          <section id="cta-logic" className="py-20 md:py-28 border-b border-white/[0.06]">
+          <section id="cta-logic" className="py-20 md:py-28 border-b border-border">
             <SectionHeading className="mb-12">CTA Logic</SectionHeading>
 
             <p className="text-[16px] leading-[1.7] font-light text-white/65 max-w-3xl mb-12">
@@ -607,10 +607,10 @@ export default function BrandGuidelinesPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {ctas.map((cta) => (
-                <div key={cta.directive} className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-500">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-3">{cta.objective}</p>
+                <div key={cta.directive} className="rounded-sm border border-border bg-surface-base p-6 hover:border-border hover:bg-white/[0.04] transition-all duration-500">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">{cta.objective}</p>
                   <p className="text-[22px] font-light text-white tracking-tight mb-3">{cta.directive}</p>
-                  <p className="text-[12px] leading-[1.6] text-white/50">{cta.tone}</p>
+                  <p className="text-[12px] leading-[1.6] text-muted-foreground">{cta.tone}</p>
                 </div>
               ))}
             </div>
@@ -621,17 +621,17 @@ export default function BrandGuidelinesPage() {
             <SectionHeading className="mb-12">Developer Reference</SectionHeading>
 
             <div className="grid md:grid-cols-2 gap-12 md:gap-16">
-              <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 md:p-8">
+              <div className="rounded-sm border border-border bg-surface-base p-6 md:p-8">
                 <SectionLabel>Tailwind Tokens</SectionLabel>
                 <div className="space-y-3">
                   {tailwindTokens.map((token) => (
-                    <div key={token.token} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.06] pb-3 last:border-0 last:pb-0">
+                    <div key={token.token} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3 last:border-0 last:pb-0">
                       <div>
                         <code className="text-[13px] font-mono text-gold">{token.token}</code>
-                        <p className="text-[11px] text-white/40 mt-0.5">{token.usage}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">{token.usage}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[12px] font-mono text-white/60">{token.value}</p>
+                        <p className="text-[12px] font-mono text-frost">{token.value}</p>
                       </div>
                     </div>
                   ))}
@@ -639,21 +639,21 @@ export default function BrandGuidelinesPage() {
               </div>
 
               <div className="space-y-8">
-                <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 md:p-8">
+                <div className="rounded-sm border border-border bg-surface-base p-6 md:p-8">
                   <SectionLabel>Spacing Grid</SectionLabel>
                   <p className="text-[14px] leading-[1.7] text-white/55 mb-4">
                     All layouts, component padding, and margins align to an 8px grid.
                   </p>
-                  <div className="grid grid-cols-4 gap-2 font-mono text-[11px] text-white/60">
+                  <div className="grid grid-cols-4 gap-2 font-mono text-[11px] text-frost">
                     {['8px', '16px', '24px', '32px', '48px', '64px', '96px', '128px'].map((s) => (
-                      <div key={s} className="rounded-sm bg-white/[0.03] py-2 text-center">{s}</div>
+                      <div key={s} className="rounded-sm bg-surface-base py-2 text-center">{s}</div>
                     ))}
                   </div>
                 </div>
 
-                <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-6 md:p-8">
+                <div className="rounded-sm border border-border bg-surface-base p-6 md:p-8">
                   <SectionLabel>Asset Paths</SectionLabel>
-                  <div className="space-y-2 font-mono text-[12px] text-white/60">
+                  <div className="space-y-2 font-mono text-[12px] text-frost">
                     <p>/images/brand/lockups/{'{color}'}/lockup-horizontal-{'{color}'}.svg</p>
                     <p>/images/brand/lockups/{'{color}'}/lockup-vertical-{'{color}'}.svg</p>
                     <p>/images/brand/monograms/{'{color}'}/monogram-{'{color}'}.svg</p>
