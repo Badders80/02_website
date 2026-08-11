@@ -1,21 +1,29 @@
-import { STATUS_INFO, type CampaignStatus } from "@/lib/campaign-status";
+import { Badge } from "@/components/ui/badge";
+import { type CampaignStatus } from "@/lib/campaign-status";
 
-interface CampaignStatusBadgeProps {
+const statusConfig: Record<
+  CampaignStatus,
+  { variant: "default" | "accent" | "success" | "outline" | "warning"; label: string }
+> = {
+  draft: { variant: "outline", label: "Draft" },
+  coming_soon: { variant: "accent", label: "Coming Soon" },
+  coming_soon_details: { variant: "accent", label: "Coming Soon" },
+  listed: { variant: "success", label: "Become An Owner" },
+  fully_subscribed: { variant: "warning", label: "Fully Subscribed" },
+  completed: { variant: "default", label: "Completed" },
+};
+
+export function CampaignStatusBadge({
+  status,
+  className,
+}: {
   status: CampaignStatus;
   className?: string;
-}
-
-export function CampaignStatusBadge({ status, className = "" }: CampaignStatusBadgeProps) {
-  const statusInfo = STATUS_INFO[status] ?? STATUS_INFO.coming_soon;
-
+}) {
+  const config = statusConfig[status] ?? statusConfig.draft;
   return (
-    <div
-      className={`inline-flex items-center gap-2 border rounded-full px-3 py-1.5 ${statusInfo.badgeClass} ${className}`}
-    >
-      <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
-      <span className="text-[9px] uppercase tracking-widest font-medium">
-        {statusInfo.label}
-      </span>
-    </div>
+    <Badge variant={config.variant} className={className}>
+      {config.label}
+    </Badge>
   );
 }
