@@ -108,20 +108,20 @@ export function HowItWorksSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="mission" className="py-56 bg-black text-foreground">
+    <section ref={sectionRef} id="mission" className="py-56 bg-canvas text-foreground">
       <div className="max-w-6xl mx-auto px-12 md:px-16 lg:px-20 w-full">
         {/* Heading & Description */}
         <div className="mb-16">
-          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-white/30">
+          <p className="text-[11px] font-light tracking-[0.2em] uppercase mb-12 text-muted-foreground">
             OUR MISSION
           </p>
           <div ref={headerRef}>
-            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-white font-light tracking-tight mb-8">
+            <h2 className="text-[36px] md:text-[48px] leading-[1.1] text-heading font-light tracking-tight mb-8">
               How It Works
             </h2>
           </div>
           <div ref={bodyRef}>
-            <p className="text-[16px] leading-[1.7] font-light text-white/65">
+            <p className="text-[16px] leading-[1.7] font-light text-frost">
               At Evolution Stables, we understand that ownership is the lifeblood of racing — and strengthening it benefits every part of the industry.
             </p>
           </div>
@@ -132,17 +132,17 @@ export function HowItWorksSection() {
           {cards.map((card, index) => (
             <div
               key={index}
-              className="group relative border border-white/[0.08] rounded-xl flex flex-col cursor-pointer transition-all duration-500 hover:border-white/[0.15] hover:scale-[1.05] h-auto lg:h-[340px]"
+              className="group relative border border-border rounded-xl flex flex-col cursor-pointer transition-all duration-500 hover:border-white/[0.15] hover:scale-[1.05] h-auto lg:h-[340px]"
               style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
             >
               {/* Top — header (fixed height, lighter tone) */}
-              <div className="p-6 border-b border-white/[0.06] h-[112px] flex flex-col justify-center" style={{ backgroundColor: "rgba(255,255,255,0.015)" }}>
+              <div className="p-6 border-b border-border h-[112px] flex flex-col justify-center" style={{ backgroundColor: "rgba(255,255,255,0.015)" }}>
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mb-2">
+                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
                       {card.title}
                     </p>
-                    <p className="text-[16px] font-light text-white leading-snug relative overflow-hidden">
+                    <p className="text-[16px] font-light text-heading leading-snug relative overflow-hidden">
                       <span className="relative inline-block">
                         {card.subtitle}
                         {/* Text sweep on hover */}
@@ -151,7 +151,7 @@ export function HowItWorksSection() {
                     </p>
                   </div>
                   {/* Arrow icon */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full border border-white/[0.1] flex items-center justify-center text-white/40 group-hover:text-white/70 group-hover:border-white/30 transition-colors duration-300">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground group-hover:text-frost group-hover:border-white/30 transition-colors duration-300">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
                     </svg>
@@ -161,7 +161,7 @@ export function HowItWorksSection() {
 
               {/* Bottom — description (darker tone) */}
               <div className="p-6 relative overflow-hidden lg:flex-1 bg-black/40">
-                <p className="text-[14px] leading-[1.8] font-light text-white/50 group-hover:text-white/85 transition-colors duration-500">
+                <p className="text-[14px] leading-[1.8] font-light text-muted-foreground group-hover:text-frost transition-colors duration-500">
                   {card.description}
                 </p>
                 {/* Fade overlay at bottom — only on desktop fixed height */}
