@@ -160,7 +160,7 @@ export function RightColumnActionPanel({
   // While loading auth state, show a subtle loading skeleton
   if (loading) {
     return (
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6 animate-pulse">
+      <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-6 animate-pulse">
         <div className="h-6 bg-white/10 rounded w-1/3" />
         <div className="space-y-3">
           <div className="h-4 bg-white/5 rounded w-full" />
@@ -177,7 +177,7 @@ export function RightColumnActionPanel({
     return (
       <>
         <RegistrationGate horseName={horseName} onSignIn={handleSignInRedirect} />
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 space-y-4">
+        <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
           <CampaignStatusBadge status={status} />
         </div>
       </>
@@ -200,7 +200,7 @@ export function RightColumnActionPanel({
     // Coming Soon (with details) — show blurred terms + verify CTA
     if (status === "coming_soon_details") {
       return (
-        <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-surface-base p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${statusInfo.badgeClass}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
@@ -212,24 +212,24 @@ export function RightColumnActionPanel({
           {/* Blurred terms skeleton */}
           <div className="space-y-4 select-none pointer-events-none" aria-hidden="true">
             {TERMS_SKELETON_LABELS.map((label) => (
-              <div key={label} className="flex justify-between border-b border-white/[0.04] pb-3">
-                <span className="text-[12px] font-light text-white/40">{label}</span>
+              <div key={label} className="flex justify-between border-b border-border pb-3">
+                <span className="text-[12px] font-light text-muted-foreground">{label}</span>
                 <span className="h-4 bg-white/10 rounded w-20 blur-sm" />
               </div>
             ))}
           </div>
           {/* Verify overlay */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10">
+          <div className="absolute inset-0 bg-canvas/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10">
             <div className="space-y-4 max-w-xs">
-              <h4 className="text-[15px] font-medium tracking-wide text-white">
+              <h4 className="text-[15px] font-medium tracking-wide text-heading">
                 Complete Verification
               </h4>
-              <p className="text-[11px] leading-relaxed text-white/60 font-light">
+              <p className="text-[11px] leading-relaxed text-frost font-light">
                 Verify your identity to view pricing, lease structures, and returns for {horseName}.
               </p>
               <button
                 onClick={handleVerifyRedirect}
-                className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
+                className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-pure-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
               >
                 Start Verification
               </button>
@@ -242,7 +242,7 @@ export function RightColumnActionPanel({
     // Listed — same verify overlay, no terms visible
     if (status === "listed") {
       return (
-        <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-surface-base p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${statusInfo.badgeClass}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
@@ -254,24 +254,24 @@ export function RightColumnActionPanel({
           {/* Blurred terms skeleton */}
           <div className="space-y-4 select-none pointer-events-none" aria-hidden="true">
             {TERMS_SKELETON_LABELS.map((label) => (
-              <div key={label} className="flex justify-between border-b border-white/[0.04] pb-3">
-                <span className="text-[12px] font-light text-white/40">{label}</span>
+              <div key={label} className="flex justify-between border-b border-border pb-3">
+                <span className="text-[12px] font-light text-muted-foreground">{label}</span>
                 <span className="h-4 bg-white/10 rounded w-20 blur-sm" />
               </div>
             ))}
           </div>
           {/* Verify overlay */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10">
+          <div className="absolute inset-0 bg-canvas/40 backdrop-blur-[6px] flex flex-col items-center justify-center p-6 text-center z-10">
             <div className="space-y-4 max-w-xs">
-              <h4 className="text-[15px] font-medium tracking-wide text-white">
+              <h4 className="text-[15px] font-medium tracking-wide text-heading">
                 Complete Verification
               </h4>
-              <p className="text-[11px] leading-relaxed text-white/60 font-light">
+              <p className="text-[11px] leading-relaxed text-frost font-light">
                 Verify your identity to view investment terms and acquire shares in {horseName}.
               </p>
               <button
                 onClick={handleVerifyRedirect}
-                className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
+                className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-pure-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/40"
               >
                 Start Verification
               </button>
@@ -339,7 +339,7 @@ export function RightColumnActionPanel({
   const statusInfo = STATUS_INFO[status];
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+    <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div className={`flex items-center gap-2 border rounded-full px-3 py-1.5 ${statusInfo.badgeClass}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}`} />
@@ -438,20 +438,20 @@ function ClosedCampaignPanel({
   };
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-8 space-y-6">
+    <div className="rounded-2xl border border-border bg-surface-base p-8 space-y-6">
       <CampaignStatusBadge status={status} />
       <div className="space-y-3">
         {heading && (
-          <h4 className="text-[15px] font-medium tracking-wide text-white">
+          <h4 className="text-[15px] font-medium tracking-wide text-heading">
             {heading}
           </h4>
         )}
-        <p className="text-[12px] font-light text-white/50 leading-relaxed">
+        <p className="text-[12px] font-light text-muted-foreground leading-relaxed">
           {message}
         </p>
       </div>
       {submitted ? (
-        <p className="text-[12px] font-light text-white/50 text-center py-2">
+        <p className="text-[12px] font-light text-muted-foreground text-center py-2">
           You&apos;re registered. We&apos;ll notify you about similar opportunities.
         </p>
       ) : (
@@ -459,7 +459,7 @@ function ClosedCampaignPanel({
           type="button"
           onClick={handleRegisterInterest}
           disabled={loading}
-          className="w-full text-center py-3.5 px-4 rounded-full text-[12px] font-medium normal-case tracking-normal leading-snug bg-white/[0.04] border border-white/[0.08] text-white hover:bg-white/[0.08] active:scale-[0.98] disabled:opacity-50"
+          className="w-full text-center py-3.5 px-4 rounded-full text-[12px] font-medium normal-case tracking-normal leading-snug bg-surface-base border border-border text-pure-white hover:bg-surface-base active:scale-[0.98] disabled:opacity-50"
         >
           {loading ? "Submitting..." : ctaLabel}
         </button>
@@ -477,32 +477,32 @@ function ComingSoonTermsModal({ horseName, horseSlug }: { horseName: string; hor
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98]"
+        className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-pure-white text-black hover:bg-white/90 transition-all duration-300 active:scale-[0.98]"
       >
         View Investment Terms
       </button>
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md px-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-canvas/60 backdrop-blur-md px-4"
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative max-w-lg w-full rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
+            className="relative max-w-lg w-full rounded-3xl border border-border bg-surface-base backdrop-blur-2xl p-8 space-y-6 shadow-[0_0_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close */}
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-white/40 hover:text-white/80 transition text-xl"
+              className="absolute top-4 right-4 text-muted-foreground hover:text-frost transition text-xl"
             >
               ✕
             </button>
 
             {/* Title */}
             <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
                 Digital-Syndication Terms
               </p>
               <h3 className="text-[22px] font-light text-white tracking-tight">
@@ -512,34 +512,34 @@ function ComingSoonTermsModal({ horseName, horseSlug }: { horseName: string; hor
 
             {/* Blurred investment terms — visible but locked */}
             <div className="space-y-4 text-[13px] font-light select-none pointer-events-none" aria-hidden="true">
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Price per share</span>
-                <span className="text-white/50 blur-sm">— NZD</span>
+              <div className="flex justify-between border-b border-border pb-3.5">
+                <span className="text-muted-foreground">Price per share</span>
+                <span className="text-muted-foreground blur-sm">— NZD</span>
               </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Total lease percentage</span>
-                <span className="text-white/50 blur-sm">—%</span>
+              <div className="flex justify-between border-b border-border pb-3.5">
+                <span className="text-muted-foreground">Total lease percentage</span>
+                <span className="text-muted-foreground blur-sm">—%</span>
               </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Lease period</span>
-                <span className="text-white/50 blur-sm">— months</span>
+              <div className="flex justify-between border-b border-border pb-3.5">
+                <span className="text-muted-foreground">Lease period</span>
+                <span className="text-muted-foreground blur-sm">— months</span>
               </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Lease start date</span>
-                <span className="text-white/50 blur-sm">—</span>
+              <div className="flex justify-between border-b border-border pb-3.5">
+                <span className="text-muted-foreground">Lease start date</span>
+                <span className="text-muted-foreground blur-sm">—</span>
               </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-3.5">
-                <span className="text-white/40">Investor returns</span>
-                <span className="text-white/50 blur-sm">—% of stakes won</span>
+              <div className="flex justify-between border-b border-border pb-3.5">
+                <span className="text-muted-foreground">Investor returns</span>
+                <span className="text-muted-foreground blur-sm">—% of stakes won</span>
               </div>
               <div className="flex justify-between pb-1">
-                <span className="text-white/40">Capital calls</span>
-                <span className="text-white/50 blur-sm">None</span>
+                <span className="text-muted-foreground">Capital calls</span>
+                <span className="text-muted-foreground blur-sm">None</span>
               </div>
             </div>
 
             {/* Coming Soon notification card inside the modal */}
-            <div className="border-t border-white/[0.06] pt-6">
+            <div className="border-t border-border pt-6">
               <ComingSoonCard horseName={horseName} horseSlug={horseSlug} />
             </div>
           </div>
@@ -602,9 +602,9 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
   };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 space-y-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className="rounded-2xl border border-border bg-surface-base backdrop-blur-xl p-6 space-y-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-2">Coming Soon</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Coming Soon</p>
         <h4 className="text-[16px] font-light text-white leading-snug">
           Be the first to know when {horseName} goes live.
         </h4>
@@ -612,7 +612,7 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
 
       {submitted ? (
         <div className="py-3 text-center">
-          <p className="text-[12px] font-light text-white/60 leading-relaxed">
+          <p className="text-[12px] font-light text-frost leading-relaxed">
             You&apos;re on the list. We&apos;ll contact you when {horseName} opens for acquisition.
           </p>
         </div>
@@ -623,13 +623,13 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
-            className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-[13px] text-white placeholder:text-white/25 focus:outline-none focus:border-white/20 transition"
+            className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-[13px] text-pure-white placeholder:text-muted-foreground focus:outline-none focus:border-border transition"
           />
           <button
             type="button"
             onClick={handleSubmit}
             disabled={loading || !email.trim()}
-            className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
+            className="w-full text-center py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.15em] bg-pure-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
           >
             {loading ? "Submitting..." : "Notify Me"}
           </button>
