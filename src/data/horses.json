@@ -300,11 +300,11 @@
     "official_name": null,
     "slug": "tml-x-yearn",
     "microchip": "985125000128426",
-    "life_number": "",
-    "loveracing_id": null,
-    "foaling_date": "",
+    "life_number": "NZ00460867",
+    "loveracing_id": 460867,
+    "foaling_date": "2023-08-17",
     "sex": "filly",
-    "colour": "",
+    "colour": "Bay",
     "sire_name": "Turn Me Loose (NZ)",
     "dam_name": "Yearn (NZ)",
     "dam_sire_name": "",
@@ -326,8 +326,8 @@
     "starts_count": null,
     "total_earnings_nzd": null,
     "race_log": [],
-    "breeding_url": "",
-    "performance_profile_url": "",
+    "breeding_url": "https://loveracing.nz/Breeding/460867/Yearn-NZ-2013-2023.aspx",
+    "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=460867",
     "identity_status": "verified"
   }
 ]
