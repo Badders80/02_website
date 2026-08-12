@@ -50,11 +50,64 @@ async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3): Promise<T> {
   throw lastError;
 }
 
+/**
+ * Parse GOOGLE_SERVICE_ACCOUNT_KEY for Vercel/local.
+ * Handles: raw JSON, single-line JSON with \n escapes, base64-encoded JSON,
+ * and private_key with literal "\\n" (common when pasted into Vercel UI).
+ */
+function parseServiceAccountKey(raw: string): {
+  client_email: string;
+  private_key: string;
+} {
+  let text = raw.trim();
+  // Strip accidental wrapping quotes from some secret managers
+  if (
+    (text.startsWith("'") && text.endsWith("'")) ||
+    (text.startsWith('"') && text.endsWith('"') && !text.startsWith('{"'))
+  ) {
+    text = text.slice(1, -1);
+  }
+
+  let parsed: any;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    // Base64-encoded JSON (another common Vercel pattern)
+    try {
+      const decoded = Buffer.from(text, "base64").toString("utf8");
+      parsed = JSON.parse(decoded);
+    } catch {
+      throw new Error(
+        "GOOGLE_SERVICE_ACCOUNT_KEY is not valid JSON (or base64 JSON). Re-paste the full service-account JSON."
+      );
+    }
+  }
+
+  // Double-encoded string
+  if (typeof parsed === "string") {
+    parsed = JSON.parse(parsed);
+  }
+
+  if (!parsed?.client_email || !parsed?.private_key) {
+    throw new Error(
+      "GOOGLE_SERVICE_ACCOUNT_KEY JSON missing client_email or private_key"
+    );
+  }
+
+  // Vercel often stores private_key with literal backslash-n instead of newlines
+  let privateKey = String(parsed.private_key);
+  if (privateKey.includes("\\n") && !privateKey.includes("\n")) {
+    privateKey = privateKey.replace(/\\n/g, "\n");
+  }
+
+  return { client_email: parsed.client_email, private_key: privateKey };
+}
+
 function getAuth() {
   // Production: service account
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   if (keyJson) {
-    const creds = JSON.parse(keyJson);
+    const creds = parseServiceAccountKey(keyJson);
     return new google.auth.JWT({
       email: creds.client_email,
       key: creds.private_key,
@@ -79,6 +132,65 @@ function getAuth() {
   }
 
   throw new Error("Google Sheets auth not configured — set GOOGLE_SERVICE_ACCOUNT_KEY env var or provide scripts/token.json");
+}
+
+/** Last Sheets inventory error (for payment-health diagnostics). */
+let lastInventoryError: string | null = null;
+export function getLastInventoryError(): string | null {
+  return lastInventoryError;
+}
+
+async function readInventoryFromSupabaseFallback(): Promise<InventoryRow[]> {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.SUPABASE_SERVICE_ROLE_KEY
+  ) {
+    return [];
+  }
+  try {
+    const { readInventory: readSupabase } = await import("./supabase");
+    const rows = await readSupabase();
+    if (rows.length > 0) {
+      console.warn(
+        `[Google Sheets] inventory empty/unreadable — using Supabase fallback (${rows.length} rows)`
+      );
+    }
+    // Map Supabase InventoryRow → Sheets InventoryRow (marketplace_visible is string on Sheets type)
+    return rows.map((r) => ({
+      slug: r.slug,
+      name: r.name,
+      listing_status: r.listing_status,
+      campaign_status: r.campaign_status || "",
+      price_per_share_nzd: r.price_per_share_nzd,
+      shares_total: r.shares_total,
+      shares_sold: r.shares_sold,
+      leasehold_stake_pct: r.leasehold_stake_pct,
+      lease_period_months: r.lease_period_months,
+      lease_start_date: r.lease_start_date || "",
+      investor_return_pct: r.investor_return_pct,
+      owner_rate_per_1pct_month: r.owner_rate_per_1pct_month,
+      platform_fee_pct: r.platform_fee_pct ?? 5,
+      marketplace_visible:
+        r.marketplace_visible === true
+          ? "true"
+          : r.marketplace_visible === false
+            ? "false"
+            : String(r.marketplace_visible ?? ""),
+      trainer_name: r.trainer_name || "",
+      trainer_stable: r.trainer_stable || "",
+      trainer_location: r.trainer_location || "",
+      wins: r.wins || 0,
+      placed: r.placed || 0,
+      next_up: r.next_up || "",
+      loveracing_id: r.loveracing_id,
+    }));
+  } catch (err: any) {
+    console.error(
+      "[Google Sheets] Supabase inventory fallback failed:",
+      err?.message || err
+    );
+    return [];
+  }
 }
 
 function getSheets() {
@@ -276,7 +388,7 @@ function mapInventoryRow(headers: string[], row: string[]): InventoryRow {
 /** Read all rows from the runtime ops inventory tab (`hlts` by default). */
 export async function readInventory(): Promise<InventoryRow[]> {
   try {
-    return await withRetry(async () => {
+    const sheetRows = await withRetry(async () => {
       const sheets = getSheets();
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
@@ -288,9 +400,16 @@ export async function readInventory(): Promise<InventoryRow[]> {
       const headers = rows[0].map((h: string) => h.toLowerCase().trim());
       return rows.slice(1).map((row: string[]) => mapInventoryRow(headers, row));
     });
+    if (sheetRows.length > 0) {
+      lastInventoryError = null;
+      return sheetRows;
+    }
+    lastInventoryError = `Sheets inventory empty (tab=${INVENTORY_TAB})`;
+    return await readInventoryFromSupabaseFallback();
   } catch (err: any) {
-    console.error("[Google Sheets] Failed to read inventory:", err.message);
-    return [];
+    lastInventoryError = err?.message || "sheets read failed";
+    console.error("[Google Sheets] Failed to read inventory:", lastInventoryError);
+    return await readInventoryFromSupabaseFallback();
   }
 }
 

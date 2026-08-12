@@ -1156,17 +1156,76 @@
       "sire_id": null
     },
     "dam": {
-      "name": "Night Danza (by Danzero)",
+      "name": "Night Danza (NZ)",
       "dam_id": null
     },
     "breeder": "B.A.X Bloodstock",
     "family_number": null,
     "left_shoulder_brand": null,
     "right_shoulder_brand": null,
-    "source": "baxltd.com",
+    "source": "public-pedigree + baxltd.com",
     "source_url": "https://www.baxltd.com/almanzorxnightdanza",
     "verified": false,
-    "notes": "Unnamed 2YO filly. Not yet on loveracing.nz. Update with microchip, life number, brands, breeder, family number once named and registered."
+    "notes": "Lady Ketchikan (ex Almanzor x Night Danza). Multi-gen sire line from published Almanzor pedigree; dam line shallow until full registration records.",
+    "sire_line": [
+      {
+        "name": "Almanzor",
+        "country": "FR",
+        "year": "2013",
+        "partner": {
+          "name": "Darkova",
+          "country": "USA",
+          "year": "2008"
+        }
+      },
+      {
+        "name": "Wootton Bassett",
+        "country": "GB",
+        "year": "2008",
+        "partner": {
+          "name": "Balladonia",
+          "country": "GB",
+          "year": "1996"
+        }
+      },
+      {
+        "name": "Iffraaj",
+        "country": "GB",
+        "year": "2001",
+        "partner": {
+          "name": "Pastorale",
+          "country": "GB",
+          "year": "1988"
+        }
+      },
+      {
+        "name": "Zafonic",
+        "country": "USA",
+        "year": "1990",
+        "partner": {
+          "name": "Zaizafon",
+          "country": "USA",
+          "year": "1982"
+        }
+      }
+    ],
+    "dam_line": [
+      {
+        "name": "Night Danza",
+        "country": "NZ",
+        "partner": {
+          "name": "Danzero",
+          "country": "AUS",
+          "year": "1991"
+        }
+      }
+    ],
+    "cross_line": {
+      "sire_dam_sire": "Maria's Mon (USA)",
+      "sire_dam_dam": "\u2014",
+      "dam_sire_sire": "Danehill (USA)",
+      "dam_sire_dam": "\u2014"
+    }
   },
   {
     "horse_slug": "tml-x-yearn",

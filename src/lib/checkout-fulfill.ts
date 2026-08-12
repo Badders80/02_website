@@ -53,7 +53,7 @@ export async function fulfillCheckoutSession(
     );
   }
 
-  // Step 1: Idempotency
+  // Step 1: Idempotency — fail closed (never mint a second holding if check is broken)
   try {
     const alreadyExists = await checkHoldingExists(sessionId);
     if (alreadyExists) {
@@ -80,6 +80,9 @@ export async function fulfillCheckoutSession(
       user_email: userEmail,
       hlt_id: hltId,
     });
+    throw new Error(
+      `Idempotency check failed for ${sessionId}: ${err.message}. Fulfill aborted to prevent double-issue.`
+    );
   }
 
   // Step 2: Amount validation

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isPurchasesEnabled } from "@/lib/purchase-eligibility";
 import {
   getLiveInventory,
+  getLastInventoryError,
   readInventoryBySlug,
   readInventoryList,
 } from "@/lib/google-sheets";
@@ -99,6 +100,12 @@ export async function GET(request: Request) {
       ok: list.length > 0,
       inventory_rows: list.length,
       inventory_tab_default: "hlts",
+      // Surface parse/auth/empty errors even when Supabase fallback filled rows
+      last_error: getLastInventoryError(),
+      source_note:
+        list.length > 0 && getLastInventoryError()
+          ? "rows may be Supabase fallback after Sheets failure"
+          : null,
     };
 
     // Supabase health check alongside Sheets.
