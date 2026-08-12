@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { buildPedigreeTree } from "@/lib/pedigree-tree";
-import type { PedigreeCrossLine } from "@/lib/pedigree-tree";
+import type { PedigreeCrossLine, PedigreeNodeData } from "@/lib/pedigree-tree";
 
 interface PedigreeData {
   dam_line?: { name?: string; country?: string; year?: string; partner?: { name?: string; country?: string; year?: string } }[];
@@ -32,22 +32,9 @@ function formatFoalingDate(dateStr?: string): string | null {
   return date.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function parseHorseName(fullName: string): { name: string; country: string; year: string } {
-  if (!fullName || fullName === "—") return { name: "—", country: "", year: "" };
-
-  let cleanName = fullName.replace(/\s*\(by\s+[^)]+\)/i, "");
-
-  const match = cleanName.match(/^(.+?)\s*\(([A-Z]{2,4})\)(?:\s+(\d{4})(?:\s+[a-zA-Z]+)?)?$/i);
-  if (match) {
-    return { name: match[1].trim(), country: match[2], year: match[3] || "" };
-  }
-
-  const match2 = cleanName.match(/^(.+?)\s+(\d{4})(?:\s+[a-zA-Z]+)?$/i);
-  if (match2) {
-    return { name: match2[1].trim(), country: "", year: match2[2] };
-  }
-
-  return { name: cleanName.trim(), country: "", year: "" };
+function formatNodeMeta(data: PedigreeNodeData): string | undefined {
+  const parts = [data.country, data.year].filter(Boolean);
+  return parts.length ? parts.join(" ") : undefined;
 }
 
 /** Tier label under the subject node. */
@@ -64,20 +51,18 @@ function TierLabel({ children }: { children: React.ReactNode }) {
  * Uses brand tokens, no absolute stems/forks — clean lines are drawn by the chart grid.
  */
 function PedigreeNode({
-  fullName,
+  data,
   tier,
-  meta,
   legend,
   sublabel,
 }: {
-  fullName: string;
+  data: PedigreeNodeData;
   tier: NodeTier;
-  meta?: string;
   legend?: string;
   sublabel?: string;
 }) {
-  const parsed = parseHorseName(fullName);
-  const isEmpty = parsed.name === "—";
+  const isEmpty = data.name === "—";
+  const meta = formatNodeMeta(data);
 
   const tierStyles: Record<NodeTier, string> = {
     subject: "min-h-[60px] border-gold/40 bg-raised shadow-[0_0_24px_rgba(212,169,100,0.08)] px-4",
@@ -104,9 +89,9 @@ function PedigreeNode({
       >
         <span
           className={["block w-full whitespace-normal break-words leading-snug line-clamp-2", textStyles[tier]].join(" ")}
-          title={parsed.name}
+          title={data.name}
         >
-          {parsed.name}
+          {data.name}
         </span>
         {meta && (
           <span
@@ -154,15 +139,15 @@ function PedigreeChart({
   formattedFoalingDate: string | null;
   breedingUrl: string | null | undefined;
 }) {
-  const nodes: { name: string; tier: NodeTier; legend?: string }[] = [
-    { name: tree.sireSireSire, tier: "great" },
-    { name: tree.sireSireDam, tier: "great" },
-    { name: tree.sireDamSire, tier: "great" },
-    { name: tree.sireDamDam, tier: "great" },
-    { name: tree.damSireSire, tier: "great" },
-    { name: tree.damSireDam, tier: "great" },
-    { name: tree.damDamSire, tier: "great" },
-    { name: tree.damDamDam, tier: "great" },
+  const nodes: { data: PedigreeNodeData; tier: NodeTier; legend?: string }[] = [
+    { data: tree.sireSireSire, tier: "great" },
+    { data: tree.sireSireDam, tier: "great" },
+    { data: tree.sireDamSire, tier: "great" },
+    { data: tree.sireDamDam, tier: "great" },
+    { data: tree.damSireSire, tier: "great" },
+    { data: tree.damSireDam, tier: "great" },
+    { data: tree.damDamSire, tier: "great" },
+    { data: tree.damDamDam, tier: "great" },
   ];
 
   const row = (idx: number) => `\[\&_>_*\]:nth-child(${idx + 1})`;
@@ -179,7 +164,7 @@ function PedigreeChart({
         >
           {/* Subject — spans all 8 rows */}
           <div className="col-start-1 row-start-1 row-span-8 flex items-center pr-3">
-            <PedigreeNode fullName={tree.horse} tier="subject" sublabel={horseLabel} />
+            <PedigreeNode data={tree.horse} tier="subject" sublabel={horseLabel} />
           </div>
 
           {/* Connector: subject → parents */}
@@ -194,10 +179,10 @@ function PedigreeChart({
 
           {/* Parents */}
           <div className="col-start-3 row-start-1 row-span-4 flex items-center px-3">
-            <PedigreeNode fullName={tree.sire} tier="parent" legend="Sire" />
+            <PedigreeNode data={tree.sire} tier="parent" legend="Sire" />
           </div>
           <div className="col-start-3 row-start-5 row-span-4 flex items-center px-3">
-            <PedigreeNode fullName={tree.dam} tier="parent" legend="Dam" />
+            <PedigreeNode data={tree.dam} tier="parent" legend="Dam" />
           </div>
 
           {/* Connector: parents → grandparents */}
@@ -214,16 +199,16 @@ function PedigreeChart({
 
           {/* Grandparents */}
           <div className="col-start-5 row-start-1 row-span-2 flex items-center px-3">
-            <PedigreeNode fullName={tree.sireSire} tier="grand" />
+            <PedigreeNode data={tree.sireSire} tier="grand" />
           </div>
           <div className="col-start-5 row-start-3 row-span-2 flex items-center px-3">
-            <PedigreeNode fullName={tree.sireDam} tier="grand" />
+            <PedigreeNode data={tree.sireDam} tier="grand" />
           </div>
           <div className="col-start-5 row-start-5 row-span-2 flex items-center px-3">
-            <PedigreeNode fullName={tree.damSire} tier="grand" />
+            <PedigreeNode data={tree.damSire} tier="grand" />
           </div>
           <div className="col-start-5 row-start-7 row-span-2 flex items-center px-3">
-            <PedigreeNode fullName={tree.damDam} tier="grand" />
+            <PedigreeNode data={tree.damDam} tier="grand" />
           </div>
 
           {/* Connector: grandparents → great-grandparents */}
@@ -250,28 +235,28 @@ function PedigreeChart({
 
           {/* Great-grandparents */}
           <div className="col-start-7 row-start-1 flex items-center pl-3">
-            <PedigreeNode fullName={tree.sireSireSire} tier="great" />
+            <PedigreeNode data={tree.sireSireSire} tier="great" />
           </div>
           <div className="col-start-7 row-start-2 flex items-center pl-3">
-            <PedigreeNode fullName={tree.sireSireDam} tier="great" />
+            <PedigreeNode data={tree.sireSireDam} tier="great" />
           </div>
           <div className="col-start-7 row-start-3 flex items-center pl-3">
-            <PedigreeNode fullName={tree.sireDamSire} tier="great" />
+            <PedigreeNode data={tree.sireDamSire} tier="great" />
           </div>
           <div className="col-start-7 row-start-4 flex items-center pl-3">
-            <PedigreeNode fullName={tree.sireDamDam} tier="great" />
+            <PedigreeNode data={tree.sireDamDam} tier="great" />
           </div>
           <div className="col-start-7 row-start-5 flex items-center pl-3">
-            <PedigreeNode fullName={tree.damSireSire} tier="great" />
+            <PedigreeNode data={tree.damSireSire} tier="great" />
           </div>
           <div className="col-start-7 row-start-6 flex items-center pl-3">
-            <PedigreeNode fullName={tree.damSireDam} tier="great" />
+            <PedigreeNode data={tree.damSireDam} tier="great" />
           </div>
           <div className="col-start-7 row-start-7 flex items-center pl-3">
-            <PedigreeNode fullName={tree.damDamSire} tier="great" />
+            <PedigreeNode data={tree.damDamSire} tier="great" />
           </div>
           <div className="col-start-7 row-start-8 flex items-center pl-3">
-            <PedigreeNode fullName={tree.damDamDam} tier="great" />
+            <PedigreeNode data={tree.damDamDam} tier="great" />
           </div>
         </div>
       </div>
@@ -399,6 +384,7 @@ export function PedigreeTable({
               const mareName = entry.name || "—";
               const sireName = entry.partner?.name || "—";
               const meta = [entry.country, entry.year].filter(Boolean).join(" ").trim() || undefined;
+              const sireMeta = [entry.partner?.country, entry.partner?.year].filter(Boolean).join(" ").trim() || undefined;
               return (
                 <div
                   key={i}
@@ -407,12 +393,11 @@ export function PedigreeTable({
                   }`}
                 >
                   <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-foreground flex-1 truncate">{mareName}</span>
-                  {meta && (
-                    <span className="text-muted-foreground text-[10px]">{meta}</span>
-                  )}
+                  <span className="text-foreground truncate">{mareName}</span>
+                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{meta || "\u2014"}</span>
                   <span className="text-muted-foreground text-[10px]">by</span>
-                  <span className="text-muted-foreground flex-1 truncate">{sireName}</span>
+                  <span className="text-muted-foreground truncate">{sireName}</span>
+                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{sireMeta || "\u2014"}</span>
                 </div>
               );
             })}
@@ -440,6 +425,7 @@ export function PedigreeTable({
               const sireName = entry.name || "—";
               const damName = entry.partner?.name || "—";
               const meta = [entry.country, entry.year].filter(Boolean).join(" ").trim() || undefined;
+              const damMeta = [entry.partner?.country, entry.partner?.year].filter(Boolean).join(" ").trim() || undefined;
               return (
                 <div
                   key={i}
@@ -448,12 +434,11 @@ export function PedigreeTable({
                   }`}
                 >
                   <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-foreground flex-1 truncate">{sireName}</span>
-                  {meta && (
-                    <span className="text-muted-foreground text-[10px]">{meta}</span>
-                  )}
+                  <span className="text-foreground truncate">{sireName}</span>
+                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{meta || "\u2014"}</span>
                   <span className="text-muted-foreground text-[10px]">from</span>
-                  <span className="text-muted-foreground flex-1 truncate">{damName}</span>
+                  <span className="text-muted-foreground truncate">{damName}</span>
+                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{damMeta || "\u2014"}</span>
                 </div>
               );
             })}

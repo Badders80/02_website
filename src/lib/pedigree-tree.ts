@@ -16,22 +16,48 @@ export interface PedigreeCrossLine {
   dam_sire_dam?: string;
 }
 
+export interface PedigreeNodeData {
+  name: string;
+  country?: string;
+  year?: string;
+}
+
 export interface PedigreeTreeNodes {
-  horse: string;
-  sire: string;
-  dam: string;
-  sireSire: string;
-  sireDam: string;
-  damSire: string;
-  damDam: string;
-  sireSireSire: string;
-  sireSireDam: string;
-  sireDamSire: string;
-  sireDamDam: string;
-  damSireSire: string;
-  damSireDam: string;
-  damDamSire: string;
-  damDamDam: string;
+  horse: PedigreeNodeData;
+  sire: PedigreeNodeData;
+  dam: PedigreeNodeData;
+  sireSire: PedigreeNodeData;
+  sireDam: PedigreeNodeData;
+  damSire: PedigreeNodeData;
+  damDam: PedigreeNodeData;
+  sireSireSire: PedigreeNodeData;
+  sireSireDam: PedigreeNodeData;
+  sireDamSire: PedigreeNodeData;
+  sireDamDam: PedigreeNodeData;
+  damSireSire: PedigreeNodeData;
+  damSireDam: PedigreeNodeData;
+  damDamSire: PedigreeNodeData;
+  damDamDam: PedigreeNodeData;
+}
+
+function entryToNodeData(entry?: PedigreeEntry | null): PedigreeNodeData {
+  return {
+    name: entry?.name || "—",
+    country: entry?.country,
+    year: entry?.year,
+  };
+}
+
+function partnerToNodeData(entry?: PedigreeEntry | null): PedigreeNodeData {
+  return {
+    name: entry?.partner?.name || "—",
+    country: entry?.partner?.country,
+    year: entry?.partner?.year,
+  };
+}
+
+function nameToNodeData(name: string): PedigreeNodeData {
+  return { name: name || "—" };
 }
 
 export function formatPedigreeName(entry?: PedigreeEntry | null): string {
@@ -59,20 +85,20 @@ export function buildPedigreeTree(
   crossLine?: PedigreeCrossLine | null,
 ): PedigreeTreeNodes {
   return {
-    horse: horseName,
-    sire: sireName,
-    dam: damName,
-    sireSire: formatPedigreeName(sireLine[1]),
-    sireDam: formatPartnerName(sireLine[0]),
-    damSire: formatPartnerName(damLine[0]),
-    damDam: formatPedigreeName(damLine[1]),
-    sireSireSire: formatPedigreeName(sireLine[2]),
-    sireSireDam: formatPartnerName(sireLine[1]),
-    sireDamSire: crossLine?.sire_dam_sire || "—",
-    sireDamDam: crossLine?.sire_dam_dam || "—",
-    damSireSire: crossLine?.dam_sire_sire || "—",
-    damSireDam: crossLine?.dam_sire_dam || "—",
-    damDamSire: formatPartnerName(damLine[1]),
-    damDamDam: formatPedigreeName(damLine[2]),
+    horse: nameToNodeData(horseName),
+    sire: nameToNodeData(sireName),
+    dam: nameToNodeData(damName),
+    sireSire: entryToNodeData(sireLine[1]),
+    sireDam: partnerToNodeData(sireLine[0]),
+    damSire: partnerToNodeData(damLine[0]),
+    damDam: entryToNodeData(damLine[1]),
+    sireSireSire: entryToNodeData(sireLine[2]),
+    sireSireDam: partnerToNodeData(sireLine[1]),
+    sireDamSire: nameToNodeData(crossLine?.sire_dam_sire || "—"),
+    sireDamDam: nameToNodeData(crossLine?.sire_dam_dam || "—"),
+    damSireSire: nameToNodeData(crossLine?.dam_sire_sire || "—"),
+    damSireDam: nameToNodeData(crossLine?.dam_sire_dam || "—"),
+    damDamSire: partnerToNodeData(damLine[1]),
+    damDamDam: entryToNodeData(damLine[2]),
   };
 }
