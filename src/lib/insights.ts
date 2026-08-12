@@ -1595,7 +1595,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         type: 'paragraph',
-        text: 'At checkout, you pay the subscription amount through the platform. Your ownership is recorded through our regulated settlement partner, Tokinvest, and you receive confirmation of your holding. There are no physical certificates; your holding is maintained digitally under the terms of the syndication agreement.',
+        text: 'At checkout, you pay the subscription amount through the platform. Your ownership is recorded by Evolution Stables under the syndicate documents, and you receive confirmation of your holding. There are no physical certificates; your holding is maintained digitally under the terms of the syndication agreement.',
       },
       {
         type: 'subheading',
