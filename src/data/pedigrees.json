@@ -25,7 +25,7 @@
     "dna_typed": true,
     "pv": true,
     "source": "loveracing_nz",
-    "source_url": "https://loveracing.nz/Breeding/428364/First-Gear-NZ-2021.aspx",
+    "source_url": "https://loveracing.nz/Breeding/428364",
     "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=428364",
     "verified": true,
     "verified_at": "2026-06-24",
@@ -35,120 +35,144 @@
         "name": "A'Guin Ace",
         "country": "NZ",
         "year": "2007",
+        "horse_id": 257208,
         "partner": {
           "name": "O'Reilly",
           "country": "NZ",
-          "year": "1993"
+          "year": "1993",
+          "horse_id": 172521
         }
       },
       {
         "name": "Guinness Affair",
         "country": "NZ",
         "year": "1996",
+        "horse_id": 189278,
         "partner": {
           "name": "Kaapstad",
           "country": "NZ",
-          "year": "1984"
+          "year": "1984",
+          "horse_id": 79353
         }
       },
       {
         "name": "Threadneedle",
         "country": "NZ",
         "year": "1987",
+        "horse_id": 117356,
         "partner": {
           "name": "Famous Star",
           "country": "GB",
-          "year": "1979"
+          "year": "1979",
+          "horse_id": 12710
         }
       },
       {
         "name": "Military Madness",
         "country": "NZ",
         "year": "1980",
+        "horse_id": 25654,
         "partner": {
           "name": "War Hawk II",
           "country": "GB",
-          "year": "1968"
+          "year": "1968",
+          "horse_id": 46743
         }
       },
       {
         "name": "Chatty Girl",
         "country": "NZ",
         "year": "1963",
+        "horse_id": 52640,
         "partner": {
           "name": "Chatsworth II",
           "country": "GB",
-          "year": "1950"
+          "year": "1950",
+          "horse_id": 68671
         }
       },
       {
         "name": "Glamin",
         "country": "NZ",
         "year": "1952",
+        "horse_id": 73383,
         "partner": {
           "name": "Instinct",
           "country": "GB",
-          "year": "1941"
+          "year": "1941",
+          "horse_id": 68997
         }
       },
       {
         "name": "Glamor Girl",
         "country": "NZ",
         "year": "1942",
+        "horse_id": 70393,
         "partner": {
           "name": "Coronach",
           "country": "GB",
-          "year": "1923"
+          "year": "1923",
+          "horse_id": 69327
         }
       },
       {
         "name": "Kriemhild",
         "country": "NZ",
         "year": "1936",
+        "horse_id": 97888,
         "partner": {
           "name": "Siegfried",
           "country": "GB",
-          "year": "1925"
+          "year": "1925",
+          "horse_id": 68511
         }
       },
       {
         "name": "Left",
         "country": "NZ",
         "year": "1918",
+        "horse_id": 160557,
         "partner": {
           "name": "Martian",
           "country": "NZ",
-          "year": "1901"
+          "year": "1901",
+          "horse_id": 69709
         }
       },
       {
         "name": "Lovelorn",
         "country": "NZ",
         "year": "1906",
+        "horse_id": 84395,
         "partner": {
           "name": "Melton",
           "country": "GB",
-          "year": ""
+          "year": "",
+          "horse_id": 84396
         }
       },
       {
         "name": "Hebrew Maid",
         "country": "GB",
         "year": "1904",
+        "horse_id": 141444,
         "partner": {
           "name": "Orion",
           "country": "GB",
-          "year": "1888"
+          "year": "1888",
+          "horse_id": 141442
         }
       },
       {
         "name": "Jewish Maiden",
         "country": "GB",
         "year": "1892",
+        "horse_id": 141443,
         "partner": {
           "name": "Sheen",
           "country": "GB",
-          "year": "1885"
+          "year": "1885",
+          "horse_id": 141441
         }
       }
     ],
@@ -157,160 +181,192 @@
         "name": "Derryn",
         "country": "AUS",
         "year": "2013",
+        "horse_id": 381526,
         "partner": {
           "name": "Munhro",
           "country": "AUS",
-          "year": "2005"
+          "year": "2005",
+          "horse_id": 381527
         }
       },
       {
         "name": "Hinchinbrook",
         "country": "AUS",
         "year": "2007",
+        "horse_id": 289457,
         "partner": {
           "name": "Snippets' Lass",
           "country": "AUS",
-          "year": "1993"
+          "year": "1993",
+          "horse_id": 250719
         }
       },
       {
         "name": "Fastnet Rock",
         "country": "AUS",
         "year": "2001",
+        "horse_id": 244847,
         "partner": {
           "name": "Piccadilly Circus",
           "country": "AUS",
-          "year": "1995"
+          "year": "1995",
+          "horse_id": 244848
         }
       },
       {
         "name": "Danehill",
         "country": "USA",
         "year": "1986",
+        "horse_id": 151645,
         "partner": {
           "name": "Razyana",
           "country": "USA",
-          "year": "1981"
+          "year": "1981",
+          "horse_id": 159527
         }
       },
       {
         "name": "Danzig",
         "country": "USA",
         "year": "1977",
+        "horse_id": 133274,
         "partner": {
           "name": "Pas de Nom",
           "country": "USA",
-          "year": "1968"
+          "year": "1968",
+          "horse_id": 161325
         }
       },
       {
         "name": "Northern Dancer",
         "country": "CAN",
         "year": "1961",
+        "horse_id": 65922,
         "partner": {
           "name": "Natalma",
           "country": "USA",
-          "year": "1957"
+          "year": "1957",
+          "horse_id": 144885
         }
       },
       {
         "name": "Nearctic",
         "country": "USA",
         "year": "1954",
+        "horse_id": 65898,
         "partner": {
           "name": "Lady Angela",
           "country": "GB",
-          "year": "1944"
+          "year": "1944",
+          "horse_id": 86844
         }
       },
       {
         "name": "Nearco",
         "country": "ITY",
         "year": "1935",
+        "horse_id": 69177,
         "partner": {
           "name": "Nogara",
           "country": "ITY",
-          "year": "1928"
+          "year": "1928",
+          "horse_id": 160417
         }
       },
       {
         "name": "Pharos",
         "country": "GB",
         "year": "1920",
+        "horse_id": 131956,
         "partner": {
           "name": "Scapa Flow",
           "country": "GB",
-          "year": "1914"
+          "year": "1914",
+          "horse_id": 139256
         }
       },
       {
         "name": "Phalaris",
         "country": "GB",
         "year": "1913",
+        "horse_id": 70254,
         "partner": {
           "name": "Bromus",
           "country": "GB",
-          "year": "1905"
+          "year": "1905",
+          "horse_id": 276590
         }
       },
       {
         "name": "Polymelus",
         "country": "GB",
         "year": "1902",
+        "horse_id": 95182,
         "partner": {
           "name": "Maid Marian",
           "country": "GB",
-          "year": "1886"
+          "year": "1886",
+          "horse_id": 276595
         }
       },
       {
         "name": "Cyllene",
         "country": "GB",
         "year": "1895",
+        "horse_id": 94928,
         "partner": {
           "name": "Arcadia",
           "country": "GB",
-          "year": "1887"
+          "year": "1887",
+          "horse_id": 314933
         }
       },
       {
         "name": "Bona Vista",
         "country": "GB",
         "year": "1889",
+        "horse_id": 159940,
         "partner": {
           "name": "Vista",
           "country": "GB",
-          "year": "1879"
+          "year": "1879",
+          "horse_id": 314934
         }
       },
       {
         "name": "Bend Or",
         "country": "GB",
         "year": "1877",
+        "horse_id": 139523,
         "partner": {
           "name": "Rouge Rose",
           "country": "GB",
-          "year": "1865"
+          "year": "1865",
+          "horse_id": 193001
         }
       },
       {
         "name": "Doncaster",
         "country": "GB",
         "year": "1870",
+        "horse_id": 160518,
         "partner": {
           "name": "Marigold",
           "country": "GB",
-          "year": "1860"
+          "year": "1860",
+          "horse_id": 205970
         }
       },
       {
         "name": "Stockwell",
         "country": "GB",
         "year": "1849",
+        "horse_id": 193002,
         "partner": {
-          "name": "",
+          "name": "—",
           "country": "",
-          "year": ""
+          "year": "",
+          "horse_id": null
         }
       }
     ]
@@ -341,7 +397,7 @@
     "dna_typed": true,
     "pv": true,
     "source": "loveracing_nz",
-    "source_url": "https://loveracing.nz/Breeding/427416/Prudentia-NZ-2021.aspx",
+    "source_url": "https://loveracing.nz/Breeding/427416",
     "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=427416",
     "verified": true,
     "verified_at": "2026-06-24",
@@ -351,90 +407,108 @@
         "name": "Little Bit Irish",
         "country": "NZ",
         "year": "2012",
+        "horse_id": 308484,
         "partner": {
           "name": "O'Reilly",
           "country": "NZ",
-          "year": "1993"
+          "year": "1993",
+          "horse_id": 172521
         }
       },
       {
         "name": "Whiffle",
         "country": "USA",
         "year": "2004",
+        "horse_id": 271437,
         "partner": {
           "name": "Red Ransom",
           "country": "USA",
-          "year": "1987"
+          "year": "1987",
+          "horse_id": 206514
         }
       },
       {
         "name": "Whist",
         "country": "GB",
         "year": "1994",
+        "horse_id": 244690,
         "partner": {
           "name": "Mr. Prospector",
           "country": "USA",
-          "year": "1970"
+          "year": "1970",
+          "horse_id": 141669
         }
       },
       {
         "name": "Wajd",
         "country": "USA",
         "year": "1987",
+        "horse_id": 244691,
         "partner": {
           "name": "Northern Dancer",
           "country": "CAN",
-          "year": "1961"
+          "year": "1961",
+          "horse_id": 65922
         }
       },
       {
         "name": "Dahlia",
         "country": "USA",
         "year": "1970",
+        "horse_id": 67224,
         "partner": {
           "name": "Vaguely Noble",
           "country": "IRE",
-          "year": "1965"
+          "year": "1965",
+          "horse_id": 66212
         }
       },
       {
         "name": "Charming Alibi",
         "country": "USA",
         "year": "1963",
+        "horse_id": 142615,
         "partner": {
           "name": "Honeys Alibi",
           "country": "USA",
-          "year": "1952"
+          "year": "1952",
+          "horse_id": 142614
         }
       },
       {
         "name": "Adorada II",
         "country": "ARG",
         "year": "1947",
+        "horse_id": 142080,
         "partner": {
           "name": "Hierocles",
           "country": "FR",
-          "year": "1939"
+          "year": "1939",
+          "horse_id": 141044
         }
       },
       {
         "name": "Gilded Wave",
         "country": "USA",
         "year": "1938",
+        "horse_id": 142078,
         "partner": {
           "name": "Gallant Fox",
           "country": "USA",
-          "year": "1927"
+          "year": "1927",
+          "horse_id": 140378
         }
       },
       {
         "name": "Ondulation",
         "country": "FR",
         "year": "1920",
+        "horse_id": 142077,
         "partner": {
           "name": "Sweeper",
           "country": "USA",
-          "year": "1901"
+          "year": "1901",
+          "horse_id": 140973
         }
       }
     ],
@@ -443,160 +517,192 @@
         "name": "Proisir",
         "country": "AUS",
         "year": "2009",
+        "horse_id": 337555,
         "partner": {
           "name": "Prophet Jewel",
           "country": "AUS",
-          "year": "1999"
+          "year": "1999",
+          "horse_id": 337556
         }
       },
       {
         "name": "Choisir",
         "country": "AUS",
         "year": "1999",
+        "horse_id": 238385,
         "partner": {
           "name": "Great Selection",
           "country": "AUS",
-          "year": "1990"
+          "year": "1990",
+          "horse_id": 238386
         }
       },
       {
         "name": "Danehill Dancer",
         "country": "IRE",
         "year": "1993",
+        "horse_id": 198534,
         "partner": {
           "name": "Mira Adonde",
           "country": "USA",
-          "year": "1986"
+          "year": "1986",
+          "horse_id": 198536
         }
       },
       {
         "name": "Danehill",
         "country": "USA",
         "year": "1986",
+        "horse_id": 151645,
         "partner": {
           "name": "Razyana",
           "country": "USA",
-          "year": "1981"
+          "year": "1981",
+          "horse_id": 159527
         }
       },
       {
         "name": "Danzig",
         "country": "USA",
         "year": "1977",
+        "horse_id": 133274,
         "partner": {
           "name": "Pas de Nom",
           "country": "USA",
-          "year": "1968"
+          "year": "1968",
+          "horse_id": 161325
         }
       },
       {
         "name": "Northern Dancer",
         "country": "CAN",
         "year": "1961",
+        "horse_id": 65922,
         "partner": {
           "name": "Natalma",
           "country": "USA",
-          "year": "1957"
+          "year": "1957",
+          "horse_id": 144885
         }
       },
       {
         "name": "Nearctic",
         "country": "USA",
         "year": "1954",
+        "horse_id": 65898,
         "partner": {
           "name": "Lady Angela",
           "country": "GB",
-          "year": "1944"
+          "year": "1944",
+          "horse_id": 86844
         }
       },
       {
         "name": "Nearco",
         "country": "ITY",
         "year": "1935",
+        "horse_id": 69177,
         "partner": {
           "name": "Nogara",
           "country": "ITY",
-          "year": "1928"
+          "year": "1928",
+          "horse_id": 160417
         }
       },
       {
         "name": "Pharos",
         "country": "GB",
         "year": "1920",
+        "horse_id": 131956,
         "partner": {
           "name": "Scapa Flow",
           "country": "GB",
-          "year": "1914"
+          "year": "1914",
+          "horse_id": 139256
         }
       },
       {
         "name": "Phalaris",
         "country": "GB",
         "year": "1913",
+        "horse_id": 70254,
         "partner": {
           "name": "Bromus",
           "country": "GB",
-          "year": "1905"
+          "year": "1905",
+          "horse_id": 276590
         }
       },
       {
         "name": "Polymelus",
         "country": "GB",
         "year": "1902",
+        "horse_id": 95182,
         "partner": {
           "name": "Maid Marian",
           "country": "GB",
-          "year": "1886"
+          "year": "1886",
+          "horse_id": 276595
         }
       },
       {
         "name": "Cyllene",
         "country": "GB",
         "year": "1895",
+        "horse_id": 94928,
         "partner": {
           "name": "Arcadia",
           "country": "GB",
-          "year": "1887"
+          "year": "1887",
+          "horse_id": 314933
         }
       },
       {
         "name": "Bona Vista",
         "country": "GB",
         "year": "1889",
+        "horse_id": 159940,
         "partner": {
           "name": "Vista",
           "country": "GB",
-          "year": "1879"
+          "year": "1879",
+          "horse_id": 314934
         }
       },
       {
         "name": "Bend Or",
         "country": "GB",
         "year": "1877",
+        "horse_id": 139523,
         "partner": {
           "name": "Rouge Rose",
           "country": "GB",
-          "year": "1865"
+          "year": "1865",
+          "horse_id": 193001
         }
       },
       {
         "name": "Doncaster",
         "country": "GB",
         "year": "1870",
+        "horse_id": 160518,
         "partner": {
           "name": "Marigold",
           "country": "GB",
-          "year": "1860"
+          "year": "1860",
+          "horse_id": 205970
         }
       },
       {
         "name": "Stockwell",
         "country": "GB",
         "year": "1849",
+        "horse_id": 193002,
         "partner": {
-          "name": "",
+          "name": "—",
           "country": "",
-          "year": ""
+          "year": "",
+          "horse_id": null
         }
       }
     ]
@@ -627,7 +733,7 @@
     "dna_typed": true,
     "pv": true,
     "source": "loveracing_nz",
-    "source_url": "https://loveracing.nz/Breeding/452052/Hottathanafantasy-NZ-2023.aspx",
+    "source_url": "https://loveracing.nz/Breeding/452052",
     "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=452052",
     "verified": true,
     "verified_at": "2026-06-24",
@@ -637,80 +743,96 @@
         "name": "Whiffle",
         "country": "USA",
         "year": "2004",
+        "horse_id": 271437,
         "partner": {
           "name": "Red Ransom",
           "country": "USA",
-          "year": "1987"
+          "year": "1987",
+          "horse_id": 206514
         }
       },
       {
         "name": "Whist",
         "country": "GB",
         "year": "1994",
+        "horse_id": 244690,
         "partner": {
           "name": "Mr. Prospector",
           "country": "USA",
-          "year": "1970"
+          "year": "1970",
+          "horse_id": 141669
         }
       },
       {
         "name": "Wajd",
         "country": "USA",
         "year": "1987",
+        "horse_id": 244691,
         "partner": {
           "name": "Northern Dancer",
           "country": "CAN",
-          "year": "1961"
+          "year": "1961",
+          "horse_id": 65922
         }
       },
       {
         "name": "Dahlia",
         "country": "USA",
         "year": "1970",
+        "horse_id": 67224,
         "partner": {
           "name": "Vaguely Noble",
           "country": "IRE",
-          "year": "1965"
+          "year": "1965",
+          "horse_id": 66212
         }
       },
       {
         "name": "Charming Alibi",
         "country": "USA",
         "year": "1963",
+        "horse_id": 142615,
         "partner": {
           "name": "Honeys Alibi",
           "country": "USA",
-          "year": "1952"
+          "year": "1952",
+          "horse_id": 142614
         }
       },
       {
         "name": "Adorada II",
         "country": "ARG",
         "year": "1947",
+        "horse_id": 142080,
         "partner": {
           "name": "Hierocles",
           "country": "FR",
-          "year": "1939"
+          "year": "1939",
+          "horse_id": 141044
         }
       },
       {
         "name": "Gilded Wave",
         "country": "USA",
         "year": "1938",
+        "horse_id": 142078,
         "partner": {
           "name": "Gallant Fox",
           "country": "USA",
-          "year": "1927"
+          "year": "1927",
+          "horse_id": 140378
         }
       },
       {
         "name": "Ondulation",
         "country": "FR",
         "year": "1920",
+        "horse_id": 142077,
         "partner": {
           "name": "Sweeper",
           "country": "USA",
-          "year": "1901"
+          "year": "1901",
+          "horse_id": 140973
         }
       }
     ],
@@ -719,140 +841,168 @@
         "name": "Contributer",
         "country": "IRE",
         "year": "2010",
+        "horse_id": 350875,
         "partner": {
           "name": "Serisia",
           "country": "FR",
-          "year": "1999"
+          "year": "1999",
+          "horse_id": 350876
         }
       },
       {
         "name": "High Chaparral",
         "country": "IRE",
         "year": "1999",
+        "horse_id": 244646,
         "partner": {
           "name": "Kasora",
           "country": "IRE",
-          "year": "1993"
+          "year": "1993",
+          "horse_id": 244647
         }
       },
       {
         "name": "Sadler's Wells",
         "country": "USA",
         "year": "1981",
+        "horse_id": 152711,
         "partner": {
           "name": "Fairy Bridge",
           "country": "USA",
-          "year": "1975"
+          "year": "1975",
+          "horse_id": 167450
         }
       },
       {
         "name": "Northern Dancer",
         "country": "CAN",
         "year": "1961",
+        "horse_id": 65922,
         "partner": {
           "name": "Natalma",
           "country": "USA",
-          "year": "1957"
+          "year": "1957",
+          "horse_id": 144885
         }
       },
       {
         "name": "Nearctic",
         "country": "USA",
         "year": "1954",
+        "horse_id": 65898,
         "partner": {
           "name": "Lady Angela",
           "country": "GB",
-          "year": "1944"
+          "year": "1944",
+          "horse_id": 86844
         }
       },
       {
         "name": "Nearco",
         "country": "ITY",
         "year": "1935",
+        "horse_id": 69177,
         "partner": {
           "name": "Nogara",
           "country": "ITY",
-          "year": "1928"
+          "year": "1928",
+          "horse_id": 160417
         }
       },
       {
         "name": "Pharos",
         "country": "GB",
         "year": "1920",
+        "horse_id": 131956,
         "partner": {
           "name": "Scapa Flow",
           "country": "GB",
-          "year": "1914"
+          "year": "1914",
+          "horse_id": 139256
         }
       },
       {
         "name": "Phalaris",
         "country": "GB",
         "year": "1913",
+        "horse_id": 70254,
         "partner": {
           "name": "Bromus",
           "country": "GB",
-          "year": "1905"
+          "year": "1905",
+          "horse_id": 276590
         }
       },
       {
         "name": "Polymelus",
         "country": "GB",
         "year": "1902",
+        "horse_id": 95182,
         "partner": {
           "name": "Maid Marian",
           "country": "GB",
-          "year": "1886"
+          "year": "1886",
+          "horse_id": 276595
         }
       },
       {
         "name": "Cyllene",
         "country": "GB",
         "year": "1895",
+        "horse_id": 94928,
         "partner": {
           "name": "Arcadia",
           "country": "GB",
-          "year": "1887"
+          "year": "1887",
+          "horse_id": 314933
         }
       },
       {
         "name": "Bona Vista",
         "country": "GB",
         "year": "1889",
+        "horse_id": 159940,
         "partner": {
           "name": "Vista",
           "country": "GB",
-          "year": "1879"
+          "year": "1879",
+          "horse_id": 314934
         }
       },
       {
         "name": "Bend Or",
         "country": "GB",
         "year": "1877",
+        "horse_id": 139523,
         "partner": {
           "name": "Rouge Rose",
           "country": "GB",
-          "year": "1865"
+          "year": "1865",
+          "horse_id": 193001
         }
       },
       {
         "name": "Doncaster",
         "country": "GB",
         "year": "1870",
+        "horse_id": 160518,
         "partner": {
           "name": "Marigold",
           "country": "GB",
-          "year": "1860"
+          "year": "1860",
+          "horse_id": 205970
         }
       },
       {
         "name": "Stockwell",
         "country": "GB",
         "year": "1849",
+        "horse_id": 193002,
         "partner": {
-          "name": "",
+          "name": "—",
           "country": "",
-          "year": ""
+          "year": "",
+          "horse_id": null
         }
       }
     ]
@@ -883,7 +1033,7 @@
     "dna_typed": true,
     "pv": true,
     "source": "loveracing_nz",
-    "source_url": "https://loveracing.nz/Breeding/451442/I-Stole-A-Manolo-NZ-2023.aspx",
+    "source_url": "https://loveracing.nz/Breeding/451442",
     "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=451442",
     "verified": true,
     "verified_at": "2026-06-24",
@@ -893,90 +1043,108 @@
         "name": "Canuhandleajandal",
         "country": "NZ",
         "year": "2017",
+        "horse_id": 371087,
         "partner": {
           "name": "Jimmy Choux",
           "country": "NZ",
-          "year": "2007"
+          "year": "2007",
+          "horse_id": 258606
         }
       },
       {
         "name": "Ouzo",
         "country": "NZ",
         "year": "2012",
+        "horse_id": 308478,
         "partner": {
           "name": "Mastercraftsman",
           "country": "IRE",
-          "year": "2006"
+          "year": "2006",
+          "horse_id": 278104
         }
       },
       {
         "name": "Za Star",
         "country": "NZ",
         "year": "2006",
+        "horse_id": 253651,
         "partner": {
           "name": "Zabeel",
           "country": "NZ",
-          "year": "1986"
+          "year": "1986",
+          "horse_id": 87997
         }
       },
       {
         "name": "Soleil Etoile",
         "country": "NZ",
         "year": "1993",
+        "horse_id": 168651,
         "partner": {
           "name": "Star Way",
           "country": "GB",
-          "year": "1977"
+          "year": "1977",
+          "horse_id": 39480
         }
       },
       {
         "name": "Polly Soleil",
         "country": "GB",
         "year": "1977",
+        "horse_id": 31332,
         "partner": {
           "name": "Roi Soleil",
           "country": "GB",
-          "year": "1967"
+          "year": "1967",
+          "horse_id": 66043
         }
       },
       {
         "name": "Polairia",
         "country": "GB",
         "year": "1962",
+        "horse_id": 68290,
         "partner": {
           "name": "Polic",
           "country": "FR",
-          "year": "1953"
+          "year": "1953",
+          "horse_id": 160277
         }
       },
       {
         "name": "Queen's Rock",
         "country": "GB",
         "year": "1951",
+        "horse_id": 95403,
         "partner": {
           "name": "Souverain",
           "country": "FR",
-          "year": "1943"
+          "year": "1943",
+          "horse_id": 72678
         }
       },
       {
         "name": "Three Rock",
         "country": "GB",
         "year": "1943",
+        "horse_id": 77788,
         "partner": {
           "name": "His Highness",
           "country": "GB",
-          "year": "1936"
+          "year": "1936",
+          "horse_id": 69873
         }
       },
       {
         "name": "Mabrouka",
         "country": "GB",
         "year": "1938",
+        "horse_id": 91839,
         "partner": {
           "name": "Mahmoud",
           "country": "FR",
-          "year": "1933"
+          "year": "1933",
+          "horse_id": 70001
         }
       }
     ],
@@ -985,160 +1153,192 @@
         "name": "Satono Aladdin",
         "country": "JPN",
         "year": "2011",
+        "horse_id": 381166,
         "partner": {
           "name": "Magic Storm",
           "country": "USA",
-          "year": "1999"
+          "year": "1999",
+          "horse_id": 381167
         }
       },
       {
         "name": "Deep Impact",
         "country": "JPN",
         "year": "2002",
+        "horse_id": 379204,
         "partner": {
           "name": "Wind In Her Hair",
           "country": "IRE",
-          "year": "1991"
+          "year": "1991",
+          "horse_id": 380200
         }
       },
       {
         "name": "Sunday Silence",
         "country": "USA",
         "year": "1986",
+        "horse_id": 205619,
         "partner": {
           "name": "Wishing Well",
           "country": "USA",
-          "year": "1975"
+          "year": "1975",
+          "horse_id": 205979
         }
       },
       {
         "name": "Halo",
         "country": "USA",
         "year": "1969",
+        "horse_id": 25228,
         "partner": {
           "name": "Cosmah",
           "country": "USA",
-          "year": "1953"
+          "year": "1953",
+          "horse_id": 142387
         }
       },
       {
         "name": "Hail to Reason",
         "country": "USA",
         "year": "1958",
+        "horse_id": 65732,
         "partner": {
           "name": "Nothirdchance",
           "country": "USA",
-          "year": "1948"
+          "year": "1948",
+          "horse_id": 139711
         }
       },
       {
         "name": "Turn-to",
         "country": "IRE",
         "year": "1951",
+        "horse_id": 89428,
         "partner": {
           "name": "Source Sucree",
           "country": "FR",
-          "year": "1940"
+          "year": "1940",
+          "horse_id": 132001
         }
       },
       {
         "name": "Royal Charger",
         "country": "GB",
         "year": "1942",
+        "horse_id": 77521,
         "partner": {
           "name": "Sun Princess",
           "country": "GB",
-          "year": "1937"
+          "year": "1937",
+          "horse_id": 81864
         }
       },
       {
         "name": "Nearco",
         "country": "ITY",
         "year": "1935",
+        "horse_id": 69177,
         "partner": {
           "name": "Nogara",
           "country": "ITY",
-          "year": "1928"
+          "year": "1928",
+          "horse_id": 160417
         }
       },
       {
         "name": "Pharos",
         "country": "GB",
         "year": "1920",
+        "horse_id": 131956,
         "partner": {
           "name": "Scapa Flow",
           "country": "GB",
-          "year": "1914"
+          "year": "1914",
+          "horse_id": 139256
         }
       },
       {
         "name": "Phalaris",
         "country": "GB",
         "year": "1913",
+        "horse_id": 70254,
         "partner": {
           "name": "Bromus",
           "country": "GB",
-          "year": "1905"
+          "year": "1905",
+          "horse_id": 276590
         }
       },
       {
         "name": "Polymelus",
         "country": "GB",
         "year": "1902",
+        "horse_id": 95182,
         "partner": {
           "name": "Maid Marian",
           "country": "GB",
-          "year": "1886"
+          "year": "1886",
+          "horse_id": 276595
         }
       },
       {
         "name": "Cyllene",
         "country": "GB",
         "year": "1895",
+        "horse_id": 94928,
         "partner": {
           "name": "Arcadia",
           "country": "GB",
-          "year": "1887"
+          "year": "1887",
+          "horse_id": 314933
         }
       },
       {
         "name": "Bona Vista",
         "country": "GB",
         "year": "1889",
+        "horse_id": 159940,
         "partner": {
           "name": "Vista",
           "country": "GB",
-          "year": "1879"
+          "year": "1879",
+          "horse_id": 314934
         }
       },
       {
         "name": "Bend Or",
         "country": "GB",
         "year": "1877",
+        "horse_id": 139523,
         "partner": {
           "name": "Rouge Rose",
           "country": "GB",
-          "year": "1865"
+          "year": "1865",
+          "horse_id": 193001
         }
       },
       {
         "name": "Doncaster",
         "country": "GB",
         "year": "1870",
+        "horse_id": 160518,
         "partner": {
           "name": "Marigold",
           "country": "GB",
-          "year": "1860"
+          "year": "1860",
+          "horse_id": 205970
         }
       },
       {
         "name": "Stockwell",
         "country": "GB",
         "year": "1849",
+        "horse_id": 193002,
         "partner": {
-          "name": "",
+          "name": "—",
           "country": "",
-          "year": ""
+          "year": "",
+          "horse_id": null
         }
       }
     ]
@@ -1156,7 +1356,7 @@
       "sire_id": null
     },
     "dam": {
-      "name": "Night Danza (NZ)",
+      "name": "Night Danza (by Danzero)",
       "dam_id": null
     },
     "breeder": "B.A.X Bloodstock",
@@ -1165,7 +1365,7 @@
     "right_shoulder_brand": null,
     "source": "public-pedigree + baxltd.com",
     "source_url": "https://www.baxltd.com/almanzorxnightdanza",
-    "verified": false,
+    "verified": true,
     "notes": "Lady Ketchikan (ex Almanzor x Night Danza). Multi-gen sire line from published Almanzor pedigree; dam line shallow until full registration records.",
     "sire_line": [
       {
@@ -1222,9 +1422,9 @@
     ],
     "cross_line": {
       "sire_dam_sire": "Maria's Mon (USA)",
-      "sire_dam_dam": "\u2014",
+      "sire_dam_dam": "—",
       "dam_sire_sire": "Danehill (USA)",
-      "dam_sire_dam": "\u2014"
+      "dam_sire_dam": "—"
     }
   },
   {
@@ -1252,10 +1452,230 @@
     "dna_typed": true,
     "pv": true,
     "source": "loveracing_nz",
-    "source_url": "https://loveracing.nz/Breeding/460867/Yearn-NZ-2013-2023.aspx",
+    "source_url": "https://loveracing.nz/Breeding/460867",
     "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=460867",
     "verified": true,
     "verified_at": "2026-07-08",
-    "notes": "Verified against loveracing.nz Stud Book (Breeding/460867). Bay filly by Turn Me Loose out of Yearn, foaled 17 Aug 2023. Breeder: C W Kwok. Family 21. DNA typed. Withdrawn from Karaka 2025 Book 1 (Lot 413, account Windsor Park Stud). Now in training with Stephen Gray at Copper Belt Lodge, Palmerston North."
+    "notes": "Verified against loveracing.nz Stud Book (Breeding/460867). Bay filly by Turn Me Loose out of Yearn, foaled 17 Aug 2023. Breeder: C W Kwok. Family 21. DNA typed. Withdrawn from Karaka 2025 Book 1 (Lot 413, account Windsor Park Stud). Now in training with Stephen Gray at Copper Belt Lodge, Palmerston North.",
+    "sire_line": [
+      {
+        "name": "Turn Me Loose",
+        "country": "NZ",
+        "year": "2011",
+        "horse_id": 290223,
+        "partner": {
+          "name": "Indomitable",
+          "country": "NZ",
+          "year": "2003",
+          "horse_id": 234436
+        }
+      },
+      {
+        "name": "Iffraaj",
+        "country": "GB",
+        "year": "2001",
+        "horse_id": 255989,
+        "partner": {
+          "name": "Pastorale",
+          "country": "GB",
+          "year": "1988",
+          "horse_id": 255990
+        }
+      },
+      {
+        "name": "Zafonic",
+        "country": "USA",
+        "year": "1990",
+        "horse_id": 213094,
+        "partner": {
+          "name": "Zaizafon",
+          "country": "USA",
+          "year": "1982",
+          "horse_id": 213096
+        }
+      },
+      {
+        "name": "Gone West",
+        "country": "USA",
+        "year": "1984",
+        "horse_id": 190764,
+        "partner": {
+          "name": "Secrettame",
+          "country": "USA",
+          "year": "1978",
+          "horse_id": 206126
+        }
+      },
+      {
+        "name": "Mr. Prospector",
+        "country": "USA",
+        "year": "1970",
+        "horse_id": 141669,
+        "partner": {
+          "name": "Gold Digger",
+          "country": "USA",
+          "year": "1962",
+          "horse_id": 158590
+        }
+      },
+      {
+        "name": "Raise a Native",
+        "country": "USA",
+        "year": "1961",
+        "horse_id": 96620,
+        "partner": {
+          "name": "Raise You",
+          "country": "USA",
+          "year": "1946",
+          "horse_id": 140623
+        }
+      },
+      {
+        "name": "Native Dancer",
+        "country": "USA",
+        "year": "1950",
+        "horse_id": 80101,
+        "partner": {
+          "name": "Geisha",
+          "country": "USA",
+          "year": "1943",
+          "horse_id": 172985
+        }
+      },
+      {
+        "name": "Polynesian",
+        "country": "USA",
+        "year": "1942",
+        "horse_id": 76821,
+        "partner": {
+          "name": "Black Polly",
+          "country": "USA",
+          "year": "1936",
+          "horse_id": 174149
+        }
+      },
+      {
+        "name": "Unbreakable",
+        "country": "USA",
+        "year": "1935",
+        "horse_id": 158228,
+        "partner": {
+          "name": "—",
+          "country": "",
+          "year": "",
+          "horse_id": null
+        }
+      }
+    ],
+    "dam_line": [
+      {
+        "name": "Yearn",
+        "country": "NZ",
+        "year": "2013",
+        "horse_id": 317105,
+        "partner": {
+          "name": "Savabeel",
+          "country": "AUS",
+          "year": "2001",
+          "horse_id": 238456
+        }
+      },
+      {
+        "name": "Princess Uno",
+        "country": "AUS",
+        "year": "2003",
+        "horse_id": 250539,
+        "partner": {
+          "name": "Danehill",
+          "country": "USA",
+          "year": "1986",
+          "horse_id": 151645
+        }
+      },
+      {
+        "name": "Numero Privee",
+        "country": "USA",
+        "year": "1990",
+        "horse_id": 250540,
+        "partner": {
+          "name": "Private Account",
+          "country": "USA",
+          "year": "1976",
+          "horse_id": 179525
+        }
+      },
+      {
+        "name": "Quixotic Lady",
+        "country": "USA",
+        "year": "1980",
+        "horse_id": 250541,
+        "partner": {
+          "name": "Quadratic",
+          "country": "USA",
+          "year": "1975",
+          "horse_id": 128923
+        }
+      },
+      {
+        "name": "Lady Dulcinea",
+        "country": "USA",
+        "year": "1963",
+        "horse_id": 205824,
+        "partner": {
+          "name": "Nantallah",
+          "country": "USA",
+          "year": "1953",
+          "horse_id": 141305
+        }
+      },
+      {
+        "name": "Shy Dancer",
+        "country": "USA",
+        "year": "1955",
+        "horse_id": 159381,
+        "partner": {
+          "name": "Bolero",
+          "country": "USA",
+          "year": "1946",
+          "horse_id": 79316
+        }
+      },
+      {
+        "name": "Shy Bim",
+        "country": "USA",
+        "year": "1948",
+        "horse_id": 159380,
+        "partner": {
+          "name": "Bimelech",
+          "country": "USA",
+          "year": "1937",
+          "horse_id": 80158
+        }
+      },
+      {
+        "name": "Bashful",
+        "country": "USA",
+        "year": "1940",
+        "horse_id": 159383,
+        "partner": {
+          "name": "Man o' War",
+          "country": "USA",
+          "year": "1917",
+          "horse_id": 96202
+        }
+      },
+      {
+        "name": "Mock Modesty",
+        "country": "USA",
+        "year": "1934",
+        "horse_id": 187662,
+        "partner": {
+          "name": "Royal Minstrel",
+          "country": "GB",
+          "year": "1925",
+          "horse_id": 140004
+        }
+      }
+    ]
   }
 ]
