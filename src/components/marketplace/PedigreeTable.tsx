@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { buildPedigreeTree } from "@/lib/pedigree-tree";
+import { buildPedigreeTree, getLinebreedingDuplicates } from "@/lib/pedigree-tree";
 import type { PedigreeCrossLine, PedigreeNodeData } from "@/lib/pedigree-tree";
 
 interface PedigreeData {
@@ -32,95 +32,127 @@ function formatFoalingDate(dateStr?: string): string | null {
   return date.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function formatNodeMeta(data: PedigreeNodeData): string | undefined {
-  const parts = [data.country, data.year].filter(Boolean);
-  return parts.length ? parts.join(" ") : undefined;
-}
-
-/** Tier label under the subject node. */
-function TierLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="pointer-events-none mt-2 whitespace-nowrap text-[10px] font-light uppercase tracking-[0.1em] text-muted-foreground">
-      {children}
-    </span>
-  );
-}
-
 /**
  * A single pedigree name cell.
- * Uses brand tokens, no absolute stems/forks — clean lines are drawn by the chart grid.
+ * Rectangular modern card layout (no rounded beach balls).
  */
 function PedigreeNode({
   data,
   tier,
-  legend,
-  sublabel,
+  isLinebredDuplicate,
+  isHighlighted,
+  onHover,
 }: {
   data: PedigreeNodeData;
   tier: NodeTier;
-  legend?: string;
-  sublabel?: string;
+  isLinebredDuplicate?: boolean;
+  isHighlighted?: boolean;
+  onHover?: (name: string | null) => void;
 }) {
-  const isEmpty = data.name === "—";
-  const meta = formatNodeMeta(data);
+  const isEmpty = !data.name || data.name === "—";
+  const normName = data.name ? data.name.toLowerCase().trim() : "";
 
+  // Base tier styles — clean rectangular cards
   const tierStyles: Record<NodeTier, string> = {
-    subject: "min-h-[60px] border-gold/40 bg-raised shadow-[0_0_24px_rgba(212,169,100,0.08)] px-4",
-    parent: "min-h-[52px] border-white/[0.12] bg-raised hover:border-white/30",
-    grand: "min-h-[48px] border-border bg-surface-base hover:border-white/25",
-    great: "min-h-[44px] border-border bg-surface-base/80 opacity-80 hover:border-white/25 hover:opacity-95",
+    subject: "min-h-[64px] border-emerald-500/40 bg-zinc-900/90 shadow-[0_0_24px_rgba(0,229,153,0.08)] px-3.5",
+    parent: "min-h-[56px] border-zinc-800 bg-zinc-900/70 hover:border-zinc-700",
+    grand: "min-h-[48px] border-zinc-800/80 bg-zinc-900/50 hover:border-zinc-700",
+    great: "min-h-[42px] border-zinc-800/60 bg-zinc-900/30 hover:border-zinc-700",
   };
 
-  const textStyles: Record<NodeTier, string> = {
-    subject: "text-[13px] font-medium text-heading",
-    parent: "text-[11px] font-medium text-heading",
-    grand: "text-[10px] font-normal text-foreground",
-    great: "text-[9.5px] font-light text-foreground",
+  const nameTextStyles: Record<NodeTier, string> = {
+    subject: "text-[13px] font-semibold text-heading tracking-tight",
+    parent: "text-[11.5px] font-medium text-foreground",
+    grand: "text-[10.5px] font-normal text-zinc-300",
+    great: "text-[9.5px] font-normal text-zinc-400",
   };
 
   return (
-    <div className="flex h-full min-w-0 flex-col items-center justify-center">
+    <div className="flex h-full min-w-0 flex-col items-center justify-center w-full">
       <div
+        onMouseEnter={() => !isEmpty && onHover?.(normName)}
+        onMouseLeave={() => onHover?.(null)}
         className={[
-          "relative box-border flex w-full flex-col items-center justify-center rounded-xl border px-2.5 py-2 text-center transition-[border-color,opacity] duration-200",
-          isEmpty && tier !== "subject" ? "opacity-40" : "",
+          "relative box-border flex w-full flex-col justify-between rounded-lg border px-2.5 py-1.5 transition-all duration-200",
+          isEmpty && tier !== "subject" ? "opacity-30 border-dashed border-zinc-800" : "",
           tierStyles[tier],
+          isHighlighted
+            ? "border-emerald-500/80 bg-emerald-500/15 ring-1 ring-emerald-500/50 shadow-[0_0_16px_rgba(0,229,153,0.18)]"
+            : isLinebredDuplicate
+            ? "border-emerald-500/30 bg-emerald-500/5"
+            : "",
         ].join(" ")}
       >
+        {/* Top bar: Role badge (SIRE / DAM) & Country code */}
+        <div className="flex items-center justify-between w-full gap-1 mb-0.5">
+          {data.role === "sire" && (
+            <span className="text-[8px] font-semibold uppercase tracking-wider px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Sire
+            </span>
+          )}
+          {data.role === "dam" && (
+            <span className="text-[8px] font-semibold uppercase tracking-wider px-1.5 py-0.2 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
+              Dam
+            </span>
+          )}
+          {data.role === "subject" && (
+            <span className="text-[8px] font-semibold uppercase tracking-wider px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+              Horse
+            </span>
+          )}
+          
+          <div className="flex items-center gap-1 ml-auto">
+            {data.country && (
+              <span className="text-[8.5px] font-mono text-zinc-400 font-medium">
+                [{data.country}]
+              </span>
+            )}
+            {data.year && (
+              <span className="text-[8.5px] font-mono text-zinc-500">
+                {data.year}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Horse Name */}
         <span
-          className={["block w-full whitespace-normal break-words leading-snug line-clamp-2", textStyles[tier]].join(" ")}
+          className={["block w-full truncate leading-tight text-left", nameTextStyles[tier]].join(" ")}
           title={data.name}
         >
           {data.name}
         </span>
-        {meta && (
-          <span
-            className={`mt-0.5 block font-light tracking-wide text-muted-foreground ${
-              tier === "great" ? "text-[8px]" : "text-[9px]"
-            }`}
-          >
-            {meta}
-          </span>
-        )}
       </div>
-      {legend && !isEmpty && (
-        <span className="pointer-events-none mt-1.5 whitespace-nowrap text-[9px] font-light uppercase tracking-[0.08em] text-muted-foreground">
-          {legend}
-        </span>
-      )}
-      {sublabel && (
-        <span className="pointer-events-none mt-1.5 whitespace-nowrap text-[10px] font-light capitalize text-muted-foreground">
-          {sublabel}
-        </span>
-      )}
     </div>
   );
 }
 
 /**
- * Clean 4-generation pedigree chart.
- * Uses a single responsive grid: subject | connector | parents | connector | grandparents | connector | great-grandparents.
- * Connector lines are drawn as pseudo-element borders instead of absolute divs.
+ * Clean SVG tree connector between generation columns.
+ */
+function TreeConnector({ splits = 2 }: { splits?: number }) {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center" aria-hidden>
+      <svg className="w-full h-full text-zinc-800 stroke-current" preserveAspectRatio="none">
+        {splits === 2 && (
+          <>
+            {/* Left center horizontal arm */}
+            <line x1="0" y1="50%" x2="50%" y2="50%" strokeWidth="1" />
+            {/* Vertical stem */}
+            <line x1="50%" y1="25%" x2="50%" y2="75%" strokeWidth="1" />
+            {/* Right top horizontal arm */}
+            <line x1="50%" y1="25%" x2="100%" y2="25%" strokeWidth="1" />
+            {/* Right bottom horizontal arm */}
+            <line x1="50%" y1="75%" x2="100%" y2="75%" strokeWidth="1" />
+          </>
+        )}
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * 4-Generation Pedigree Bracket Matrix.
  */
 function PedigreeChart({
   tree,
@@ -139,143 +171,250 @@ function PedigreeChart({
   formattedFoalingDate: string | null;
   breedingUrl: string | null | undefined;
 }) {
-  const nodes: { data: PedigreeNodeData; tier: NodeTier; legend?: string }[] = [
-    { data: tree.sireSireSire, tier: "great" },
-    { data: tree.sireSireDam, tier: "great" },
-    { data: tree.sireDamSire, tier: "great" },
-    { data: tree.sireDamDam, tier: "great" },
-    { data: tree.damSireSire, tier: "great" },
-    { data: tree.damSireDam, tier: "great" },
-    { data: tree.damDamSire, tier: "great" },
-    { data: tree.damDamDam, tier: "great" },
-  ];
+  const [hoveredName, setHoveredName] = useState<string | null>(null);
+  const linebredDuplicates = getLinebreedingDuplicates(tree);
 
-  const row = (idx: number) => `\[\&_>_*\]:nth-child(${idx + 1})`;
+  const isHighlighted = (name?: string) => {
+    if (!name || !hoveredName) return false;
+    return name.toLowerCase().trim() === hoveredName;
+  };
+
+  const isDuplicate = (name?: string) => {
+    if (!name || name === "—") return false;
+    return linebredDuplicates.has(name.toLowerCase().trim());
+  };
 
   return (
-    <div className="border border-border bg-surface-base rounded-2xl p-5 md:p-8 overflow-x-auto">
-      <div className="min-w-[720px]">
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns: "160px 44px 150px 44px 150px 44px 150px",
-            gridTemplateRows: "repeat(8, minmax(52px, 1fr))",
-          }}
-        >
-          {/* Subject — spans all 8 rows */}
-          <div className="col-start-1 row-start-1 row-span-8 flex items-center pr-3">
-            <PedigreeNode data={tree.horse} tier="subject" sublabel={horseLabel} />
-          </div>
+    <div className="border border-zinc-800/80 bg-zinc-950/70 backdrop-blur-xl rounded-xl p-4 md:p-6 space-y-4">
+      {/* Mobile scroll hint */}
+      <div className="md:hidden flex items-center justify-between text-[11px] text-zinc-400 bg-zinc-900/60 border border-zinc-800 rounded-lg px-3 py-1.5">
+        <span>Pedigree Matrix</span>
+        <span className="text-emerald-400 font-mono text-[10px]">Scroll right →</span>
+      </div>
 
-          {/* Connector: subject → parents */}
+      {linebredDuplicates.size > 0 && (
+        <div className="flex items-center gap-2 text-[11px] text-zinc-400 bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+          <span>
+            Linebreeding detected: <strong className="text-emerald-300 font-medium">{linebredDuplicates.size} repeated ancestor{linebredDuplicates.size > 1 ? "s" : ""}</strong> in 4 generations. Hover over names to highlight matching lines.
+          </span>
+        </div>
+      )}
+
+      {/* Grid container */}
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-zinc-800">
+        <div className="min-w-[760px] py-2">
+          {/* Header row labels */}
           <div
-            className="col-start-2 row-start-1 row-span-8 relative"
-            aria-hidden
+            className="grid text-[10px] uppercase tracking-wider font-mono text-zinc-500 mb-2 px-1 text-center"
+            style={{
+              gridTemplateColumns: "160px 32px 150px 32px 150px 32px 150px",
+            }}
           >
-            <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-gold/30 to-transparent" />
-            <div className="absolute top-[12.5%] left-0 right-0 h-px bg-gold/30" />
-            <div className="absolute top-[87.5%] left-0 right-0 h-px bg-gold/30" />
+            <span>Subject</span>
+            <span />
+            <span>Parents</span>
+            <span />
+            <span>Grandparents</span>
+            <span />
+            <span>Great-Grandparents</span>
           </div>
 
-          {/* Parents */}
-          <div className="col-start-3 row-start-1 row-span-4 flex items-center px-3">
-            <PedigreeNode data={tree.sire} tier="parent" legend="Sire" />
-          </div>
-          <div className="col-start-3 row-start-5 row-span-4 flex items-center px-3">
-            <PedigreeNode data={tree.dam} tier="parent" legend="Dam" />
-          </div>
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: "160px 32px 150px 32px 150px 32px 150px",
+              gridTemplateRows: "repeat(8, minmax(50px, 1fr))",
+              rowGap: "6px",
+            }}
+          >
+            {/* Gen 0: Subject — spans all 8 rows */}
+            <div className="col-start-1 row-start-1 row-span-8 flex items-center pr-1">
+              <PedigreeNode
+                data={tree.horse}
+                tier="subject"
+                onHover={setHoveredName}
+              />
+            </div>
 
-          {/* Connector: parents → grandparents */}
-          <div className="col-start-4 row-start-1 row-span-4 relative" aria-hidden>
-            <div className="absolute inset-y-0 left-0 w-px bg-white/15" />
-            <div className="absolute top-[25%] left-0 right-0 h-px bg-white/15" />
-            <div className="absolute top-[75%] left-0 right-0 h-px bg-white/15" />
-          </div>
-          <div className="col-start-4 row-start-5 row-span-4 relative" aria-hidden>
-            <div className="absolute inset-y-0 left-0 w-px bg-white/15" />
-            <div className="absolute top-[25%] left-0 right-0 h-px bg-white/15" />
-            <div className="absolute top-[75%] left-0 right-0 h-px bg-white/15" />
-          </div>
+            {/* Connector 1: Subject → Parents */}
+            <div className="col-start-2 row-start-1 row-span-8">
+              <TreeConnector splits={2} />
+            </div>
 
-          {/* Grandparents */}
-          <div className="col-start-5 row-start-1 row-span-2 flex items-center px-3">
-            <PedigreeNode data={tree.sireSire} tier="grand" />
-          </div>
-          <div className="col-start-5 row-start-3 row-span-2 flex items-center px-3">
-            <PedigreeNode data={tree.sireDam} tier="grand" />
-          </div>
-          <div className="col-start-5 row-start-5 row-span-2 flex items-center px-3">
-            <PedigreeNode data={tree.damSire} tier="grand" />
-          </div>
-          <div className="col-start-5 row-start-7 row-span-2 flex items-center px-3">
-            <PedigreeNode data={tree.damDam} tier="grand" />
-          </div>
+            {/* Gen 1: Parents */}
+            <div className="col-start-3 row-start-1 row-span-4 flex items-center px-1">
+              <PedigreeNode
+                data={tree.sire}
+                tier="parent"
+                isLinebredDuplicate={isDuplicate(tree.sire.name)}
+                isHighlighted={isHighlighted(tree.sire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-3 row-start-5 row-span-4 flex items-center px-1">
+              <PedigreeNode
+                data={tree.dam}
+                tier="parent"
+                isLinebredDuplicate={isDuplicate(tree.dam.name)}
+                isHighlighted={isHighlighted(tree.dam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
 
-          {/* Connector: grandparents → great-grandparents */}
-          <div className="col-start-6 row-start-1 row-span-2 relative" aria-hidden>
-            <div className="absolute inset-y-0 left-0 w-px bg-white/15" />
-            <div className="absolute top-[25%] left-0 right-0 h-px bg-white/15" />
-            <div className="absolute top-[75%] left-0 right-0 h-px bg-white/15" />
-          </div>
-          <div className="col-start-6 row-start-3 row-span-2 relative" aria-hidden>
-            <div className="absolute inset-y-0 left-0 w-px bg-white/15" />
-            <div className="absolute top-[25%] left-0 right-0 h-px bg-white/15" />
-            <div className="absolute top-[75%] left-0 right-0 h-px bg-white/15" />
-          </div>
-          <div className="col-start-6 row-start-5 row-span-2 relative" aria-hidden>
-            <div className="absolute inset-y-0 left-0 w-px bg-white/15" />
-            <div className="absolute top-[25%] left-0 right-0 h-px bg-white/15" />
-            <div className="absolute top-[75%] left-0 right-0 h-px bg-white/15" />
-          </div>
-          <div className="col-start-6 row-start-7 row-span-2 relative" aria-hidden>
-            <div className="absolute inset-y-0 left-0 w-px bg-white/15" />
-            <div className="absolute top-[25%] left-0 right-0 h-px bg-white/15" />
-            <div className="absolute top-[75%] left-0 right-0 h-px bg-white/15" />
-          </div>
+            {/* Connector 2: Parents → Grandparents */}
+            <div className="col-start-4 row-start-1 row-span-4">
+              <TreeConnector splits={2} />
+            </div>
+            <div className="col-start-4 row-start-5 row-span-4">
+              <TreeConnector splits={2} />
+            </div>
 
-          {/* Great-grandparents */}
-          <div className="col-start-7 row-start-1 flex items-center pl-3">
-            <PedigreeNode data={tree.sireSireSire} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-2 flex items-center pl-3">
-            <PedigreeNode data={tree.sireSireDam} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-3 flex items-center pl-3">
-            <PedigreeNode data={tree.sireDamSire} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-4 flex items-center pl-3">
-            <PedigreeNode data={tree.sireDamDam} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-5 flex items-center pl-3">
-            <PedigreeNode data={tree.damSireSire} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-6 flex items-center pl-3">
-            <PedigreeNode data={tree.damSireDam} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-7 flex items-center pl-3">
-            <PedigreeNode data={tree.damDamSire} tier="great" />
-          </div>
-          <div className="col-start-7 row-start-8 flex items-center pl-3">
-            <PedigreeNode data={tree.damDamDam} tier="great" />
+            {/* Gen 2: Grandparents */}
+            <div className="col-start-5 row-start-1 row-span-2 flex items-center px-1">
+              <PedigreeNode
+                data={tree.sireSire}
+                tier="grand"
+                isLinebredDuplicate={isDuplicate(tree.sireSire.name)}
+                isHighlighted={isHighlighted(tree.sireSire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-5 row-start-3 row-span-2 flex items-center px-1">
+              <PedigreeNode
+                data={tree.sireDam}
+                tier="grand"
+                isLinebredDuplicate={isDuplicate(tree.sireDam.name)}
+                isHighlighted={isHighlighted(tree.sireDam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-5 row-start-5 row-span-2 flex items-center px-1">
+              <PedigreeNode
+                data={tree.damSire}
+                tier="grand"
+                isLinebredDuplicate={isDuplicate(tree.damSire.name)}
+                isHighlighted={isHighlighted(tree.damSire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-5 row-start-7 row-span-2 flex items-center px-1">
+              <PedigreeNode
+                data={tree.damDam}
+                tier="grand"
+                isLinebredDuplicate={isDuplicate(tree.damDam.name)}
+                isHighlighted={isHighlighted(tree.damDam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+
+            {/* Connector 3: Grandparents → Great-Grandparents */}
+            <div className="col-start-6 row-start-1 row-span-2">
+              <TreeConnector splits={2} />
+            </div>
+            <div className="col-start-6 row-start-3 row-span-2">
+              <TreeConnector splits={2} />
+            </div>
+            <div className="col-start-6 row-start-5 row-span-2">
+              <TreeConnector splits={2} />
+            </div>
+            <div className="col-start-6 row-start-7 row-span-2">
+              <TreeConnector splits={2} />
+            </div>
+
+            {/* Gen 3: Great-Grandparents */}
+            <div className="col-start-7 row-start-1 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.sireSireSire}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.sireSireSire.name)}
+                isHighlighted={isHighlighted(tree.sireSireSire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-2 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.sireSireDam}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.sireSireDam.name)}
+                isHighlighted={isHighlighted(tree.sireSireDam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-3 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.sireDamSire}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.sireDamSire.name)}
+                isHighlighted={isHighlighted(tree.sireDamSire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-4 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.sireDamDam}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.sireDamDam.name)}
+                isHighlighted={isHighlighted(tree.sireDamDam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-5 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.damSireSire}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.damSireSire.name)}
+                isHighlighted={isHighlighted(tree.damSireSire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-6 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.damSireDam}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.damSireDam.name)}
+                isHighlighted={isHighlighted(tree.damSireDam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-7 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.damDamSire}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.damDamSire.name)}
+                isHighlighted={isHighlighted(tree.damDamSire.name)}
+                onHover={setHoveredName}
+              />
+            </div>
+            <div className="col-start-7 row-start-8 flex items-center pl-1">
+              <PedigreeNode
+                data={tree.damDamDam}
+                tier="great"
+                isLinebredDuplicate={isDuplicate(tree.damDamDam.name)}
+                isHighlighted={isHighlighted(tree.damDamDam.name)}
+                onHover={setHoveredName}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 pt-6 border-t border-border flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
-        <span className="text-muted-foreground">
-          Sex: <span className="text-foreground capitalize">{sex || "—"}</span>
+      {/* Footer metadata bar */}
+      <div className="pt-4 border-t border-zinc-800/80 flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-light">
+        <span className="text-zinc-400">
+          Sex: <span className="text-zinc-200 capitalize font-medium">{sex || "—"}</span>
         </span>
-        <span className="text-muted-foreground">
-          Colour: <span className="text-foreground capitalize">{colour || "—"}</span>
+        <span className="text-zinc-400">
+          Colour: <span className="text-zinc-200 capitalize font-medium">{colour || "—"}</span>
         </span>
         {age && (
-          <span className="text-muted-foreground">
-            Age: <span className="text-foreground">{age} Years</span>
+          <span className="text-zinc-400">
+            Age: <span className="text-zinc-200 font-medium">{age} Years</span>
           </span>
         )}
         {formattedFoalingDate && (
-          <span className="text-muted-foreground">
-            Foaled: <span className="text-foreground">{formattedFoalingDate}</span>
+          <span className="text-zinc-400">
+            Foaled: <span className="text-zinc-200 font-medium">{formattedFoalingDate}</span>
           </span>
         )}
         {breedingUrl && (
@@ -283,7 +422,7 @@ function PedigreeChart({
             href={breedingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent hover:underline ml-auto"
+            className="text-emerald-400 hover:text-emerald-300 hover:underline ml-auto font-mono text-[10.5px] uppercase tracking-wider"
           >
             Full Breeding Record ↗
           </a>
@@ -326,32 +465,39 @@ export function PedigreeTable({
   const sireLineUrl = breedingUrl ? `${breedingUrl}#bm-sire` : undefined;
 
   return (
-    <div className="space-y-6">
-      {damSireName && (
-        <div className="inline-flex items-center gap-2 text-xs text-zinc-300 bg-surface-base/60 border border-zinc-800 rounded-lg px-3.5 py-2">
-          <span className="text-amber-400 font-semibold uppercase text-[10px] tracking-wider">Broodmare Sire</span>
-          <span className="text-heading font-medium">{damSireName}</span>
-        </div>
-      )}
-      {hasFullPedigree && (
-        <div className="flex gap-2">
-          {(["tree", "dam-line", "sire-line"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setView(v)}
-              className={`text-[10px] uppercase tracking-widest font-light px-3 py-1.5 rounded-full border transition-all ${
-                view === v
-                  ? "border-gold/30 text-accent bg-gold/5"
-                  : "border-border text-muted-foreground hover:text-frost"
-              }`}
-            >
-              {v === "tree" ? "Pedigree" : v.replace("-", " ")}
-            </button>
-          ))}
-        </div>
-      )}
+    <div className="space-y-5">
+      {/* Top Bar: Broodmare Sire Card & View Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {damSireName ? (
+          <div className="inline-flex items-center gap-2.5 text-xs text-zinc-200 bg-zinc-900/80 border border-zinc-800 rounded-lg px-3.5 py-2">
+            <span className="text-emerald-400 font-semibold uppercase text-[9.5px] tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
+              Broodmare Sire
+            </span>
+            <span className="text-foreground font-medium text-sm">{damSireName}</span>
+          </div>
+        ) : <div />}
 
+        {hasFullPedigree && (
+          <div className="flex gap-1.5 bg-zinc-900/60 p-1 border border-zinc-800 rounded-lg">
+            {(["tree", "dam-line", "sire-line"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                className={`text-[10px] uppercase tracking-widest font-mono px-3 py-1.5 rounded-md transition-all ${
+                  view === v
+                    ? "border border-emerald-500/30 text-emerald-400 bg-emerald-500/10 font-medium"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50"
+                }`}
+              >
+                {v === "tree" ? "Pedigree Matrix" : v.replace("-", " ")}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Main Pedigree Tree View */}
       {view === "tree" && (
         <PedigreeChart
           tree={tree}
@@ -364,22 +510,23 @@ export function PedigreeTable({
         />
       )}
 
+      {/* Dam Line View */}
       {view === "dam-line" && hasFullPedigree && damLine.length > 0 && (
-        <div className="border border-border bg-surface-base rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h5 className="text-xs uppercase tracking-wider text-muted-foreground">Dam Line</h5>
+        <div className="border border-zinc-800/80 bg-zinc-950/70 backdrop-blur-xl rounded-xl p-6">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+            <h5 className="text-xs uppercase tracking-wider font-mono text-zinc-400">Dam Line (Tail Female Timeline)</h5>
             {damLineUrl && (
               <a
                 href={damLineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] text-accent hover:underline uppercase tracking-widest"
+                className="text-[10px] text-emerald-400 hover:underline uppercase tracking-widest font-mono"
               >
                 Full Dam Line ↗
               </a>
             )}
           </div>
-          <div className="space-y-0">
+          <div className="space-y-1">
             {damLine.map((entry, i) => {
               const mareName = entry.name || "—";
               const sireName = entry.partner?.name || "—";
@@ -388,16 +535,16 @@ export function PedigreeTable({
               return (
                 <div
                   key={i}
-                  className={`flex items-center gap-3 text-xs font-light py-2.5 ${
-                    i < damLine.length - 1 ? "border-b border-white/[0.03]" : ""
+                  className={`flex items-center gap-3 text-xs font-light py-2.5 px-3 rounded-lg hover:bg-zinc-900/50 transition-colors ${
+                    i < damLine.length - 1 ? "border-b border-zinc-800/40" : ""
                   }`}
                 >
-                  <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-foreground truncate">{mareName}</span>
-                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{meta || "\u2014"}</span>
-                  <span className="text-muted-foreground text-[10px]">by</span>
-                  <span className="text-muted-foreground truncate">{sireName}</span>
-                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{sireMeta || "\u2014"}</span>
+                  <span className="text-zinc-500 font-mono w-6 text-right font-medium">{String(i + 1).padStart(2, "0")}.</span>
+                  <span className="text-rose-300 font-medium truncate">{mareName}</span>
+                  {meta && <span className="text-zinc-400 text-[10px] font-mono whitespace-nowrap">[{meta}]</span>}
+                  <span className="text-zinc-500 text-[10px] italic">by</span>
+                  <span className="text-emerald-300 font-medium truncate">{sireName}</span>
+                  {sireMeta && <span className="text-zinc-400 text-[10px] font-mono whitespace-nowrap">[{sireMeta}]</span>}
                 </div>
               );
             })}
@@ -405,22 +552,23 @@ export function PedigreeTable({
         </div>
       )}
 
+      {/* Sire Line View */}
       {view === "sire-line" && hasFullPedigree && sireLine.length > 0 && (
-        <div className="border border-border bg-surface-base rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h5 className="text-xs uppercase tracking-wider text-muted-foreground">Sire Line</h5>
+        <div className="border border-zinc-800/80 bg-zinc-950/70 backdrop-blur-xl rounded-xl p-6">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+            <h5 className="text-xs uppercase tracking-wider font-mono text-zinc-400">Sire Line (Paternal Stallion Line)</h5>
             {sireLineUrl && (
               <a
                 href={sireLineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] text-accent hover:underline uppercase tracking-widest"
+                className="text-[10px] text-emerald-400 hover:underline uppercase tracking-widest font-mono"
               >
                 Full Sire Line ↗
               </a>
             )}
           </div>
-          <div className="space-y-0">
+          <div className="space-y-1">
             {sireLine.map((entry, i) => {
               const sireName = entry.name || "—";
               const damName = entry.partner?.name || "—";
@@ -429,16 +577,16 @@ export function PedigreeTable({
               return (
                 <div
                   key={i}
-                  className={`flex items-center gap-3 text-xs font-light py-2.5 ${
-                    i < sireLine.length - 1 ? "border-b border-white/[0.03]" : ""
+                  className={`flex items-center gap-3 text-xs font-light py-2.5 px-3 rounded-lg hover:bg-zinc-900/50 transition-colors ${
+                    i < sireLine.length - 1 ? "border-b border-zinc-800/40" : ""
                   }`}
                 >
-                  <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-foreground truncate">{sireName}</span>
-                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{meta || "\u2014"}</span>
-                  <span className="text-muted-foreground text-[10px]">from</span>
-                  <span className="text-muted-foreground truncate">{damName}</span>
-                  <span className="text-muted-foreground text-[10px] whitespace-nowrap">{damMeta || "\u2014"}</span>
+                  <span className="text-zinc-500 font-mono w-6 text-right font-medium">{String(i + 1).padStart(2, "0")}.</span>
+                  <span className="text-emerald-300 font-medium truncate">{sireName}</span>
+                  {meta && <span className="text-zinc-400 text-[10px] font-mono whitespace-nowrap">[{meta}]</span>}
+                  <span className="text-zinc-500 text-[10px] italic">from</span>
+                  <span className="text-rose-300 font-medium truncate">{damName}</span>
+                  {damMeta && <span className="text-zinc-400 text-[10px] font-mono whitespace-nowrap">[{damMeta}]</span>}
                 </div>
               );
             })}
