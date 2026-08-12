@@ -512,14 +512,19 @@ export default async function CampaignDetailPage({ params }: Props) {
                   pedigreeData={
                     // pedigrees.json is an array of { horse_slug, sire_line, dam_line, ... }
                     // Indexing as object always returned undefined → blank pedigree chart.
+                    // Live inventory may use the hlt-* id while pedigrees.json uses horse_slug,
+                    // so fall back to the static canonical horse_slug before giving up.
                     (Array.isArray(pedigreesData)
                       ? (pedigreesData as any[]).find(
                           (p) =>
+                            p.horse_slug === hlt?.horse_slug ||
                             p.horse_slug === hltRecord.id ||
                             p.horse_slug === id ||
-                            p.slug === hltRecord.id
+                            p.slug === hlt?.horse_slug ||
+                            p.slug === hltRecord.id ||
+                            p.slug === id
                         )
-                      : (pedigreesData as any)?.[hltRecord.id]) || null
+                      : (pedigreesData as any)?.[hlt?.horse_slug || hltRecord.id]) || null
                   }
                   story={horseData?.story || horse?.story}
                   pedigreeBlurb={horseData?.pedigree_blurb}

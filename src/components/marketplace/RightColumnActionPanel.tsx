@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { InvestmentTermsModal } from "./InvestmentTermsModal";
-import { RegistrationGate } from "./RegistrationGate";
 import { CampaignStatusBadge } from "./CampaignStatusBadge";
 import { STATUS_INFO, getCampaignStatus, type CampaignStatus } from "@/lib/campaign-status";
 
@@ -172,15 +171,12 @@ export function RightColumnActionPanel({
     );
   }
 
-  // ─── GUEST: Show registration gate popup ───
+  // ─── GUEST: Only show campaign status (registration gate is on the left column) ───
   if (tier === "guest") {
     return (
-      <>
-        <RegistrationGate horseName={horseName} onSignIn={handleSignInRedirect} />
-        <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
-          <CampaignStatusBadge status={status} />
-        </div>
-      </>
+      <div className="rounded-2xl border border-border bg-surface-base p-6 space-y-4">
+        <CampaignStatusBadge status={status} />
+      </div>
     );
   }
 
