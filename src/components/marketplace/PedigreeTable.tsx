@@ -5,8 +5,8 @@ import { buildPedigreeTree } from "@/lib/pedigree-tree";
 import type { PedigreeCrossLine } from "@/lib/pedigree-tree";
 
 interface PedigreeData {
-  dam_line?: { mare?: string; sire?: string; dam?: string }[];
-  sire_line?: { mare?: string; sire?: string; dam?: string }[];
+  dam_line?: { name?: string; country?: string; year?: string; partner?: { name?: string; country?: string; year?: string } }[];
+  sire_line?: { name?: string; country?: string; year?: string; partner?: { name?: string; country?: string; year?: string } }[];
   cross_line?: PedigreeCrossLine;
 }
 
@@ -396,8 +396,9 @@ export function PedigreeTable({
           </div>
           <div className="space-y-0">
             {damLine.map((entry, i) => {
-              const parsedMare = parseHorseName(entry.mare || "");
-              const parsedSire = parseHorseName(entry.sire || "");
+              const mareName = entry.name || "—";
+              const sireName = entry.partner?.name || "—";
+              const meta = [entry.country, entry.year].filter(Boolean).join(" ").trim() || undefined;
               return (
                 <div
                   key={i}
@@ -406,9 +407,12 @@ export function PedigreeTable({
                   }`}
                 >
                   <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-foreground flex-1 truncate">{parsedMare.name}</span>
+                  <span className="text-foreground flex-1 truncate">{mareName}</span>
+                  {meta && (
+                    <span className="text-muted-foreground text-[10px]">{meta}</span>
+                  )}
                   <span className="text-muted-foreground text-[10px]">by</span>
-                  <span className="text-muted-foreground flex-1 truncate">{parsedSire.name}</span>
+                  <span className="text-muted-foreground flex-1 truncate">{sireName}</span>
                 </div>
               );
             })}
@@ -433,8 +437,9 @@ export function PedigreeTable({
           </div>
           <div className="space-y-0">
             {sireLine.map((entry, i) => {
-              const parsedSire = parseHorseName(entry.sire || "");
-              const parsedDam = parseHorseName(entry.dam || "");
+              const sireName = entry.name || "—";
+              const damName = entry.partner?.name || "—";
+              const meta = [entry.country, entry.year].filter(Boolean).join(" ").trim() || undefined;
               return (
                 <div
                   key={i}
@@ -443,9 +448,12 @@ export function PedigreeTable({
                   }`}
                 >
                   <span className="text-muted-foreground w-6 text-right">{i + 1}.</span>
-                  <span className="text-foreground flex-1 truncate">{parsedSire.name}</span>
+                  <span className="text-foreground flex-1 truncate">{sireName}</span>
+                  {meta && (
+                    <span className="text-muted-foreground text-[10px]">{meta}</span>
+                  )}
                   <span className="text-muted-foreground text-[10px]">from</span>
-                  <span className="text-muted-foreground flex-1 truncate">{parsedDam.name}</span>
+                  <span className="text-muted-foreground flex-1 truncate">{damName}</span>
                 </div>
               );
             })}
