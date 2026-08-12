@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { appendLead } from "@/lib/google-sheets";
+import { appendLead as appendLeadSupabase } from "@/lib/supabase";
 import { notifyAlexOfInterest } from "@/lib/notify-alex";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,26 @@ export async function POST(request: NextRequest) {
       referrer_url: "",
       status: "New",
     });
+
+    // Dual-write: mirror to Supabase after Sheets write succeeds.
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        await appendLeadSupabase({
+          timestamp: new Date().toISOString(),
+          user_email: user_email || decoded.email || "",
+          user_name: user_name || "",
+          horse_slug,
+          action_type,
+          utm_source: "",
+          utm_campaign: "",
+          referrer_url: "",
+          status: "New",
+        });
+        console.log('[dual-write] Supabase lead append succeeded');
+      } catch (e: any) {
+        console.error('[dual-write] Supabase lead append failed:', e.message);
+      }
+    }
 
     // Send Alex an email notification for waitlist signups
     if (action_type === "waitlist") {

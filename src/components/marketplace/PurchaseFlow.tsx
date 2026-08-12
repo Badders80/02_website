@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
+import Image from "next/image";
 import { STATUS_INFO, type CampaignStatus } from "@/lib/campaign-status";
+import { posthog } from "@/lib/posthog-client";
 
 interface PurchasePageProps {
   horseName: string;
@@ -148,10 +150,12 @@ export default function PurchasePage(props: PurchasePageProps) {
     }
   }, [authLoading, user, kycStatus, router, props.horseSlug]);
 
-  // Fetch live inventory only when authenticated AND server says purchasable
+  const initialInventoryFetchRef = useRef(false);
   useEffect(() => {
+    if (initialInventoryFetchRef.current) return;
+    initialInventoryFetchRef.current = true;
     if (!user || !serverPurchasable) {
-      setInventoryLoading(false);
+      setTimeout(() => setInventoryLoading(false), 0);
       return;
     }
     async function fetchLive() {
@@ -168,7 +172,9 @@ export default function PurchasePage(props: PurchasePageProps) {
         setInventoryLoading(false);
       }
     }
-    fetchLive();
+    // Defer to avoid synchronous setState during render cycle
+    const t = setTimeout(() => fetchLive(), 0);
+    return () => clearTimeout(t);
   }, [props.horseSlug, user, serverPurchasable]);
 
   // Closed catalog: show First to know / status without forcing login spinner forever
@@ -201,10 +207,11 @@ export default function PurchasePage(props: PurchasePageProps) {
             <div className="flex items-center gap-4 mb-10">
               <div className="w-14 h-14 rounded-xl bg-surface-base border border-border overflow-hidden relative flex-shrink-0">
                 {props.horseImage && (
-                  <img
+                  <Image
                     src={props.horseImage}
                     alt={props.horseName}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 )}
               </div>
@@ -272,6 +279,12 @@ export default function PurchasePage(props: PurchasePageProps) {
     setIsRedirecting(true);
     setErrorMsg("");
 
+    posthog.capture("purchase_started", {
+      horse_slug: props.horseSlug,
+      shares_selected: sharesToBuy,
+      total_nzd: sharesToBuy * pricePerShareNzd,
+    });
+
     try {
       const token = await user.getIdToken();
       const res = await fetch("/api/checkout/create-session", {
@@ -295,7 +308,7 @@ export default function PurchasePage(props: PurchasePageProps) {
             sa_signed_at: saSignedAt,
             pds_doc: props.hasPds ? `/documents/${props.horseSlug}/pds.pdf` : null,
             sa_doc: props.hasSa
-              ? `/documents/${props.horseSlug}/syndicate-agreement.pdf`
+              ? `/documents/${props.horseSlug}/sa.pdf`
               : null,
           },
         }),
@@ -338,7 +351,7 @@ export default function PurchasePage(props: PurchasePageProps) {
           <div className="flex items-center gap-4 mb-10">
             <div className="w-14 h-14 rounded-xl bg-surface-base border border-border overflow-hidden relative flex-shrink-0">
               {props.horseImage && (
-                <img src={props.horseImage} alt={props.horseName} className="w-full h-full object-cover" />
+                <Image src={props.horseImage} alt={props.horseName} fill className="object-cover" />
               )}
             </div>
             <div>
@@ -650,7 +663,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                       </div>
                       {props.hasSa && (
                         <a
-                          href={`/documents/${props.horseSlug}/syndicate-agreement.pdf`}
+                          href={`/documents/${props.horseSlug}/sa.pdf`}
                           target="_blank"
                           rel="noreferrer"
                           className="text-[10px] uppercase tracking-wider text-foreground hover:text-pure-white transition"
@@ -673,7 +686,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                       >
                         <iframe
                           title={`${props.horseName} Syndicate Agreement`}
-                          src={`/documents/${props.horseSlug}/syndicate-agreement.pdf#view=FitH`}
+                          src={`/documents/${props.horseSlug}/sa.pdf#view=FitH`}
                           className="w-full min-h-[40rem] h-[40rem] bg-white rounded-lg"
                         />
                       </div>

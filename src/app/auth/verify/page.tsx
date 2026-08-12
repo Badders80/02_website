@@ -41,31 +41,41 @@ export default function VerifyPage() {
   const [polling, setPolling] = useState(false);
   const [isFromStripe, setIsFromStripe] = useState(false);
 
-  // Use refs to access latest values inside the polling interval without restarting the effect.
+  // Keep refs in sync with latest state without mutating during render.
   const kycStatusRef = useRef(kycStatus);
-  kycStatusRef.current = kycStatus;
   const refreshClaimsRef = useRef(refreshClaims);
-  refreshClaimsRef.current = refreshClaims;
+  useEffect(() => {
+    kycStatusRef.current = kycStatus;
+    refreshClaimsRef.current = refreshClaims;
+  }, [kycStatus, refreshClaims]);
 
-  // Poll for status changes after returning from Stripe.
-  // Calls the server-side create-session endpoint which performs the authoritative Stripe list + sync,
-  // instead of only refreshing the Firebase token client-side.
+  // Capture Stripe return state and start polling. State updates that happen
+  // during effect evaluation are deferred via setTimeout so they do not
+  // trigger cascading renders.
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const fromStripe = urlParams.get("from") === "stripe" || document.referrer.includes("stripe.com");
-    setIsFromStripe(fromStripe);
 
     if (!fromStripe || !user) {
-      setPolling(false);
+      setTimeout(() => {
+        setIsFromStripe(fromStripe);
+        setPolling(false);
+      }, 0);
       return;
     }
 
     if (kycStatusRef.current === "verified") {
-      setPolling(false);
+      setTimeout(() => {
+        setIsFromStripe(true);
+        setPolling(false);
+      }, 0);
       return;
     }
 
-    setPolling(true);
+    setTimeout(() => {
+      setIsFromStripe(true);
+      setPolling(true);
+    }, 0);
     console.log("[KYC verify] Starting server-side polling for uid:", user.uid);
 
     let interval: NodeJS.Timeout | null = null;

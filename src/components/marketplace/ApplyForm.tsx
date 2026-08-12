@@ -72,7 +72,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
         </div>
         <h3 className="text-[18px] font-medium text-white">Application Submitted!</h3>
         <p className="text-[14px] text-foreground">
-          We've received your application for {horseName}. Our team will review it and contact you at {formData.email} shortly.
+          We&apos;ve received your application for {horseName}. Our team will review it and contact you at {formData.email} shortly.
         </p>
         <button
           onClick={() => setSuccess(false)}

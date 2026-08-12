@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { readHoldingsByEmail } from "@/lib/google-sheets";
+import { readHoldingsByEmail as readHoldingsByEmailSupabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,19 @@ export async function GET(request: NextRequest) {
     }
 
     const holdings = await readHoldingsByEmail(email);
+
+    // Shadow-read Supabase for reconciliation (Sheets remains primary).
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        const supabaseData = await readHoldingsByEmailSupabase(email);
+        if (supabaseData.length !== holdings.length) {
+          console.warn('[dual-write] Holdings count mismatch:', holdings.length, 'vs', supabaseData.length);
+        }
+      } catch (e: any) {
+        console.error('[dual-write] Supabase shadow read failed:', e.message);
+      }
+    }
+
     return NextResponse.json({ holdings });
   } catch (error: any) {
     console.error("[API Holdings] Error:", error);

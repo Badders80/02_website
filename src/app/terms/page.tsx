@@ -30,7 +30,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-2xl font-light text-foreground mb-4">2. Use License</h2>
               <p className="mb-4">
-                Permission is granted to temporarily download one copy of the materials (information or software) on Evolution Stables' website for personal, non-commercial transitory viewing only.
+                Permission is granted to temporarily download one copy of the materials (information or software) on Evolution Stables&apos; website for personal, non-commercial transitory viewing only.
               </p>
             </section>
 
@@ -53,7 +53,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-2xl font-light text-foreground mb-4">4. Disclaimer</h2>
               <p>
-                The materials on Evolution Stables' website are provided on an 'as is' basis. Evolution Stables makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+                The materials on Evolution Stables&apos; website are provided on an &apos;as is&apos; basis. Evolution Stables makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
               </p>
             </section>
 

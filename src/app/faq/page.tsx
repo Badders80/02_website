@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { FAQStructuredData } from "@/components/seo/FAQStructuredData";
 import { faqItems } from "@/lib/faq-items";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "FAQ — Racehorse Ownership Questions Answered",
@@ -70,12 +71,12 @@ export default function FAQPage() {
             <p className="text-[14px] font-light text-muted-foreground">
               Still have questions?
             </p>
-            <a
+            <Link
               href="/marketplace"
               className="inline-block text-[11px] uppercase tracking-[0.2em] text-accent border border-accent/30 px-8 py-4 rounded-full hover:bg-accent/10 transition duration-300"
             >
               Explore the Marketplace
-            </a>
+            </Link>
           </div>
         </div>
       </main>

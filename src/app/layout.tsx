@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { PostHogProviderWrapper } from "@/lib/posthog-client";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -97,7 +98,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-canvas text-foreground antialiased relative" suppressHydrationWarning>
         <SmoothScrollProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <PostHogProviderWrapper>{children}</PostHogProviderWrapper>
+          </AuthProvider>
         </SmoothScrollProvider>
       </body>
     </html>

@@ -11,7 +11,7 @@ interface NotifyParams {
   interestedEmail: string;
   /** The display name of the horse (e.g. "Almanzor x Night Danza") */
   horseName: string;
-  /** The horse slug (e.g. "almanzor-x-night-danza") */
+  /** The horse slug (e.g. "nellie") */
   horseSlug: string;
   /** Whether the person was logged in or a guest */
   source: "logged-in" | "guest";

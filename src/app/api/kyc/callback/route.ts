@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { setCustomClaims } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
+import { logEvent } from '@/lib/supabase';
 
 /**
  * Stripe Identity webhook handler.
@@ -59,6 +60,21 @@ export async function POST(request: NextRequest) {
         if (event.type === 'identity.verification_session.verified') {
           await setCustomClaims(uid, { kyc_status: 'verified', role: 'investor' });
           console.log('[KYC callback] Claims set to verified for uid:', uid);
+
+          // Audit event for KYC verification (dual-write phase; fire-and-forget).
+          if (process.env.DUAL_WRITE_ENABLED === 'true') {
+            try {
+              await logEvent({
+                user_uid: uid,
+                event_type: 'kyc_verified',
+                entity_type: 'user',
+                entity_id: session.id,
+                metadata: { kyc_session_id: session.id, verified_at: new Date().toISOString() },
+              });
+            } catch (e: any) {
+              console.error('[dual-write] Supabase logEvent failed:', e.message);
+            }
+          }
         } else if (event.type === 'identity.verification_session.requires_input') {
           await setCustomClaims(uid, { kyc_status: 'requires_input', kyc_session_id: session.id });
           console.log('[KYC callback] Claims set to requires_input for uid:', uid, 'session:', session.id);

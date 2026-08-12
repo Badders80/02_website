@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -140,28 +140,6 @@ interface Communication {
   category: string;
 }
 
-const MOCK_HOLDING: HoldingRecord = {
-  id: "mock-holding-1",
-  hlt_id: "hlt-prudentia",
-  horse_microchip: "985125000126462",
-  shares_owned: 1,
-  percentage_owned: 1.0,
-  purchase_price_cents: 150000,
-  status: "paid",
-  created_at: new Date().toISOString(),
-};
-
-const MOCK_UPDATE: ContentUpdate = {
-  id: "mock-update-1",
-  content_type: "text",
-  horse_microchip: "985125000126462",
-  title: "Morning gallop on the sand",
-  content_date: "2026-06-08",
-  full_text: "Prudentia worked nicely over 1000m on the sand track this morning, pacing the last 400m in 24.2 seconds. Mark Walker reported she was relaxed and hit the line with plenty in reserve.",
-  status: "published",
-  horse_name: "Prudentia"
-};
-
 export default function MyStablePage() {
   const { user, loading: authLoading, kycStatus } = useAuth();
 
@@ -250,6 +228,7 @@ export default function MyStablePage() {
     }
   }, [user]);
 
+  const inboxGuardRef = useRef(false);
   // Lazy-load inbox when tab opens
   useEffect(() => {
     if (!user) return;
@@ -259,7 +238,11 @@ export default function MyStablePage() {
       !communicationsError &&
       !communicationsLoading
     ) {
-      fetchCommunications();
+      if (inboxGuardRef.current) return;
+      inboxGuardRef.current = true;
+      setTimeout(() => {
+        fetchCommunications();
+      }, 0);
     }
   }, [
     activeTab,
@@ -296,34 +279,17 @@ export default function MyStablePage() {
       new URLSearchParams(window.location.search).get("success") === "true";
 
     if (successParam) {
-      setPurchaseSuccess(true);
-      window.history.replaceState({}, "", "/mystable");
+      setTimeout(() => {
+        setPurchaseSuccess(true);
+        window.history.replaceState({}, "", "/mystable");
+      }, 0);
     }
 
     if (!user) {
-      const previewCampaign: Campaign = {
-        id: "hlt-prudentia",
-        shares_total: 100,
-        share_price_cents: 150000,
-        horse_microchip: "985125000126462",
-        horse: {
-          name: "Prudentia",
-          age: 4,
-          sex: "Mare",
-          colour: "Bay",
-          sire_name: "Proisir (AUS)",
-          dam_name: "Little Bit Irish (NZ)",
-          image_url: "/images/content/stables/prudentia-action.png",
-        },
-        trainer: {
-          name: "Lance O'Sullivan & Andrew Scott",
-          stable_name: "Wexford Stables",
-          location: "Matamata, NZ",
-        },
-      };
-      setHoldings([MOCK_HOLDING]);
-      setCampaigns({ "hlt-prudentia": previewCampaign });
-      setUpdates([MOCK_UPDATE]);
+      // Logged-out users see the sign-in overlay with an empty, non-loading state
+      setHoldings([]);
+      setCampaigns({});
+      setUpdates([]);
       setLoadingData(false);
       setLiveHoldingsLoading(false);
       return;

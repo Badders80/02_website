@@ -25,7 +25,11 @@
     "pedigree": "Gelding / Derryn (AUS) x A'Guin Ace (NZ)",
     "wins": "0",
     "placed": "0",
-    "next_up": "Spring trials"
+    "next_up": "Spring trials",
+    "campaign_status": "fully_subscribed",
+    "barn_name": "",
+    "breeding_name": "Derryn x A'Guin Ace",
+    "official_name": "First Gear"
   },
   {
     "id": "hlt-prudentia",
@@ -53,7 +57,11 @@
     "pedigree": "Mare / Proisir (AUS) x Little Bit Irish (NZ)",
     "wins": "0",
     "placed": "0",
-    "next_up": "TBD"
+    "next_up": "TBD",
+    "campaign_status": "fully_subscribed",
+    "barn_name": "",
+    "breeding_name": "Proisir x Little Bit Irish",
+    "official_name": "Prudentia"
   },
   {
     "id": "hlt-hottathanafantasy",
@@ -81,7 +89,11 @@
     "pedigree": "Filly / Contributer (IRE) x Whiffle (USA)",
     "wins": "0",
     "placed": "0",
-    "next_up": "TBD"
+    "next_up": "TBD",
+    "campaign_status": "fully_subscribed",
+    "barn_name": "Coco",
+    "breeding_name": "Contributer x Whiffle",
+    "official_name": "Hottathanafantasy"
   },
   {
     "id": "hlt-i-stole-a-manolo",
@@ -109,12 +121,16 @@
     "pedigree": "Filly / Satono Aladdin (JPN) x Canuhandleajandal (NZ)",
     "wins": "0",
     "placed": "0",
-    "next_up": "TBD"
+    "next_up": "TBD",
+    "campaign_status": "listed",
+    "barn_name": "",
+    "breeding_name": "Satono Aladdin x Canuhandleajandal",
+    "official_name": "I Stole A Manolo"
   },
   {
-    "id": "hlt-almanzor-x-night-danza",
-    "horse_slug": "almanzor-x-night-danza",
-    "horse_name": "Almanzor x Night Danza (unnamed)",
+    "id": "hlt-nellie",
+    "horse_slug": "nellie",
+    "horse_name": "Lady Ketchikan",
     "horse_microchip": "PRE-REG-001",
     "owner_name": "B.A.X Bloodstock",
     "owner_id": "OWN-001",
@@ -130,18 +146,22 @@
     "shares_total": 20,
     "shares_sold": 0,
     "price_per_share_nzd": 250.0,
-    "listing_status": "pre_registration",
-    "marketplace_visible": false,
-    "image_path": "/images/content/horses/almanzor-x-night-danza-BG.png",
-    "story": "A 2YO filly by Almanzor out of Night Danza, currently in early education with Logan Racing. This horse is listed on the B.A.X Bloodstock website as \"coming soon\" — not yet named, identified by sire x dam combination.",
+    "listing_status": "active",
+    "marketplace_visible": true,
+    "image_path": "/images/content/horses/nellie-BG.png",
+    "story": "A 2YO filly by Almanzor out of Night Danza, currently in early education with Logan Racing. This horse is listed on the B.A.X Bloodstock website as \"coming soon\" \u2014 not yet named, identified by sire x dam combination.",
     "pedigree": "Filly / Almanzor (FR) x Night Danza (NZ)",
     "wins": "None",
     "placed": "None",
-    "next_up": "TBD"
+    "next_up": "TBD",
+    "campaign_status": "coming_soon",
+    "barn_name": "Nellie",
+    "breeding_name": "Almanzor x Night Danza",
+    "official_name": null
   },
   {
-    "id": "hlt-turn-me-loose-x-yearn",
-    "horse_slug": "turn-me-loose-x-yearn",
+    "id": "hlt-tml-x-yearn",
+    "horse_slug": "tml-x-yearn",
     "horse_name": "Turn Me Loose x Yearn (unnamed)",
     "horse_microchip": "985125000128426",
     "owner_name": "B.A.X Bloodstock",
@@ -160,11 +180,15 @@
     "price_per_share_nzd": 250.0,
     "listing_status": "pre_registration",
     "marketplace_visible": false,
-    "image_path": "/images/content/horses/turn-me-loose-x-yearn-BG.png",
-    "story": "A 2YO bay filly by Group 1 sire Turn Me Loose out of the Group 2-winning mare Yearn, currently in early education with Stephen Gray at Copper Belt Lodge, Palmerston North.\n\nThis filly combines a proven Group 1 sire line with a multiple-stakes-performed dam. Turn Me Loose has already produced a Group 1 winner (Licketysplit) and 89 winners from his first crops. Yearn was a high-class race mare with 7 wins and nearly $340,000 in prizemoney, including the Group 2 Auckland Thoroughbred Breeders Stakes and placings in the Group 1 Thorndon Mile and Group 2 Rich Hill Mile.\n\nBred by C W Kwok and offered at the 2025 Karaka National Yearling Sales Series (Lot 413, account Windsor Park Stud) before being withdrawn — retained for racing rather than sale. The filly is registered on the NZTR Stud Book with full identification (microchip, brands, DNA typing).",
+    "image_path": "/images/content/horses/tml-x-yearn-BG.png",
+    "story": "A 2YO bay filly by Group 1 sire Turn Me Loose out of the Group 2-winning mare Yearn, currently in early education with Stephen Gray at Copper Belt Lodge, Palmerston North.\n\nThis filly combines a proven Group 1 sire line with a multiple-stakes-performed dam. Turn Me Loose has already produced a Group 1 winner (Licketysplit) and 89 winners from his first crops. Yearn was a high-class race mare with 7 wins and nearly $340,000 in prizemoney, including the Group 2 Auckland Thoroughbred Breeders Stakes and placings in the Group 1 Thorndon Mile and Group 2 Rich Hill Mile.\n\nBred by C W Kwok and offered at the 2025 Karaka National Yearling Sales Series (Lot 413, account Windsor Park Stud) before being withdrawn \u2014 retained for racing rather than sale. The filly is registered on the NZTR Stud Book with full identification (microchip, brands, DNA typing).",
     "pedigree": "Filly / Turn Me Loose (NZ) x Yearn (NZ)",
     "wins": "None",
     "placed": "None",
-    "next_up": "TBD"
+    "next_up": "TBD",
+    "campaign_status": "draft",
+    "barn_name": "",
+    "breeding_name": "Turn Me Loose x Yearn",
+    "official_name": null
   }
 ]

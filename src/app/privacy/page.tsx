@@ -23,7 +23,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-2xl font-light text-foreground mb-4">1. Introduction</h2>
               <p>
-                Evolution Stables ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.
+                Evolution Stables (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.
               </p>
             </section>
 

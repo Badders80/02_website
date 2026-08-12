@@ -30,7 +30,7 @@ export default async function PurchasePage({ params }: Props) {
     "public",
     "documents",
     id,
-    "syndicate-agreement.pdf"
+    "sa.pdf"
   );
   const hasPds = fs.existsSync(pdsPath);
   const hasSa = fs.existsSync(saPath);

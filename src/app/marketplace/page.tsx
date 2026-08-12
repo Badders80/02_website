@@ -8,6 +8,7 @@ import {
   type CampaignStatus,
 } from "@/lib/campaign-status";
 import { readInventoryList } from "@/lib/google-sheets";
+import { readInventoryList as readInventoryListSupabase } from "@/lib/supabase";
 import hltsData from "@/data/hlts.json";
 
 export const runtime = "nodejs";
@@ -120,6 +121,19 @@ function staticBySlug(): Map<string, any> {
 async function loadMarketplaceSource(): Promise<MarketplaceSourceRow[]> {
   try {
     const live = await readInventoryList();
+
+    // Shadow-read Supabase for reconciliation (Sheets remains primary).
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        const supabaseLive = await readInventoryListSupabase();
+        if (supabaseLive.length !== live.length) {
+          console.warn('[dual-write] Marketplace inventory count mismatch:', live.length, 'vs', supabaseLive.length);
+        }
+      } catch (e: any) {
+        console.error('[dual-write] Supabase shadow read failed:', e.message);
+      }
+    }
+
     if (live.length > 0) {
       const staticMap = staticBySlug();
       return live

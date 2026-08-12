@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyIdToken } from '@/lib/firebase-admin';
 import { getStripe } from '@/lib/stripe';
 import { getLiveInventory } from '@/lib/google-sheets';
+import { getLiveInventory as getLiveInventorySupabase } from '@/lib/supabase';
 import {
   checkPurchaseEligibility,
   eligibilityHttpStatus,
@@ -93,6 +94,22 @@ export async function POST(request: NextRequest) {
     } catch (err: any) {
       console.warn(`[checkout] getLiveInventory failed for ${hlt_id}:`, err?.message);
       liveInventory = null;
+    }
+
+    // Shadow-read Supabase for reconciliation (Sheets remains primary).
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        const supabaseLive = await getLiveInventorySupabase(hlt_id);
+        if ((supabaseLive ? 1 : 0) !== (liveInventory ? 1 : 0)) {
+          console.warn('[dual-write] Inventory presence mismatch: Sheets=', !!liveInventory, 'Supabase=', !!supabaseLive);
+        } else if (supabaseLive && liveInventory) {
+          if (supabaseLive.shares_available !== liveInventory.shares_available) {
+            console.warn('[dual-write] Inventory shares_available mismatch:', liveInventory.shares_available, 'vs', supabaseLive.shares_available);
+          }
+        }
+      } catch (e: any) {
+        console.error('[dual-write] Supabase shadow read failed:', e.message);
+      }
     }
 
     const eligibility = checkPurchaseEligibility(

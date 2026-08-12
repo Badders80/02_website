@@ -77,6 +77,27 @@ const nextConfig: NextConfig = {
         destination: "/marketplace/tml-x-yearn/:path*",
         permanent: true,
       },
+      // Slug unification redirects (A1+A2+A3+A4)
+      {
+        source: "/marketplace/almanzor-x-night-danza",
+        destination: "/marketplace/nellie",
+        permanent: true,
+      },
+      {
+        source: "/marketplace/almanzor-x-night-danza/:path*",
+        destination: "/marketplace/nellie/:path*",
+        permanent: true,
+      },
+      {
+        source: "/marketplace/turn-me-loose-x-yearn",
+        destination: "/marketplace/tml-x-yearn",
+        permanent: true,
+      },
+      {
+        source: "/marketplace/turn-me-loose-x-yearn/:path*",
+        destination: "/marketplace/tml-x-yearn/:path*",
+        permanent: true,
+      },
     ];
   },
 };

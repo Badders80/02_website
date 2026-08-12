@@ -97,7 +97,7 @@ const LEGAL_DOCUMENTS = [
   {
     name: "Syndicate Agreement",
     subtitle: "PDF · Operational Syndicate Structure",
-    filename: "syndicate-agreement.pdf",
+    filename: "sa.pdf",
   },
 ] as const;
 
@@ -315,7 +315,7 @@ export function DetailTabs({
               {trainerCommentary && (
                 <div className="p-4 rounded-xl bg-surface-base/80 border border-amber-500/20 text-sm text-amber-100/90 italic leading-relaxed">
                   <span className="text-amber-400 font-semibold uppercase text-[10px] tracking-wider block not-italic mb-1">Trainer Commentary</span>
-                  "{trainerCommentary}"
+                  &ldquo;{trainerCommentary}&rdquo;
                 </div>
               )}
               {trainer.contact_name && (

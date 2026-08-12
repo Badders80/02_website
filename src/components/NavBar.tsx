@@ -36,8 +36,11 @@ export function NavBar() {
   const [isCompact, setIsCompact] = useState(false);
   const navRowRef = useRef<HTMLDivElement>(null);
 
-  // Close mobile menu when route changes
+  // Close mobile menu on initial mount only (route-change listener not available in App Router)
+  const menuToggledOnMount = useRef(false);
   useEffect(() => {
+    if (menuToggledOnMount.current) return;
+    menuToggledOnMount.current = true;
     setIsMenuOpen(false);
   }, []);
 

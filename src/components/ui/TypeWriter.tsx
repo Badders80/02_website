@@ -53,13 +53,14 @@ export function TypeWriter({
   useEffect(() => {
     if (!started) return;
 
-    // Respect reduced-motion — skip animation, show full text immediately
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      if (cyclingWords) {
-        setDisplayedText(words![0]);
-      } else {
-        setDisplayedText(text ?? "");
-      }
+      setTimeout(() => {
+        if (cyclingWords) {
+          setDisplayedText(words![0]);
+        } else {
+          setDisplayedText(text ?? "");
+        }
+      }, 0);
       return;
     }
 
@@ -83,8 +84,10 @@ export function TypeWriter({
             setDisplayedText(displayedText.slice(0, -1));
           }, deleteSpeed);
         } else {
-          setWordIndex((prev) => (prev + 1) % words!.length);
-          setPhase("typing");
+          setTimeout(() => {
+            setWordIndex((prev) => (prev + 1) % words!.length);
+            setPhase("typing");
+          }, 0);
         }
       }
     } else {

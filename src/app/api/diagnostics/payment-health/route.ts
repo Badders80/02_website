@@ -5,6 +5,7 @@ import {
   readInventoryBySlug,
   readInventoryList,
 } from "@/lib/google-sheets";
+import { supabase } from "@/lib/supabase";
 import { getCampaignStatus, canPurchase } from "@/lib/campaign-status";
 
 export const dynamic = "force-dynamic";
@@ -45,11 +46,18 @@ export async function GET(request: Request) {
     NEXT_PUBLIC_APP_URL: !!process.env.NEXT_PUBLIC_APP_URL,
     SMTP: !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS),
     PURCHASES_ENABLED_RAW: process.env.PURCHASES_ENABLED ?? null,
+    SUPABASE: !!(
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    ),
+    DUAL_WRITE_ENABLED: process.env.DUAL_WRITE_ENABLED === 'true',
   };
 
   const purchases_enabled = isPurchasesEnabled();
 
   let sheets: Record<string, unknown> = { ok: false };
+  let supabaseHealth: Record<string, unknown> = { ok: false };
   let manolo: Record<string, unknown> | null = null;
 
   try {
@@ -92,6 +100,24 @@ export async function GET(request: Request) {
       inventory_rows: list.length,
       inventory_tab_default: "hlts",
     };
+
+    // Supabase health check alongside Sheets.
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        const { data, error } = await supabase().from('inventory').select('id').limit(1);
+        supabaseHealth = {
+          ok: !error,
+          error: error?.message || null,
+          reachable: Array.isArray(data),
+        };
+      } catch (supaErr: any) {
+        supabaseHealth = {
+          ok: false,
+          error: supaErr?.message || 'supabase check failed',
+          reachable: false,
+        };
+      }
+    }
   } catch (err: any) {
     sheets = {
       ok: false,
@@ -136,6 +162,7 @@ export async function GET(request: Request) {
       PAYMENT_RECOVER_SECRET: !!process.env.PAYMENT_RECOVER_SECRET,
     },
     sheets,
+    supabase: supabaseHealth,
     manolo,
     webhook: {
       checkout_url: "https://www.evolutionstables.nz/api/checkout/webhook",

@@ -77,7 +77,10 @@ export function PressShowcaseSection() {
     setOpenArticleUrl((current) => (current === article.url ? null : article.url));
   };
 
+  const resetCarouselRef = useRef(false);
   useEffect(() => {
+    if (resetCarouselRef.current) return;
+    resetCarouselRef.current = true;
     setStartIndex(0);
     setOpenArticleUrl(null);
   }, [rightArticles.length]);
@@ -410,7 +413,7 @@ export function PressShowcaseSection() {
             AS FEATURED IN
           </p>
           <div ref={featuredHeaderRef} className="pb-6">
-            <LogoCarousel logos={partnerLogos} speed={30} logoHeight={28} />
+            <LogoCarousel logos={partnerLogos} speed={16} logoHeight={35} />
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "./auth-context";
 import { useRouter } from "next/navigation";
+import { posthog } from "./posthog-client";
 
 interface PurchaseParams {
   hltId: string;
@@ -41,6 +42,12 @@ export function usePurchaseFlow() {
 
     setIsRedirecting(true);
     setErrorMsg("");
+
+    posthog.capture("purchase_started", {
+      horse_slug: hltId,
+      shares_selected: sharesToBuy,
+      total_nzd: null,
+    });
 
     const isBypassStripe = process.env.NEXT_PUBLIC_BYPASS_STRIPE === "true";
 

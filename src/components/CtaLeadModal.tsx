@@ -79,7 +79,10 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useLayoutEffect(() => {
+  const initialMountedRef = useRef(false);
+  useEffect(() => {
+    if (initialMountedRef.current) return;
+    initialMountedRef.current = true;
     setMounted(true);
     const attribution = captureAttributionFromUrl();
     attributionRef.current = {
@@ -90,17 +93,17 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
     const submitted = localStorage.getItem('es_cta_submitted') === 'true';
     const dismissed = sessionStorage.getItem('es_cta_dismissed') === 'true';
     if (submitted || dismissed) {
-      setOpen(false);
+      setTimeout(() => setOpen(false), 0);
       return;
     }
 
     // Click-through (LinkedIn etc.) → open now. Organic → delay.
     if (forceInstant || attribution.fromLink) {
-      setOpen(true);
+      setTimeout(() => setOpen(true), 0);
       return;
     }
 
-    setOpen(false);
+    setTimeout(() => setOpen(false), 0);
     const t = window.setTimeout(() => setOpen(true), CTA_OPEN_DELAY_MS);
     return () => window.clearTimeout(t);
   }, [forceInstant]);
@@ -176,7 +179,7 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
   const modal = (
     <div className="cta-lead-modal pointer-events-none fixed inset-0 z-[9990]" role="presentation">
       <div
-        className={`absolute inset-0 z-0 bg-canvas/55 backdrop-blur-[2px] ${enterClass}`}
+        className={`absolute inset-0 z-0 bg-canvas/80 backdrop-blur-[4px] ${enterClass}`}
         aria-hidden="true"
       />
 
@@ -187,7 +190,7 @@ export function CtaLeadModal({ forceInstant = false }: CtaLeadModalProps) {
         className="absolute inset-0 z-10 flex items-center justify-center p-4"
       >
         <div className={`pointer-events-auto relative w-full max-w-[760px] text-center ${enterClass}`}>
-          <div className="relative rounded-xl border border-border bg-canvas/95 px-8 py-10 shadow-[0_0_120px_rgba(0,0,0,0.98)] md:px-12 md:py-12">
+          <div className="relative rounded-xl border border-border bg-canvas px-8 py-10 shadow-[0_0_120px_rgba(0,0,0,0.98)] md:px-12 md:py-12">
             <button
               type="button"
               onClick={close}

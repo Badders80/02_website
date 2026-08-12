@@ -16,6 +16,7 @@ import horsesData from "@/data/horses.json";
 import pedigreesData from "@/data/pedigrees.json";
 import { getCampaignStatus, isOnWebsite } from "@/lib/campaign-status";
 import { getLiveInventory } from "@/lib/google-sheets";
+import { getLiveInventory as getLiveInventorySupabase } from "@/lib/supabase";
 import { roundUpListPriceNzd } from "@/lib/pricing";
 
 // Scan a horse's gallery directory for images (excluding the cover image already used)
@@ -228,6 +229,22 @@ export default async function CampaignDetailPage({ params }: Props) {
       `[marketplace/${id}] Live inventory failed; using static fallback:`,
       err?.message || err
     );
+  }
+
+  // Shadow-read Supabase for reconciliation (Sheets remains primary).
+  if (process.env.DUAL_WRITE_ENABLED === 'true') {
+    try {
+      const supabaseLive = await getLiveInventorySupabase(id);
+      if ((supabaseLive ? 1 : 0) !== (live ? 1 : 0)) {
+        console.warn('[dual-write] Inventory presence mismatch: Sheets=', !!live, 'Supabase=', !!supabaseLive);
+      } else if (supabaseLive && live) {
+        if (supabaseLive.shares_available !== live.shares_available) {
+          console.warn('[dual-write] Inventory shares_available mismatch:', live.shares_available, 'vs', supabaseLive.shares_available);
+        }
+      }
+    } catch (e: any) {
+      console.error('[dual-write] Supabase shadow read failed:', e.message);
+    }
   }
 
   if (!staticHlt && !live) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -85,9 +85,14 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
   }, [user, horseSlug, router, refreshClaims]);
 
   // Auto-check status on mount if kycStatus is pending
+  const initialCheckRef = useRef(false);
   useEffect(() => {
+    if (initialCheckRef.current) return;
+    initialCheckRef.current = true;
     if (user && kycStatus === "pending") {
-      checkStatus();
+      // Defer to avoid synchronous setState during render cycle
+      const t = setTimeout(() => checkStatus(), 0);
+      return () => clearTimeout(t);
     }
   }, [user, kycStatus, checkStatus]);
 

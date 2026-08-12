@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,7 +18,10 @@ function LoginForm() {
   const { signIn, signUp, user } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
-  const getRedirectTarget = () => searchParams.get("redirect") || "/mystable";
+  const getRedirectTarget = useCallback(
+    () => searchParams.get("redirect") || "/mystable",
+    [searchParams]
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

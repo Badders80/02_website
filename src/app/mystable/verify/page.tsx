@@ -151,7 +151,7 @@ export default function VerificationPage() {
                   Verification Started
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-mp-text-secondary">
-                  You have been redirected to Stripe's secure verification
+                  You have been redirected to Stripe&apos;s secure verification
                   page. Complete the process there, then return to this page.
                 </p>
                 <Link
@@ -203,7 +203,7 @@ export default function VerificationPage() {
               </h3>
               <ol className="space-y-3 list-decimal list-inside text-sm text-mp-text-secondary">
                 <li>Click the button below to start verification</li>
-                <li>You'll be redirected to Stripe's secure page</li>
+                <li>You&apos;ll be redirected to Stripe&apos;s secure page</li>
                 <li>Upload a photo of your government-issued ID</li>
                 <li>Take a selfie for identity matching</li>
                 <li>Return to this page once complete</li>

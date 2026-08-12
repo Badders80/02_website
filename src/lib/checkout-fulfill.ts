@@ -12,6 +12,8 @@ import {
   updateInventorySharesSold,
   invalidateHoldingsCache,
 } from "@/lib/google-sheets";
+import { fulfillPurchase, logEvent } from "@/lib/supabase";
+import { captureServerError, captureServerEvent } from "@/lib/posthog-server";
 
 export type FulfillResult = {
   duplicate?: boolean;
@@ -71,6 +73,13 @@ export async function fulfillCheckoutSession(
       `${logPrefix} Idempotency check failed for ${sessionId}:`,
       err.message
     );
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "idempotency_check",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
   }
 
   // Step 2: Amount validation
@@ -112,11 +121,21 @@ export async function fulfillCheckoutSession(
       `${logPrefix} Amount validation failed for ${sessionId}:`,
       err.message
     );
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "amount_validation",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
   }
 
   // Step 3: Record holding
   const purchasePriceTotalNzd = (session.amount_total || 0) / 100;
   const timestamp = new Date().toISOString();
+
+  const signedPdsUrl = meta.e_sign_pds === 'true' ? `/documents/${hltId}/pds.pdf` : "";
+  const signedSaUrl = meta.e_sign_sa === 'true' ? `/documents/${hltId}/sa.pdf` : "";
 
   const holdingRow = {
     purchase_id: sessionId,
@@ -125,8 +144,8 @@ export async function fulfillCheckoutSession(
     horse_slug: hltId,
     shares_owned: sharesToBuy,
     purchase_price_total_nzd: purchasePriceTotalNzd,
-    signed_pds_url: "",
-    signed_sa_url: "",
+    signed_pds_url: signedPdsUrl,
+    signed_sa_url: signedSaUrl,
     kyc_status: "verified",
     utm_source: "pending",
     utm_campaign: "pending",
@@ -136,11 +155,55 @@ export async function fulfillCheckoutSession(
     await appendHolding(holdingRow);
     invalidateHoldingsCache(userEmail);
     console.log(`${logPrefix} ✅ Holding recorded for ${sessionId}`);
+
+    captureServerEvent("payment_succeeded", {
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+      shares: sharesToBuy,
+      amount_nzd: purchasePriceTotalNzd,
+      amount_mismatch: amountMismatch,
+    });
+
+    // Dual-write: mirror to Supabase after Sheets write succeeds.
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        await fulfillPurchase({
+          purchase_id: sessionId,
+          user_email: userEmail,
+          horse_slug: hltId,
+          shares: sharesToBuy,
+          amount_nzd: purchasePriceTotalNzd,
+          signed_pds_url: signedPdsUrl,
+          signed_sa_url: signedSaUrl,
+          kyc_status: "verified",
+          utm_source: "pending",
+          utm_campaign: "pending",
+        });
+        await logEvent({
+          user_email: userEmail,
+          event_type: 'holding_issued',
+          entity_type: 'holding',
+          entity_id: sessionId,
+          metadata: { horse_slug: hltId, shares: sharesToBuy, amount_nzd: purchasePriceTotalNzd },
+        });
+        console.log(`${logPrefix} ✅ Supabase dual-write succeeded for ${sessionId}`);
+      } catch (e: any) {
+        console.error('[dual-write] Supabase write failed:', e.message);
+      }
+    }
   } catch (err: any) {
     console.error(
       `${logPrefix} CRITICAL: Failed to record holding for ${sessionId}:`,
       err.message
     );
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "record_holding",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
     throw new Error(`Holding record failed for ${sessionId}: ${err.message}`);
   }
 
@@ -173,6 +236,13 @@ export async function fulfillCheckoutSession(
       `${logPrefix} Failed to update inventory for ${hltId}:`,
       err.message
     );
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "update_inventory",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
   }
 
   // Step 5: Welcome email
@@ -202,6 +272,13 @@ export async function fulfillCheckoutSession(
       `${logPrefix} Failed to send welcome email to ${userEmail}:`,
       err.message
     );
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "welcome_email",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
   }
 
   // Step 5b: Admin notification
@@ -234,6 +311,13 @@ export async function fulfillCheckoutSession(
     }
   } catch (err: any) {
     console.error(`${logPrefix} Failed to send admin notification:`, err.message);
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "admin_notification",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
   }
 
   // Step 6: Communications log
@@ -252,6 +336,13 @@ export async function fulfillCheckoutSession(
       `${logPrefix} Failed to log communication for ${sessionId}:`,
       err.message
     );
+    captureServerError(err, {
+      component: "checkout-fulfill",
+      step: "communications_log",
+      session_id: sessionId,
+      user_email: userEmail,
+      hlt_id: hltId,
+    });
   }
 
   if (amountMismatch) {

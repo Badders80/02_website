@@ -10,6 +10,7 @@ import {
   type User,
 } from "firebase/auth";
 import { auth, isAuthInitialized } from "./firebase";
+import { posthog } from "./posthog-client";
 
 interface AuthContextType {
   user: User | null;
@@ -37,9 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isBypass) {
       const mockLoggedOut = typeof window !== "undefined" && localStorage.getItem("mock_signed_out") === "true";
       if (mockLoggedOut) {
-        setUser(null);
-        setRole("viewer");
-        setKycStatus("none");
+        // Defer mock logout state out of the effect body
+        setTimeout(() => {
+          setUser(null);
+          setRole("viewer");
+          setKycStatus("none");
+        }, 0);
       } else {
         const mockUser: User = {
           uid: "mock-user-123",
@@ -57,17 +61,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             },
           }),
         } as any;
-        setUser(mockUser);
-        setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
-        setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
+        setTimeout(() => {
+          setUser(mockUser);
+          setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
+          setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
+        }, 0);
       }
-      setLoading(false);
+      setTimeout(() => setLoading(false), 0);
       return;
     }
 
     if (!isAuthInitialized()) {
       // Firebase not initialized (SSR/build time)
-      setLoading(false);
+      setTimeout(() => setLoading(false), 0);
       return;
     }
 
@@ -75,10 +81,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubAuth = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
+        posthog.identify(u.uid, { email: u.email || undefined });
+        posthog.capture("signup_completed", { method: "email" });
         const token = await u.getIdTokenResult(true);
         setRole((token.claims.role as string) || "viewer");
         setKycStatus((token.claims.kyc_status as string) || "none");
       } else {
+        posthog.reset();
         setRole("viewer");
         setKycStatus("none");
       }

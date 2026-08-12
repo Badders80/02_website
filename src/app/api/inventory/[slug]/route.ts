@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLiveInventory } from "@/lib/google-sheets";
+import { getLiveInventory as getLiveInventorySupabase } from "@/lib/supabase";
 import { getCampaignStatus } from "@/lib/campaign-status";
 import {
   checkPurchaseEligibility,
@@ -30,6 +31,22 @@ export async function GET(
       live = await getLiveInventory(slug);
     } catch (err: any) {
       console.warn(`[API Inventory] live read failed for ${slug}:`, err?.message);
+    }
+
+    // Shadow-read Supabase for reconciliation (Sheets remains primary).
+    if (process.env.DUAL_WRITE_ENABLED === 'true') {
+      try {
+        const supabaseLive = await getLiveInventorySupabase(slug);
+        if ((supabaseLive ? 1 : 0) !== (live ? 1 : 0)) {
+          console.warn('[dual-write] Inventory presence mismatch: Sheets=', !!live, 'Supabase=', !!supabaseLive);
+        } else if (supabaseLive && live) {
+          if (supabaseLive.shares_available !== live.shares_available) {
+            console.warn('[dual-write] Inventory shares_available mismatch:', live.shares_available, 'vs', supabaseLive.shares_available);
+          }
+        }
+      } catch (e: any) {
+        console.error('[dual-write] Supabase shadow read failed:', e.message);
+      }
     }
 
     // Prefer live campaign_status / listing when present; static fallback

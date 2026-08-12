@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { InvestmentTermsModal } from "./InvestmentTermsModal";
@@ -557,8 +557,15 @@ function ComingSoonCard({ horseName, horseSlug }: { horseName: string; horseSlug
   const [loading, setLoading] = useState(false);
 
   // Pre-fill email if logged in
+  const prefillEmailRef = useRef(false);
   useEffect(() => {
-    if (user?.email) setEmail(user.email);
+    if (prefillEmailRef.current) return;
+    prefillEmailRef.current = true;
+    if (user?.email) {
+      const email = user.email;
+      // Defer state update out of the effect body
+      setTimeout(() => setEmail(email), 0);
+    }
   }, [user]);
 
   const handleSubmit = async () => {
