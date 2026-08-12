@@ -363,13 +363,19 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
         }
       }
-    ]
+    ],
+    "cross_line": {
+      "sire_dam_sire": "Lonhro",
+      "sire_dam_dam": "Regrowth",
+      "dam_sire_sire": "Last Tycoon",
+      "dam_sire_dam": "Courtza"
+    }
   },
   {
     "horse_slug": "prudentia",
@@ -699,13 +705,19 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
         }
       }
-    ]
+    ],
+    "cross_line": {
+      "sire_dam_sire": "Encosta de Lago",
+      "sire_dam_dam": "Factor",
+      "dam_sire_sire": "Last Tycoon",
+      "dam_sire_dam": "Courtza"
+    }
   },
   {
     "horse_slug": "hottathanafantasy",
@@ -999,13 +1011,19 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
         }
       }
-    ]
+    ],
+    "cross_line": {
+      "sire_dam_sire": "Exit to Nowhere",
+      "sire_dam_dam": "Seralia",
+      "dam_sire_sire": "Roberto",
+      "dam_sire_dam": "Arabia"
+    }
   },
   {
     "horse_slug": "i-stole-a-manolo",
@@ -1335,13 +1353,19 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
         }
       }
-    ]
+    ],
+    "cross_line": {
+      "sire_dam_sire": "Storm Cat",
+      "sire_dam_dam": "Foppy Dancer",
+      "dam_sire_sire": "Thorn Park",
+      "dam_sire_dam": "Cierzo"
+    }
   },
   {
     "horse_slug": "nellie",
@@ -1489,7 +1513,7 @@
         "year": "1935",
         "horse_id": 158228,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
@@ -1594,7 +1618,12 @@
         }
       }
     ],
-    "cross_line": []
+    "cross_line": {
+      "sire_dam_sire": "Maria's Mon",
+      "sire_dam_dam": "Darkara",
+      "dam_sire_sire": "Danehill",
+      "dam_sire_dam": "Confidentially"
+    }
   },
   {
     "horse_slug": "tml-x-yearn",
@@ -1730,7 +1759,7 @@
         "year": "1935",
         "horse_id": 158228,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
@@ -1847,6 +1876,11 @@
         }
       }
     ],
-    "cross_line": []
+    "cross_line": {
+      "sire_dam_sire": "Danehill",
+      "sire_dam_dam": "Kwan",
+      "dam_sire_sire": "Zabeel",
+      "dam_sire_dam": "Savannah Success"
+    }
   }
 ]
