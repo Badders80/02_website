@@ -509,7 +509,18 @@ export default async function CampaignDetailPage({ params }: Props) {
                   sharesTotal={hltRecord.shares_total}
                   sharesSold={hltRecord.shares_sold}
                   foalingDate={horseData?.foaling_date}
-                  pedigreeData={(pedigreesData as any)[hltRecord.id] || null}
+                  pedigreeData={
+                    // pedigrees.json is an array of { horse_slug, sire_line, dam_line, ... }
+                    // Indexing as object always returned undefined → blank pedigree chart.
+                    (Array.isArray(pedigreesData)
+                      ? (pedigreesData as any[]).find(
+                          (p) =>
+                            p.horse_slug === hltRecord.id ||
+                            p.horse_slug === id ||
+                            p.slug === hltRecord.id
+                        )
+                      : (pedigreesData as any)?.[hltRecord.id]) || null
+                  }
                   story={horseData?.story || horse?.story}
                   pedigreeBlurb={horseData?.pedigree_blurb}
                   trainerCommentary={horseData?.trainer_commentary}
