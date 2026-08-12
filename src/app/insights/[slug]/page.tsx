@@ -230,7 +230,7 @@ export default async function InsightArticlePage({ params }: PageProps) {
           {/* Disclaimer */}
           <div className="mt-16 pt-8 border-t border-border">
             <p className="text-[12px] font-light text-muted-foreground leading-[1.8]">
-              Evolution Stables is an authorised NZTR syndicator. Tokinvest FZCO is licensed by the Dubai Virtual Assets Regulatory Authority (VARA). This article is for informational purposes only and does not constitute investment advice or an offer of securities.
+              Evolution Stables is an authorised NZTR syndicator. This article is for informational purposes only and does not constitute investment advice or an offer of securities.
             </p>
           </div>
 

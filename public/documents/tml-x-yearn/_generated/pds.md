@@ -21,7 +21,7 @@ alex@evolutionstables.nz | +64 21 0828 0901 | https://www.evolutionstables.nz
 
 Evolution Stables is a New Zealand–based, NZTR-authorised syndicator offering fractional, fixed-term digital leasehold interests in thoroughbreds. We partner with owners and trainers to make ownership simpler and more accessible.
 
-Digital issuance and compliance infrastructure is provided in partnership with Tokinvest (VARA, Dubai).
+Digital administration and ownership records are managed by Evolution Stables as an NZTR authorised syndicator.
 
 **Evolution Stables Ltd** (NZBN: 9429050177875)  
 Alex Baddeley, Founder
@@ -44,7 +44,7 @@ The 5% leasehold interest is:
 - Split into **20** digital lots (each representing **0.25%** of the horse)
 - Fixed for the term **2026-09-01** to **2029-08-01** (36 months)
 - Managed by Evolution Stables
-- Digitally administered via Tokinvest where applicable
+- Digitally administered by Evolution Stables where applicable
 
 ### Fees / price (provisional until legal sign-off)
 - **661.5 NZD** per lot (see also owner rate / platform fee in field pack)

@@ -41,7 +41,7 @@ const categoryLabels: Record<Category, string> = {
 
 const categoryDescriptions: Record<Category, string> = {
   Guide: "Everything you need to know about racehorse ownership in New Zealand — costs, syndication, prize money, and how to get started.",
-  Press: "Media coverage featuring Evolution Stables, Tokinvest, and the digital-syndication movement.",
+  Press: "Media coverage featuring Evolution Stables and the digital-syndication movement.",
   "Race Report": "Updates from the track — race previews, results, and training reports for Evolution Stables thoroughbreds.",
   Team: "The people behind Evolution Stables — trainers, owners, and partners.",
 };

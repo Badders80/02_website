@@ -21,7 +21,7 @@
         "dam": "Little Bit Irish",
         "colour": "Bay",
         "microchip": "985125000126462",
-        "story": "Prudentia was bought as a yearling out of the NZ Bloodstock Select Sale. She showed early promise in the breaking-in yard — a willing attitude and a turn of foot on soft ground. She won her maiden at Tauranga as a 3-year-old and went on to claim a tough, tactical victory in Race 7 (BM65, 1300m) at Te Rapa on a Heavy 10 in April 2026.",
+        "story": "Prudentia was bought as a yearling out of the NZ Bloodstock Select Sale. She showed early promise in the breaking-in yard \u2014 a willing attitude and a turn of foot on soft ground. She won her maiden at Tauranga as a 3-year-old and went on to claim a tough, tactical victory in Race 7 (BM65, 1300m) at Te Rapa on a Heavy 10 in April 2026.",
         "campaign": {
           "status": "sold-out",
           "statusLabel": "Sold Out",
@@ -53,8 +53,7 @@
           ],
           "nextRace": null
         },
-        "photo": "/images/content/stables/prudentia-action.png",
-        "tokinvestUrl": "https://portal.tokinvest.capital/investments/prudentia"
+        "photo": "/images/content/stables/prudentia-action.png"
       }
     },
     {
@@ -90,10 +89,9 @@
             "nzd": 310
           },
           "races": [],
-          "nextRace": "First trial — target late 2026"
+          "nextRace": "First trial \u2014 target late 2026"
         },
-        "photo": "/images/content/stables/horse-hotta.jpg",
-        "tokinvestUrl": "https://portal.tokinvest.capital/investments/hottathanafantasy"
+        "photo": "/images/content/stables/horse-hotta.jpg"
       }
     },
     {
@@ -130,8 +128,7 @@
           "races": [],
           "nextRace": "Autumn campaign 2026"
         },
-        "photo": "/images/content/stables/horse-first-gear.jpg",
-        "tokinvestUrl": "https://portal.tokinvest.capital/investments/first-gear"
+        "photo": "/images/content/stables/horse-first-gear.jpg"
       }
     },
     {
@@ -169,8 +166,7 @@
           "races": [],
           "nextRace": "Breaking-in to resume July 2026"
         },
-        "photo": "/images/content/stables/horse-manolo.jpg",
-        "tokinvestUrl": "https://portal.tokinvest.capital/investments/i-stole-a-manolo"
+        "photo": "/images/content/stables/horse-manolo.jpg"
       }
     }
   ],

@@ -148,7 +148,7 @@ export default function ReturnsPage() {
                 What investors actually receive
               </h2>
               <p>
-                After settlement, investors receive their pro-rata portion of the 75% gross-stakes pool allocated to investors. This is delivered to investor accounts through our regulated settlement partner, Tokinvest. Settlement timing and account access are governed by the terms of the syndication agreement and the platform&apos;s respective terms.
+                After settlement, investors receive their pro-rata portion of the 75% gross-stakes pool allocated to investors. Distributions are administered by Evolution Stables under the syndicate documents and NZTR requirements. Settlement timing and how funds are delivered are governed by the terms of the syndication agreement.
               </p>
               <p>
                 Alongside the distribution, investors receive reporting that explains the calculation. This includes race-by-race stakes, gross and net figures, the 75% investor allocation, and the pro-rata calculation applied to their holding.

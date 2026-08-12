@@ -363,7 +363,7 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
@@ -699,7 +699,7 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
@@ -999,7 +999,7 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
@@ -1037,7 +1037,7 @@
     "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=451442",
     "verified": true,
     "verified_at": "2026-06-24",
-    "notes": "Verified against loveracing.nz Stud Book. Breeder: Goldeye Trust. Dam sire: Jimmy Choux (from tokinvest listing).",
+    "notes": "Verified against loveracing.nz Stud Book. Breeder: Goldeye Trust. Dam sire: Jimmy Choux (from stud book / listing records).",
     "dam_line": [
       {
         "name": "Canuhandleajandal",
@@ -1335,7 +1335,7 @@
         "year": "1849",
         "horse_id": 193002,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null
@@ -1422,9 +1422,9 @@
     ],
     "cross_line": {
       "sire_dam_sire": "Maria's Mon (USA)",
-      "sire_dam_dam": "—",
+      "sire_dam_dam": "\u2014",
       "dam_sire_sire": "Danehill (USA)",
-      "dam_sire_dam": "—"
+      "dam_sire_dam": "\u2014"
     }
   },
   {
@@ -1560,7 +1560,7 @@
         "year": "1935",
         "horse_id": 158228,
         "partner": {
-          "name": "—",
+          "name": "\u2014",
           "country": "",
           "year": "",
           "horse_id": null

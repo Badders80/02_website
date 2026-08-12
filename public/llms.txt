@@ -1,12 +1,12 @@
 # Evolution Stables
 
-Evolution Stables is an NZTR-authorised digital racehorse syndicator based in New Zealand. We offer fractional, digital-syndication ownership of thoroughbred racehorses — accessible, transparent, and regulated under the New Zealand Financial Markets Conduct Act. Settlement and ownership records are managed through Tokinvest, a VARA-licensed platform.
+Evolution Stables is an NZTR-authorised digital racehorse syndicator based in New Zealand. We offer fractional, digital-syndication ownership of thoroughbred racehorses — accessible, transparent, and regulated under the New Zealand Financial Markets Conduct Act. Ownership records and settlement for NZ campaigns are administered by Evolution under NZTR rules and the applicable syndicate documents.
 
 ## What we are
 - NZTR authorised syndicator (Bloodstock Syndicator Code of Practice)
 - Digital-syndication platform for thoroughbred ownership
-- Regulated real-world asset (RWA) investment in racehorses
-- Partnered with Wexford Stables, Stephen Gray Racing, B.A.X Bloodstock, Tokinvest
+- Regulated racehorse ownership under New Zealand frameworks
+- Partnered with Wexford Stables, Stephen Gray Racing, B.A.X Bloodstock
 
 ## What we are not
 - Not a cryptocurrency or tokenisation scheme
