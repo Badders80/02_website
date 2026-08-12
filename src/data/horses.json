@@ -300,8 +300,8 @@
     "official_name": null,
     "slug": "tml-x-yearn",
     "microchip": "985125000128426",
-    "life_number": "NZ460867",
-    "loveracing_id": "460867",
+    "life_number": "",
+    "loveracing_id": null,
     "foaling_date": "",
     "sex": "filly",
     "colour": "",
@@ -326,8 +326,8 @@
     "starts_count": null,
     "total_earnings_nzd": null,
     "race_log": [],
-    "breeding_url": "https://loveracing.nz/Breeding/460867",
-    "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=460867",
+    "breeding_url": "",
+    "performance_profile_url": "",
     "identity_status": "verified"
   }
 ]

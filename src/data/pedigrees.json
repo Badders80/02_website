@@ -1431,19 +1431,19 @@
     "horse_slug": "tml-x-yearn",
     "horse_name": "Turn Me Loose x Yearn (unnamed)",
     "microchip": "985125000128426",
-    "life_number": "NZ00460867",
-    "loveracing_id": 460867,
+    "life_number": "",
+    "loveracing_id": null,
     "sex": "filly",
     "colour": "Bay",
     "foaling_date": "2023-08-17",
     "country_code": "NZ",
     "sire": {
       "name": "Turn Me Loose (NZ) 2011",
-      "sire_id": 290223
+      "sire_id": null
     },
     "dam": {
       "name": "Yearn (NZ) 2013",
-      "dam_id": 317105
+      "dam_id": null
     },
     "breeder": "C W Kwok",
     "family_number": "21",
@@ -1451,231 +1451,13 @@
     "right_shoulder_brand": "104 OVER 3",
     "dna_typed": true,
     "pv": true,
-    "source": "loveracing_nz",
-    "source_url": "https://loveracing.nz/Breeding/460867",
-    "performance_profile_url": "https://loveracing.nz/Common/SystemTemplates/Modal/EntryDetail.aspx?DisplayContext=Modal&HorseID=460867",
-    "verified": true,
+    "source": "internal (sire/dam only; foal unregistered on LR public stud book)",
+    "source_url": "",
+    "performance_profile_url": "",
+    "verified": false,
     "verified_at": "2026-07-08",
-    "notes": "Verified against loveracing.nz Stud Book (Breeding/460867). Bay filly by Turn Me Loose out of Yearn, foaled 17 Aug 2023. Breeder: C W Kwok. Family 21. DNA typed. Withdrawn from Karaka 2025 Book 1 (Lot 413, account Windsor Park Stud). Now in training with Stephen Gray at Copper Belt Lodge, Palmerston North.",
-    "sire_line": [
-      {
-        "name": "Turn Me Loose",
-        "country": "NZ",
-        "year": "2011",
-        "horse_id": 290223,
-        "partner": {
-          "name": "Indomitable",
-          "country": "NZ",
-          "year": "2003",
-          "horse_id": 234436
-        }
-      },
-      {
-        "name": "Iffraaj",
-        "country": "GB",
-        "year": "2001",
-        "horse_id": 255989,
-        "partner": {
-          "name": "Pastorale",
-          "country": "GB",
-          "year": "1988",
-          "horse_id": 255990
-        }
-      },
-      {
-        "name": "Zafonic",
-        "country": "USA",
-        "year": "1990",
-        "horse_id": 213094,
-        "partner": {
-          "name": "Zaizafon",
-          "country": "USA",
-          "year": "1982",
-          "horse_id": 213096
-        }
-      },
-      {
-        "name": "Gone West",
-        "country": "USA",
-        "year": "1984",
-        "horse_id": 190764,
-        "partner": {
-          "name": "Secrettame",
-          "country": "USA",
-          "year": "1978",
-          "horse_id": 206126
-        }
-      },
-      {
-        "name": "Mr. Prospector",
-        "country": "USA",
-        "year": "1970",
-        "horse_id": 141669,
-        "partner": {
-          "name": "Gold Digger",
-          "country": "USA",
-          "year": "1962",
-          "horse_id": 158590
-        }
-      },
-      {
-        "name": "Raise a Native",
-        "country": "USA",
-        "year": "1961",
-        "horse_id": 96620,
-        "partner": {
-          "name": "Raise You",
-          "country": "USA",
-          "year": "1946",
-          "horse_id": 140623
-        }
-      },
-      {
-        "name": "Native Dancer",
-        "country": "USA",
-        "year": "1950",
-        "horse_id": 80101,
-        "partner": {
-          "name": "Geisha",
-          "country": "USA",
-          "year": "1943",
-          "horse_id": 172985
-        }
-      },
-      {
-        "name": "Polynesian",
-        "country": "USA",
-        "year": "1942",
-        "horse_id": 76821,
-        "partner": {
-          "name": "Black Polly",
-          "country": "USA",
-          "year": "1936",
-          "horse_id": 174149
-        }
-      },
-      {
-        "name": "Unbreakable",
-        "country": "USA",
-        "year": "1935",
-        "horse_id": 158228,
-        "partner": {
-          "name": "\u2014",
-          "country": "",
-          "year": "",
-          "horse_id": null
-        }
-      }
-    ],
-    "dam_line": [
-      {
-        "name": "Yearn",
-        "country": "NZ",
-        "year": "2013",
-        "horse_id": 317105,
-        "partner": {
-          "name": "Savabeel",
-          "country": "AUS",
-          "year": "2001",
-          "horse_id": 238456
-        }
-      },
-      {
-        "name": "Princess Uno",
-        "country": "AUS",
-        "year": "2003",
-        "horse_id": 250539,
-        "partner": {
-          "name": "Danehill",
-          "country": "USA",
-          "year": "1986",
-          "horse_id": 151645
-        }
-      },
-      {
-        "name": "Numero Privee",
-        "country": "USA",
-        "year": "1990",
-        "horse_id": 250540,
-        "partner": {
-          "name": "Private Account",
-          "country": "USA",
-          "year": "1976",
-          "horse_id": 179525
-        }
-      },
-      {
-        "name": "Quixotic Lady",
-        "country": "USA",
-        "year": "1980",
-        "horse_id": 250541,
-        "partner": {
-          "name": "Quadratic",
-          "country": "USA",
-          "year": "1975",
-          "horse_id": 128923
-        }
-      },
-      {
-        "name": "Lady Dulcinea",
-        "country": "USA",
-        "year": "1963",
-        "horse_id": 205824,
-        "partner": {
-          "name": "Nantallah",
-          "country": "USA",
-          "year": "1953",
-          "horse_id": 141305
-        }
-      },
-      {
-        "name": "Shy Dancer",
-        "country": "USA",
-        "year": "1955",
-        "horse_id": 159381,
-        "partner": {
-          "name": "Bolero",
-          "country": "USA",
-          "year": "1946",
-          "horse_id": 79316
-        }
-      },
-      {
-        "name": "Shy Bim",
-        "country": "USA",
-        "year": "1948",
-        "horse_id": 159380,
-        "partner": {
-          "name": "Bimelech",
-          "country": "USA",
-          "year": "1937",
-          "horse_id": 80158
-        }
-      },
-      {
-        "name": "Bashful",
-        "country": "USA",
-        "year": "1940",
-        "horse_id": 159383,
-        "partner": {
-          "name": "Man o' War",
-          "country": "USA",
-          "year": "1917",
-          "horse_id": 96202
-        }
-      },
-      {
-        "name": "Mock Modesty",
-        "country": "USA",
-        "year": "1934",
-        "horse_id": 187662,
-        "partner": {
-          "name": "Royal Minstrel",
-          "country": "GB",
-          "year": "1925",
-          "horse_id": 140004
-        }
-      }
-    ]
+    "notes": "Unnamed 2YO filly (Turn Me Loose x Yearn). NOT registered with a public loveracing.nz Breeding page for the foal. HorseID 460867 is the dam Yearn (Yearn-NZ-2013 page) \u2014 do not use as this horse's breeding link. Microchip/life number retained from sale/stud records where known; re-verify when NZTR lists the filly under her race name.",
+    "sire_line": [],
+    "dam_line": []
   }
 ]
