@@ -266,13 +266,12 @@ export default function BrandGuidelinesPage() {
                   key={color.label}
                   className={`rounded-sm border border-border p-8 flex flex-col items-center justify-center min-h-[220px] ${color.bg}`}
                 >
-                  <div className="relative h-10 w-auto mb-6">
-                    <Image
+                  <div className="relative w-48 h-12 flex items-center justify-center mb-6">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={color.lockup}
                       alt={`Evolution Stables ${color.label} lockup`}
-                      width={240}
-                      height={48}
-                      className="h-full w-auto"
+                      className="max-h-full max-w-full object-contain"
                     />
                   </div>
                   <p className={`text-[11px] uppercase tracking-[0.2em] ${color.bg === 'bg-white' ? 'text-black/50' : 'text-muted-foreground'}`}>
@@ -290,13 +289,12 @@ export default function BrandGuidelinesPage() {
                 </p>
                 <div className="inline-block rounded-sm border border-dashed border-border p-8 bg-surface-base">
                   <div className="border border-dashed border-gold/60 p-6">
-                    <div className="relative h-12 w-auto">
-                      <Image
+                    <div className="relative w-52 h-12 flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src="/images/brand/lockups/white/lockup-horizontal-white.svg"
                         alt="Evolution Stables logo clear space"
-                        width={200}
-                        height={48}
-                        className="h-full w-auto"
+                        className="max-h-full max-w-full object-contain"
                       />
                     </div>
                   </div>
@@ -307,49 +305,45 @@ export default function BrandGuidelinesPage() {
                 <SectionLabel>Minimum Sizes</SectionLabel>
                 <div className="space-y-5">
                   <div className="flex items-center gap-5">
-                    <div className="relative h-6 w-auto">
-                      <Image
+                    <div className="relative w-28 h-6 flex items-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src="/images/brand/lockups/white/lockup-horizontal-white.svg"
                         alt="24px logo minimum"
-                        width={120}
-                        height={24}
-                        className="h-full w-auto"
+                        className="h-6 w-auto object-contain"
                       />
                     </div>
                     <span className="text-[13px] text-white/55">24px — Mobile header minimum</span>
                   </div>
                   <div className="flex items-center gap-5">
-                    <div className="relative h-8 w-auto">
-                      <Image
+                    <div className="relative w-36 h-8 flex items-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src="/images/brand/lockups/white/lockup-horizontal-white.svg"
                         alt="32px logo recommended"
-                        width={160}
-                        height={32}
-                        className="h-full w-auto"
+                        className="h-8 w-auto object-contain"
                       />
                     </div>
                     <span className="text-[13px] text-white/55">32px — Desktop header standard</span>
                   </div>
                   <div className="flex items-center gap-5">
                     <div className="relative h-12 w-12 bg-white/5 rounded-full flex items-center justify-center p-2.5">
-                      <Image
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src="/images/brand/monograms/white/monogram-white.svg"
                         alt="40px monogram"
-                        width={40}
-                        height={40}
-                        className="h-full w-full"
+                        className="h-full w-full object-contain"
                       />
                     </div>
                     <span className="text-[13px] text-white/55">40×40px — Standalone monogram (avatar / icon)</span>
                   </div>
                   <div className="flex items-center gap-5">
                     <div className="relative h-12 w-12 bg-white/5 rounded-full flex items-center justify-center p-2">
-                      <Image
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src="/images/brand/monograms/gold/monogram-gold.svg"
                         alt="48px monogram"
-                        width={48}
-                        height={48}
-                        className="h-full w-full"
+                        className="h-full w-full object-contain"
                       />
                     </div>
                     <span className="text-[13px] text-white/55">48×48px — Premium monogram (marketing / app icon)</span>
@@ -362,28 +356,27 @@ export default function BrandGuidelinesPage() {
               <SectionLabel>Logo Misuse</SectionLabel>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { label: 'No glows', style: { filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' } },
-                  { label: 'No stretching', style: { transform: 'scaleX(1.5)' } },
-                  { label: 'No rotation', style: { transform: 'rotate(12deg)' } },
-                  { label: 'No low opacity (primary)', style: { opacity: 0.4 } },
+                  { label: 'No glows', style: { filter: 'drop-shadow(0 0 10px rgba(212,169,100,0.8)) drop-shadow(0 0 4px rgba(255,255,255,0.7))' } },
+                  { label: 'No stretching', style: { transform: 'scaleX(1.6)' } },
+                  { label: 'No rotation', style: { transform: 'rotate(-12deg)' } },
+                  { label: 'No low opacity (primary)', style: { opacity: 0.2 } },
                 ].map((misuse, i) => (
-                  <div key={i} className="rounded-sm border border-border bg-surface-base p-6 relative">
-                    <div className="flex items-center justify-center h-16">
-                      <div className="relative h-8 w-auto" style={misuse.style}>
-                        <Image
+                  <div key={i} className="rounded-sm border border-border bg-surface-base p-6 relative flex flex-col justify-between">
+                    <div className="flex items-center justify-center h-20 overflow-hidden">
+                      <div className="relative w-36 h-10 flex items-center justify-center" style={misuse.style}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                           src="/images/brand/lockups/white/lockup-horizontal-white.svg"
                           alt={misuse.label}
-                          width={160}
-                          height={32}
-                          className="h-full w-auto"
+                          className="w-full h-auto max-h-8 object-contain"
                         />
                       </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground text-center mt-4 uppercase tracking-[0.15em]">
                       {misuse.label}
                     </p>
-                    <div className="absolute top-3 right-3 w-5 h-5 border border-white/20 rounded-full flex items-center justify-center">
-                      <span className="text-muted-foreground text-xs">✕</span>
+                    <div className="absolute top-3 right-3 w-5 h-5 border border-border rounded-full flex items-center justify-center bg-raised/80">
+                      <span className="text-muted-steel text-xs">✕</span>
                     </div>
                   </div>
                 ))}
