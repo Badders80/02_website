@@ -19,7 +19,7 @@ function linkifyText(text?: string) {
           href={part}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-accent underline decoration-[#d4a964]/40 hover:decoration-[#d4a964] transition-colors"
+          className="text-accent underline decoration-accent/40 hover:decoration-accent transition-colors"
         >
           {part}
         </a>

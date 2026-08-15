@@ -108,7 +108,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors"
+              className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-accent transition-colors"
               placeholder="John Doe"
             />
           </div>
@@ -121,7 +121,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors"
+              className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-accent transition-colors"
               placeholder="john@example.com"
             />
           </div>
@@ -165,7 +165,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
           <textarea
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#d4a964] transition-colors resize-none"
+            className="w-full bg-canvas/40 border border-border rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-accent transition-colors resize-none"
             placeholder="Why are you interested in this horse?"
             rows={3}
           />
@@ -182,7 +182,7 @@ export function ApplyForm({ hltId, horseName }: ApplyFormProps) {
         <button
           type="submit"
           disabled={isSubmitting || !user}
-          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#c49954] disabled:border disabled:border-border disabled:text-muted-foreground disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
+          className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-accent text-black hover:bg-accent-hover disabled:border disabled:border-border disabled:text-muted-foreground disabled:bg-transparent disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
         >
           {isSubmitting ? "Submitting..." : "Submit Application"}
         </button>

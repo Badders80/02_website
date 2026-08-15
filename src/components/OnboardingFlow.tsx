@@ -107,14 +107,14 @@ export function OnboardingFlow({ hasHoldings }: OnboardingFlowProps) {
                   {hasShimmer && (
                     <div
                       aria-hidden
-                      className="pointer-events-none absolute -inset-[2px] rounded-full bg-gradient-to-r from-[#d4a964]/10 via-[#d4a964]/25 to-[#d4a964]/10 blur-md opacity-60 transition-opacity duration-500 group-hover:opacity-90"
+                      className="pointer-events-none absolute -inset-[2px] rounded-full bg-gradient-to-r from-accent/10 via-accent/25 to-accent/10 blur-md opacity-60 transition-opacity duration-500 group-hover:opacity-90"
                     />
                   )}
                   <Link
                     href={step.actionHref}
                     className={`relative inline-flex items-center justify-center rounded-full px-6 py-3 text-[11px] font-medium uppercase tracking-widest transition-all duration-300 active:scale-[0.98] overflow-hidden ${
                       hasShimmer
-                        ? "bg-[#d4a964] text-black hover:scale-105"
+                        ? "bg-accent text-black hover:scale-105"
                         : "bg-white text-black hover:bg-white/90"
                     }`}
                   >

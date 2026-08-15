@@ -112,7 +112,7 @@ export function MarketplaceSection() {
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-border" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-accent origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
@@ -149,7 +149,7 @@ export function MarketplaceSection() {
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-border" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-accent origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg
@@ -186,7 +186,7 @@ export function MarketplaceSection() {
             <div className="group flex flex-col gap-6 relative px-8 py-12 md:px-10 md:py-16 transition-all duration-500">
               {/* Vertical lines */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-border" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-[#d4a964] origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-[1px] bg-accent origin-center scale-y-0 transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-y-100" />
               <div className="space-y-12">
                 <div>
                   <svg

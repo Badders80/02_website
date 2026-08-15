@@ -246,7 +246,7 @@ export default function PurchasePage(props: PurchasePageProps) {
   if (authLoading || !user || kycStatus !== "verified") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-canvas text-pure-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent"></div>
       </div>
     );
   }
@@ -322,7 +322,7 @@ export default function PurchasePage(props: PurchasePageProps) {
       const data = await res.json();
       const checkoutUrl = data.url || data.session_url;
       if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+        window.location.assign(checkoutUrl);
       } else {
         throw new Error("No checkout URL returned");
       }
@@ -369,7 +369,7 @@ export default function PurchasePage(props: PurchasePageProps) {
           {/* Loading state for inventory */}
           {inventoryLoading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent"></div>
             </div>
           ) : !purchasable || sharesAvailable === 0 ? (
             <div className="rounded-2xl border border-border bg-surface-base p-12 text-center space-y-4">
@@ -611,7 +611,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           setPdsAgreed(e.target.checked);
                           setPdsSignedAt(e.target.checked ? new Date().toISOString() : null);
                         }}
-                        className="w-4 h-4 mt-0.5 rounded accent-[#d4a964] shrink-0"
+                        className="w-4 h-4 mt-0.5 rounded accent-accent shrink-0"
                       />
                       <span>
                         {props.hasPds
@@ -744,7 +744,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                           setSaAgreed(e.target.checked);
                           setSaSignedAt(e.target.checked ? new Date().toISOString() : null);
                         }}
-                        className="w-4 h-4 mt-0.5 rounded accent-[#d4a964] shrink-0"
+                        className="w-4 h-4 mt-0.5 rounded accent-accent shrink-0"
                       />
                       <span>
                         {props.hasSa
@@ -784,7 +784,7 @@ export default function PurchasePage(props: PurchasePageProps) {
                   </div>
 
                   {/* Compliance Notice */}
-                  <p className="text-[10.5px] font-light leading-relaxed text-muted-foreground text-center bg-surface-base border border-white/[0.05] rounded-xl p-3">
+                  <p className="text-[10.5px] font-light leading-relaxed text-muted-foreground text-center bg-surface-base border border-border rounded-xl p-3">
                     {props.hasPds && props.hasSa
                       ? "You must e-sign the PDS and the Syndicate Agreement (two steps) before checkout. Your KYC name is recorded with each acknowledgement; payment then records your holding."
                       : "Payment records your holding and sends a welcome email. Final signed PDS/SA delivery follows when legal documents are published."}

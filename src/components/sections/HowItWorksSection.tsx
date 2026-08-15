@@ -132,7 +132,7 @@ export function HowItWorksSection() {
           {cards.map((card, index) => (
             <div
               key={index}
-              className="group relative border border-border rounded-xl flex flex-col cursor-pointer transition-all duration-500 hover:border-white/[0.15] hover:scale-[1.05] h-auto lg:h-[340px]"
+              className="group relative border border-border rounded-xl flex flex-col cursor-pointer transition-all duration-500 hover:border-steel-border hover:scale-[1.02] h-auto lg:h-[340px]"
               style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
             >
               {/* Top — header (fixed height, lighter tone) */}

@@ -76,7 +76,7 @@ export default function ReturnsPage() {
     <>
       <ReturnsJsonLd />
       <NavBar />
-      <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24 selection:bg-[#d4a964] selection:text-black">
+      <main className="min-h-screen bg-canvas text-heading font-sans pt-32 pb-24 selection:bg-accent selection:text-canvas">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 lg:px-12">
           {/* Breadcrumb */}
           <div className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">

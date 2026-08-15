@@ -245,7 +245,7 @@ export function NavBar() {
               </Link>
             ))}
 
-            <div className="space-y-3 pt-6 border-t border-white/[0.05] mt-4">
+            <div className="space-y-3 pt-6 border-t border-border mt-4">
               {user ? (
                 <div className="space-y-3">
                   <div className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground">

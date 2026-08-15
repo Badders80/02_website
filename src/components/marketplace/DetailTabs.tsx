@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { PedigreeTable } from "./PedigreeTable";
 import { RegistrationGate } from "./RegistrationGate";
 import { getCampaignStatus, type CampaignStatus } from "@/lib/campaign-status";
+import { normalizePedigreeName } from "@/lib/pedigree-name";
 
 import { type Race } from "@/lib/types";
 
@@ -29,6 +30,17 @@ interface DetailTabsProps {
     location: string;
     nztr_license_number?: string;
     bio?: string;
+    website?: string;
+    phone?: string;
+    email?: string;
+    image_path?: string;
+    people?: Array<{
+      slug: string;
+      name: string;
+      roles?: string[];
+      bio?: string;
+      website?: string;
+    }>;
   };
   horseSlug: string;
   listingStatus?: string;
@@ -127,7 +139,7 @@ function LegalDocumentCards({
             aria-hidden={!interactive}
             className="text-[10px] font-medium uppercase tracking-widest text-accent hover:underline shrink-0"
           >
-            Download
+            View
           </a>
         </div>
       ))}
@@ -135,40 +147,50 @@ function LegalDocumentCards({
   );
 }
 
-// Gender-aware pronouns for fallback overview
-function getPronouns(sex: string): { subject: string; possessive: string } {
-  const lower = sex.toLowerCase();
-  if (lower === "gelding") return { subject: "he", possessive: "his" };
-  if (lower === "mare" || lower === "filly") return { subject: "she", possessive: "her" };
-  if (lower === "colt" || lower === "stallion" || lower === "horse") return { subject: "he", possessive: "his" };
-  return { subject: "this horse", possessive: "its" };
-}
+function FormattedText({ text, className = "" }: { text?: string; className?: string }) {
+  if (!text) return null;
 
-// Status-aware overview text (fallback when horse.story is empty)
-function getOverviewCopy(
-  horseName: string,
-  sireName: string,
-  damName: string,
-  sex: string,
-  status: CampaignStatus,
-): { para1: string; para2: string } {
-  const pronouns = getPronouns(sex);
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0 && !l.startsWith("---") && !l.startsWith("*Sources:"));
 
-  const para1 = `${horseName} represents a strategic leasehold campaign within the Evolution syndicate network. Sired by ${sireName || "—"} out of ${damName || "—"}, ${pronouns.possessive} breeding carries proven speed and durability profiles suited for domestic New Zealand benchmark competition.`;
+  return (
+    <div className={`space-y-3 ${className}`}>
+      {lines.map((line, lineIdx) => {
+        const isBullet = line.startsWith("- ") || line.startsWith("* ");
+        const rawContent = isBullet ? line.replace(/^[-*]\s+/, "") : line;
 
-  let para2: string;
-  if (status === "completed") {
-    para2 = `${pronouns.subject.charAt(0).toUpperCase() + pronouns.subject.slice(1)} has completed ${pronouns.possessive} lease campaign under professional preparations, demonstrating adaptability across track conditions throughout ${pronouns.possessive} racing career.`;
-  } else if (status === "fully_subscribed") {
-    para2 = `Trained under professional preparations, ${pronouns.subject} has shown great adaptability to track variations and is in active campaign.`;
-  } else if (status === "listed") {
-    para2 = `Trained under professional preparations, ${pronouns.subject} has shown great adaptability to track variations and is being built toward late-season stakes qualifications.`;
-  } else {
-    // coming_soon / coming_soon_details / draft
-    para2 = `Trained under professional preparations, ${pronouns.subject} has shown great adaptability to track variations and is being built toward late-season stakes qualifications.`;
-  }
+        // Parse inline **bold** markers
+        const parts = rawContent.split(/(\*\*.*?\*\*)/g);
+        const formatted = parts.map((part, pIdx) => {
+          if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
+            return (
+              <strong key={pIdx} className="font-semibold text-heading">
+                {part.slice(2, -2)}
+              </strong>
+            );
+          }
+          return part;
+        });
 
-  return { para1, para2 };
+        if (isBullet) {
+          return (
+            <div key={lineIdx} className="flex items-start gap-2 pl-2 text-foreground">
+              <span className="text-amber-400 font-bold shrink-0 mt-0.5">•</span>
+              <span className="leading-relaxed">{formatted}</span>
+            </div>
+          );
+        }
+
+        return (
+          <p key={lineIdx} className="leading-relaxed text-foreground">
+            {formatted}
+          </p>
+        );
+      })}
+    </div>
+  );
 }
 
 type UserTier = "guest" | "auth" | "kyc";
@@ -202,7 +224,10 @@ export function DetailTabs({
 }: DetailTabsProps) {
   const { user, kycStatus } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"overview" | "pedigree" | "trainer" | "race-record" | "documents">("overview");
+  const [activeTab, setActiveTab] = useState<"trainer" | "pedigree" | "race-record" | "documents">("trainer");
+
+  const normalizedSireName = normalizePedigreeName(sireName);
+  const normalizedDamName = normalizePedigreeName(damName);
 
   const handleSignInRedirect = () => {
     router.push(`/auth/login?redirect=${encodeURIComponent(`/marketplace/${horseSlug}`)}`);
@@ -228,21 +253,20 @@ export function DetailTabs({
   const isComingSoon =
     status === "coming_soon" || status === "coming_soon_details";
 
-  const overviewCopy = getOverviewCopy(horseName, sireName, damName, sex, status);
   const activeBio = trainerBio || trainer.bio || "A professional racing operation with proven training methodologies and patient horse development.";
 
   return (
     <div className="space-y-8">
       {/* Tab Nav */}
       <div className="flex border-b border-border overflow-x-auto scrollbar-none">
-        {(["overview", "pedigree", "trainer", "race-record", "documents"] as const).map((tab) => (
+        {(["trainer", "pedigree", "race-record", "documents"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
             className={`py-4 px-6 text-xs uppercase tracking-widest font-light transition-all border-b-2 -mb-[2px] whitespace-nowrap ${
               activeTab === tab
-                ? "border-[#d4a964] text-accent font-medium"
+                ? "border-accent text-accent font-medium"
                 : "border-transparent text-muted-foreground hover:text-frost"
             }`}
           >
@@ -253,19 +277,35 @@ export function DetailTabs({
 
       {/* Tab Panels */}
       <div className="pt-2 min-h-[220px]">
-        {/* Overview Panel */}
-        {activeTab === "overview" && (
-          <div className="space-y-6 animate-fade-in font-light">
-            <h4 className="text-md font-medium text-heading">Campaign Story & Overview</h4>
-            <div className="space-y-4 text-sm leading-[1.8] text-foreground">
-              {story ? (
-                <p className="whitespace-pre-line">{story}</p>
-              ) : (
-                <>
-                  <p>{overviewCopy.para1}</p>
-                  <p>{overviewCopy.para2}</p>
-                </>
+        {/* Trainer Panel */}
+        {activeTab === "trainer" && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div>
+                <h4 className="text-md font-medium text-heading">
+                  {trainer.stable_name || trainer.name || "—"}
+                </h4>
+                {trainer.location && (
+                  <p className="text-xs text-muted-foreground mt-0.5">{trainer.location}</p>
+                )}
+              </div>
+              {trainer.website && (
+                <a
+                  href={trainer.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs uppercase tracking-widest font-mono text-accent hover:underline shrink-0"
+                >
+                  Official Website ↗
+                </a>
               )}
+            </div>
+
+            <div className="space-y-6 font-light text-sm leading-[1.8] text-foreground">
+              {/* Single Unified Profile Narrative */}
+              <div className="prose prose-invert max-w-none text-sm font-light leading-relaxed text-foreground">
+                <FormattedText text={activeBio} />
+              </div>
             </div>
           </div>
         )}
@@ -273,17 +313,11 @@ export function DetailTabs({
         {/* Pedigree Panel */}
         {activeTab === "pedigree" && (
           <div className="relative min-h-[280px] space-y-4">
-            {pedigreeBlurb && (
-              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-sm text-zinc-300 leading-relaxed font-light">
-                <span className="text-amber-400 font-medium uppercase text-[10px] tracking-wider block mb-1">Pedigree Insight</span>
-                {pedigreeBlurb}
-              </div>
-            )}
             <div className={tier === "guest" ? "opacity-30 pointer-events-none select-none blur-[2px]" : ""}>
               <PedigreeTable
                 horseName={horseName}
-                sireName={sireName}
-                damName={damName}
+                sireName={normalizedSireName}
+                damName={normalizedDamName}
                 damSireName={damSireName}
                 sex={sex}
                 colour={colour}
@@ -293,6 +327,12 @@ export function DetailTabs({
                 pedigreeData={pedigreeData}
               />
             </div>
+            {pedigreeBlurb && (
+              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-sm text-zinc-300 leading-relaxed font-light mt-4">
+                <span className="text-amber-400 font-medium uppercase text-[10px] tracking-wider block mb-1">Pedigree Insight</span>
+                {pedigreeBlurb}
+              </div>
+            )}
             {tier === "guest" && (
               <TabAccessOverlay
                 title="Register to view pedigree"
@@ -300,30 +340,6 @@ export function DetailTabs({
                 onSignIn={handleSignInRedirect}
               />
             )}
-          </div>
-        )}
-
-        {/* Trainer Panel */}
-        {activeTab === "trainer" && (
-          <div className="space-y-6 animate-fade-in">
-            <h4 className="text-md font-medium text-heading">Trainer Profile</h4>
-            <div className="space-y-4 font-light text-sm leading-[1.8] text-foreground">
-              <p>
-                <span className="text-heading font-normal">{trainer.stable_name || trainer.name || "—"}</span>
-                {trainer.location ? ` (${trainer.location})` : ""}: {activeBio}
-              </p>
-              {trainerCommentary && (
-                <div className="p-4 rounded-xl bg-surface-base/80 border border-amber-500/20 text-sm text-amber-100/90 italic leading-relaxed">
-                  <span className="text-amber-400 font-semibold uppercase text-[10px] tracking-wider block not-italic mb-1">Trainer Commentary</span>
-                  &ldquo;{trainerCommentary}&rdquo;
-                </div>
-              )}
-              {trainer.contact_name && (
-                <p className="text-xs text-muted-foreground pt-2">
-                  Contact: <span className="text-foreground">{trainer.contact_name}</span>
-                </p>
-              )}
-            </div>
           </div>
         )}
 
@@ -402,7 +418,7 @@ export function DetailTabs({
           <div className="space-y-6">
             <h4 className="text-md font-medium text-heading">Legal Disclosures & Documents</h4>
             <p className="text-xs text-muted-foreground leading-relaxed font-light">
-              Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the HLT parameters prior to committing stakes.
+              Ownership is bound by regulated legal documentation. We strongly recommend downloading and reviewing the DSL parameters prior to committing stakes.
             </p>
 
             <div className="relative pt-2 min-h-[200px]">

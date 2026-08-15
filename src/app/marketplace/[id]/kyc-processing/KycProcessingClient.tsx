@@ -168,7 +168,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
   if (authLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-canvas text-heading">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent" />
       </div>
     );
   }
@@ -195,8 +195,8 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                   ✓
                 </div>
               ) : statusState === "processing" ? (
-                <div className="w-16 h-16 rounded-full bg-[#d4a964]/10 border border-[#d4a964]/20 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#d4a964]" />
+                <div className="w-16 h-16 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent" />
                 </div>
               ) : (
                 <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-2xl">
@@ -233,7 +233,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                   type="button"
                   onClick={startKyc}
                   disabled={checking}
-                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-accent text-black hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition"
                 >
                   {checking ? "Starting..." : "Complete Verification"}
                 </button>
@@ -253,7 +253,7 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                   type="button"
                   onClick={startKyc}
                   disabled={checking}
-                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-[#d4a964] text-black hover:bg-[#d4a964]/90 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  className="w-full text-center py-3.5 rounded-full text-[12px] font-medium uppercase tracking-[0.15em] bg-accent text-black hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition"
                 >
                   {checking ? "Starting..." : "Try Again"}
                 </button>
@@ -282,14 +282,14 @@ export default function KycProcessingClient({ horseSlug }: KycProcessingClientPr
                     placeholder="Your name"
                     value={leadName}
                     onChange={(e) => setLeadName(e.target.value)}
-                    className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#d4a964]/30"
+                    className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-accent/50"
                   />
                   <input
                     type="email"
                     placeholder="Email address"
                     value={leadEmail || user.email || ""}
                     onChange={(e) => setLeadEmail(e.target.value)}
-                    className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#d4a964]/30"
+                    className="w-full bg-surface-base border border-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-accent/50"
                   />
                   <button
                     type="button"
