@@ -8,8 +8,6 @@ import { KycBanner } from "@/components/KycBanner";
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import Image from "next/image";
 import Link from "next/link";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth, isAuthInitialized } from "@/lib/firebase";
 import hltsData from "@/data/hlts.json";
 import horsesData from "@/data/horses.json";
 
@@ -256,13 +254,13 @@ export default function MyStablePage() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      if (!isAuthInitialized()) {
-        throw new Error(
-          "Firebase authentication is not configured. Please contact support."
-        );
-      }
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const { createBrowserClient } = await import("@/lib/supabase");
+      const supabase = createBrowserClient();
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=/mystable` },
+      });
+      if (oauthError) throw oauthError;
     } catch (err: any) {
       console.error("[Google Sign-In] Error:", err);
       alert(err.message || "Google sign-in failed. Please try email sign-in.");

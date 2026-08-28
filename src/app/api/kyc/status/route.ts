@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyIdToken, setCustomClaims } from '@/lib/firebase-admin';
+import { verifyIdToken, setCustomClaims } from '@/lib/supabase-admin-auth';
 import { getStripe } from '@/lib/stripe';
 
 /**
@@ -7,12 +7,12 @@ import { getStripe } from '@/lib/stripe';
  *
  * Lightweight server-side KYC status check. Verifies the caller, asks Stripe
  * for the latest Identity VerificationSession by client_reference_id, syncs
- * verified sessions to Firebase custom claims, and returns the current status.
+ * verified sessions to Supabase app_metadata claims, and returns the current status.
  *
  * Required Vercel env vars:
  * - STRIPE_SECRET_KEY
- * - FIREBASE_SERVICE_ACCOUNT_KEY (JSON; service account must have Firebase Authentication Admin role)
- * - FIREBASE_PROJECT_ID (must match NEXT_PUBLIC_FIREBASE_CONFIG; defaults to 'evolution-engine')
+ * - SUPABASE_SERVICE_ROLE_KEY (service-role writes KYC claims to auth.users)
+ * - GOOGLE_SERVICE_ACCOUNT (Sheets legacy) not required for claims
  * - NEXT_PUBLIC_APP_URL = https://www.evolutionstables.nz
  */
 
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
       } catch (claimErr: any) {
         console.error('[KYC status] FAILED to sync verified claims for uid', uid, ':', claimErr.message);
         return NextResponse.json(
-          { error: 'Verified by Stripe but failed to update Firebase claims' },
+          { error: 'Verified by Stripe but failed to update KYC claims' },
           { status: 500 }
         );
       }

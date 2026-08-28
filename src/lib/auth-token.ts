@@ -1,65 +1,32 @@
 /**
- * Firebase Auth Token Management
+ * Supabase client-side auth token access.
  *
- * Provides a cached Firebase ID token for API calls.
- * Uses anonymous sign-in for public browsing, or the current user's token.
- *
- * The token is cached and auto-refreshed before expiry.
+ * Replaces Firebase ID-token management. Returns the current session's
+ * Supabase access token for `Authorization: Bearer ...` API calls —
+ * the same wire format the app's API routes already speak.
  */
 
-import { auth } from "./firebase";
-import { signInAnonymously, type User } from "firebase/auth";
-
-let cachedToken: string | null = null;
-let tokenExpiry: number = 0;
-let anonymousUser: User | null = null;
-
-const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
+import { createBrowserClient } from '@/lib/supabase';
 
 /**
- * Get a valid Firebase ID token for API calls.
- *
- * - If a user is signed in, uses their token.
- * - If no user is signed in, signs in anonymously (for public browsing).
- * - Caches the token and auto-refreshes before expiry.
+ * Get a valid Supabase access token for API calls.
+ * Returns null when signed out (callers already handle the 401 path).
+ * supabase-js caches and auto-refreshes the session.
  */
 export async function getAuthToken(): Promise<string | null> {
-  // Return cached token if still fresh
-  if (cachedToken && Date.now() < tokenExpiry - TOKEN_REFRESH_MARGIN_MS) {
-    return cachedToken;
-  }
+  if (typeof window === 'undefined') return null;
 
   try {
-    // Use existing user if available
-    let user = auth?.currentUser;
-
-    // Sign in anonymously if no user
-    if (!user && auth && typeof window !== "undefined") {
-      if (!anonymousUser) {
-        const cred = await signInAnonymously(auth);
-        anonymousUser = cred.user;
-      }
-      user = anonymousUser;
-    }
-
-    if (!user) return null;
-
-    const tokenResult = await user.getIdTokenResult();
-    cachedToken = tokenResult.token;
-    tokenExpiry = new Date(tokenResult.expirationTime).getTime();
-    return cachedToken;
+    const supabase = createBrowserClient();
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token ?? null;
   } catch (err) {
-    console.warn("Failed to get auth token:", err);
-    cachedToken = null;
+    console.warn('[auth-supabase] failed to get access token:', err);
     return null;
   }
 }
 
-/**
- * Clear the cached token (e.g., on sign out).
- */
+/** Clear cached token (on sign out) — supabase-js owns the session lifecycle. */
 export function clearAuthToken(): void {
-  cachedToken = null;
-  tokenExpiry = 0;
-  anonymousUser = null;
+  // Intentional no-op: supabase.auth.signOut() invalidates the session.
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyIdToken } from "@/lib/firebase-admin";
+import { verifyIdToken } from "@/lib/supabase-admin-auth";
 import { appendLead } from "@/lib/google-sheets";
 import { appendLead as appendLeadSupabase } from "@/lib/supabase";
 import { notifyAlexOfInterest } from "@/lib/notify-alex";

@@ -127,7 +127,7 @@ export default function VerifyPage() {
           return;
         }
 
-        // Refresh Firebase token claims in the background so the UI reflects any webhook updates.
+        // Refresh the session so claim updates flow through so the UI reflects any webhook updates.
         try { await refreshClaimsRef.current(); } catch {}
       } catch (err: any) {
         console.error("[KYC verify] Polling error:", err.message);

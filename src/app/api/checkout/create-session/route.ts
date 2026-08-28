@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyIdToken } from '@/lib/firebase-admin';
+import { verifyIdToken } from '@/lib/supabase-admin-auth';
 import { getStripe } from '@/lib/stripe';
 import { getLiveInventory } from '@/lib/google-sheets';
 import { getLiveInventory as getLiveInventorySupabase } from '@/lib/supabase';
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const { user_id: bodyUserId, hlt_id, shares_to_buy, user_email, e_sign } = body;
     // Client bypass_kyc is ignored — never used to open sales or skip gates.
 
-    // Verify caller via Firebase ID token (sent as Bearer)
+    // Verify caller via Supabase access token (sent as Bearer)
     const authHeader = request.headers.get('authorization') || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) {

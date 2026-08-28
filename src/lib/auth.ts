@@ -1,6 +1,6 @@
-import { signOut as firebaseSignOut } from "firebase/auth";
-import { auth } from "./firebase";
+import { createBrowserClient } from "@/lib/supabase";
 
-export async function signOut() {
-  await firebaseSignOut(auth);
+/** Sign out via Supabase GoTrue (replaces the previous Firebase signOut). */
+export async function signOut(): Promise<void> {
+  await createBrowserClient().auth.signOut();
 }

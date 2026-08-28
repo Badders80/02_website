@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
-import { setCustomClaims } from '@/lib/firebase-admin';
+import { setCustomClaims } from '@/lib/supabase-admin-auth';
 import { getStripe } from '@/lib/stripe';
 import { logEvent } from '@/lib/supabase';
 
@@ -10,8 +10,8 @@ import { logEvent } from '@/lib/supabase';
  * Required Vercel env vars for this route to work in production:
  * - STRIPE_KYC_WEBHOOK_SECRET (must match Stripe Dashboard → Developers → Webhooks → Identity endpoint secret)
  *   Falls back to STRIPE_WEBHOOK_SECRET if STRIPE_KYC_WEBHOOK_SECRET is not set.
- * - FIREBASE_SERVICE_ACCOUNT_KEY (JSON; service account must have Firebase Authentication Admin role)
- * - FIREBASE_PROJECT_ID (must match NEXT_PUBLIC_FIREBASE_CONFIG)
+ * - SUPABASE_SERVICE_ROLE_KEY (claims are written to auth.users.app_metadata)
+ *   via the service-role admin API.
  */
 
 const WEBHOOK_SECRET = process.env.STRIPE_KYC_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '';
@@ -87,10 +87,10 @@ export async function POST(request: NextRequest) {
         }
       } catch (claimErr: any) {
         console.error('[KYC callback] Failed to set KYC claims for uid:', uid, 'error:', claimErr.message);
-        console.error('[KYC callback] Verify the service account key (FIREBASE_SERVICE_ACCOUNT_KEY) has permission for identitytoolkit.googleapis.com (Firebase Authentication Admin role) and the Identity Toolkit API is enabled.');
+        console.error('[KYC callback] Verify SUPABASE_SERVICE_ROLE_KEY is configured for auth admin claims updates.');
         // Return 500 so Stripe retries the webhook — the claim update is the critical path.
         return NextResponse.json(
-          { error: 'Failed to set Firebase custom claims. Verify FIREBASE_SERVICE_ACCOUNT_KEY has Firebase Authentication Admin role and identitytoolkit API is enabled.' },
+          { error: 'Failed to set KYC claims. Verify SUPABASE_SERVICE_ROLE_KEY is configured.' },
           { status: 500 }
         );
       }

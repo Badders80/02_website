@@ -22,7 +22,7 @@ const LEGACY_WAITLIST_SHEET_ID =
 const LEADS_TAB = process.env.LEADS_SHEET_TAB || 'Sheet1';
 
 /**
- * Get a Google OAuth access token using the Firebase service account key.
+ * Get a Google OAuth access token using the Google service account key (Sheets API only — not user auth).
  */
 async function getAccessToken(): Promise<string> {
   const keyJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;

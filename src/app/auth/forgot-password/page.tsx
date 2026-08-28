@@ -3,13 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth, isAuthInitialized } from "@/lib/firebase";
 import { GlowPillButton } from "@/components/ui/GlowPillButton";
 import { LOGOS } from "@/lib/assets";
 
 /**
- * Password reset via Firebase Auth email.
+ * Password reset via Supabase Auth email.
  * Linked from /auth/login — was previously a 404.
  */
 export default function ForgotPasswordPage() {
@@ -23,20 +21,21 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     setError(null);
     try {
-      if (!isAuthInitialized()) {
-        throw new Error(
-          "Authentication is not configured. Please contact support."
-        );
-      }
-      await sendPasswordResetEmail(auth, email.trim());
+      const { createBrowserClient } = await import("@/lib/supabase");
+      const supabase = createBrowserClient();
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email.trim(),
+        { redirectTo: `${window.location.origin}/auth/callback?next=/auth/login` },
+      );
+      if (resetError) throw resetError;
       setSent(true);
     } catch (err: any) {
       // Avoid account enumeration: same success UX for most errors, log real cause
-      console.error("[forgot-password]", err?.code || err?.message || err);
-      const code = err?.code || "";
-      if (code === "auth/invalid-email") {
+      console.error("[forgot-password]", err?.message || err);
+      const msg = String(err?.message || "");
+      if (msg.toLowerCase().includes("invalid email")) {
         setError("Please enter a valid email address.");
-      } else if (code === "auth/too-many-requests") {
+      } else if (msg.toLowerCase().includes("rate limit")) {
         setError("Too many attempts. Please wait a few minutes and try again.");
       } else {
         // Still show generic success-style path for user-not-found etc.

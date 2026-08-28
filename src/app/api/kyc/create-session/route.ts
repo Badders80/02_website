@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyIdToken, setCustomClaims } from '@/lib/firebase-admin';
+import { verifyIdToken, setCustomClaims } from '@/lib/supabase-admin-auth';
 import { getStripe } from '@/lib/stripe';
 
 /**
@@ -7,8 +7,8 @@ import { getStripe } from '@/lib/stripe';
  *
  * Required Vercel env vars for this route to work in production:
  * - STRIPE_SECRET_KEY
- * - FIREBASE_SERVICE_ACCOUNT_KEY (JSON; service account must have Firebase Authentication Admin role)
- * - FIREBASE_PROJECT_ID (must match NEXT_PUBLIC_FIREBASE_CONFIG)
+ * - SUPABASE_SERVICE_ROLE_KEY (claims written to auth.users.app_metadata)
+ * - Supabase Auth admin API
  * - NEXT_PUBLIC_APP_URL = https://www.evolutionstables.nz (used for return_url)
  */
 
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { user_id: bodyUserId, email, return_url } = body;
 
-    // Verify caller via Firebase ID token (sent as Bearer)
+    // Verify caller via Supabase access token (sent as Bearer)
     const authHeader = request.headers.get('authorization') || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) {

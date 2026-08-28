@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyIdToken } from "@/lib/firebase-admin";
+import { verifyIdToken } from "@/lib/supabase-admin-auth";
 import { readCommunicationsByEmail } from "@/lib/google-sheets";
 import { readCommunicationsByEmail as readCommunicationsByEmailSupabase } from "@/lib/supabase";
 

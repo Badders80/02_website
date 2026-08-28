@@ -5,14 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
-import {
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
-  GoogleAuthProvider,
-  getAdditionalUserInfo,
-} from "firebase/auth"
-import { auth, isAuthInitialized } from "@/lib/firebase"
 import { LOGOS } from "@/lib/assets"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -35,22 +27,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  // Check redirect result on mount (to handle redirect login fallback)
-  useEffect(() => {
-    if (!isAuthInitialized()) return
-
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          router.push(getRedirectTarget())
-        }
-      })
-      .catch((err) => {
-        console.error("[Google Redirect Sign-In] Error:", err)
-        setError(err.message || "Google sign-in failed.")
-      })
-  }, [router, searchParams])
 
   // If user is already signed in (e.g. persisted), redirect respecting ?redirect (from KYC CTA etc)
   useEffect(() => {
@@ -82,48 +58,17 @@ function LoginForm() {
     setGoogleLoading(true)
     setError(null)
     try {
-      if (!isAuthInitialized()) {
-        throw new Error(
-          "Firebase authentication is not configured. Please contact support.",
-        )
+      const { createBrowserClient } = await import("@/lib/supabase")
+      const supabase = createBrowserClient()
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(getRedirectTarget())}`
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo },
+      })
+      if (oauthError) {
+        throw oauthError
       }
-
-      const provider = new GoogleAuthProvider()
-      provider.setCustomParameters({ prompt: "select_account" })
-
-      try {
-        console.log("[Google Sign-In] Attempting popup auth...")
-        const result = await signInWithPopup(auth, provider)
-        // First-time Google users only
-        const info = getAdditionalUserInfo(result)
-        if (info?.isNewUser && result.user) {
-          const { posthog } = await import("@/lib/posthog-client")
-          posthog.identify(result.user.uid, {
-            email: result.user.email || undefined,
-          })
-          posthog.capture("signup_completed", { method: "google" })
-        }
-        router.push(getRedirectTarget())
-      } catch (popupErr: any) {
-        // If popup is blocked, cancelled, or closed, fallback to redirect immediately
-        if (
-          popupErr.code === "auth/popup-blocked" ||
-          popupErr.code === "auth/cancelled-popup-request" ||
-          popupErr.code === "auth/popup-closed-by-user" ||
-          popupErr.message?.includes("popup")
-        ) {
-          console.warn(
-            "[Google Sign-In] Popup issue encountered, falling back to redirect...",
-            popupErr,
-          )
-          setError(
-            "Popup blocked. Redirecting to Google secure login...",
-          )
-          await signInWithRedirect(auth, provider)
-        } else {
-          throw popupErr
-        }
-      }
+      // On success the browser navigates to Google; no further handling.
     } catch (err: any) {
       console.error("[Google Sign-In] Error:", err)
       setError(

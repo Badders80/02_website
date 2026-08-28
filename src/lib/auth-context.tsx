@@ -1,19 +1,35 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import {
-  onAuthStateChanged,
-  onIdTokenChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  type User,
-} from "firebase/auth";
-import { auth, isAuthInitialized } from "./firebase";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import type { User } from "@supabase/supabase-js";
+import { createBrowserClient } from "@/lib/supabase";
 import { posthog } from "./posthog-client";
 
+/**
+ * Supabase-backed auth context — drop-in replacement for the Firebase
+ * AuthProvider. The exported interface is IDENTICAL, so every consumer
+ * (NavBar, marketplace cards, KYC banner, MyStable) works unchanged.
+ *
+ * Two compat details that keep the surface stable:
+ * 1. `user` is a Supabase User exposing the same fields consumers read
+ *    (id, email, user_metadata).
+ * 2. `getIdToken()` is provided on an augmented user object so existing
+ *    `Authorization: Bearer <token>` API calls keep working verbatim —
+ *    it now returns the Supabase access token, which the API routes
+ *    verify via GoTrue instead of Firebase public keys.
+ */
+
+type AugmentedUser = User & {
+  /** Firebase-era alias of `id` — consumers read `user.uid`. */
+  uid: string;
+  /** Firebase-era alias — resolved from metadata/email for display. */
+  readonly displayName: string | null;
+  /** Returns the Supabase access token for `Authorization: Bearer` calls. */
+  getIdToken: (forceRefresh?: boolean) => Promise<string>;
+};
+
 interface AuthContextType {
-  user: User | null;
+  user: AugmentedUser | null;
   loading: boolean;
   role: string;
   kycStatus: string;
@@ -26,66 +42,67 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function augmentUser(user: User): AugmentedUser {
+  const augmented = user as AugmentedUser;
+  const meta = { ...(user.user_metadata ?? {}) };
+  augmented.uid = user.id;
+  Object.defineProperty(augmented, "displayName", {
+    get: () =>
+      (meta.full_name as string) ||
+      (meta.name as string) ||
+      user.email ||
+      null,
+  });
+  augmented.getIdToken = async (forceRefresh = false) => {
+    const supabase = createBrowserClient();
+    if (forceRefresh) {
+      const { data } = await supabase.auth.refreshSession();
+      if (data.session?.access_token) return data.session.access_token;
+    }
+    const { data } = await supabase.auth.getSession();
+    if (!data.session?.access_token) {
+      throw new Error("No active session");
+    }
+    return data.session.access_token;
+  };
+  return augmented;
+}
+
+function readClaims(user: User | null): { role: string; kycStatus: string } {
+  if (!user) return { role: "viewer", kycStatus: "none" };
+  const meta = { ...(user.app_metadata ?? {}), ...(user.user_metadata ?? {}) };
+  return {
+    role: (meta.role as string) || "viewer",
+    kycStatus: (meta.kyc_status as string) || "none",
+  };
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AugmentedUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState("viewer");
   const [kycStatus, setKycStatus] = useState("none");
 
   useEffect(() => {
-    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
+    const supabase = createBrowserClient();
 
-    if (isBypass) {
-      const mockLoggedOut = typeof window !== "undefined" && localStorage.getItem("mock_signed_out") === "true";
-      if (mockLoggedOut) {
-        // Defer mock logout state out of the effect body
-        setTimeout(() => {
-          setUser(null);
-          setRole("viewer");
-          setKycStatus("none");
-        }, 0);
-      } else {
-        const mockUser: User = {
-          uid: "mock-user-123",
-          email: "mock-admin@example.com",
-          displayName: "Mock User",
-          getIdTokenResult: async () => ({
-            token: "mock-token",
-            authTime: new Date().toISOString(),
-            issuedAtTime: new Date().toISOString(),
-            expirationTime: new Date().toISOString(),
-            signInProvider: "password",
-            claims: {
-              role: process.env.NEXT_PUBLIC_MOCK_ROLE || "admin",
-              kyc_status: process.env.NEXT_PUBLIC_MOCK_KYC || "verified",
-            },
-          }),
-        } as any;
-        setTimeout(() => {
-          setUser(mockUser);
-          setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
-          setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
-        }, 0);
-      }
-      setTimeout(() => setLoading(false), 0);
-      return;
-    }
+    // Initial session + reactive claim updates on any auth state change
+    // (sign-in, token refresh, KYC webhook updating app_metadata, sign-out).
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      const nextUser = session?.user ?? null;
+      setUser(nextUser ? augmentUser(nextUser) : null);
 
-    if (!isAuthInitialized()) {
-      // Firebase not initialized (SSR/build time)
-      setTimeout(() => setLoading(false), 0);
-      return;
-    }
-
-    // onAuthStateChanged for sign-in/out + initial claims
-    const unsubAuth = onAuthStateChanged(auth, async (u) => {
-      setUser(u);
-      if (u) {
-        posthog.identify(u.uid, { email: u.email || undefined });
-        posthog.capture("signup_completed", { method: "email" });
-        const token = await u.getIdTokenResult(true);
-        setRole((token.claims.role as string) || "viewer");
-        setKycStatus((token.claims.kyc_status as string) || "none");
+      if (nextUser) {
+        posthog.identify(nextUser.id, { email: nextUser.email || undefined });
+        if (event === "SIGNED_IN") {
+          posthog.capture("signup_completed", { method: "supabase" });
+        }
+        const meta = {
+          ...(nextUser.app_metadata ?? {}),
+          ...(nextUser.user_metadata ?? {}),
+        };
+        setRole((meta.role as string) || "viewer");
+        setKycStatus((meta.kyc_status as string) || "none");
       } else {
         posthog.reset();
         setRole("viewer");
@@ -94,135 +111,69 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    // onIdTokenChanged: keeps claims (role/kycStatus) reactive on any token refresh
-    // (polling getIdToken(true), background refresh, etc). Critical for post-webhook UX.
-    const unsubToken = onIdTokenChanged(auth, async (u) => {
-      if (u) {
-        const token = await u.getIdTokenResult();
-        setRole((token.claims.role as string) || "viewer");
-        setKycStatus((token.claims.kyc_status as string) || "none");
-      }
-    });
-
     return () => {
-      unsubAuth();
-      unsubToken();
+      sub.subscription.unsubscribe();
     };
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
-    if (isBypass) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("mock_signed_out");
+  const value = useMemo(() => {
+    const signIn = async (email: string, password: string) => {
+      const supabase = createBrowserClient();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw new Error(error.message);
+    };
+
+    const signUp = async (email: string, password: string) => {
+      const supabase = createBrowserClient();
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) throw new Error(error.message);
+      // Prod has mailer_autoconfirm=false: a new signup must confirm via
+      // email before a session exists. Surface that clearly.
+      const { data } = await createBrowserClient().auth.getSession();
+      if (!data.session) {
+        throw new Error("Account created — check your inbox to confirm your email, then sign in.");
       }
-      const mockUser: User = {
-        uid: "mock-user-123",
-        email: email || "mock-admin@example.com",
-        displayName: "Mock User",
-        getIdTokenResult: async () => ({
-          token: "mock-token",
-          authTime: new Date().toISOString(),
-          issuedAtTime: new Date().toISOString(),
-          expirationTime: new Date().toISOString(),
-          signInProvider: "password",
-          claims: {
-            role: process.env.NEXT_PUBLIC_MOCK_ROLE || "admin",
-            kyc_status: process.env.NEXT_PUBLIC_MOCK_KYC || "verified",
-          },
-        }),
-      } as any;
-      setUser(mockUser);
-      setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
-      setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
-      return;
-    }
+    };
 
-    if (!isAuthInitialized()) throw new Error("Auth not initialized");
-    await signInWithEmailAndPassword(auth, email, password);
-  };
+    const signOut = async () => {
+      const supabase = createBrowserClient();
+      await supabase.auth.signOut();
+    };
 
-  const signUp = async (email: string, password: string) => {
-    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
-    if (isBypass) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("mock_signed_out");
+    const refreshClaims = async () => {
+      if (!user) return;
+      try {
+        const supabase = createBrowserClient();
+        if (user.is_anonymous) return;
+        const { data } = await supabase.auth.refreshSession();
+        const nextUser = data.session?.user;
+        if (nextUser) {
+          const meta = {
+            ...(nextUser.app_metadata ?? {}),
+            ...(nextUser.user_metadata ?? {}),
+          };
+          setRole((meta.role as string) || "viewer");
+          setKycStatus((meta.kyc_status as string) || "none");
+        }
+      } catch (e) {
+        console.error("refreshClaims error:", e);
       }
-      const mockUser: User = {
-        uid: "mock-user-123",
-        email: email || "mock-admin@example.com",
-        displayName: "Mock User",
-        getIdTokenResult: async () => ({
-          token: "mock-token",
-          authTime: new Date().toISOString(),
-          issuedAtTime: new Date().toISOString(),
-          expirationTime: new Date().toISOString(),
-          signInProvider: "password",
-          claims: {
-            role: process.env.NEXT_PUBLIC_MOCK_ROLE || "admin",
-            kyc_status: process.env.NEXT_PUBLIC_MOCK_KYC || "verified",
-          },
-        }),
-      } as any;
-      setUser(mockUser);
-      setRole(process.env.NEXT_PUBLIC_MOCK_ROLE || "admin");
-      setKycStatus(process.env.NEXT_PUBLIC_MOCK_KYC || "verified");
-      return;
-    }
+    };
 
-    if (!isAuthInitialized()) throw new Error("Auth not initialized");
-    await createUserWithEmailAndPassword(auth, email, password);
-  };
+    return {
+      user,
+      loading,
+      role,
+      kycStatus,
+      isAdmin: role === "admin",
+      signIn,
+      signUp,
+      signOut,
+      refreshClaims,
+    };
+  }, [user, loading, role, kycStatus]);
 
-  const signOut = async () => {
-    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
-    if (isBypass) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("mock_signed_out", "true");
-      }
-      setUser(null);
-      setRole("viewer");
-      setKycStatus("none");
-      return;
-    }
-
-    if (!isAuthInitialized()) return;
-    await firebaseSignOut(auth);
-  };
-
-  const refreshClaims = async () => {
-    const isBypass = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_BYPASS_AUTH_KYC === "true";
-    if (isBypass) {
-      // bypass already static; nothing to refresh
-      return;
-    }
-    if (!user || !isAuthInitialized()) return;
-    try {
-      const token = await user.getIdTokenResult(true);
-      setRole((token.claims.role as string) || "viewer");
-      setKycStatus((token.claims.kyc_status as string) || "none");
-    } catch (e) {
-      console.error("refreshClaims error:", e);
-    }
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        role,
-        kycStatus,
-        isAdmin: role === "admin",
-        signIn,
-        signUp,
-        signOut,
-        refreshClaims,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
