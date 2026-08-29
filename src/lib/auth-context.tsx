@@ -97,12 +97,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (event === "SIGNED_IN") {
           posthog.capture("signup_completed", { method: "supabase" });
         }
-        const meta = {
-          ...(nextUser.app_metadata ?? {}),
-          ...(nextUser.user_metadata ?? {}),
-        };
-        setRole((meta.role as string) || "viewer");
-        setKycStatus((meta.kyc_status as string) || "none");
+        const claims = readClaims(nextUser);
+        setRole(claims.role);
+        setKycStatus(claims.kycStatus);
       } else {
         posthog.reset();
         setRole("viewer");
@@ -148,12 +145,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data } = await supabase.auth.refreshSession();
         const nextUser = data.session?.user;
         if (nextUser) {
-          const meta = {
-            ...(nextUser.app_metadata ?? {}),
-            ...(nextUser.user_metadata ?? {}),
-          };
-          setRole((meta.role as string) || "viewer");
-          setKycStatus((meta.kyc_status as string) || "none");
+          const claims = readClaims(nextUser);
+          setRole(claims.role);
+          setKycStatus(claims.kycStatus);
         }
       } catch (e) {
         console.error("refreshClaims error:", e);

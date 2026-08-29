@@ -27,7 +27,11 @@ function AuthCallbackInner() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const next = searchParams.get("next") || "/mystable";
+    const rawNext = searchParams.get("next") || "/mystable";
+    // Open-redirect hardening: only same-origin relative paths allowed.
+    const next = rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.includes("://")
+      ? rawNext
+      : "/mystable";
     const supabase = createBrowserClient();
 
     let attempts = 0;
@@ -37,7 +41,7 @@ function AuthCallbackInner() {
       if (data.session?.user) {
         window.clearInterval(poll);
         router.replace(next);
-      } else if (attempts > 25) {
+      } else if (attempts > 100) {
         window.clearInterval(poll);
         setError("Sign-in did not complete. Please try again.");
       }

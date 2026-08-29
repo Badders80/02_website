@@ -45,8 +45,11 @@ export async function setCustomClaims(
   uid: string,
   claims: Record<string, unknown>,
 ): Promise<void> {
+  // Merge into existing app_metadata so unrelated admin keys survive.
+  const { data: existing } = await supabase().auth.admin.getUserById(uid);
+  const merged = { ...(existing?.user?.app_metadata ?? {}), ...claims };
   const { error } = await supabase().auth.admin.updateUserById(uid, {
-    app_metadata: claims,
+    app_metadata: merged,
   });
 
   if (error) {

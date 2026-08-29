@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       await setCustomClaims(userId, { kyc_status: 'pending', kyc_session_id: session.id });
       console.log('[KYC create-session] Set pending claims for uid:', userId, 'session:', session.id);
     } catch (claimErr: any) {
-      console.warn('[KYC create-session] Failed to set pending claim (non-fatal). Verify FIREBASE_SERVICE_ACCOUNT_KEY has identitytoolkit scope + Firebase Auth Admin role:', claimErr.message);
+      console.warn('[KYC create-session] Failed to set pending claim (non-fatal). Verify SUPABASE_SERVICE_ROLE_KEY is configured for auth admin updates:', claimErr.message);
     }
 
     return NextResponse.json({
