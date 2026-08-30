@@ -49,7 +49,12 @@ export function getGoogleOAuthConfig(): GoogleOAuthConfig | null {
 }
 
 export function resolveRedirectUri(config: GoogleOAuthConfig, origin: string): string {
-  return config.redirectUriOverride || `${origin}/api/auth/google/callback`;
+  // Site-registered URI first (set in Vercel env); then request-derived
+  // (non-prod/dev); bare module default LAST (audit finding 3: never present
+  // the evo_02-style app route to Google on this site).
+  if (config.redirectUriOverride) return config.redirectUriOverride;
+  if (process.env.GOOGLE_OAUTH_REDIRECT_URI) return process.env.GOOGLE_OAUTH_REDIRECT_URI;
+  return `${origin}/auth/callback`;
 }
 
 export function newNoncePair(): { raw: string; hashed: string } {
