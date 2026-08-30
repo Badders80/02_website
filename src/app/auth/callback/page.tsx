@@ -30,23 +30,56 @@ function AuthCallbackInner() {
     // App-mediated Google leg: Google lands HERE (registered redirect URI)
     // with ?code&state — forward to the bridge route for token exchange +
     // GoTrue session mint. It redirects back with the session fragment.
+    // If a session already exists (user refreshed a spent code URL), skip
+    // the doomed round-trip and go straight to the destination.
     const code = searchParams.get("code");
     const state = searchParams.get("state");
     if (code && state) {
-      const params = new URLSearchParams();
-      params.set("code", code);
-      params.set("state", state);
-      const dbg = searchParams.get("debug");
-      if (dbg) params.set("debug", dbg);
-      window.location.replace(`/api/auth/google/bridge?${params.toString()}`);
+      let cancelled = false;
+      createBrowserClient()
+        .auth.getSession()
+        .then(({ data }) => {
+          if (cancelled) return;
+          if (data.session?.user) {
+            const rawNext = searchParams.get("next") || "/mystable";
+            const next =
+              rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.includes("://")
+                ? rawNext
+                : "/mystable";
+            router.replace(next);
+          } else {
+            const params = new URLSearchParams();
+            params.set("code", code);
+            params.set("state", state);
+            const dbg = searchParams.get("debug");
+            if (dbg) params.set("debug", dbg);
+            window.location.replace(`/api/auth/google/bridge?${params.toString()}`);
+          }
+        });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // Bridge failure: surface the SPECIFIC code, mirroring the login page's
+    // GOOGLE_ERRORS map (audit finding 1: codes died generically here).
+    const authError = searchParams.get("auth_error");
+    if (authError) {
+      const MESSAGES: Record<string, string> = {
+        google_not_configured: "Google sign-in is not configured — please use email sign-in.",
+        google_denied: "Google sign-in was cancelled.",
+        google_callback_invalid: "Google sign-in could not be verified. Please try again from the sign-in page.",
+        google_csrf: "Your sign-in session expired. Please try again from the sign-in page.",
+        google_token_exchange: "Google sign-in failed during verification. Please try again.",
+        google_signin_failed: "Google sign-in could not create your session. Please try again.",
+      };
+      setError(MESSAGES[authError] ?? "Google sign-in did not complete. Please try again from the sign-in page.");
       return;
     }
 
-    // Bridge failure: surface immediately instead of polling for a session
-    // that will never arrive.
-    const authError = searchParams.get("auth_error");
-    if (authError) {
-      setError("Google sign-in did not complete. Please try again from the sign-in page.");
+    // Google-side denial arrives as standard OAuth error params.
+    if (searchParams.get("error")) {
+      setError("Google sign-in was cancelled.");
       return;
     }
 

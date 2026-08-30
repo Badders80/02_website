@@ -15,7 +15,8 @@ import { Loader2 } from "lucide-react"
 /**
  * App-mediated Google OAuth (consent shows our client, not *.supabase.co).
  * Enabled via NEXT_PUBLIC_APP_MEDIATED_GOOGLE=1; unset = legacy GoTrue flow.
- * Bridge errors come back as /auth/login?error=<code>.
+ * Bridge errors land on /auth/callback?auth_error=<code>; that page renders
+ * the same message text as this map (keep both in sync — audit finding 1).
  */
 const APP_MEDIATED_GOOGLE = process.env.NEXT_PUBLIC_APP_MEDIATED_GOOGLE === "1";
 const GOOGLE_ERRORS: Record<string, string> = {
