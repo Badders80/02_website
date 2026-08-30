@@ -19,6 +19,13 @@ import {
 export async function GET(request: Request) {
   const config = getGoogleOAuthConfig();
   const origin = new URL(request.url).origin;
+  // Server-side gate mirrors the client buttons: when the feature flag is
+  // off, this route must not enter the app-mediated flow even if creds are
+  // present (audit follow-up: creds can be set-but-invalid during founder
+  // key rotation; buttons alone don't guard direct URL hits).
+  if (process.env.NEXT_PUBLIC_APP_MEDIATED_GOOGLE !== "1") {
+    return NextResponse.redirect(`${origin}/auth/login`);
+  }
   if (!config) {
     return NextResponse.redirect(`${origin}/auth/login?error=google_not_configured`);
   }
