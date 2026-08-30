@@ -12,6 +12,21 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 
+/**
+ * App-mediated Google OAuth (consent shows our client, not *.supabase.co).
+ * Enabled via NEXT_PUBLIC_APP_MEDIATED_GOOGLE=1; unset = legacy GoTrue flow.
+ * Bridge errors come back as /auth/login?error=<code>.
+ */
+const APP_MEDIATED_GOOGLE = process.env.NEXT_PUBLIC_APP_MEDIATED_GOOGLE === "1";
+const GOOGLE_ERRORS: Record<string, string> = {
+  google_not_configured: "Google sign-in is not available right now — please use email sign-in.",
+  google_denied: "Google sign-in was cancelled.",
+  google_callback_invalid: "Google sign-in could not be verified. Please try again.",
+  google_csrf: "Sign-in session expired. Please try again.",
+  google_token_exchange: "Google sign-in failed. Please try again.",
+  google_signin_failed: "Google sign-in could not create your session. Please try again.",
+};
+
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -26,7 +41,9 @@ function LoginForm() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(
+    () => GOOGLE_ERRORS[searchParams.get("error") ?? ""] ?? null,
+  )
 
   // If user is already signed in (e.g. persisted), redirect respecting ?redirect (from KYC CTA etc)
   useEffect(() => {
@@ -55,8 +72,12 @@ function LoginForm() {
   }
 
   const handleGoogleSignIn = async () => {
-    setGoogleLoading(true)
-    setError(null)
+    setGoogleLoading(true);
+    setError(null);
+    if (APP_MEDIATED_GOOGLE) {
+      window.location.href = `/api/auth/google?next=${encodeURIComponent(getRedirectTarget())}`;
+      return;
+    }
     try {
       const { createBrowserClient } = await import("@/lib/supabase")
       const supabase = createBrowserClient()

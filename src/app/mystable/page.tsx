@@ -251,8 +251,14 @@ export default function MyStablePage() {
     fetchCommunications,
   ]);
 
+  const APP_MEDIATED_GOOGLE = process.env.NEXT_PUBLIC_APP_MEDIATED_GOOGLE === "1";
+
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
+    if (APP_MEDIATED_GOOGLE) {
+      window.location.href = `/api/auth/google?next=${encodeURIComponent("/mystable")}`;
+      return;
+    }
     try {
       const { createBrowserClient } = await import("@/lib/supabase");
       const supabase = createBrowserClient();

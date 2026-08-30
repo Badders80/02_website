@@ -27,6 +27,29 @@ function AuthCallbackInner() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // App-mediated Google leg: Google lands HERE (registered redirect URI)
+    // with ?code&state — forward to the bridge route for token exchange +
+    // GoTrue session mint. It redirects back with the session fragment.
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    if (code && state) {
+      const params = new URLSearchParams();
+      params.set("code", code);
+      params.set("state", state);
+      const dbg = searchParams.get("debug");
+      if (dbg) params.set("debug", dbg);
+      window.location.replace(`/api/auth/google/bridge?${params.toString()}`);
+      return;
+    }
+
+    // Bridge failure: surface immediately instead of polling for a session
+    // that will never arrive.
+    const authError = searchParams.get("auth_error");
+    if (authError) {
+      setError("Google sign-in did not complete. Please try again from the sign-in page.");
+      return;
+    }
+
     const rawNext = searchParams.get("next") || "/mystable";
     // Open-redirect hardening: only same-origin relative paths allowed.
     const next = rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.includes("://")
